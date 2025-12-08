@@ -324,14 +324,26 @@ const DOMES: Record<
 // ===== Komponenty pomocnicze: EventVideo + MapFrame =====
 interface EventVideoProps {
   src: string;
+  srcWebm?: string;
   poster: string;
   className?: string;
   loadingLabel: string;
   fallbackText: string;
+  preload?: "auto" | "metadata" | "none";
 }
 
-function EventVideo({ src, poster, className, loadingLabel, fallbackText }: EventVideoProps) {
-  const [isLoaded, setIsLoaded] = useState(false);
+function EventVideo({
+  src,
+  srcWebm,
+  poster,
+  className,
+  loadingLabel,
+  fallbackText,
+  preload = "auto",
+}: EventVideoProps) {
+  const [isLoaded, setIsLoaded] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
+  const [shouldRenderVideo] = useState(true);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   // Jeśli wideo zdążyło się załadować zanim React podpiął zdarzenia,
@@ -356,6 +368,28 @@ function EventVideo({ src, poster, className, loadingLabel, fallbackText }: Even
     };
   }, []);
 
+  // Wstrzymuj poza viewportem, wznawiaj gdy widać (odciążenie CPU)
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        setIsVisible(entry.isIntersecting);
+        if (!entry.isIntersecting) {
+          video.pause();
+        }
+      },
+      { threshold: 0.35 }
+    );
+
+    observer.observe(video);
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   // Safari: dopilnuj loop/autoplay inline
   useEffect(() => {
     const video = videoRef.current;
@@ -366,6 +400,7 @@ function EventVideo({ src, poster, className, loadingLabel, fallbackText }: Even
     video.playsInline = true;
 
     const ensurePlay = () => {
+      if (!isVisible) return;
       const p = video.play();
       if (p && typeof p.catch === "function") {
         p.catch(() => {});
@@ -390,7 +425,19 @@ function EventVideo({ src, poster, className, loadingLabel, fallbackText }: Even
       video.removeEventListener("pause", handlePause);
       video.removeEventListener("webkitendfullscreen", handleWebkitEndFullscreen as EventListener);
     };
-  }, []);
+  }, [isVisible]);
+
+  // Jeśli właśnie weszło w viewport, spróbuj wystartować (muted autoplay powinien przejść)
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (isVisible) {
+      const p = video.play();
+      if (p && typeof p.catch === "function") {
+        p.catch(() => {});
+      }
+    }
+  }, [isVisible]);
 
   return (
     <div
@@ -398,11 +445,6 @@ function EventVideo({ src, poster, className, loadingLabel, fallbackText }: Even
         className ?? ""
       }`}
     >
-      {!isLoaded && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center text-xs sm:text-sm force-overlay-dim bg-black/40 backdrop-blur-[2px] animate-pulse pointer-events-none">
-          {loadingLabel}
-        </div>
-      )}
       <video
         ref={videoRef}
         className="absolute inset-0 h-full w-full object-cover pointer-events-none"
@@ -410,12 +452,12 @@ function EventVideo({ src, poster, className, loadingLabel, fallbackText }: Even
         muted
         loop
         playsInline
-        preload="metadata"
+        preload={preload}
         poster={poster}
         onLoadedData={() => setIsLoaded(true)}
       >
         <source src={src} type="video/mp4" />
-        {fallbackText}
+        {srcWebm ? <source src={srcWebm} type="video/webm" /> : null}
       </video>
       <div
         className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-b from-transparent to-black/70"
@@ -433,8 +475,42 @@ interface VideoTileProps {
 
 function VideoTile({ item, loadingLabel, fallbackText }: VideoTileProps) {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isActivated, setIsActivated] = useState(false);
 
   if (item.embed) {
+    const poster = item.poster;
+    if (!isActivated) {
+      return (
+        <button
+          type="button"
+          onClick={() => setIsActivated(true)}
+          className="group relative flex h-full flex-col overflow-hidden rounded-2xl bg-white/5 ring-1 ring-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.35)] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300/70"
+          aria-label={`Odtwórz: ${item.title}`}
+        >
+          <div
+            className="relative h-48 sm:h-52 md:h-56 w-full bg-black/50"
+            style={
+              poster
+                ? {
+                    backgroundImage: `linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.6) 100%), url(${poster})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }
+                : undefined
+            }
+          />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white ring-1 ring-white/20 transition group-hover:bg-white/25">
+              ▶ Odtwórz
+            </span>
+          </div>
+          <div className="absolute inset-x-0 bottom-0 p-3 text-left">
+            <p className="text-sm font-semibold text-white drop-shadow">{item.title}</p>
+          </div>
+        </button>
+      );
+    }
+
     return (
       <div className="flex h-full flex-col overflow-hidden rounded-2xl bg-white/5 ring-1 ring-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
         <div className="relative h-48 sm:h-52 md:h-56 overflow-hidden bg-black/40">
@@ -445,7 +521,7 @@ function VideoTile({ item, loadingLabel, fallbackText }: VideoTileProps) {
           )}
           <iframe
             className="absolute inset-0 h-full w-full"
-            src={`${item.src}?rel=0&modestbranding=1&playsinline=1`}
+            src={`${item.src}?rel=0&modestbranding=1&playsinline=1&autoplay=1`}
             title={item.title}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
@@ -478,23 +554,57 @@ interface MapFrameProps {
 
 function MapFrame({ src, loadingLabel, title }: MapFrameProps) {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [shouldLoad, setShouldLoad] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const el = wrapperRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldLoad(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.2 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <div className="mt-2 mb-4 h-64 md:h-72 rounded-2xl overflow-hidden ring-1 ring-white/10 relative">
-      {!isLoaded && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center text-xs sm:text-sm text-white/80 bg-black/40 backdrop-blur-[2px] animate-pulse pointer-events-none">
+    <div
+      ref={wrapperRef}
+      className="mt-2 mb-4 h-64 md:h-72 rounded-2xl overflow-hidden ring-1 ring-white/10 relative bg-black/40"
+    >
+      {!shouldLoad ? (
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 text-sm text-white/80 bg-black/50 backdrop-blur-[2px]">
+          <span>{loadingLabel}</span>
+          <button
+            type="button"
+            onClick={() => setShouldLoad(true)}
+            className="inline-flex items-center rounded-full bg-white/10 px-4 py-2 text-xs font-semibold ring-1 ring-white/20 hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300/70"
+          >
+            Załaduj mapę
+          </button>
+        </div>
+      ) : !isLoaded ? (
+        <div className="absolute inset-0 z-10 flex items-center justify-center text-xs sm:text-sm text-white/80 bg-black/50 backdrop-blur-[2px] animate-pulse pointer-events-none">
           {loadingLabel}
         </div>
-      )}
-      <iframe
-        title={title}
-        src={src}
-        loading="lazy"
-        referrerPolicy="no-referrer-when-downgrade"
-        className="w-full h-full border-0"
-        allowFullScreen
-        onLoad={() => setIsLoaded(true)}
-      />
+      ) : null}
+      {shouldLoad ? (
+        <iframe
+          title={title}
+          src={src}
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          className="w-full h-full border-0"
+          allowFullScreen
+          onLoad={() => setIsLoaded(true)}
+        />
+      ) : null}
     </div>
   );
 }
@@ -506,6 +616,38 @@ export default function EventsPage() {
   const ui = UI_TEXT[loc];
   const domes = DOMES[loc];
   const videoShowcase = VIDEO_SHOWCASE[loc];
+  const heroRef = useRef<HTMLVideoElement | null>(null);
+  const heroContainerRef = useRef<HTMLDivElement | null>(null);
+  const [isHeroVisible, setIsHeroVisible] = useState(false);
+
+  // Hero wideo: start/pauza zależnie od viewportu
+  useEffect(() => {
+    const el = heroContainerRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsHeroVisible(entry.isIntersecting);
+      },
+      { threshold: 0.35 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const el = heroRef.current;
+    if (!el) return;
+    if (isHeroVisible) {
+      const p = el.play();
+      if (p && typeof p.catch === "function") {
+        p.catch(() => {});
+      }
+    } else {
+      el.pause();
+    }
+  }, [isHeroVisible]);
 
   return (
     <main className="relative min-h-screen">
@@ -514,22 +656,23 @@ export default function EventsPage() {
         {/* Hero video z tytułem */}
         <header className="mx-auto w-full max-w-6xl mb-10 sm:mb-12">
           <div className="relative overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
-            <div className="relative aspect-[16/9] bg-black">
+            <div className="relative aspect-[16/9] bg-black" ref={heroContainerRef}>
               <video
+                ref={heroRef}
                 className="absolute inset-0 h-full w-full object-cover"
                 autoPlay
                 loop
                 muted
                 playsInline
-                preload="auto"
+                preload="metadata"
                 poster="/wydarzenia/AP_wydarzenia_poster.webp"
                 onEnded={(e) => {
                   e.currentTarget.currentTime = 0;
                   e.currentTarget.play();
                 }}
               >
-                <source src="/wydarzenia/AP_wydarzenia.webm" type="video/webm" />
                 <source src="/wydarzenia/AP_wydarzenia.mp4" type="video/mp4" />
+                <source src="/wydarzenia/AP_wydarzenia.webm" type="video/webm" />
                 {ui.videoFallback}
               </video>
               <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/35 to-black/80" />
@@ -576,8 +719,8 @@ export default function EventsPage() {
                 {/* RIGHT: video */}
                 <EventVideo
                   className="md:order-1"
-                  src="/wydarzenia/Koncert.mp4"
-                  poster={PREVIEW_IMG[0][loc].src}
+                  src="/wydarzenia/bankiet1.mp4"
+                  poster="/wydarzenia/Bankiet_poster.webp"
                   loadingLabel={ui.loadingVideo}
                   fallbackText={ui.videoFallback}
                 />
@@ -599,7 +742,7 @@ export default function EventsPage() {
                     <ul className="space-y-3 sm:space-y-3.5 md:space-y-4 w-full max-w-2xl">
                       {SECOND[loc].bullets.map((line, i) => (
                         <li key={i} className="flex items-start gap-3">
-                          <span className="mt-1 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-rose-500 text-white font-bold shadow-[0_0_16px_rgba(244,63,94,0.35)] ring-1 ring-white/10">
+                          <span className="mt-1 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-green-500 text-white font-bold shadow-[0_0_16px_rgba(244,63,94,0.35)] ring-1 ring-white/10">
                             ✓
                           </span>
                           <p className="text-sm sm:text-base text-gray-100 leading-relaxed">
@@ -611,8 +754,8 @@ export default function EventsPage() {
                   </div>
                 <EventVideo
                   className="md:order-2"
-                  src="/wydarzenia/Bankiet.mp4"
-                  poster={PREVIEW_IMG[1][loc].src}
+                  src="/wydarzenia/banket4.mp4"
+                  poster="/wydarzenia/Bankiet_poster.webp"
                   loadingLabel={ui.loadingVideo}
                   fallbackText={ui.videoFallback}
                 />
@@ -635,7 +778,7 @@ export default function EventsPage() {
                     <ul className="space-y-3 sm:space-y-3.5 md:space-y-4 w-full max-w-2xl">
                       {THIRD[loc].bullets.map((line, i) => (
                         <li key={i} className="flex items-start gap-3">
-                          <span className="mt-1 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-violet-500 text-white font-bold shadow-[0_0_16px_rgba(139,92,246,0.35)] ring-1 ring-white/10">
+                          <span className="mt-1 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-lime-500 text-white font-bold shadow-[0_0_16px_rgba(139,92,246,0.35)] ring-1 ring-white/10">
                             ✓
                           </span>
                           <p className="text-sm sm:text-base text-gray-100 leading-relaxed">
@@ -647,8 +790,8 @@ export default function EventsPage() {
                   </div>
                 <EventVideo
                   className="md:order-1"
-                  src="/wydarzenia/Club.mp4"
-                  poster={PREVIEW_IMG[2][loc].src}
+                  src="/wydarzenia/bankiet3.mp4"
+                  poster="/wydarzenia/Bankiet_poster.webp"
                   loadingLabel={ui.loadingVideo}
                   fallbackText={ui.videoFallback}
                 />

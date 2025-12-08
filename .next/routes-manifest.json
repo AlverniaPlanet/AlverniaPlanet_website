@@ -1,0 +1,113 @@
+{
+  "version": 3,
+  "pages404": true,
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    }
+  ],
+  "headers": [],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [],
+    "fallback": []
+  },
+  "dynamicRoutes": [],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/aktualnosci",
+      "regex": "^/aktualnosci(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/aktualnosci(?:/)?$"
+    },
+    {
+      "page": "/atrakcje/kino-360",
+      "regex": "^/atrakcje/kino\\-360(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/atrakcje/kino\\-360(?:/)?$"
+    },
+    {
+      "page": "/atrakcje/sciezka-filmowa",
+      "regex": "^/atrakcje/sciezka\\-filmowa(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/atrakcje/sciezka\\-filmowa(?:/)?$"
+    },
+    {
+      "page": "/atrakcje/wystawa",
+      "regex": "^/atrakcje/wystawa(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/atrakcje/wystawa(?:/)?$"
+    },
+    {
+      "page": "/favicon.ico",
+      "regex": "^/favicon\\.ico(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/favicon\\.ico(?:/)?$"
+    },
+    {
+      "page": "/galeria",
+      "regex": "^/galeria(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/galeria(?:/)?$"
+    },
+    {
+      "page": "/jak-dojechac",
+      "regex": "^/jak\\-dojechac(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/jak\\-dojechac(?:/)?$"
+    },
+    {
+      "page": "/kontakt",
+      "regex": "^/kontakt(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/kontakt(?:/)?$"
+    },
+    {
+      "page": "/o-alvernia-planet",
+      "regex": "^/o\\-alvernia\\-planet(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/o\\-alvernia\\-planet(?:/)?$"
+    },
+    {
+      "page": "/wydarzenia",
+      "regex": "^/wydarzenia(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/wydarzenia(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "rsc",
+    "varyHeader": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+    "prefetchHeader": "next-router-prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSuffix": ".prefetch.rsc",
+    "prefetchSegmentHeader": "next-router-segment-prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments"
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}

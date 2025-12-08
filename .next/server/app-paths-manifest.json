@@ -1,0 +1,14 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/aktualnosci/page": "app/aktualnosci/page.js",
+  "/galeria/page": "app/galeria/page.js",
+  "/jak-dojechac/page": "app/jak-dojechac/page.js",
+  "/kontakt/page": "app/kontakt/page.js",
+  "/o-alvernia-planet/page": "app/o-alvernia-planet/page.js",
+  "/wydarzenia/page": "app/wydarzenia/page.js",
+  "/page": "app/page.js",
+  "/atrakcje/sciezka-filmowa/page": "app/atrakcje/sciezka-filmowa/page.js",
+  "/atrakcje/wystawa/page": "app/atrakcje/wystawa/page.js",
+  "/atrakcje/kino-360/page": "app/atrakcje/kino-360/page.js"
+}

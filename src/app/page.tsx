@@ -356,7 +356,9 @@ export default function Page() {
     };
 
     const handleEnded = () => {
+      video.pause();
       video.currentTime = 0;
+      video.load();
       ensurePlay();
     };
     const handlePause = () => {
@@ -388,7 +390,7 @@ export default function Page() {
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="auto"
           poster="/home/AP_ogolne_poster.webp"
           className="block w-full h-[calc(100svh+64px)] sm:h-[calc(100svh+72px)] object-cover pointer-events-none"
           controlsList="nodownload noplaybackrate noremoteplayback nofullscreen"
@@ -396,8 +398,30 @@ export default function Page() {
           tabIndex={-1}
           onContextMenu={(e) => e.preventDefault()}
           onError={() => console.warn("[video] playback error — check file names/paths in /public")}
+          onEnded={(e) => {
+            const vid = e.currentTarget;
+            vid.pause();
+            vid.currentTime = 0;
+            vid.load();
+            const p = vid.play();
+            if (p && typeof p.catch === "function") p.catch(() => {});
+          }}
+          onPause={(e) => {
+            const vid = e.currentTarget;
+            if (vid.paused) {
+              const p = vid.play();
+              if (p && typeof p.catch === "function") p.catch(() => {});
+            }
+          }}
+          onTimeUpdate={(e) => {
+            const vid = e.currentTarget;
+            if (vid.duration && vid.currentTime >= vid.duration - 0.2) {
+              vid.currentTime = 0;
+              const p = vid.play();
+              if (p && typeof p.catch === "function") p.catch(() => {});
+            }
+          }}
         >
-          {/* Prefer WEBM, then fall back to MP4 */}
           <source src="/home/AP_ogolne.webm" type="video/webm" />
           <source src="/home/AP_ogolne.mp4" type="video/mp4" />
           {heroVideoFallback}
