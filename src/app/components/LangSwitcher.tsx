@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { useI18n } from "@/app/i18n-provider";
 
 type LangOption = { code: "pl" | "en"; label: string };
@@ -35,73 +36,81 @@ function Flag({ code }: { code: LangOption["code"] }) {
 
 export default function LangSwitcher() {
   const { locale, setLocale } = useI18n();
+  const pathname = usePathname();
+  const router = useRouter();
   const [mounted, setMounted] = useState(false);
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => setMounted(true), []);
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (!ref.current) return;
-      if (!ref.current.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
 
   if (!mounted) return null;
 
   const active = OPTIONS.find((opt) => opt.code === locale) ?? OPTIONS[0];
 
-  return (
-    <div className="relative" ref={ref}>
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="inline-flex items-center rounded-full bg-[color:var(--ap-surface-strong)] ring-1 ring-[color:var(--ap-border)] px-2.5 py-1.5 hover:bg-[color:var(--ap-surface-contrast)] transition"
-        aria-haspopup="listbox"
-        aria-expanded={open}
-        aria-label="Switch language"
-      >
-        <Flag code={active.code} />
-        <svg
-          aria-hidden="true"
-          className={`ml-2 h-3 w-3 text-[color:var(--ap-text)] transition-transform ${open ? "rotate-180" : "rotate-0"}`}
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.085l3.71-3.855a.75.75 0 1 1 1.08 1.04l-4.24 4.41a.75.75 0 0 1-1.08 0l-4.24-4.41a.75.75 0 0 1 .02-1.06z" />
-        </svg>
-      </button>
+  const mapToEn = (path: string) => {
+    const clean = path || "/";
+    if (clean === "/en" || clean.startsWith("/en/")) return clean;
+    if (clean === "/") return "/en";
+    const map: Record<string, string> = {
+      "/wydarzenia": "/en/events",
+      "/jak-dojechac": "/en/getting-there",
+      "/o-alvernia-planet": "/en/about",
+      "/galeria": "/en/gallery",
+      "/kontakt": "/en/contact",
+      "/atrakcje/wystawa": "/en/attractions/exhibition",
+      "/atrakcje/sciezka-filmowa": "/en/attractions/film-path",
+      "/atrakcje/kino-360": "/en/attractions/cinema-360",
+    };
+    if (map[clean]) return map[clean];
+    return clean.startsWith("/en/") ? clean : `/en${clean.startsWith("/") ? clean : `/${clean}`}`.replace(/\/{2,}/g, "/");
+  };
 
-      <div
-        className={`absolute right-0 top-full mt-1 w-24 origin-top overflow-hidden rounded-xl bg-[color:var(--ap-surface-contrast)] ring-1 ring-[color:var(--ap-border)] shadow-lg transition-all duration-150 ${
-          open ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-1 pointer-events-none"
-        }`}
-      >
-        <ul role="listbox" aria-label="Available languages" className="py-2 text-sm text-[color:var(--ap-text)]">
-          {OPTIONS.map((opt) => (
-            <li key={opt.code}>
-              <button
-                type="button"
-                onClick={() => {
-                  setLocale(opt.code);
-                  setOpen(false);
-                }}
-                className={`flex w-full items-center gap-2 px-3 py-2 hover:bg-[color:var(--ap-surface-strong)] transition text-left ${
-                  opt.code === active.code ? "opacity-100" : "opacity-80"
-                }`}
-                role="option"
-                aria-selected={opt.code === active.code}
-              >
-                <Flag code={opt.code} />
-                <span className="sr-only">{opt.label}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
+  const mapToPl = (path: string) => {
+    const clean = path || "/";
+    if (clean === "/") return "/";
+    const withoutPrefix = clean.startsWith("/en") ? clean.slice(3) || "/" : clean;
+    const map: Record<string, string> = {
+      "/events": "/wydarzenia",
+      "/getting-there": "/jak-dojechac",
+      "/about": "/o-alvernia-planet",
+      "/gallery": "/galeria",
+      "/contact": "/kontakt",
+      "/attractions/exhibition": "/atrakcje/wystawa",
+      "/attractions/film-path": "/atrakcje/sciezka-filmowa",
+      "/attractions/cinema-360": "/atrakcje/kino-360",
+      "/": "/",
+    };
+    if (map[withoutPrefix]) return map[withoutPrefix];
+    return withoutPrefix.startsWith("/") ? withoutPrefix : `/${withoutPrefix}`;
+  };
+
+  const switchLocale = (target: LangOption["code"]) => {
+    const current = pathname || "/";
+    const nextPath = target === "en" ? mapToEn(current) : mapToPl(current);
+    setLocale(target);
+    router.push(nextPath);
+  };
+
+  return (
+    <div className="inline-flex items-center gap-2">
+      {OPTIONS.map((opt) => {
+        const isActive = opt.code === active.code;
+        return (
+          <button
+            key={opt.code}
+            type="button"
+            onClick={() => switchLocale(opt.code)}
+            className={`inline-flex items-center justify-center rounded-full ring-1 px-2 py-1 transition ${
+              isActive
+                ? "bg-[color:var(--ap-surface-contrast)] ring-[color:var(--ap-border)]"
+                : "bg-[color:var(--ap-surface-strong)] ring-[color:var(--ap-border)] opacity-80 hover:opacity-100"
+            }`}
+            aria-pressed={isActive}
+            aria-label={opt.label}
+          >
+            <Flag code={opt.code} />
+          </button>
+        );
+      })}
     </div>
   );
 }

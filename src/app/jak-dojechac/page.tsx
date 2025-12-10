@@ -283,6 +283,7 @@ export default function JakDojechacPage() {
             </div>
           </div>
         </Card>
+
       </motion.div>
     </main>
   );

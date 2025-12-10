@@ -20,6 +20,21 @@ export function AppBar() {
   const [openAbout, setOpenAbout] = useState(false);
   const attractionsHideTimer = useRef<number | null>(null);
   const aboutHideTimer = useRef<number | null>(null);
+  const { locale } = useI18n();
+  const isEn = locale === "en";
+  const paths = {
+    home: isEn ? "/en" : "/",
+    events: isEn ? "/en/events" : "/wydarzenia",
+    gettingThere: isEn ? "/en/getting-there" : "/jak-dojechac",
+    about: isEn ? "/en/about" : "/o-alvernia-planet",
+    gallery: isEn ? "/en/gallery" : "/galeria",
+    contact: isEn ? "/en/contact" : "/kontakt",
+    attractions: {
+      exhibition: isEn ? "/en/attractions/exhibition" : "/atrakcje/wystawa",
+      filmPath: isEn ? "/en/attractions/film-path" : "/atrakcje/sciezka-filmowa",
+      cinema: isEn ? "/en/attractions/cinema-360" : "/atrakcje/kino-360",
+    },
+  };
 
   useEffect(() => setOpen(false), [pathname]);
   useEffect(() => {
@@ -117,7 +132,7 @@ export function AppBar() {
                     <ul className="py-2 text-sm">
                       <li>
                         <Link
-                          href="/atrakcje/wystawa"
+                          href={paths.attractions.exhibition}
                           className="block px-4 py-2 hover:bg-[color:var(--ap-surface-strong)]"
                         >
                           {t("menu.attractions.exhibition")}
@@ -125,7 +140,7 @@ export function AppBar() {
                       </li>
                       <li>
                         <Link
-                          href="/atrakcje/sciezka-filmowa"
+                          href={paths.attractions.filmPath}
                           className="block px-4 py-2 hover:bg-[color:var(--ap-surface-strong)]"
                         >
                           {t("menu.attractions.film_path")}
@@ -133,7 +148,7 @@ export function AppBar() {
                       </li>
                       <li>
                         <Link
-                          href="/atrakcje/kino-360"
+                          href={paths.attractions.cinema}
                           className="block px-4 py-2 hover:bg-[color:var(--ap-surface-strong)]"
                         >
                           {t("menu.attractions.cinema")}
@@ -145,7 +160,7 @@ export function AppBar() {
               </div>
               <span className="text-white/40">|</span>
               <Link
-                href="/wydarzenia"
+                href={paths.events}
                 className="text-white/90 hover:text-white"
                 suppressHydrationWarning
               >
@@ -153,7 +168,7 @@ export function AppBar() {
               </Link>
               <span className="text-white/40">|</span>
               <Link
-                href="/jak-dojechac"
+                href={paths.gettingThere}
                 className="text-white/90 hover:text-white"
                 suppressHydrationWarning
               >
@@ -164,7 +179,7 @@ export function AppBar() {
 
           {/* ŚRODEK: logo */}
           <div className="flex items-center justify-center px-2">
-            <Link href="/" aria-label={t("aria.home")} className="block">
+            <Link href={paths.home} aria-label={t("aria.home")} className="block">
               <Image
                 src={theme === "light" ? "/logo_AP_grey.png" : "/logo_AP_white.png"}
                 alt="Alvernia Planet"
@@ -226,7 +241,7 @@ export function AppBar() {
                     <ul className="py-2 text-sm">
                       <li>
                         <Link
-                          href="/o-alvernia-planet"
+                          href={paths.about}
                           className="block px-4 py-2 hover:bg-[color:var(--ap-surface-strong)]"
                         >
                           {t("nav.about_alvernia")}
@@ -234,7 +249,7 @@ export function AppBar() {
                       </li>
                       <li>
                         <Link
-                          href="/galeria"
+                          href={paths.gallery}
                           className="block px-4 py-2 hover:bg-[color:var(--ap-surface-strong)]"
                         >
                           {t("nav.gallery")}
@@ -246,7 +261,7 @@ export function AppBar() {
               </div>
               <span className="text-white/40">|</span>
               <Link
-                href="/kontakt"
+                href={paths.contact}
                 className="text-white/90 hover:text-white whitespace-nowrap"
                 suppressHydrationWarning
               >
@@ -322,16 +337,20 @@ export function AppBar() {
 
         {/* MENU MOBILNE (reszta linków w burgerze) */}
         <div
-          className={`lg:hidden grid overflow-hidden transition-[grid-template-rows,opacity] duration-300 ${
-            open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+          className={`lg:hidden grid transition-[grid-template-rows,opacity] duration-300 ${
+            open ? "grid-rows-[1fr] opacity-100 overflow-visible" : "grid-rows-[0fr] opacity-0 overflow-hidden"
           }`}
           aria-hidden={!open}
         >
-          <nav className="min-h-0 overflow-hidden bg-[var(--ap-nav-bg)]">
+          <nav
+            className={`min-h-0 bg-[var(--ap-nav-bg)] ${
+              open ? "overflow-visible" : "overflow-hidden"
+            }`}
+          >
             <ul className="space-y-1 px-4 pb-4 pt-1 text-sm">
               <li>
                 <Link
-                  href="/wycieczka"
+                  href={paths.home}
                   className="block rounded-md px-3 py-2 hover:bg-white/10 text-gray-200"
                   suppressHydrationWarning
                 >
@@ -343,7 +362,7 @@ export function AppBar() {
                 <ul className="space-y-1">
                   <li>
                     <Link
-                      href="/atrakcje/wystawa"
+                      href={paths.attractions.exhibition}
                       className="block rounded-md px-3 py-2 hover:bg-white/10 text-gray-200"
                     >
                       • {t("menu.attractions.exhibition")}
@@ -351,7 +370,7 @@ export function AppBar() {
                   </li>
                   <li>
                     <Link
-                      href="/atrakcje/sciezka-filmowa"
+                      href={paths.attractions.filmPath}
                       className="block rounded-md px-3 py-2 hover:bg-white/10 text-gray-200"
                     >
                       • {t("menu.attractions.film_path")}
@@ -359,7 +378,7 @@ export function AppBar() {
                   </li>
                   <li>
                     <Link
-                      href="/atrakcje/kino-360"
+                      href={paths.attractions.cinema}
                       className="block rounded-md px-3 py-2 hover:bg-white/10 text-gray-200"
                     >
                       • {t("menu.attractions.cinema")}
@@ -369,7 +388,7 @@ export function AppBar() {
               </li>
               <li>
                 <Link
-                  href="/wydarzenia"
+                  href={paths.events}
                   className="block rounded-md px-3 py-2 hover:bg-white/10 text-gray-200"
                   suppressHydrationWarning
                 >
@@ -379,7 +398,7 @@ export function AppBar() {
               <li className="pt-1 border-t border-white/10 mt-1" />
               <li>
                 <Link
-                  href="/jak-dojechac"
+                  href={paths.gettingThere}
                   className="block rounded-md px-3 py-2 hover:bg-white/10 text-gray-200"
                   suppressHydrationWarning
                 >
@@ -390,7 +409,7 @@ export function AppBar() {
                 <ul className="space-y-1">
                   <li>
                     <Link
-                      href="/o-alvernia-planet"
+                      href={paths.about}
                       className="block rounded-md px-3 py-2 hover:bg-white/10 text-gray-200"
                     >
                       • {t("nav.about_alvernia")}
@@ -398,7 +417,7 @@ export function AppBar() {
                   </li>
                   <li>
                     <Link
-                      href="/galeria"
+                      href={paths.gallery}
                       className="block rounded-md px-3 py-2 hover:bg-white/10 text-gray-200"
                     >
                       • {t("nav.gallery")}
@@ -408,7 +427,7 @@ export function AppBar() {
               </li>
               <li>
                 <Link
-                  href="/kontakt"
+                  href={paths.contact}
                   className="block rounded-md px-3 py-2 hover:bg-white/10 text-gray-200"
                   suppressHydrationWarning
                 >

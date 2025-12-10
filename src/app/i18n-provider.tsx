@@ -50,13 +50,35 @@ const I18nCtx = createContext<{
 });
 
 export function I18nProvider({ children, initialLocale }: { children: React.ReactNode; initialLocale?: Locale }) {
-  const [locale, setLocale] = useState<Locale>(() => initialLocale ?? "pl");
+  const [locale, setLocale] = useState<Locale>(() => {
+    // SSR fallback
+    if (typeof window === "undefined") return initialLocale ?? "pl";
+    const stored = window.localStorage?.getItem("locale");
+    if (stored === "pl" || stored === "en") return stored;
+    const path = window.location?.pathname?.toLowerCase?.() || "";
+    if (path === "/en" || path.startsWith("/en/")) return "en";
+    const cookieMatch = document.cookie.match(/(?:^|; )locale=(pl|en)/);
+    if (cookieMatch && (cookieMatch[1] === "pl" || cookieMatch[1] === "en")) return cookieMatch[1] as Locale;
+    return initialLocale ?? "pl";
+  });
 
   useEffect(() => {
     try { localStorage.setItem("locale", locale); } catch {}
     try { document.cookie = `locale=${locale}; Path=/; Max-Age=${60 * 60 * 24 * 400}`; } catch {}
     try { document.documentElement.setAttribute("lang", locale); } catch {}
+    try { document.documentElement.setAttribute("lang", locale); } catch {}
   }, [locale]);
+
+  useEffect(() => {
+    // zapewnia dopasowanie języka do aktualnej ścieżki po mount
+    if (typeof window === "undefined") return;
+    const path = window.location.pathname.toLowerCase();
+    if ((path === "/en" || path.startsWith("/en/")) && locale !== "en") {
+      setLocale("en");
+    } else if (!path.startsWith("/en") && locale !== "pl") {
+      setLocale("pl");
+    }
+  }, []);
 
   const t = useMemo(() => {
     const dict = DICTS[locale];

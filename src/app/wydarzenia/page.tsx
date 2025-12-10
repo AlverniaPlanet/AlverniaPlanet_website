@@ -325,7 +325,7 @@ const DOMES: Record<
 interface EventVideoProps {
   src: string;
   srcWebm?: string;
-  poster: string;
+  poster?: string;
   className?: string;
   loadingLabel: string;
   fallbackText: string;
@@ -453,7 +453,7 @@ function EventVideo({
         loop
         playsInline
         preload={preload}
-        poster={poster}
+        {...(poster ? { poster } : {})}
         onLoadedData={() => setIsLoaded(true)}
       >
         <source src={src} type="video/mp4" />
@@ -720,7 +720,7 @@ export default function EventsPage() {
                 <EventVideo
                   className="md:order-1"
                   src="/wydarzenia/bankiet1.mp4"
-                  poster="/wydarzenia/Bankiet_poster.webp"
+                  poster="/wydarzenia/AP_wydarzenia_poster.webp"
                   loadingLabel={ui.loadingVideo}
                   fallbackText={ui.videoFallback}
                 />
@@ -755,7 +755,7 @@ export default function EventsPage() {
                 <EventVideo
                   className="md:order-2"
                   src="/wydarzenia/banket4.mp4"
-                  poster="/wydarzenia/Bankiet_poster.webp"
+                  poster="/wydarzenia/AP_wydarzenia_poster.webp"
                   loadingLabel={ui.loadingVideo}
                   fallbackText={ui.videoFallback}
                 />
@@ -791,7 +791,7 @@ export default function EventsPage() {
                 <EventVideo
                   className="md:order-1"
                   src="/wydarzenia/bankiet3.mp4"
-                  poster="/wydarzenia/Bankiet_poster.webp"
+                  poster="/wydarzenia/AP_wydarzenia_poster.webp"
                   loadingLabel={ui.loadingVideo}
                   fallbackText={ui.videoFallback}
                 />

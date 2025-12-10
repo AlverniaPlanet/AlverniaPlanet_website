@@ -6,6 +6,7 @@ import Footer from "@/app/components/Footer";
 import { I18nProvider } from "./i18n-provider";
 import { ThemeProvider } from "./theme-provider";
 import { SimpleStarfield } from "./components/SimpleStarfield";
+import FloatingPromo from "./components/FloatingPromo";
 
 export const metadata: Metadata = {
   title: "Alvernia Planet – Wycieczki edukacyjne",
@@ -32,6 +33,7 @@ export default function RootLayout({
               <AppBar />
               {children}
               <Footer />
+              <FloatingPromo />
             </div>
           </I18nProvider>
         </ThemeProvider>

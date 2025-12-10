@@ -14,6 +14,7 @@ type GalleryItem = { title: string; body: string; image: string };
 const COPY: Record<
   Locale,
   {
+    heroSoon: string;
     heroTag: string;
     heroTitle: string;
     heroLead: string;
@@ -28,6 +29,7 @@ const COPY: Record<
   }
 > = {
   pl: {
+    heroSoon: "Wkrótce",
     heroTag: "Atrakcje",
     heroTitle: "Kino 360°",
     heroLead:
@@ -88,6 +90,7 @@ const COPY: Record<
     ],
   },
   en: {
+    heroSoon: "Coming soon",
     heroTag: "Attractions",
     heroTitle: "360° cinema",
     heroLead:
@@ -181,6 +184,9 @@ export default function Kino360Content() {
               <div className="absolute inset-0 opacity-60 mix-blend-soft-light bg-[radial-gradient(circle_at_20%_25%,rgba(76,153,255,0.25),transparent_45%),radial-gradient(circle_at_75%_20%,rgba(24,103,201,0.22),transparent_42%),radial-gradient(circle_at_50%_75%,rgba(7,48,108,0.28),transparent_46%)]" />
               <div className="relative flex h-full items-center justify-center p-6 sm:p-10 text-center force-overlay">
                 <div className="space-y-3">
+                  <p className="text-3xl sm:text-4xl font-extrabold text-white drop-shadow-[0_0_24px_rgba(0,0,0,0.55)]">
+                    {copy.heroSoon}
+                  </p>
                   <p className="text-xs uppercase tracking-[0.3em] force-overlay-muted">
                     {copy.heroTag}
                   </p>

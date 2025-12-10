@@ -57,6 +57,60 @@
       "namedRegex": "^/atrakcje/wystawa(?:/)?$"
     },
     {
+      "page": "/en",
+      "regex": "^/en(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/en(?:/)?$"
+    },
+    {
+      "page": "/en/about",
+      "regex": "^/en/about(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/en/about(?:/)?$"
+    },
+    {
+      "page": "/en/attractions/cinema-360",
+      "regex": "^/en/attractions/cinema\\-360(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/en/attractions/cinema\\-360(?:/)?$"
+    },
+    {
+      "page": "/en/attractions/exhibition",
+      "regex": "^/en/attractions/exhibition(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/en/attractions/exhibition(?:/)?$"
+    },
+    {
+      "page": "/en/attractions/film-path",
+      "regex": "^/en/attractions/film\\-path(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/en/attractions/film\\-path(?:/)?$"
+    },
+    {
+      "page": "/en/contact",
+      "regex": "^/en/contact(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/en/contact(?:/)?$"
+    },
+    {
+      "page": "/en/events",
+      "regex": "^/en/events(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/en/events(?:/)?$"
+    },
+    {
+      "page": "/en/gallery",
+      "regex": "^/en/gallery(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/en/gallery(?:/)?$"
+    },
+    {
+      "page": "/en/getting-there",
+      "regex": "^/en/getting\\-there(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/en/getting\\-there(?:/)?$"
+    },
+    {
       "page": "/favicon.ico",
       "regex": "^/favicon\\.ico(?:/)?$",
       "routeKeys": {},

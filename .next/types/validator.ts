@@ -72,6 +72,87 @@ type LayoutConfig<Route extends LayoutRoutes = LayoutRoutes> = {
   type __Unused = __Check
 }
 
+// Validate ../../src/app/en/about/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/en/about">> = Specific
+  const handler = {} as typeof import("../../src/app/en/about/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/en/attractions/cinema-360/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/en/attractions/cinema-360">> = Specific
+  const handler = {} as typeof import("../../src/app/en/attractions/cinema-360/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/en/attractions/exhibition/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/en/attractions/exhibition">> = Specific
+  const handler = {} as typeof import("../../src/app/en/attractions/exhibition/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/en/attractions/film-path/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/en/attractions/film-path">> = Specific
+  const handler = {} as typeof import("../../src/app/en/attractions/film-path/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/en/contact/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/en/contact">> = Specific
+  const handler = {} as typeof import("../../src/app/en/contact/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/en/events/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/en/events">> = Specific
+  const handler = {} as typeof import("../../src/app/en/events/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/en/gallery/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/en/gallery">> = Specific
+  const handler = {} as typeof import("../../src/app/en/gallery/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/en/getting-there/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/en/getting-there">> = Specific
+  const handler = {} as typeof import("../../src/app/en/getting-there/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/en/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/en">> = Specific
+  const handler = {} as typeof import("../../src/app/en/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../src/app/galeria/page.tsx
 {
   type __IsExpected<Specific extends AppPageConfig<"/galeria">> = Specific
