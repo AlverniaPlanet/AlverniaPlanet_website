@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // output: "export",           // <-- mówimy Nextowi: generuj statyczny /out
+  output: "export",           // <-- mówimy Nextowi: generuj statyczny /out
   images: {
     unoptimized: true,        // <-- bo hostujesz statycznie, bez image-optim w Node
   },

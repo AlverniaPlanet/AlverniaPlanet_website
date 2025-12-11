@@ -25,6 +25,10 @@ const COPY: Record<
     title: string;
     subtitle: string;
     nearbyTitle: string;
+    attractionsTitle: string;
+    tabRoutes: string;
+    tabAttractions: string;
+    loadMap: string;
     mapTitle: string;
     unit: string;
   }
@@ -34,6 +38,10 @@ const COPY: Record<
     title: "Jak dojechać",
     subtitle: "Obiekt zlokalizowany przy autostradzie A4, pomiędzy Krakowem i Katowicami.",
     nearbyTitle: "W pobliżu",
+    attractionsTitle: "Atrakcje w okolicy",
+    tabRoutes: "Dojazdy",
+    tabAttractions: "Atrakcje",
+    loadMap: "Załaduj mapę",
     mapTitle: "Mapa dojazdu – Alvernia Planet",
     unit: "km",
   },
@@ -42,6 +50,10 @@ const COPY: Record<
     title: "How to get here",
     subtitle: "Located by the A4 highway between Kraków and Katowice.",
     nearbyTitle: "Nearby",
+    attractionsTitle: "Attractions nearby",
+    tabRoutes: "Routes",
+    tabAttractions: "Attractions",
+    loadMap: "Load map",
     mapTitle: "Directions map – Alvernia Planet",
     unit: "km",
   },
@@ -181,7 +193,7 @@ export default function JakDojechacPage() {
                   : "bg-white/5 ring-white/10 text-white/80 hover:bg-white/10"
               }`}
             >
-              Dojazdy
+              {copy.tabRoutes}
             </button>
             <button
               type="button"
@@ -192,14 +204,14 @@ export default function JakDojechacPage() {
                   : "bg-white/5 ring-white/10 text-white/80 hover:bg-white/10"
               }`}
             >
-              Atrakcje
+              {copy.tabAttractions}
             </button>
           </div>
 
           <div className="grid gap-6 md:grid-cols-2 items-start">
             <motion.div className="space-y-3" variants={fadeUp}>
               <h2 className="text-2xl font-semibold">
-                {activeTab === "routes" ? copy.nearbyTitle : "Atrakcje w okolicy"}
+                {activeTab === "routes" ? copy.nearbyTitle : copy.attractionsTitle}
               </h2>
               <div className="h-[1px] w-full bg-white/15" />
               <ul className="space-y-3 text-gray-100">
@@ -252,7 +264,7 @@ export default function JakDojechacPage() {
                     onClick={() => setShouldLoadMap(true)}
                     className="inline-flex items-center rounded-full bg-white/10 px-4 py-2 text-sm font-semibold ring-1 ring-white/20 hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300/70"
                   >
-                    Załaduj mapę
+                    {copy.loadMap}
                   </button>
                 </div>
               ) : (

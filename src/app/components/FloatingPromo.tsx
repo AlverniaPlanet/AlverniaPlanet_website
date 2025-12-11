@@ -11,7 +11,7 @@ export default function FloatingPromo() {
         <div className="rounded-2xl bg-black/70 px-4 py-3 ring-1 ring-white/15 shadow-[0_12px_40px_rgba(0,0,0,0.35)] backdrop-blur-md text-sm sm:text-base text-white/90 scale-105 sm:scale-115 origin-bottom-right">
           <div className="font-semibold text-white">Kod rabatowy</div>
           <div className="mt-1 inline-flex items-center gap-2 rounded-full bg-white/8 px-3 py-1 font-semibold tracking-wide ring-1 ring-white/15">
-            🎁 <span className="text-white/90">kod</span>
+            🎁 <span className="text-white/90">Wkrótce</span>
           </div>
         </div>
       )}
