@@ -7,6 +7,7 @@ import { I18nProvider } from "./i18n-provider";
 import { ThemeProvider } from "./theme-provider";
 import { SimpleStarfield } from "./components/SimpleStarfield";
 import FloatingPromo from "./components/FloatingPromo";
+import { AnalyticsTracker } from "./components/AnalyticsTracker";
 
 export const metadata: Metadata = {
   title: "Alvernia Planet – Wycieczki edukacyjne",
@@ -21,6 +22,7 @@ export default function RootLayout({
   // Dla static/SSG nie korzystamy z cookies() po stronie serwera
   // Domyślny język: PL, a przełączanie języka obsługuje I18nProvider po stronie klienta
   const initialLocale: "pl" | "en" = "pl";
+  const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
   return (
     <html lang={initialLocale} suppressHydrationWarning className="theme-dark">
@@ -37,12 +39,23 @@ export default function RootLayout({
             </div>
           </I18nProvider>
         </ThemeProvider>
-        {/* Analytics: Plausible */}
-        <Script
-          strategy="afterInteractive"
-          data-domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN || "alverniaplanet.pl"}
-          src="https://plausible.io/js/script.js"
-        />
+        <AnalyticsTracker />
+        {gaMeasurementId ? (
+          <>
+            <Script
+              strategy="afterInteractive"
+              src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}
+            />
+            <Script id="ga4-init" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${gaMeasurementId}', { anonymize_ip: true });
+              `}
+            </Script>
+          </>
+        ) : null}
       </body>
     </html>
   );

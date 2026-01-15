@@ -5,6 +5,7 @@ import Link from "next/link";
 import { FaFacebookF, FaInstagram, FaTiktok, FaFacebookMessenger } from "react-icons/fa";
 import { useI18n } from "@/app/i18n-provider";
 import { useTheme } from "@/app/theme-provider";
+import { trackEvent } from "@/lib/analytics";
 
 type Locale = "pl" | "en";
 type LinkItem = { label: string; href: string };
@@ -180,6 +181,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 suppressHydrationWarning
+                onClick={() => trackEvent("footer_policy_click", { label: item.label, href: item.href })}
               >
                 {item.label}
               </Link>
@@ -204,7 +206,11 @@ export default function Footer() {
                   <p className="text-[11px] uppercase tracking-[0.2em] text-white/60">{copy.phoneLabel}</p>
                   <p className="text-lg font-semibold">{copy.phone}</p>
                 </div>
-                <a href={`tel:${copy.phone.replace(/\s+/g, "")}`} className={`text-sm ${phoneLinkTone}`}>
+                <a
+                  href={`tel:${copy.phone.replace(/\s+/g, "")}`}
+                  className={`text-sm ${phoneLinkTone}`}
+                  onClick={() => trackEvent("contact_click", { method: "phone", location: "footer" })}
+                >
                   {loc === "en" ? "Call" : "Zadzwoń"}
                 </a>
               </div>
@@ -213,7 +219,11 @@ export default function Footer() {
                   <p className="text-[11px] uppercase tracking-[0.2em] text-white/60">{copy.emailLabel}</p>
                   <p className="text-lg font-semibold">{copy.email}</p>
                 </div>
-                <a href={`mailto:${copy.email}`} className={`text-sm ${emailLinkTone}`}>
+                <a
+                  href={`mailto:${copy.email}`}
+                  className={`text-sm ${emailLinkTone}`}
+                  onClick={() => trackEvent("contact_click", { method: "email", location: "footer" })}
+                >
                   {loc === "en" ? "Email" : "Napisz"}
                 </a>
               </div>
@@ -232,6 +242,7 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className={`text-sm ${messengerLinkTone}`}
+                  onClick={() => trackEvent("contact_click", { method: "messenger", location: "footer" })}
                 >
                   {loc === "en" ? "Message" : "Napisz"}
                 </a>
@@ -266,6 +277,7 @@ export default function Footer() {
                     rel="noopener noreferrer"
                     className="group"
                     aria-label="Facebook"
+                    onClick={() => trackEvent("social_click", { network: "facebook", location: "footer" })}
                   >
                     <span
                       className={`grid h-11 w-11 place-items-center rounded-full transition duration-200 group-hover:-translate-y-1 group-hover:shadow-[0_12px_30px_rgba(59,130,246,0.35)] ${iconWrapperSurface}`}
@@ -279,6 +291,7 @@ export default function Footer() {
                     rel="noopener noreferrer"
                     className="group"
                     aria-label="Instagram"
+                    onClick={() => trackEvent("social_click", { network: "instagram", location: "footer" })}
                   >
                     <span
                       className={`grid h-11 w-11 place-items-center rounded-full transition duration-200 group-hover:-translate-y-1 group-hover:shadow-[0_12px_30px_rgba(236,72,153,0.35)] ${iconWrapperSurface}`}
@@ -292,6 +305,7 @@ export default function Footer() {
                     rel="noopener noreferrer"
                     className="group"
                     aria-label="TikTok"
+                    onClick={() => trackEvent("social_click", { network: "tiktok", location: "footer" })}
                   >
                     <span
                       className={`grid h-11 w-11 place-items-center rounded-full transition duration-200 group-hover:-translate-y-1 group-hover:shadow-[0_12px_30px_rgba(34,211,238,0.35)] ${iconWrapperSurface}`}
@@ -311,7 +325,11 @@ export default function Footer() {
                 <ul className="space-y-2 text-white/75 text-sm">
                   {section.links.map((link) => (
                     <li key={link.href}>
-                      <Link href={link.href} className="hover:text-white transition-colors">
+                      <Link
+                        href={link.href}
+                        className="hover:text-white transition-colors"
+                        onClick={() => trackEvent("footer_nav_click", { label: link.label, href: link.href })}
+                      >
                         {link.label}
                       </Link>
                     </li>
@@ -321,7 +339,11 @@ export default function Footer() {
             ))}
 
             <div className="sm:col-span-2 lg:col-span-3 flex sm:justify-start lg:justify-end items-center">
-              <Link href="/" className="inline-flex items-center">
+              <Link
+                href="/"
+                className="inline-flex items-center"
+                onClick={() => trackEvent("footer_logo_click", { location: "footer" })}
+              >
                 <Image
                   src={theme === "light" ? "/logo_AP_grey.png" : "/logo_AP_white.png"}
                   alt="Alvernia Planet"
