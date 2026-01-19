@@ -22,6 +22,11 @@ export function AppBar() {
   const aboutHideTimer = useRef<number | null>(null);
   const { locale } = useI18n();
   const isEn = locale === "en";
+  const logoFrameClass = `inline-flex items-center justify-center rounded-2xl bg-white px-6 py-1 ring-0 ${
+    theme === "light"
+      ? "shadow-[0_8px_20px_rgba(15,23,42,0.12)]"
+      : "shadow-[0_10px_26px_rgba(0,0,0,0.45)]"
+  }`;
   const paths = {
     home: isEn ? "/en" : "/",
     events: isEn ? "/en/events" : "/wydarzenia",
@@ -180,14 +185,16 @@ export function AppBar() {
           {/* ŚRODEK: logo */}
           <div className="flex items-center justify-center px-2">
             <Link href={paths.home} aria-label={t("aria.home")} className="block">
-              <Image
-                src={theme === "light" ? "/logo_AP_grey.png" : "/logo_AP_white.png"}
-                alt="Alvernia Planet"
-                width={240}
-                height={40}
-                priority
-                className="h-10 w-auto object-contain"
-              />
+              <span className={logoFrameClass}>
+                <Image
+                  src="/logo_alvernia_planet_RGB_crop.jpg"
+                  alt="Alvernia Planet"
+                  width={220}
+                  height={38}
+                  priority
+                  className="h-10 md:h-11 w-auto object-contain object-center"
+                />
+              </span>
             </Link>
           </div>
 

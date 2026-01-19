@@ -6,6 +6,12 @@ import { useTheme } from "@/app/theme-provider";
 
 export default function Loading() {
   const { theme } = useTheme();
+  const isLight = theme === "light";
+  const logoFrameClass = `inline-flex items-center justify-center rounded-[28px] bg-white px-12 py-3 ring-0 ${
+    isLight
+      ? "shadow-[0_12px_30px_rgba(15,23,42,0.16)]"
+      : "shadow-[0_18px_40px_rgba(0,0,0,0.5)]"
+  }`;
   return (
     <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[var(--ap-bg)]">
       {/* Pulsujące logo */}
@@ -13,13 +19,14 @@ export default function Loading() {
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: [1, 1.1, 1], opacity: 1 }}
         transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-        className="relative w-40 h-40 mb-6"
+        className={`mb-6 ${logoFrameClass}`}
       >
         <Image
-          src={theme === "light" ? "/logo_AP_grey.png" : "/logo_AP_white.png"}
+          src="/logo_alvernia_planet_RGB_crop.jpg"
           alt="Alvernia Planet"
-          fill
-          className={`object-contain opacity-90 ${theme === "dark" ? "mix-blend-screen" : ""}`}
+          width={300}
+          height={52}
+          className="h-[56px] w-auto object-contain object-center opacity-95"
           priority
         />
       </motion.div>

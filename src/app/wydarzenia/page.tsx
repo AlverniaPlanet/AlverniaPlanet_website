@@ -980,29 +980,7 @@ export default function EventsPage() {
                           </a>
                         </p>
                       </div>
-                      <div className="h-[1px] w-full bg-white/15" />
-                      <div>
-                        <p className="text-lg md:text-xl font-semibold">
-                          KRZYSZTOF KRUKOWSKI
-                        </p>
-                        <p className="mt-1 text-sm text-white/80">Project Manager</p>
-                        <p>
-                          <a
-                            href="tel:+48535944904"
-                            className="hover:text-white"
-                          >
-                            +48 535 944 904
-                          </a>
-                        </p>
-                        <p>
-                          <a
-                            href="mailto:k.krukowski@gremi.pl"
-                            className="text-rose-300 hover:text-rose-200"
-                          >
-                            k.krukowski@gremi.pl
-                          </a>
-                        </p>
-                      </div>
+
                     </div>
                   </div>
                   <div>

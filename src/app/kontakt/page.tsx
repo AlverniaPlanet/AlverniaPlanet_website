@@ -12,8 +12,6 @@ const MAIL_INFO = "rezerwacjeap@gremi.pl";
 const MAIL_CEO = "j.wisniowska@gremi.pl";
 const MAIL_MOB = "g.sitko@gremi.pl";
 const MAIL_EVENTS = "b.jacon@gremi.pl";
-const MAIL_EVENTS_SECOND = "k.krukowski@gremi.pl";
-const PHONE_EVENTS_SECOND = "+48 535 944 904";
 const BOOKING_URL = "https://alverniaplanet.bookero.pl";
 
 type Locale = "pl" | "en";
@@ -37,7 +35,6 @@ const COPY: Record<
       description: string;
       contactLabel: string;
       primaryName: string;
-      secondaryName: string;
     };
     board: {
       title: string;
@@ -73,7 +70,6 @@ const COPY: Record<
       description: "Wsparcie przy eventach, produkcjach i sesjach zdjęciowych.",
       contactLabel: "Kontakt",
       primaryName: "Bartłomiej Jacoń",
-      secondaryName: "Krzysztof Krukowski",
     },
     board: {
       title: "Zarząd",
@@ -108,7 +104,6 @@ const COPY: Record<
       description: "Support for events, productions, and photo shoots.",
       contactLabel: "Contact",
       primaryName: "Bartłomiej Jacoń",
-      secondaryName: "Krzysztof Krukowski",
     },
     board: {
       title: "Management",
@@ -234,12 +229,6 @@ export default function KontaktPage() {
                     <p className="font-semibold">{copy.events.primaryName}</p>
                     <p className="text-gray-300">{formatPhone(PHONE_BOOKING)}</p>
                     <p className="text-amber-200">{MAIL_EVENTS}</p>
-                  </div>
-                  <hr className="border-white/10" />
-                  <div className="space-y-1">
-                    <p className="font-semibold">{copy.events.secondaryName}</p>
-                    <p className="text-gray-300">{formatPhone(PHONE_EVENTS_SECOND)}</p>
-                    <p className="text-amber-200">{MAIL_EVENTS_SECOND}</p>
                   </div>
                 </div>
               </Card>

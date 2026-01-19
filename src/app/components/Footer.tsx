@@ -167,6 +167,11 @@ export default function Footer() {
   const facebookIconTone = isLight ? "text-blue-700" : "text-blue-300";
   const instagramIconTone = isLight ? "text-pink-600" : "text-pink-300";
   const tiktokIconTone = isLight ? "text-cyan-700" : "text-cyan-200";
+  const logoFrameClass = `inline-flex items-center justify-center rounded-2xl bg-white px-6 py-1 ring-0 ${
+    isLight
+      ? "shadow-[0_8px_20px_rgba(15,23,42,0.12)]"
+      : "shadow-[0_10px_26px_rgba(0,0,0,0.45)]"
+  }`;
 
   return (
     <footer className="relative mt-24 text-white overflow-hidden bg-black">
@@ -344,14 +349,16 @@ export default function Footer() {
                 className="inline-flex items-center"
                 onClick={() => trackEvent("footer_logo_click", { location: "footer" })}
               >
-                <Image
-                  src={theme === "light" ? "/logo_AP_grey.png" : "/logo_AP_white.png"}
-                  alt="Alvernia Planet"
-                  width={140}
-                  height={42}
-                  className={`h-10 w-auto ${theme === "dark" ? "mix-blend-screen" : ""}`}
-                  priority
-                />
+                <span className={logoFrameClass}>
+                  <Image
+                    src="/logo_alvernia_planet_RGB_crop.jpg"
+                    alt="Alvernia Planet"
+                    width={210}
+                    height={36}
+                    className="h-10 w-auto object-contain object-center"
+                    priority
+                  />
+                </span>
               </Link>
             </div>
           </div>
