@@ -6,7 +6,7 @@ import TourLineGalleryRow from "@/app/components/TourLineGalleryRow";
 import { PrimaryButton } from "@/app/components/PrimaryButton";
 import { useI18n } from "@/app/i18n-provider";
 
-type Locale = "pl" | "en";
+type Locale = "pl" | "en" | "pt";
 
 type Feature = { title: string; body: string };
 type GalleryItem = { title: string; body: string; image: string };
@@ -36,7 +36,7 @@ const COPY: Record<
       "Pełne zanurzenie w sferycznym obrazie i dźwięku — seanse, pokazy edukacyjne i prezentacje specjalne.",
     videoFallback: "Twój browser nie wspiera elementu video.",
     soonBadge: "Wkrótce",
-    soonBody: "Otwarcie w przyszłym roku.",
+    soonBody: " ",
     soonCta: "Napisz do nas po więcej informacji",
     featuresTitle: "Co czeka w kinie 360°",
     features: [
@@ -97,7 +97,7 @@ const COPY: Record<
       "Total immersion in spherical image and sound—screenings, educational shows, and special presentations.",
     videoFallback: "Your browser does not support the video element.",
     soonBadge: "Coming soon",
-    soonBody: "Opening next year.",
+    soonBody: " ",
     soonCta: "Write to us for more information",
     featuresTitle: "What awaits in the 360° cinema",
     features: [
@@ -150,6 +150,67 @@ const COPY: Record<
       },
     ],
   },
+  pt: {
+    heroSoon: "Em breve",
+    heroTag: "Atrações",
+    heroTitle: "Cinema 360°",
+    heroLead:
+      "Imersão total em imagem e som esféricos — sessões, ações educativas e apresentações especiais.",
+    videoFallback: "O seu navegador não suporta o elemento de vídeo.",
+    soonBadge: "Em breve",
+    soonBody: " ",
+    soonCta: "Escreva-nos para mais informações",
+    featuresTitle: "O que o espera no cinema 360°",
+    features: [
+      {
+        title: "Cúpula de projeção total",
+        body: "A imagem envolve o público a 360° — sem pontos mortos, ideal para filmes imersivos e mapping.",
+      },
+      {
+        title: "Som espacial",
+        body: "Um sistema áudio multicanal realça o movimento em cena e conduz a narrativa ao redor do público.",
+      },
+      {
+        title: "Conforto da plateia",
+        body: "Adaptamos a disposição de lugares ao formato: apresentações, sessões educativas ou projeções de marca.",
+      },
+      {
+        title: "Conteúdo flexível",
+        body: "Exibimos filmes fulldome, visualizações científicas, espetáculos multimédia e materiais personalizados.",
+      },
+      {
+        title: "Apoio técnico",
+        body: "A nossa equipa de operadores ajuda na preparação dos ficheiros, testes e operação ao vivo.",
+      },
+      {
+        title: "Parte do programa do evento",
+        body: "O cinema 360° integra-se facilmente com conferências, galas ou zonas de networking noutras cúpulas.",
+      },
+    ],
+    galleryTitle: "Ver o espaço",
+    galleryItems: [
+      {
+        title: "Complexo de cúpulas à noite",
+        body: "Vista aérea de todas as cúpulas da Alvernia Planet.",
+        image: "/galeria/Ogolne/webp/4.webp",
+      },
+      {
+        title: "Entrada da cúpula",
+        body: "Lobby principal com o portal arqueado característico.",
+        image: "/galeria/Ogolne/webp/5.webp",
+      },
+      {
+        title: "Túnel de entrada",
+        body: "Corredor envidraçado que conduz ao interior do complexo.",
+        image: "/galeria/Ogolne/webp/6.webp",
+      },
+      {
+        title: "Em torno do complexo",
+        body: "Depois da sessão, os visitantes podem explorar outras zonas da Alvernia Planet.",
+        image: "/galeria/Ogolne/webp/1.webp",
+      },
+    ],
+  },
 };
 
 export default function Kino360Content() {
@@ -160,16 +221,16 @@ export default function Kino360Content() {
   return (
     <main className="kino360-page relative z-10 min-h-screen">
       <section className="relative z-10 px-4 pt-12 sm:pt-16">
-        <div className="mx-auto w-full max-w-6xl mb-10 sm:mb-12">
+        <div className="mx-auto w-full max-w-[min(86vw,120rem)] mb-10 sm:mb-12">
           <div className="relative overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
-            <div className="relative aspect-[16/9] bg-[#071020]">
+            <div className="relative aspect-[4/5] sm:aspect-[16/9] bg-[#071020]">
               <video
                 className="absolute inset-0 h-full w-full object-cover"
                 autoPlay
                 loop
                 muted
                 playsInline
-                preload="auto"
+                preload="metadata"
                 poster="/kino360/Kino360_poster.webp"
                 onEnded={(e) => {
                   e.currentTarget.currentTime = 0;
@@ -182,18 +243,18 @@ export default function Kino360Content() {
               </video>
               <div className="absolute inset-0 bg-gradient-to-b from-[#071524]/85 via-[#0b2340]/60 to-black/78" />
               <div className="absolute inset-0 opacity-60 mix-blend-soft-light bg-[radial-gradient(circle_at_20%_25%,rgba(76,153,255,0.25),transparent_45%),radial-gradient(circle_at_75%_20%,rgba(24,103,201,0.22),transparent_42%),radial-gradient(circle_at_50%_75%,rgba(7,48,108,0.28),transparent_46%)]" />
-              <div className="relative flex h-full items-center justify-center p-6 sm:p-10 text-center force-overlay">
+              <div className="relative flex h-full items-center justify-center p-5 sm:p-10 text-center force-overlay">
                 <div className="space-y-3">
-                  <p className="text-3xl sm:text-4xl font-extrabold text-white drop-shadow-[0_0_24px_rgba(0,0,0,0.55)]">
+                  <p className="text-2xl sm:text-4xl font-extrabold text-white drop-shadow-[0_0_24px_rgba(0,0,0,0.55)]">
                     {copy.heroSoon}
                   </p>
                   <p className="text-xs uppercase tracking-[0.3em] force-overlay-muted">
                     {copy.heroTag}
                   </p>
-                  <h1 className="text-4xl sm:text-6xl font-extrabold leading-tight drop-shadow-[0_0_24px_rgba(0,0,0,0.55)]">
+                  <h1 className="text-3xl sm:text-6xl font-extrabold leading-tight drop-shadow-[0_0_24px_rgba(0,0,0,0.55)]">
                     {copy.heroTitle}
                   </h1>
-                  <p className="force-overlay-dim text-base sm:text-lg max-w-3xl mx-auto">
+                  <p className="force-overlay-dim text-sm sm:text-lg max-w-3xl mx-auto">
                     {copy.heroLead}
                   </p>
                 </div>
@@ -204,7 +265,7 @@ export default function Kino360Content() {
       </section>
 
       <section className="px-4 pb-16 sm:pb-20">
-        <div className="max-w-6xl mx-auto space-y-10 sm:space-y-12">
+        <div className="max-w-[min(86vw,120rem)] mx-auto space-y-10 sm:space-y-12">
           <Card variant="solid" className="bg-white/5 ring-1 ring-white/10">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-3">
@@ -218,7 +279,7 @@ export default function Kino360Content() {
               <PrimaryButton
                 href="/kontakt"
                 size="md"
-                className="bg-transparent text-white ring-1 ring-cyan-300/40 shadow-none hover:bg-white/10 hover:text-white"
+                className="w-full sm:w-auto bg-transparent text-white ring-1 ring-cyan-300/40 shadow-none hover:bg-white/10 hover:text-white"
               >
                 {copy.soonCta}
               </PrimaryButton>

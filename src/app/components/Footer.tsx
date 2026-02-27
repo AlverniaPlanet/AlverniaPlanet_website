@@ -3,11 +3,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { FaFacebookF, FaInstagram, FaTiktok, FaFacebookMessenger } from "react-icons/fa";
+import { usePathname } from "next/navigation";
 import { useI18n } from "@/app/i18n-provider";
 import { useTheme } from "@/app/theme-provider";
 import { trackEvent } from "@/lib/analytics";
 
-type Locale = "pl" | "en";
+type Locale = "pl" | "en" | "pt";
 type LinkItem = { label: string; href: string };
 type Section = { title: string; links: LinkItem[] };
 type PolicyLink = { label: string; href: string };
@@ -42,7 +43,7 @@ const FOOTER_COPY: Record<
     emailLabel: "Email",
     messengerLabel: "Messenger",
     phone: "+48 12 344 40 00",
-    email: "rezerwacjeap@gremi.pl",
+    email: "rezerwacje@alverniaplanet.com",
     messengerHandle: "@alverniaplanet",
     booking: "Rezerwuj wizytę",
     contact: "Kontakt",
@@ -92,7 +93,7 @@ const FOOTER_COPY: Record<
     emailLabel: "Email",
     messengerLabel: "Messenger",
     phone: "+48 12 344 40 00",
-    email: "rezerwacjeap@gremi.pl",
+    email: "rezerwacje@alverniaplanet.com",
     messengerHandle: "@alverniaplanet",
     booking: "Book your visit",
     contact: "Contact",
@@ -133,6 +134,56 @@ const FOOTER_COPY: Record<
       },
     ],
   },
+  pt: {
+    rights: "© {year} Alvernia Planet. Todos os direitos reservados.",
+    socials: "Segue-nos nas redes sociais!",
+    ctaTitle: "Tem perguntas? Estamos online.",
+    ctaSubtitle: "Respondemos o mais rápido possível — escreve-nos ou liga.",
+    phoneLabel: "Telefone",
+    emailLabel: "Email",
+    messengerLabel: "Messenger",
+    phone: "+48 12 344 40 00",
+    email: "rezerwacje@alverniaplanet.com",
+    messengerHandle: "@alverniaplanet",
+    booking: "Reservar visita",
+    contact: "Contacto",
+    addressTitle: "Morada",
+    addressLines: ["Alvernia Planet", "ul. Ferdynanda Wspaniałego 1", "32-566 Nieporaz, Polónia"],
+    policies: [
+      { label: "Regulamento", href: "/legal/Regulamin.pdf" },
+      { label: "Política de privacidade", href: "/legal/polityka-prywatnosci.pdf" },
+      { label: "Política de cookies", href: "/legal/polityka-cookies.pdf" },
+      { label: "Proteção de menores", href: "/legal/ochrona-maloletnich.pdf" },
+    ],
+    sections: [
+      {
+        title: "Atrações",
+        links: [
+          { label: "Exposição temática", href: "/atrakcje/wystawa" },
+          { label: "Percurso cinematográfico", href: "/atrakcje/sciezka-filmowa" },
+          { label: "Cinema 360°", href: "/atrakcje/kino-360" },
+          { label: "Galeria", href: "/galeria" },
+        ],
+      },
+      {
+        title: "Planeie a visita",
+        links: [
+          { label: "Eventos", href: "/wydarzenia" },
+          { label: "Como chegar", href: "/jak-dojechac" },
+          { label: "Bilhetes e reservas", href: "/kontakt" },
+          { label: "Notícias", href: "/aktualnosci" },
+        ],
+      },
+      {
+        title: "Acesso rápido",
+        links: [
+          { label: "Início", href: "/" },
+          { label: "Sobre a Alvernia Planet", href: "/o-alvernia-planet" },
+          { label: "Contacto", href: "/kontakt" },
+        ],
+      },
+    ],
+  },
 };
 
 const MESSENGER_URL = "https://m.me/alverniaplanet?ref=footer";
@@ -140,10 +191,12 @@ const MESSENGER_URL = "https://m.me/alverniaplanet?ref=footer";
 export default function Footer() {
   const { locale } = useI18n();
   const { theme } = useTheme();
+  const pathname = usePathname();
   const loc: Locale = (locale as Locale) ?? "pl";
   const copy = FOOTER_COPY[loc];
   const rights = copy.rights.replace("{year}", String(new Date().getFullYear()));
   const isLight = theme === "light";
+  const logoSrc = isLight ? "/Loga/Logo_pozytyw.svg" : "/Loga/Logo_negatyw.svg";
   const ctaSurface = isLight
     ? "bg-[color:var(--ap-surface-contrast)] ring-1 ring-[color:var(--ap-border)] shadow-[var(--ap-card-shadow)] text-[color:var(--ap-text)]"
     : "bg-white/[0.04] ring-1 ring-white/10 shadow-[0_24px_80px_rgba(0,0,0,0.45)]";
@@ -153,29 +206,47 @@ export default function Footer() {
   const iconWrapperSurface = isLight
     ? "bg-[color:var(--ap-surface-contrast)] ring-1 ring-[color:var(--ap-border)]"
     : "bg-white/10 ring-1 ring-white/20";
-  const phoneLinkTone = isLight
-    ? "text-emerald-700 hover:text-emerald-600"
-    : "text-emerald-200 hover:text-emerald-100";
-  const emailLinkTone = isLight ? "text-sky-700 hover:text-sky-600" : "text-sky-200 hover:text-sky-100";
-  const messengerLinkTone = isLight
-    ? "text-blue-700 hover:text-blue-600"
-    : "text-blue-200 hover:text-blue-100";
+  const actionLinkTone = isLight
+    ? "text-[color:var(--ap-accent)] hover:text-[color:var(--ap-ice)]"
+    : "text-[color:var(--ap-accent)] hover:text-[color:var(--ap-ice)]";
   const messengerIconTone = isLight
-    ? "bg-blue-600/15 ring-1 ring-blue-700/25 text-blue-700"
-    : "bg-blue-500/20 ring-1 ring-blue-400/30 text-blue-200";
-  const socialLabelTone = isLight ? "text-emerald-700" : "text-emerald-200/80";
+    ? "bg-[#4fcfde]/15 ring-1 ring-[#4fcfde]/35 text-[#171730]"
+    : "bg-[#4fcfde]/20 ring-1 ring-[#4fcfde]/40 text-[#a5e6f0]";
+  const socialLabelTone = isLight ? "text-[#aab4be]" : "text-[#aab4be]";
   const facebookIconTone = isLight ? "text-blue-700" : "text-blue-300";
   const instagramIconTone = isLight ? "text-pink-600" : "text-pink-300";
   const tiktokIconTone = isLight ? "text-cyan-700" : "text-cyan-200";
-  const logoFrameClass = `inline-flex items-center justify-center rounded-2xl bg-white px-6 py-1 ring-0 ${
-    isLight
-      ? "shadow-[0_8px_20px_rgba(15,23,42,0.12)]"
-      : "shadow-[0_10px_26px_rgba(0,0,0,0.45)]"
-  }`;
+  const logoFrameClass = "inline-flex items-center justify-center rounded-2xl px-3 py-1";
+  const prefix = loc === "en" || loc === "pt" ? `/${loc}` : "";
+  const plToIntl: Record<string, string> = {
+    "/wydarzenia": "/events",
+    "/jak-dojechac": "/getting-there",
+    "/bilety": "/tickets",
+    "/o-alvernia-planet": "/about",
+    "/galeria": "/gallery",
+    "/kontakt": "/contact",
+    "/aktualnosci": "/news",
+    "/atrakcje/wystawa": "/attractions/exhibition",
+    "/atrakcje/sciezka-filmowa": "/attractions/film-path",
+    "/atrakcje/kino-360": "/attractions/cinema-360",
+  };
+  const withPrefix = (href: string) => {
+    if (!href.startsWith("/")) return href;
+    if (href.startsWith("/legal/")) return href;
+    if (href.startsWith("/en") || href.startsWith("/pt")) return href;
+    if (!prefix) return href;
+    const mapped = plToIntl[href] ?? href;
+    if (mapped === "/") return prefix;
+    return `${prefix}${mapped.startsWith("/") ? mapped : `/${mapped}`}`;
+  };
+  const callLabel = loc === "en" ? "Call" : loc === "pt" ? "Ligar" : "Zadzwoń";
+  const emailAction = loc === "en" ? "Email" : loc === "pt" ? "Escrever" : "Napisz";
+  const messageAction = loc === "en" ? "Message" : loc === "pt" ? "Mensagem" : "Napisz";
+  const showAutopay = ["/bilety", "/tickets", "/en/tickets", "/pt/tickets"].includes(pathname);
 
   return (
-    <footer className="relative mt-24 text-white overflow-hidden bg-black">
-      <div className="relative max-w-6xl mx-auto px-4 py-12 sm:py-14">
+    <footer className="relative mt-24 text-white overflow-hidden bg-[var(--ap-bg)]">
+      <div className="relative max-w-[min(86vw,120rem)] mx-auto px-4 py-12 sm:py-14">
         {/* Polityki / regulaminy */}
         <div className="mb-6 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-white/70">
           {copy.policies.map((item, idx) => (
@@ -213,24 +284,26 @@ export default function Footer() {
                 </div>
                 <a
                   href={`tel:${copy.phone.replace(/\s+/g, "")}`}
-                  className={`text-sm ${phoneLinkTone}`}
+                  className={`text-sm ${actionLinkTone}`}
                   onClick={() => trackEvent("contact_click", { method: "phone", location: "footer" })}
                 >
-                  {loc === "en" ? "Call" : "Zadzwoń"}
+                  {callLabel}
                 </a>
               </div>
-              <div className={`rounded-2xl px-4 py-3 flex items-center justify-between ${infoCardSurface}`}>
-                <div>
-                  <p className="text-[11px] uppercase tracking-[0.2em] text-white/60">{copy.emailLabel}</p>
-                  <p className="text-lg font-semibold">{copy.email}</p>
+              <div className={`rounded-2xl px-4 py-3 ${infoCardSurface}`}>
+                <div className="space-y-2">
+                  <div>
+                    <p className="text-[11px] uppercase tracking-[0.2em] text-white/60">{copy.emailLabel}</p>
+                    <p className="text-base sm:text-lg font-semibold break-all leading-snug">{copy.email}</p>
+                  </div>
+                  <a
+                    href={`mailto:${copy.email}`}
+                    className={`text-sm inline-flex w-full justify-center ${actionLinkTone}`}
+                    onClick={() => trackEvent("contact_click", { method: "email", location: "footer" })}
+                  >
+                    {emailAction}
+                  </a>
                 </div>
-                <a
-                  href={`mailto:${copy.email}`}
-                  className={`text-sm ${emailLinkTone}`}
-                  onClick={() => trackEvent("contact_click", { method: "email", location: "footer" })}
-                >
-                  {loc === "en" ? "Email" : "Napisz"}
-                </a>
               </div>
               <div className={`rounded-2xl px-4 py-3 flex items-center justify-between ${infoCardSurface}`}>
                 <div className="flex items-center gap-3">
@@ -246,10 +319,10 @@ export default function Footer() {
                   href={MESSENGER_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`text-sm ${messengerLinkTone}`}
+                  className={`text-sm ${actionLinkTone}`}
                   onClick={() => trackEvent("contact_click", { method: "messenger", location: "footer" })}
                 >
-                  {loc === "en" ? "Message" : "Napisz"}
+                  {messageAction}
                 </a>
               </div>
             </div>
@@ -331,7 +404,7 @@ export default function Footer() {
                   {section.links.map((link) => (
                     <li key={link.href}>
                       <Link
-                        href={link.href}
+                        href={withPrefix(link.href)}
                         className="hover:text-white transition-colors"
                         onClick={() => trackEvent("footer_nav_click", { label: link.label, href: link.href })}
                       >
@@ -343,18 +416,27 @@ export default function Footer() {
               </div>
             ))}
 
-            <div className="sm:col-span-2 lg:col-span-3 flex sm:justify-start lg:justify-end items-center">
+            <div
+              className={`sm:col-span-2 lg:col-span-3 flex items-center ${
+                showAutopay ? "justify-center" : "sm:justify-start lg:justify-end"
+              }`}
+            >
+              {showAutopay ? (
+                <div className={`mr-4 rounded-2xl px-4 py-3 ${infoCardSurface}`}>
+                  <Image src="/autopay.png" alt="Autopay" width={180} height={48} className="h-8 w-auto" />
+                </div>
+              ) : null}
               <Link
-                href="/"
+                href={withPrefix("/")}
                 className="inline-flex items-center"
                 onClick={() => trackEvent("footer_logo_click", { location: "footer" })}
               >
                 <span className={logoFrameClass}>
                   <Image
-                    src="/logo_alvernia_planet_RGB_crop.jpg"
+                    src={logoSrc}
                     alt="Alvernia Planet"
                     width={210}
-                    height={36}
+                    height={40}
                     className="h-10 w-auto object-contain object-center"
                     priority
                   />

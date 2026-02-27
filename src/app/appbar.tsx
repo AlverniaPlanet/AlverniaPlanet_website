@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useI18n } from "@/app/i18n-provider";
 import LangSwitcher from "@/app/components/LangSwitcher";
 import { PrimaryButton } from "@/app/components/PrimaryButton";
 import { useTheme } from "@/app/theme-provider";
+import BrandLogo from "@/app/components/BrandLogo";
 
 const BOOKING_URL = "https://alverniaplanet.bookero.pl"; // upewnij się, że jest https
 
@@ -21,23 +21,21 @@ export function AppBar() {
   const attractionsHideTimer = useRef<number | null>(null);
   const aboutHideTimer = useRef<number | null>(null);
   const { locale } = useI18n();
-  const isEn = locale === "en";
-  const logoFrameClass = `inline-flex items-center justify-center rounded-2xl bg-white px-6 py-1 ring-0 ${
-    theme === "light"
-      ? "shadow-[0_8px_20px_rgba(15,23,42,0.12)]"
-      : "shadow-[0_10px_26px_rgba(0,0,0,0.45)]"
-  }`;
+  const isIntl = locale === "en" || locale === "pt";
+  const prefix = isIntl ? `/${locale}` : "";
+  const logoFrameClass = "inline-flex items-center justify-center rounded-2xl px-0 py-0";
   const paths = {
-    home: isEn ? "/en" : "/",
-    events: isEn ? "/en/events" : "/wydarzenia",
-    gettingThere: isEn ? "/en/getting-there" : "/jak-dojechac",
-    about: isEn ? "/en/about" : "/o-alvernia-planet",
-    gallery: isEn ? "/en/gallery" : "/galeria",
-    contact: isEn ? "/en/contact" : "/kontakt",
+    home: prefix || "/",
+    events: isIntl ? `${prefix}/events` : "/wydarzenia",
+    gettingThere: isIntl ? `${prefix}/getting-there` : "/jak-dojechac",
+    tickets: isIntl ? `${prefix}/tickets` : "/bilety",
+    about: isIntl ? `${prefix}/about` : "/o-alvernia-planet",
+    gallery: isIntl ? `${prefix}/gallery` : "/galeria",
+    contact: isIntl ? `${prefix}/contact` : "/kontakt",
     attractions: {
-      exhibition: isEn ? "/en/attractions/exhibition" : "/atrakcje/wystawa",
-      filmPath: isEn ? "/en/attractions/film-path" : "/atrakcje/sciezka-filmowa",
-      cinema: isEn ? "/en/attractions/cinema-360" : "/atrakcje/kino-360",
+      exhibition: isIntl ? `${prefix}/attractions/exhibition` : "/atrakcje/wystawa",
+      filmPath: isIntl ? `${prefix}/attractions/film-path` : "/atrakcje/sciezka-filmowa",
+      cinema: isIntl ? `${prefix}/attractions/cinema-360` : "/atrakcje/kino-360",
     },
   };
 
@@ -56,7 +54,7 @@ export function AppBar() {
     <>
       <header className="sticky top-0 z-30 border-b border-[color:var(--ap-border)] bg-[var(--ap-nav-bg)] backdrop-blur supports-[backdrop-filter]:md:bg-[var(--ap-nav-bg)]">
         {/* grid 3 kolumny: [lewo] [logo] [prawo] */}
-        <div className="mx-auto grid max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-3 md:gap-5 px-4 py-3">
+        <div className="mx-auto grid w-full max-w-[min(96vw,120rem)] grid-cols-[1fr_auto_1fr] items-center gap-3 md:gap-5 px-4 py-2">
           {/* LEWO: burger (mobile) + linki (desktop) */}
           <div className="flex items-center gap-3 md:gap-4 min-w-0">
             {/* burger tylko na mobile */}
@@ -179,6 +177,13 @@ export function AppBar() {
               >
                 {t("nav.getting_there")}
               </Link>
+              <span className="text-white/40">|</span>
+              <span
+                className="ticket-pill inline-flex items-center rounded-full px-3 py-1 text-sm bg-white/10 text-white/50 ring-1 ring-white/10 cursor-not-allowed select-none"
+                aria-disabled="true"
+              >
+                {t("nav.tickets")}
+              </span>
             </nav>
           </div>
 
@@ -186,14 +191,7 @@ export function AppBar() {
           <div className="flex items-center justify-center px-2">
             <Link href={paths.home} aria-label={t("aria.home")} className="block">
               <span className={logoFrameClass}>
-                <Image
-                  src="/logo_alvernia_planet_RGB_crop.jpg"
-                  alt="Alvernia Planet"
-                  width={220}
-                  height={38}
-                  priority
-                  className="h-10 md:h-11 w-auto object-contain object-center"
-                />
+                <BrandLogo variant={theme === "light" ? "light" : "dark"} />
               </span>
             </Link>
           </div>
@@ -411,6 +409,14 @@ export function AppBar() {
                 >
                   {t("nav.getting_there")}
                 </Link>
+              </li>
+              <li>
+                <span
+                  className="ticket-pill block rounded-md px-3 py-2 text-sm bg-white/10 text-white/50 ring-1 ring-white/10 cursor-not-allowed select-none"
+                  aria-disabled="true"
+                >
+                  {t("nav.tickets")}
+                </span>
               </li>
               <li className="ml-3">
                 <ul className="space-y-1">

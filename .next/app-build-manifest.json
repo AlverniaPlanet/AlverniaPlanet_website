@@ -1,0 +1,373 @@
+{
+  "pages": {
+    "/_not-found/page": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/app/_not-found/page-38f0cb4c2eadfdf8.js"
+    ],
+    "/layout": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/css/f0ca23049e2ba389.css",
+      "static/chunks/8e1d74a4-624f48c501dae383.js",
+      "static/chunks/5239-6d18f99c9fdf3901.js",
+      "static/chunks/2619-38012e79151e370a.js",
+      "static/chunks/8136-2751ba716cfec9c1.js",
+      "static/chunks/app/layout-00cb9b52ef189ec8.js"
+    ],
+    "/loading": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/5239-6d18f99c9fdf3901.js",
+      "static/chunks/5003-163bf93cd1853ae5.js",
+      "static/chunks/app/loading-a8196b39f9690be5.js"
+    ],
+    "/robots.txt/route": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/app/robots.txt/route-e6ce006067bb51a4.js"
+    ],
+    "/sitemap.xml/route": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/app/sitemap.xml/route-e6ce006067bb51a4.js"
+    ],
+    "/aktualnosci/page": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/5003-163bf93cd1853ae5.js",
+      "static/chunks/app/aktualnosci/page-5daaed9f81ad28c5.js"
+    ],
+    "/bilety/page": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/2619-38012e79151e370a.js",
+      "static/chunks/app/bilety/page-8bce8ae350fff4f2.js"
+    ],
+    "/en/about/page": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/5239-6d18f99c9fdf3901.js",
+      "static/chunks/2619-38012e79151e370a.js",
+      "static/chunks/8567-7d87ebc0eaf1dc11.js",
+      "static/chunks/app/en/about/page-9a473e2d78eae41e.js"
+    ],
+    "/en/attractions/cinema-360/page": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/5239-6d18f99c9fdf3901.js",
+      "static/chunks/2619-38012e79151e370a.js",
+      "static/chunks/4589-a98b3144d2e34505.js",
+      "static/chunks/app/en/attractions/cinema-360/page-d3f620cbe2f87ca2.js"
+    ],
+    "/en/attractions/exhibition/page": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/5239-6d18f99c9fdf3901.js",
+      "static/chunks/660-3c4c9f904f56af4e.js",
+      "static/chunks/app/en/attractions/exhibition/page-e5d28202b9463852.js"
+    ],
+    "/en/attractions/film-path/page": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/5239-6d18f99c9fdf3901.js",
+      "static/chunks/2619-38012e79151e370a.js",
+      "static/chunks/4205-a7d637a296cd5410.js",
+      "static/chunks/app/en/attractions/film-path/page-10ac806d47b4f6f4.js"
+    ],
+    "/en/contact/page": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/2619-38012e79151e370a.js",
+      "static/chunks/5003-163bf93cd1853ae5.js",
+      "static/chunks/1934-4135c11922f8ac81.js",
+      "static/chunks/app/en/contact/page-759f578f1787039e.js"
+    ],
+    "/en/events/page": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/5239-6d18f99c9fdf3901.js",
+      "static/chunks/2619-38012e79151e370a.js",
+      "static/chunks/5003-163bf93cd1853ae5.js",
+      "static/chunks/2274-afc4e1b787c15582.js",
+      "static/chunks/app/en/events/page-991b447e40155723.js"
+    ],
+    "/en/gallery/page": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/5239-6d18f99c9fdf3901.js",
+      "static/chunks/5003-163bf93cd1853ae5.js",
+      "static/chunks/2989-2be6047d134562c0.js",
+      "static/chunks/app/en/gallery/page-f87481c1e0103f4c.js"
+    ],
+    "/en/getting-there/page": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/8e1d74a4-624f48c501dae383.js",
+      "static/chunks/5239-6d18f99c9fdf3901.js",
+      "static/chunks/2619-38012e79151e370a.js",
+      "static/chunks/5003-163bf93cd1853ae5.js",
+      "static/chunks/9239-2f571da3439a2b1e.js",
+      "static/chunks/app/en/getting-there/page-765f18cfe552bfb2.js"
+    ],
+    "/en/news/page": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/5003-163bf93cd1853ae5.js",
+      "static/chunks/app/en/news/page-5fbc2d19718de641.js"
+    ],
+    "/en/page": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/8e1d74a4-624f48c501dae383.js",
+      "static/chunks/5239-6d18f99c9fdf3901.js",
+      "static/chunks/2619-38012e79151e370a.js",
+      "static/chunks/5431-109ceab23e073a7c.js",
+      "static/chunks/app/en/page-ff835d417220d000.js"
+    ],
+    "/galeria/page": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/5239-6d18f99c9fdf3901.js",
+      "static/chunks/5003-163bf93cd1853ae5.js",
+      "static/chunks/2989-2be6047d134562c0.js",
+      "static/chunks/app/galeria/page-d5e9917eb46ef3a4.js"
+    ],
+    "/en/tickets/page": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/2619-38012e79151e370a.js",
+      "static/chunks/app/en/tickets/page-58181961b33929a6.js"
+    ],
+    "/jak-dojechac/page": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/8e1d74a4-624f48c501dae383.js",
+      "static/chunks/5239-6d18f99c9fdf3901.js",
+      "static/chunks/2619-38012e79151e370a.js",
+      "static/chunks/5003-163bf93cd1853ae5.js",
+      "static/chunks/9239-2f571da3439a2b1e.js",
+      "static/chunks/app/jak-dojechac/page-3d35a0228f9e02bc.js"
+    ],
+    "/kontakt/page": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/2619-38012e79151e370a.js",
+      "static/chunks/5003-163bf93cd1853ae5.js",
+      "static/chunks/1934-4135c11922f8ac81.js",
+      "static/chunks/app/kontakt/page-b018e3c6dceb98bd.js"
+    ],
+    "/o-alvernia-planet/page": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/5239-6d18f99c9fdf3901.js",
+      "static/chunks/2619-38012e79151e370a.js",
+      "static/chunks/8567-7d87ebc0eaf1dc11.js",
+      "static/chunks/app/o-alvernia-planet/page-025edbd728d91fb9.js"
+    ],
+    "/page": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/8e1d74a4-624f48c501dae383.js",
+      "static/chunks/5239-6d18f99c9fdf3901.js",
+      "static/chunks/2619-38012e79151e370a.js",
+      "static/chunks/5431-109ceab23e073a7c.js",
+      "static/chunks/app/page-1b3acd79413806de.js"
+    ],
+    "/pt/about/page": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/5239-6d18f99c9fdf3901.js",
+      "static/chunks/2619-38012e79151e370a.js",
+      "static/chunks/8567-7d87ebc0eaf1dc11.js",
+      "static/chunks/app/pt/about/page-9a473e2d78eae41e.js"
+    ],
+    "/pt/attractions/exhibition/page": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/5239-6d18f99c9fdf3901.js",
+      "static/chunks/660-3c4c9f904f56af4e.js",
+      "static/chunks/app/pt/attractions/exhibition/page-9268780c4dd847a4.js"
+    ],
+    "/pt/attractions/film-path/page": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/5239-6d18f99c9fdf3901.js",
+      "static/chunks/2619-38012e79151e370a.js",
+      "static/chunks/4205-a7d637a296cd5410.js",
+      "static/chunks/app/pt/attractions/film-path/page-b0bc29c060d16d25.js"
+    ],
+    "/pt/contact/page": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/2619-38012e79151e370a.js",
+      "static/chunks/5003-163bf93cd1853ae5.js",
+      "static/chunks/1934-4135c11922f8ac81.js",
+      "static/chunks/app/pt/contact/page-759f578f1787039e.js"
+    ],
+    "/pt/events/page": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/5239-6d18f99c9fdf3901.js",
+      "static/chunks/2619-38012e79151e370a.js",
+      "static/chunks/5003-163bf93cd1853ae5.js",
+      "static/chunks/2274-afc4e1b787c15582.js",
+      "static/chunks/app/pt/events/page-991b447e40155723.js"
+    ],
+    "/pt/attractions/cinema-360/page": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/5239-6d18f99c9fdf3901.js",
+      "static/chunks/2619-38012e79151e370a.js",
+      "static/chunks/4589-a98b3144d2e34505.js",
+      "static/chunks/app/pt/attractions/cinema-360/page-9154b36c210991ac.js"
+    ],
+    "/pt/gallery/page": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/5239-6d18f99c9fdf3901.js",
+      "static/chunks/5003-163bf93cd1853ae5.js",
+      "static/chunks/2989-2be6047d134562c0.js",
+      "static/chunks/app/pt/gallery/page-f87481c1e0103f4c.js"
+    ],
+    "/pt/getting-there/page": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/8e1d74a4-624f48c501dae383.js",
+      "static/chunks/5239-6d18f99c9fdf3901.js",
+      "static/chunks/2619-38012e79151e370a.js",
+      "static/chunks/5003-163bf93cd1853ae5.js",
+      "static/chunks/9239-2f571da3439a2b1e.js",
+      "static/chunks/app/pt/getting-there/page-765f18cfe552bfb2.js"
+    ],
+    "/pt/news/page": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/5003-163bf93cd1853ae5.js",
+      "static/chunks/app/pt/news/page-5fbc2d19718de641.js"
+    ],
+    "/pt/page": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/8e1d74a4-624f48c501dae383.js",
+      "static/chunks/5239-6d18f99c9fdf3901.js",
+      "static/chunks/2619-38012e79151e370a.js",
+      "static/chunks/5431-109ceab23e073a7c.js",
+      "static/chunks/app/pt/page-ff835d417220d000.js"
+    ],
+    "/pt/tickets/page": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/2619-38012e79151e370a.js",
+      "static/chunks/app/pt/tickets/page-58181961b33929a6.js"
+    ],
+    "/wydarzenia/page": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/5239-6d18f99c9fdf3901.js",
+      "static/chunks/2619-38012e79151e370a.js",
+      "static/chunks/5003-163bf93cd1853ae5.js",
+      "static/chunks/2274-afc4e1b787c15582.js",
+      "static/chunks/app/wydarzenia/page-869f89f5a498efc7.js"
+    ],
+    "/atrakcje/sciezka-filmowa/page": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/5239-6d18f99c9fdf3901.js",
+      "static/chunks/2619-38012e79151e370a.js",
+      "static/chunks/4205-a7d637a296cd5410.js",
+      "static/chunks/app/atrakcje/sciezka-filmowa/page-19777fcf7066ec57.js"
+    ],
+    "/atrakcje/kino-360/page": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/5239-6d18f99c9fdf3901.js",
+      "static/chunks/2619-38012e79151e370a.js",
+      "static/chunks/4589-a98b3144d2e34505.js",
+      "static/chunks/app/atrakcje/kino-360/page-ebc31596044b05ca.js"
+    ],
+    "/atrakcje/wystawa/page": [
+      "static/chunks/webpack-b8e1e74fcc0052ca.js",
+      "static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "static/chunks/1255-6463890f94347e5b.js",
+      "static/chunks/main-app-0ba481a575c8ff6e.js",
+      "static/chunks/5239-6d18f99c9fdf3901.js",
+      "static/chunks/660-3c4c9f904f56af4e.js",
+      "static/chunks/app/atrakcje/wystawa/page-611a004f1cd03b87.js"
+    ]
+  }
+}

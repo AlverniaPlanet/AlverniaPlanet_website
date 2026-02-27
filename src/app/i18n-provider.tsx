@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
-type Locale = "pl" | "en";
+type Locale = "pl" | "en" | "pt";
 
 const DICTS: Record<Locale, Record<string, string>> = {
   pl: {
@@ -16,6 +16,7 @@ const DICTS: Record<Locale, Record<string, string>> = {
     "nav.gallery": "Galeria",
     "nav.about_alvernia": "O Alvernia Planet",
     "nav.getting_there": "Jak dojechać",
+    "nav.tickets": "Bilety",
     "menu.attractions.exhibition": "Wystawa tematyczna",
     "menu.attractions.film_path": "Ścieżka filmowa",
     "menu.attractions.cinema": "Kino 360°",
@@ -32,10 +33,28 @@ const DICTS: Record<Locale, Record<string, string>> = {
     "nav.gallery": "Gallery",
     "nav.about_alvernia": "About Alvernia Planet",
     "nav.getting_there": "Getting here",
+    "nav.tickets": "Tickets",
     "menu.attractions.exhibition": "Thematic exhibition",
     "menu.attractions.film_path": "Film trail",
     "menu.attractions.cinema": "360° cinema",
     "nav.events": "Events",
+  },
+  pt: {
+    "nav.home": "Início",
+    "nav.about": "Sobre",
+    "nav.contact": "Contacto",
+    "nav.booking": "Reservas",
+    "cta.booking": "Reservar",
+    "nav.news": "Notícias",
+    "nav.attraction": "Atrações",
+    "nav.gallery": "Galeria",
+    "nav.about_alvernia": "Sobre a Alvernia Planet",
+    "nav.getting_there": "Como chegar",
+    "nav.tickets": "Bilhetes",
+    "menu.attractions.exhibition": "Exposição temática",
+    "menu.attractions.film_path": "Percurso cinematográfico",
+    "menu.attractions.cinema": "Cinema 360°",
+    "nav.events": "Eventos",
   },
 };
 
@@ -50,17 +69,7 @@ const I18nCtx = createContext<{
 });
 
 export function I18nProvider({ children, initialLocale }: { children: React.ReactNode; initialLocale?: Locale }) {
-  const [locale, setLocale] = useState<Locale>(() => {
-    // SSR fallback
-    if (typeof window === "undefined") return initialLocale ?? "pl";
-    const stored = window.localStorage?.getItem("locale");
-    if (stored === "pl" || stored === "en") return stored;
-    const path = window.location?.pathname?.toLowerCase?.() || "";
-    if (path === "/en" || path.startsWith("/en/")) return "en";
-    const cookieMatch = document.cookie.match(/(?:^|; )locale=(pl|en)/);
-    if (cookieMatch && (cookieMatch[1] === "pl" || cookieMatch[1] === "en")) return cookieMatch[1] as Locale;
-    return initialLocale ?? "pl";
-  });
+  const [locale, setLocale] = useState<Locale>(initialLocale ?? "pl");
 
   useEffect(() => {
     try { localStorage.setItem("locale", locale); } catch {}
@@ -75,7 +84,9 @@ export function I18nProvider({ children, initialLocale }: { children: React.Reac
     const path = window.location.pathname.toLowerCase();
     if ((path === "/en" || path.startsWith("/en/")) && locale !== "en") {
       setLocale("en");
-    } else if (!path.startsWith("/en") && locale !== "pl") {
+    } else if ((path === "/pt" || path.startsWith("/pt/")) && locale !== "pt") {
+      setLocale("pt");
+    } else if (!path.startsWith("/en") && !path.startsWith("/pt") && locale !== "pl") {
       setLocale("pl");
     }
   }, []);
@@ -111,6 +122,14 @@ export function LanguageSwitcher() {
         }`}
       >
         EN
+      </button>
+      <button
+        onClick={() => setLocale("pt")}
+        className={`px-2 py-1 rounded text-sm font-medium ${
+          locale === "pt" ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700"
+        }`}
+      >
+        PT
       </button>
     </div>
   );

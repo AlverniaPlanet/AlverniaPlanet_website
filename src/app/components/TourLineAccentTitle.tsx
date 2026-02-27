@@ -8,9 +8,9 @@ type Props = {
 
 export default function TourLineAccentTitle({ children, className, variant = "warm" }: Props) {
   const underlineByVariant: Record<NonNullable<Props["variant"]>, string> = {
-    warm: "from-amber-400 via-fuchsia-500 to-indigo-500",
-    cool: "from-sky-300 via-cyan-400 to-blue-700",
-    green: "from-emerald-200 via-green-400 to-emerald-700",
+    warm: "from-[#f03c64] via-[#f77828] to-[#4fcfde]",
+    cool: "from-[#4fcfde] via-[#a5e6f0] to-[#171730]",
+    green: "from-[#aab4be] via-[#4fcfde] to-[#171730]",
   };
   const underline = underlineByVariant[variant] ?? underlineByVariant.warm;
 

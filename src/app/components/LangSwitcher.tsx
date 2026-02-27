@@ -4,11 +4,12 @@ import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useI18n } from "@/app/i18n-provider";
 
-type LangOption = { code: "pl" | "en"; label: string };
+type LangOption = { code: "pl" | "en" | "pt"; label: string };
 
 const OPTIONS: LangOption[] = [
   { code: "pl", label: "Polski" },
   { code: "en", label: "English" },
+  { code: "pt", label: "Português" },
 ];
 
 function Flag({ code }: { code: LangOption["code"] }) {
@@ -18,6 +19,17 @@ function Flag({ code }: { code: LangOption["code"] }) {
         <rect width="18" height="12" fill="#ffffff" />
         <rect y="6" width="18" height="6" fill="#dc2626" />
         <rect width="18" height="12" fill="none" stroke="#0f172a" strokeWidth="0.35" opacity="0.2" />
+      </svg>
+    );
+  }
+  if (code === "pt") {
+    return (
+      <svg aria-hidden="true" width="18" height="12" viewBox="0 0 18 12" className="rounded-[3px] overflow-hidden">
+        <rect width="18" height="12" fill="#da291c" />
+        <rect width="7" height="12" fill="#046a38" />
+        <circle cx="7" cy="6" r="2.5" fill="#f5c542" opacity="0.95" />
+        <circle cx="7" cy="6" r="1.4" fill="#da291c" opacity="0.9" />
+        <rect width="18" height="12" fill="none" stroke="#0f172a" strokeWidth="0.35" opacity="0.25" />
       </svg>
     );
   }
@@ -46,46 +58,48 @@ export default function LangSwitcher() {
 
   const active = OPTIONS.find((opt) => opt.code === locale) ?? OPTIONS[0];
 
-  const mapToEn = (path: string) => {
+  const PL_TO_INTL: Record<string, string> = {
+    "/wydarzenia": "/events",
+    "/jak-dojechac": "/getting-there",
+    "/bilety": "/tickets",
+    "/o-alvernia-planet": "/about",
+    "/galeria": "/gallery",
+    "/kontakt": "/contact",
+    "/aktualnosci": "/news",
+    "/atrakcje/wystawa": "/attractions/exhibition",
+    "/atrakcje/sciezka-filmowa": "/attractions/film-path",
+    "/atrakcje/kino-360": "/attractions/cinema-360",
+  };
+
+  const INTL_TO_PL: Record<string, string> = Object.entries(PL_TO_INTL).reduce(
+    (acc, [plPath, intlPath]) => {
+      acc[intlPath] = plPath;
+      return acc;
+    },
+    {} as Record<string, string>,
+  );
+
+  const mapToIntl = (path: string, target: "en" | "pt") => {
     const clean = path || "/";
-    if (clean === "/en" || clean.startsWith("/en/")) return clean;
-    if (clean === "/") return "/en";
-    const map: Record<string, string> = {
-      "/wydarzenia": "/en/events",
-      "/jak-dojechac": "/en/getting-there",
-      "/o-alvernia-planet": "/en/about",
-      "/galeria": "/en/gallery",
-      "/kontakt": "/en/contact",
-      "/atrakcje/wystawa": "/en/attractions/exhibition",
-      "/atrakcje/sciezka-filmowa": "/en/attractions/film-path",
-      "/atrakcje/kino-360": "/en/attractions/cinema-360",
-    };
-    if (map[clean]) return map[clean];
-    return clean.startsWith("/en/") ? clean : `/en${clean.startsWith("/") ? clean : `/${clean}`}`.replace(/\/{2,}/g, "/");
+    if (clean === `/${target}` || clean.startsWith(`/${target}/`)) return clean;
+    if (clean === "/") return `/${target}`;
+    const withoutPrefix = clean.startsWith("/en") || clean.startsWith("/pt") ? clean.slice(3) || "/" : clean;
+    const mapped = PL_TO_INTL[withoutPrefix] || withoutPrefix;
+    return `/${target}${mapped.startsWith("/") ? mapped : `/${mapped}`}`.replace(/\/{2,}/g, "/");
   };
 
   const mapToPl = (path: string) => {
     const clean = path || "/";
     if (clean === "/") return "/";
-    const withoutPrefix = clean.startsWith("/en") ? clean.slice(3) || "/" : clean;
-    const map: Record<string, string> = {
-      "/events": "/wydarzenia",
-      "/getting-there": "/jak-dojechac",
-      "/about": "/o-alvernia-planet",
-      "/gallery": "/galeria",
-      "/contact": "/kontakt",
-      "/attractions/exhibition": "/atrakcje/wystawa",
-      "/attractions/film-path": "/atrakcje/sciezka-filmowa",
-      "/attractions/cinema-360": "/atrakcje/kino-360",
-      "/": "/",
-    };
-    if (map[withoutPrefix]) return map[withoutPrefix];
+    const withoutPrefix = clean.startsWith("/en") || clean.startsWith("/pt") ? clean.slice(3) || "/" : clean;
+    if (INTL_TO_PL[withoutPrefix]) return INTL_TO_PL[withoutPrefix];
     return withoutPrefix.startsWith("/") ? withoutPrefix : `/${withoutPrefix}`;
   };
 
   const switchLocale = (target: LangOption["code"]) => {
     const current = pathname || "/";
-    const nextPath = target === "en" ? mapToEn(current) : mapToPl(current);
+    const nextPath =
+      target === "en" ? mapToIntl(current, "en") : target === "pt" ? mapToIntl(current, "pt") : mapToPl(current);
     setLocale(target);
     router.push(nextPath);
   };

@@ -6,7 +6,7 @@ import translationsData, { NEWS_META } from "./aktualnosci";
 import Card from "@/app/components/Card";
 
 // ===== Typy i tłumaczenia =====
-type Locale = "pl" | "en";
+type Locale = "pl" | "en" | "pt";
 type PostContent = { title: string; excerpt: string };
 type LocaleBlock = {
   headline: string;
@@ -34,10 +34,10 @@ export type NewsItem = {
   category: "ścieżka filmowa" | "kino 360" | "ogólne";
 };
 
-const CATEGORY_LABELS: Record<NewsItem["category"], { pl: string; en: string }> = {
-  "ścieżka filmowa": { pl: "Ścieżka filmowa", en: "Film path" },
-  "kino 360": { pl: "Kino 360", en: "360 cinema" },
-  ogólne: { pl: "Ogólne", en: "General" },
+const CATEGORY_LABELS: Record<NewsItem["category"], { pl: string; en: string; pt: string }> = {
+  "ścieżka filmowa": { pl: "Ścieżka filmowa", en: "Film path", pt: "Percurso cinematográfico" },
+  "kino 360": { pl: "Kino 360", en: "360 cinema", pt: "Cinema 360" },
+  ogólne: { pl: "Ogólne", en: "General", pt: "Geral" },
 };
 
 // To odpowiadało Twojej poprzedniej wersji (daty + kategorie)
@@ -59,9 +59,9 @@ export default function AktualnosciPage() {
   }).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   return (
-    <main className="relative z-10 min-h-screen text-white px-4 py-16 sm:py-20">
+    <main className="relative z-10 min-h-screen text-white px-4 py-12 sm:py-16">
       {/* Header */}
-      <header className="mx-auto w-full max-w-6xl text-center mb-10 sm:mb-12">
+      <header className="mx-auto w-full max-w-[min(86vw,120rem)] text-center mb-10 sm:mb-12">
         <motion.h1
           initial="hidden"
           animate="show"
@@ -73,7 +73,7 @@ export default function AktualnosciPage() {
       </header>
 
       {/* LISTA KAFELKÓW (poziome, jeden pod drugim) */}
-      <section className="mx-auto w-full max-w-6xl">
+      <section className="mx-auto w-full max-w-[min(86vw,120rem)]">
         <motion.ul
           initial="hidden"
           animate="show"
@@ -94,11 +94,11 @@ export default function AktualnosciPage() {
 function NewsRow({ item, locale }: { item: NewsItem; locale: Locale }) {
   // Kolory kategorii — dokładnie jak wcześniej
   const categoryColors: Record<NewsItem["category"], string> = {
-    "ścieżka filmowa": "from-amber-500 to-orange-500",
-    "kino 360": "from-sky-500 to-blue-500",
-    ogólne: "from-neutral-600 to-neutral-400",
+    "ścieżka filmowa": "from-[#f77828] to-[#f03c64]",
+    "kino 360": "from-[#4fcfde] to-[#a5e6f0]",
+    ogólne: "from-[#171730] to-[#aab4be]",
   };
-  const categoryLabel = CATEGORY_LABELS[item.category][locale === "en" ? "en" : "pl"];
+  const categoryLabel = CATEGORY_LABELS[item.category][locale] ?? CATEGORY_LABELS[item.category].pl;
 
   return (
     <Card variant="solid" className="relative z-0 w-full mx-2 sm:mx-3 md:mx-4 lg:mx-6 xl:mx-8">
@@ -131,7 +131,7 @@ function NewsRow({ item, locale }: { item: NewsItem; locale: Locale }) {
 
 function Badge({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center whitespace-nowrap rounded-full bg-sky-500 px-3 py-1 text-[12px] font-semibold leading-tight text-white shadow-[0_0_16px_rgba(56,189,248,0.35)] ring-1 ring-white/10">
+    <span className="inline-flex items-center whitespace-nowrap rounded-full bg-[#4fcfde] px-3 py-1 text-[12px] font-semibold leading-tight text-[#171730] shadow-[0_0_16px_rgba(79,207,222,0.35)] ring-1 ring-white/10">
       {children}
     </span>
   );
@@ -140,7 +140,7 @@ function Badge({ children }: { children: React.ReactNode }) {
 function formatDate(input: string, locale: Locale) {
   try {
     const d = new Date(input);
-    const lang = locale === "en" ? "en-GB" : "pl-PL";
+    const lang = locale === "en" ? "en-GB" : locale === "pt" ? "pt-PT" : "pl-PL";
     return d.toLocaleDateString(lang, {
       year: "numeric",
       month: "long",

@@ -5,7 +5,7 @@ import TourLineAccentTitle from "@/app/components/TourLineAccentTitle";
 import TourLineGalleryRow from "@/app/components/TourLineGalleryRow";
 import { useI18n } from "@/app/i18n-provider";
 
-type Locale = "pl" | "en";
+type Locale = "pl" | "en" | "pt";
 
 type GalleryItem = { title: string; body: string; image: string };
 
@@ -114,6 +114,52 @@ const COPY: Record<
       },
     ],
   },
+  pt: {
+    heroTag: "Atrações",
+    heroTitle: "Exposição temática",
+    heroLead:
+      "Harry Potter: The Exhibition — encerrada em 17 de agosto de 2025. Obrigado pela visita; aguardem a próxima exposição.",
+    videoFallback: "O seu navegador não suporta o elemento de vídeo.",
+    sectionTitle: "Harry Potter: The Exhibition",
+    paragraphs: [
+      "O primeiro projeto B2C realizado na Alvernia Planet foi a exposição Harry Potter: The Exhibition. Abriu a 11 de abril de 2025 — exatamente no 25.º aniversário do lançamento da primeira história do jovem feiticeiro, “Harry Potter e a Pedra Filosofal”. A exposição esteve patente até 17 de agosto de 2025, ou seja, 129 dias (cerca de 18 semanas).",
+      "A saga de Harry Potter é a série de livros juvenis mais popular do mundo. Conta a história de um órfão e outsider que descobre ser feiticeiro, com amigos e coragem a moldarem a magia deste universo. Os livros são best-sellers de todos os tempos e continuam a atrair novas gerações de leitores.",
+      "A exposição recebeu cerca de 450 000 visitantes — obrigado por terem estado connosco e até aos próximos eventos.",
+    ],
+    galleryTitle: "Memórias",
+    galleryItems: [
+      {
+        title: "Entrada da exposição",
+        body: "Zona de entrada e fila em frente à cúpula.",
+        image: "/galeria/Wystawa/HarryPotter_TheExhibition/webp/1.webp",
+      },
+      {
+        title: "Knight Bus",
+        body: "Autocarro de dois andares a promover a exposição.",
+        image: "/galeria/Wystawa/HarryPotter_TheExhibition/webp/2.webp",
+      },
+      {
+        title: "Início do percurso",
+        body: "Primeira sala com a projeção de um portal para o mundo da magia.",
+        image: "/galeria/Wystawa/HarryPotter_TheExhibition/webp/3.webp",
+      },
+      {
+        title: "Sala imersiva",
+        body: "Projeções do Mapa do Marauder e efeitos de luz.",
+        image: "/galeria/Wystawa/HarryPotter_TheExhibition/webp/4.webp",
+      },
+      {
+        title: "Sala de registo",
+        body: "Zona de entrada com pórticos e sinalização VIP.",
+        image: "/galeria/Wystawa/HarryPotter_TheExhibition/webp/5.webp",
+      },
+      {
+        title: "Galeria de retratos",
+        body: "Parede de quadros mágicos para encerrar o percurso.",
+        image: "/galeria/Wystawa/HarryPotter_TheExhibition/webp/6.webp",
+      },
+    ],
+  },
 };
 
 export default function WystawaContent() {
@@ -124,16 +170,16 @@ export default function WystawaContent() {
   return (
     <main className="relative z-10 min-h-screen">
       <section className="relative z-10 px-4 pt-12 sm:pt-16">
-        <div className="mx-auto w-full max-w-6xl mb-10 sm:mb-12">
+        <div className="mx-auto w-full max-w-[min(86vw,120rem)] mb-10 sm:mb-12">
           <div className="relative overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
-            <div className="relative aspect-[16/9] bg-black">
+            <div className="relative aspect-[4/5] sm:aspect-[16/9] bg-black">
               <video
                 className="absolute inset-0 h-full w-full object-cover"
                 autoPlay
                 loop
                 muted
                 playsInline
-                preload="auto"
+                preload="metadata"
                 poster="/wystawa/AP_wystawaHPX_poster.webp"
                 onEnded={(e) => {
                   e.currentTarget.currentTime = 0;
@@ -146,15 +192,15 @@ export default function WystawaContent() {
               </video>
               <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/45 to-black/85" />
               <div className="absolute inset-0 opacity-60 mix-blend-soft-light bg-[radial-gradient(circle_at_18%_22%,rgba(252,211,77,0.28),transparent_38%),radial-gradient(circle_at_78%_20%,rgba(244,114,182,0.24),transparent_36%),radial-gradient(circle_at_50%_78%,rgba(59,130,246,0.28),transparent_44%)]" />
-              <div className="relative flex h-full items-center justify-center p-6 sm:p-10 text-center force-overlay">
+              <div className="relative flex h-full items-center justify-center p-5 sm:p-10 text-center force-overlay">
                 <div className="space-y-3">
                   <p className="text-xs uppercase tracking-[0.3em] force-overlay-muted">
                     {copy.heroTag}
                   </p>
-                  <h1 className="text-4xl sm:text-6xl font-extrabold leading-tight drop-shadow-[0_0_24px_rgba(0,0,0,0.55)]">
+                  <h1 className="text-3xl sm:text-6xl font-extrabold leading-tight drop-shadow-[0_0_24px_rgba(0,0,0,0.55)]">
                     {copy.heroTitle}
                   </h1>
-                  <p className="force-overlay-dim text-base sm:text-lg max-w-3xl mx-auto">
+                  <p className="force-overlay-dim text-sm sm:text-lg max-w-3xl mx-auto">
                     {copy.heroLead}
                   </p>
                 </div>
@@ -165,7 +211,7 @@ export default function WystawaContent() {
       </section>
 
       <section className="px-4 pb-16 sm:pb-20">
-        <div className="max-w-6xl mx-auto space-y-10 sm:space-y-12">
+        <div className="max-w-[min(86vw,120rem)] mx-auto space-y-10 sm:space-y-12">
           <Card className="space-y-6" variant="solid">
             <TourLineAccentTitle variant="green">{copy.sectionTitle}</TourLineAccentTitle>
             <div className="space-y-4 text-base text-gray-100 leading-relaxed max-w-5xl mx-auto">

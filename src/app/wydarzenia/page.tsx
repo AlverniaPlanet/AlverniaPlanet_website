@@ -4,6 +4,7 @@ import { motion, type Variants } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import { useI18n } from "@/app/i18n-provider";
 import Card from "@/app/components/Card";
+import { PrimaryButton } from "@/app/components/PrimaryButton";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -14,7 +15,7 @@ const fade: Variants = {
 };
 
 // ===== Lokalny słownik (PL/EN) =====
-type Locale = "pl" | "en";
+type Locale = "pl" | "en" | "pt";
 
 const COPY: Record<
   Locale,
@@ -49,6 +50,18 @@ const COPY: Record<
       "Secluded location providing privacy and security",
     ],
   },
+  pt: {
+    title: "Um lugar único para eventos",
+    tag: "eventos",
+    venueLabel: "Alvernia Planet",
+    bullets: [
+      "Um lugar ideal para organizar um evento sofisticado",
+      "Atrai a atenção até dos clientes mais exigentes",
+      "Um espaço único à escala mundial",
+      "Infraestrutura verdadeiramente distinta",
+      "Localização isolada que garante privacidade e segurança",
+    ],
+  },
 };
 
 const SECOND: Record<Locale, { title: string; bullets: string[] }> = {
@@ -78,6 +91,19 @@ const SECOND: Record<Locale, { title: string; bullets: string[] }> = {
       "Product presentations",
     ],
   },
+  pt: {
+    title: "Possibilidades ilimitadas para organizar:",
+    bullets: [
+      "Eventos corporativos exclusivos",
+      "Reuniões com clientes‑chave",
+      "Feiras do setor",
+      "Conferências de imprensa",
+      "Formações e palestras",
+      "Desfiles de moda",
+      "Concertos",
+      "Apresentações de produto",
+    ],
+  },
 };
 
 const THIRD: Record<Locale, { title: string; bullets: string[] }> = {
@@ -105,6 +131,19 @@ const THIRD: Record<Locale, { title: string; bullets: string[] }> = {
       "Spectacular acoustics",
       "Parking for 200+ cars & buses plus a helipad",
       "Back-of-house: catering, dressing rooms, make-up rooms",
+    ],
+  },
+  pt: {
+    title: "O que nos distingue?",
+    bullets: [
+      "Arquitetura pouco comum",
+      "Dois estúdios — cúpulas, cada uma com 2 000 m²",
+      "Acesso de grandes dimensões por portões opostos",
+      "Cada cúpula pode receber até 1 200 pessoas",
+      "Altura central superior a 16 m",
+      "Acústica espetacular",
+      "Estacionamento para mais de 200 carros e autocarros e heliponto",
+      "Backstage: catering, camarins e salas de maquilhagem",
     ],
   },
 };
@@ -170,12 +209,39 @@ const VIDEO_SHOWCASE: Record<
       },
     ],
   },
+  pt: {
+    title: "Vídeos de eventos",
+    items: [
+      {
+        title: "Concerto na cúpula",
+        body: "Atmosfera ao vivo num palco esférico.",
+        src: "https://www.youtube.com/embed/jt6zh-vaFNc",
+        poster: "https://img.youtube.com/vi/jt6zh-vaFNc/hqdefault.jpg",
+        embed: true,
+      },
+      {
+        title: "Banquete e gala",
+        body: "Cenário noturno com um toque elegante.",
+        src: "https://www.youtube.com/embed/PWtTaxqxufE",
+        poster: "https://img.youtube.com/vi/PWtTaxqxufE/hqdefault.jpg",
+        embed: true,
+      },
+      {
+        title: "Club / afterparty",
+        body: "Luzes e som em ambiente de clube.",
+        src: "https://www.youtube.com/embed/BkdKk5Jc_RA",
+        poster: "https://img.youtube.com/vi/BkdKk5Jc_RA/hqdefault.jpg",
+        embed: true,
+      },
+    ],
+  },
 };
 
 const PREVIEW_IMG: Record<Locale, { src: string; alt: string }>[] = [
   {
     pl: { src: "/wydarzenia/Koncert_poster.webp", alt: "Kopuły z lotu ptaka" },
     en: { src: "/wydarzenia/Koncert_poster.webp", alt: "Domes – aerial view" },
+    pt: { src: "/wydarzenia/Koncert_poster.webp", alt: "Cúpulas vistas de cima" },
   } as any,
   {
     pl: {
@@ -186,10 +252,15 @@ const PREVIEW_IMG: Record<Locale, { src: string; alt: string }>[] = [
       src: "/wydarzenia/Bankiet_poster.webp",
       alt: "Film path interiors",
     },
+    pt: {
+      src: "/wydarzenia/Bankiet_poster.webp",
+      alt: "Interiores do percurso cinematográfico",
+    },
   } as any,
   {
     pl: { src: "/wydarzenia/Club_poster.webp", alt: "Scena wydarzenia" },
     en: { src: "/wydarzenia/Club_poster.webp", alt: "Event scene" },
+    pt: { src: "/wydarzenia/Club_poster.webp", alt: "Palco do evento" },
   } as any,
 ];
 
@@ -199,6 +270,8 @@ const UI_TEXT: Record<
   {
     loadingVideo: string;
     loadingMap: string;
+    loadMapAction: string;
+    playVideo: string;
     contactHeading: string;
     addressHeading: string;
     mapButton: string;
@@ -209,6 +282,8 @@ const UI_TEXT: Record<
   pl: {
     loadingVideo: "Ładowanie wideo...",
     loadingMap: "Ładowanie mapy...",
+    loadMapAction: "Załaduj mapę",
+    playVideo: "Odtwórz",
     contactHeading: "Kontakt",
     addressHeading: "Adres",
     mapButton: "Zobacz na mapie",
@@ -218,11 +293,24 @@ const UI_TEXT: Record<
   en: {
     loadingVideo: "Loading video...",
     loadingMap: "Loading map...",
+    loadMapAction: "Load map",
+    playVideo: "Play",
     contactHeading: "Contact",
     addressHeading: "Address",
     mapButton: "View on map",
     mapTitle: "Map – Alvernia Planet",
     videoFallback: "Your browser does not support the video element.",
+  },
+  pt: {
+    loadingVideo: "A carregar vídeo...",
+    loadingMap: "A carregar mapa...",
+    loadMapAction: "Carregar mapa",
+    playVideo: "Reproduzir",
+    contactHeading: "Contacto",
+    addressHeading: "Morada",
+    mapButton: "Ver no mapa",
+    mapTitle: "Mapa – Alvernia Planet",
+    videoFallback: "O seu navegador não suporta o elemento de vídeo.",
   },
 };
 
@@ -244,7 +332,6 @@ const DOMES: Record<
         "Powierzchnia 2 000 m²",
         "Wysokość 16 m",
         "Przyłącza elektryczne do 1 MW",
-        "Kratownica – udźwig do 1 tony",
         "Klimatyzowane garderoby z prysznicami",
         "Klimatyzacja",
         "Dwie bramy 4m × 4,5m (swobodny przejazd TIR)",
@@ -285,7 +372,6 @@ const DOMES: Record<
         "Floor area 2,000 m²",
         "Height 16 m",
         "Electrical connections up to 1 MW",
-        "Truss – load capacity up to 1 ton",
         "Air-conditioned dressing rooms with showers",
         "Air conditioning",
         "Two gates 4 m × 4.5 m (truck drive-through)",
@@ -319,6 +405,46 @@ const DOMES: Record<
       bullets: ["Two-level domes", "Floor area 600 m²"],
     },
   },
+  pt: {
+    k3: {
+      title: "Cúpula K3",
+      bullets: [
+        "Área 2 000 m²",
+        "Altura 16 m",
+        "Ligações elétricas até 1 MW",
+        "Camarins climatizados com chuveiros",
+        "Ar condicionado",
+        "Duas portas 4 m × 4,5 m (passagem de camiões)",
+        "Capacidade de carga do piso adequada a estruturas cenográficas",
+      ],
+    },
+    k4: {
+      title: "Cúpula K4",
+      bullets: [
+        "Área 2 000 m²",
+        "Altura 16 m",
+        "Ligações elétricas até 1 MW",
+        "Postos de maquilhagem",
+        "Ar condicionado",
+        "Treliça com capacidade até 2 toneladas",
+        "Duas portas 4 m × 4,5 m (passagem de camiões)",
+        "Capacidade de carga do piso adequada a estruturas cenográficas",
+      ],
+    },
+    k7: {
+      title: "Cúpula K7",
+      bullets: [
+        "Ecrã 10,2 × 4,2 m",
+        "Projetor 4K",
+        "Certificado Dolby Premier",
+        "76 lugares",
+      ],
+    },
+    k10k12: {
+      title: "Cúpulas K10 e K12",
+      bullets: ["Cúpulas de dois níveis", "Área 600 m²"],
+    },
+  },
 };
 
 // ===== Komponenty pomocnicze: EventVideo + MapFrame =====
@@ -339,11 +465,10 @@ function EventVideo({
   className,
   loadingLabel,
   fallbackText,
-  preload = "auto",
+  preload = "metadata",
 }: EventVideoProps) {
-  const [isLoaded, setIsLoaded] = useState(true);
+  const [isLoaded, setIsLoaded] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const [shouldRenderVideo] = useState(true);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   // Jeśli wideo zdążyło się załadować zanim React podpiął zdarzenia,
@@ -400,7 +525,6 @@ function EventVideo({
     video.playsInline = true;
 
     const ensurePlay = () => {
-      if (!isVisible) return;
       const p = video.play();
       if (p && typeof p.catch === "function") {
         p.catch(() => {});
@@ -412,7 +536,7 @@ function EventVideo({
       ensurePlay();
     };
     const handlePause = () => {
-      if (video.paused) ensurePlay();
+      if (video.paused && isVisible) ensurePlay();
     };
     const handleWebkitEndFullscreen = () => ensurePlay();
 
@@ -444,6 +568,7 @@ function EventVideo({
       className={`relative h-56 md:h-full overflow-hidden rounded-2xl ring-1 ring-white/10 bg-black/20 ${
         className ?? ""
       }`}
+      aria-busy={!isLoaded}
     >
       <video
         ref={videoRef}
@@ -455,10 +580,17 @@ function EventVideo({
         preload={preload}
         {...(poster ? { poster } : {})}
         onLoadedData={() => setIsLoaded(true)}
+        onCanPlay={() => setIsLoaded(true)}
       >
-        <source src={src} type="video/mp4" />
         {srcWebm ? <source src={srcWebm} type="video/webm" /> : null}
+        <source src={src} type="video/mp4" />
+        {fallbackText}
       </video>
+      {!isLoaded ? (
+        <div className="absolute inset-0 z-10 flex items-center justify-center text-xs sm:text-sm force-overlay-dim bg-black/50 backdrop-blur-[2px] animate-pulse pointer-events-none">
+          {loadingLabel}
+        </div>
+      ) : null}
       <div
         className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-b from-transparent to-black/70"
         aria-hidden
@@ -471,9 +603,10 @@ interface VideoTileProps {
   item: VideoItem;
   loadingLabel: string;
   fallbackText: string;
+  playLabel: string;
 }
 
-function VideoTile({ item, loadingLabel, fallbackText }: VideoTileProps) {
+function VideoTile({ item, loadingLabel, fallbackText, playLabel }: VideoTileProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isActivated, setIsActivated] = useState(false);
 
@@ -484,8 +617,8 @@ function VideoTile({ item, loadingLabel, fallbackText }: VideoTileProps) {
         <button
           type="button"
           onClick={() => setIsActivated(true)}
-          className="group relative flex h-full flex-col overflow-hidden rounded-2xl bg-white/5 ring-1 ring-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.35)] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300/70"
-          aria-label={`Odtwórz: ${item.title}`}
+          className="group relative flex h-full flex-col overflow-hidden rounded-2xl bg-white/5 ring-1 ring-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.35)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(247,120,40,0.7)]"
+          aria-label={`${playLabel}: ${item.title}`}
         >
           <div
             className="relative h-48 sm:h-52 md:h-56 w-full bg-black/50"
@@ -501,7 +634,7 @@ function VideoTile({ item, loadingLabel, fallbackText }: VideoTileProps) {
           />
           <div className="absolute inset-0 flex items-center justify-center">
             <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white ring-1 ring-white/20 transition group-hover:bg-white/25">
-              ▶ Odtwórz
+              ▶ {playLabel}
             </span>
           </div>
           <div className="absolute inset-x-0 bottom-0 p-3 text-left">
@@ -515,7 +648,7 @@ function VideoTile({ item, loadingLabel, fallbackText }: VideoTileProps) {
       <div className="flex h-full flex-col overflow-hidden rounded-2xl bg-white/5 ring-1 ring-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
         <div className="relative h-48 sm:h-52 md:h-56 overflow-hidden bg-black/40">
           {!isLoaded && (
-            <div className="absolute inset-0 z-10 flex items-center justify-center text-xs sm:text-sm text-white/80 bg-black/50 backdrop-blur-[2px] animate-pulse pointer-events-none">
+            <div className="absolute inset-0 z-10 flex items-center justify-center text-xs sm:text-sm force-overlay-dim bg-black/50 backdrop-blur-[2px] animate-pulse pointer-events-none">
               {loadingLabel}
             </div>
           )}
@@ -549,10 +682,11 @@ function VideoTile({ item, loadingLabel, fallbackText }: VideoTileProps) {
 interface MapFrameProps {
   src: string;
   loadingLabel: string;
+  actionLabel: string;
   title: string;
 }
 
-function MapFrame({ src, loadingLabel, title }: MapFrameProps) {
+function MapFrame({ src, loadingLabel, actionLabel, title }: MapFrameProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [shouldLoad, setShouldLoad] = useState(false);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
@@ -579,18 +713,18 @@ function MapFrame({ src, loadingLabel, title }: MapFrameProps) {
       className="mt-2 mb-4 h-64 md:h-72 rounded-2xl overflow-hidden ring-1 ring-white/10 relative bg-black/40"
     >
       {!shouldLoad ? (
-        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 text-sm text-white/80 bg-black/50 backdrop-blur-[2px]">
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 text-sm force-overlay-dim bg-black/50 backdrop-blur-[2px]">
           <span>{loadingLabel}</span>
           <button
             type="button"
             onClick={() => setShouldLoad(true)}
-            className="inline-flex items-center rounded-full bg-white/10 px-4 py-2 text-xs font-semibold ring-1 ring-white/20 hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300/70"
+            className="inline-flex items-center rounded-full bg-white/10 px-4 py-2 text-xs font-semibold ring-1 ring-white/20 hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(247,120,40,0.7)]"
           >
-            Załaduj mapę
+            {actionLabel}
           </button>
         </div>
       ) : !isLoaded ? (
-        <div className="absolute inset-0 z-10 flex items-center justify-center text-xs sm:text-sm text-white/80 bg-black/50 backdrop-blur-[2px] animate-pulse pointer-events-none">
+        <div className="absolute inset-0 z-10 flex items-center justify-center text-xs sm:text-sm force-overlay-dim bg-black/50 backdrop-blur-[2px] animate-pulse pointer-events-none">
           {loadingLabel}
         </div>
       ) : null}
@@ -619,6 +753,8 @@ export default function EventsPage() {
   const heroRef = useRef<HTMLVideoElement | null>(null);
   const heroContainerRef = useRef<HTMLDivElement | null>(null);
   const [isHeroVisible, setIsHeroVisible] = useState(false);
+  const tileHoverClass =
+    "group transition duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_16px_36px_rgba(79,207,222,0.18)] hover:ring-[rgba(79,207,222,0.35)]";
 
   // Hero wideo: start/pauza zależnie od viewportu
   useEffect(() => {
@@ -654,7 +790,7 @@ export default function EventsPage() {
       {/* Główna treść strony */}
       <section className="relative z-10 px-4 py-16 sm:py-20">
         {/* Hero video z tytułem */}
-        <header className="mx-auto w-full max-w-6xl mb-10 sm:mb-12">
+        <header className="mx-auto w-full max-w-[min(86vw,120rem)] mb-10 sm:mb-12">
           <div className="relative overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
             <div className="relative aspect-[16/9] bg-black" ref={heroContainerRef}>
               <video
@@ -691,7 +827,7 @@ export default function EventsPage() {
         </header>
 
         {/* LISTA KAFELKÓW — styl jak na /aktualnosci */}
-        <section className="mx-auto w-full max-w-6xl">
+        <section className="mx-auto w-full max-w-[min(86vw,120rem)]">
           <motion.ul
             initial="hidden"
             animate="show"
@@ -700,38 +836,43 @@ export default function EventsPage() {
           >
             {/* 1. Hero card z ogólnym opisem */}
             <li>
-              <div className="mx-2 sm:mx-3 md:mx-4 lg:mx-6 xl:mx-8 grid gap-6 md:gap-8 md:grid-cols-2 items-stretch">
-                {/* LEFT: bullets */}
-                <div className="md:order-2 flex flex-col items-center text-center md:items-start md:text-left">
-                  <ul className="space-y-3 sm:space-y-3.5 md:space-y-4 w-full max-w-2xl">
-                    {t.bullets.map((line, i) => (
-                      <li key={i} className="flex items-start gap-3">
-                        <span className="mt-1 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-teal-500 text-white font-bold shadow-[0_0_16px_rgba(20,184,166,0.35)] ring-1 ring-white/10">
-                          ✓
-                        </span>
-                        <p className="text-sm sm:text-base text-gray-100 leading-relaxed">
-                          {line}
-                        </p>
-                      </li>
-                    ))}
-                  </ul>
+              <Card
+                variant="solid"
+                className={`mx-2 sm:mx-3 md:mx-4 lg:mx-6 xl:mx-8 ${tileHoverClass}`}
+              >
+                <div className="grid gap-6 md:gap-8 md:grid-cols-2 items-stretch">
+                  {/* LEFT: bullets */}
+                  <div className="md:order-2 flex flex-col items-center text-center md:items-start md:text-left">
+                    <ul className="space-y-3 sm:space-y-3.5 md:space-y-4 w-full max-w-2xl">
+                      {t.bullets.map((line, i) => (
+                        <li key={i} className="flex items-start gap-3">
+                          <span className="mt-1 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-teal-500 text-white font-bold shadow-[0_0_16px_rgba(20,184,166,0.35)] ring-1 ring-white/10">
+                            ✓
+                          </span>
+                          <p className="text-sm sm:text-base text-gray-100 leading-relaxed">
+                            {line}
+                          </p>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  {/* RIGHT: video */}
+                  <EventVideo
+                    className="md:order-1"
+                    src="/wydarzenia/bankiet1.mp4"
+                    poster="/wydarzenia/AP_wydarzenia_poster.webp"
+                    loadingLabel={ui.loadingVideo}
+                    fallbackText={ui.videoFallback}
+                  />
                 </div>
-                {/* RIGHT: video */}
-                <EventVideo
-                  className="md:order-1"
-                  src="/wydarzenia/bankiet1.mp4"
-                  poster="/wydarzenia/AP_wydarzenia_poster.webp"
-                  loadingLabel={ui.loadingVideo}
-                  fallbackText={ui.videoFallback}
-                />
-              </div>
+              </Card>
             </li>
 
             {/* 2. Druga karta — rodzaje wydarzeń */}
             <li>
               <Card
                 variant="solid"
-                className="mx-2 sm:mx-3 md:mx-4 lg:mx-6 xl:mx-8"
+                className={`mx-2 sm:mx-3 md:mx-4 lg:mx-6 xl:mx-8 ${tileHoverClass}`}
               >
                 <div className="grid gap-6 md:gap-8 md:grid-cols-2 items-stretch">
                   <div className="md:order-1 flex flex-col items-center text-center md:items-start md:text-left">
@@ -767,7 +908,7 @@ export default function EventsPage() {
             <li>
               <Card
                 variant="solid"
-                className="mx-2 sm:mx-3 md:mx-4 lg:mx-6 xl:mx-8"
+                className={`mx-2 sm:mx-3 md:mx-4 lg:mx-6 xl:mx-8 ${tileHoverClass}`}
               >
                 <div className="grid gap-6 md:gap-8 md:grid-cols-2 items-stretch">
                   <div className="md:order-2 flex flex-col items-center text-center md:items-start md:text-left">
@@ -803,7 +944,7 @@ export default function EventsPage() {
             <li>
               <Card
                 variant="glass"
-                className="mx-2 sm:mx-3 md:mx-4 lg:mx-6 xl:mx-8"
+                className={`mx-2 sm:mx-3 md:mx-4 lg:mx-6 xl:mx-8 ${tileHoverClass}`}
               >
                 <div className="space-y-6">
                   <div className="text-center space-y-2">
@@ -818,6 +959,7 @@ export default function EventsPage() {
                         item={item}
                         loadingLabel={ui.loadingVideo}
                         fallbackText={ui.videoFallback}
+                        playLabel={ui.playVideo}
                       />
                     ))}
                   </div>
@@ -830,7 +972,7 @@ export default function EventsPage() {
               <div className="mx-2 sm:mx-3 md:mx-4 lg:mx-6 xl:mx-8">
                 <div className="grid gap-6 md:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
                   {/* Kopuła K3 */}
-                  <Card variant="solid" dense>
+                  <Card variant="solid" dense className={tileHoverClass}>
                     <div className="flex flex-col items-center">
                       <h3 className="text-xl md:text-2xl font-bold text-center">
                         {domes.k3.title}
@@ -839,7 +981,7 @@ export default function EventsPage() {
                       <ul className="w-full max-w-[28rem] text-left space-y-3 md:space-y-3.5">
                         {domes.k3.bullets.map((line, i) => (
                           <li key={i} className="flex items-start gap-3">
-                            <span className="mt-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-sky-500 text-white text-[10px] font-bold shadow-[0_0_12px_rgba(56,189,248,0.35)] ring-1 ring-white/10">
+                            <span className="mt-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#4fcfde] text-[#171730] text-[10px] font-bold shadow-[0_0_12px_rgba(79,207,222,0.35)] ring-1 ring-white/10">
                               ✓
                             </span>
                             <span>{line}</span>
@@ -850,7 +992,7 @@ export default function EventsPage() {
                   </Card>
 
                   {/* Kopuła K4 */}
-                  <Card variant="solid" dense>
+                  <Card variant="solid" dense className={tileHoverClass}>
                     <div className="flex flex-col items-center">
                       <h3 className="text-xl md:text-2xl font-bold text-center">
                         {domes.k4.title}
@@ -859,7 +1001,7 @@ export default function EventsPage() {
                       <ul className="w-full max-w-[28rem] text-left space-y-3 md:space-y-3.5">
                         {domes.k4.bullets.map((line, i) => (
                           <li key={i} className="flex items-start gap-3">
-                            <span className="mt-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-sky-500 text-white text-[10px] font-bold shadow-[0_0_12px_rgba(56,189,248,0.35)] ring-1 ring-white/10">
+                            <span className="mt-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#4fcfde] text-[#171730] text-[10px] font-bold shadow-[0_0_12px_rgba(79,207,222,0.35)] ring-1 ring-white/10">
                               ✓
                             </span>
                             <span>{line}</span>
@@ -870,7 +1012,7 @@ export default function EventsPage() {
                   </Card>
 
                   {/* Kopuła K7 */}
-                  <Card variant="solid" dense>
+                  <Card variant="solid" dense className={tileHoverClass}>
                     <div className="flex flex-col items-center">
                       <h3 className="text-xl md:text-2xl font-bold text-center">
                         {domes.k7.title}
@@ -879,7 +1021,7 @@ export default function EventsPage() {
                       <ul className="w-full max-w-[28rem] text-left space-y-3 md:space-y-3.5">
                         {domes.k7.bullets.map((line, i) => (
                           <li key={i} className="flex items-start gap-3">
-                            <span className="mt-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-sky-500 text-white text-[10px] font-bold shadow-[0_0_12px_rgba(56,189,248,0.35)] ring-1 ring-white/10">
+                            <span className="mt-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#4fcfde] text-[#171730] text-[10px] font-bold shadow-[0_0_12px_rgba(79,207,222,0.35)] ring-1 ring-white/10">
                               ✓
                             </span>
                             <span>{line}</span>
@@ -890,7 +1032,7 @@ export default function EventsPage() {
                   </Card>
 
                   {/* Kopuły K10 i K12 */}
-                  <Card variant="solid" dense>
+                  <Card variant="solid" dense className={tileHoverClass}>
                     <div className="flex flex-col items-center">
                       <h3 className="text-xl md:text-2xl font-bold text-center">
                         {domes.k10k12.title}
@@ -899,7 +1041,7 @@ export default function EventsPage() {
                       <ul className="w-full max-w-[28rem] text-left space-y-3 md:space-y-3.5">
                         {domes.k10k12.bullets.map((line, i) => (
                           <li key={i} className="flex items-start gap-3">
-                            <span className="mt-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-sky-500 text-white text-[10px] font-bold shadow-[0_0_12px_rgba(56,189,248,0.35)] ring-1 ring-white/10">
+                            <span className="mt-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#4fcfde] text-[#171730] text-[10px] font-bold shadow-[0_0_12px_rgba(79,207,222,0.35)] ring-1 ring-white/10">
                               ✓
                             </span>
                             <span>{line}</span>
@@ -916,7 +1058,7 @@ export default function EventsPage() {
             <li>
               <Card
                 variant="solid"
-                className="mx-2 sm:mx-3 md:mx-4 lg:mx-6 xl:mx-8"
+                className={`mx-2 sm:mx-3 md:mx-4 lg:mx-6 xl:mx-8 ${tileHoverClass}`}
               >
                 <div className="relative w-full aspect-[4/3] sm:aspect-[16/10] md:aspect-[16/9] overflow-hidden rounded-2xl ring-1 ring-white/10 bg-black/20">
                   <Image
@@ -933,12 +1075,9 @@ export default function EventsPage() {
                   />
                 </div>
                 <div className="flex justify-center mt-6">
-                  <Link
-                    href="/galeria"
-                    className="inline-flex items-center rounded-full px-6 py-3 text-sm md:text-base font-semibold text-black bg-gradient-to-b from-amber-400 to-amber-500 ring-1 ring-black/10 shadow-[0_0_30px_rgba(245,158,11,0.35)] hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300/60 transition"
-                  >
+                  <PrimaryButton href="/galeria" size="lg">
                     Przejdź do galerii
-                  </Link>
+                  </PrimaryButton>
                 </div>
               </Card>
             </li>
@@ -947,7 +1086,7 @@ export default function EventsPage() {
             <li>
               <Card
                 variant="solid"
-                className="mx-2 sm:mx-3 md:mx-4 lg:mx-6 xl:mx-8"
+                className={`mx-2 sm:mx-3 md:mx-4 lg:mx-6 xl:mx-8 ${tileHoverClass}`}
               >
                 <div className="grid gap-8 md:grid-cols-2">
                   <div>
@@ -956,6 +1095,30 @@ export default function EventsPage() {
                     </h3>
                     <div className="h-[1px] w-full bg-white/15 mb-6" />
                     <div className="space-y-6 text-gray-100">
+                      <div>
+                        <p className="text-lg md:text-xl font-semibold">
+                          PIOTR KOZOŁUB
+                        </p>
+                        <p className="mt-1 text-sm text-white/80">
+                          Specjalista ds. sprzedaży
+                        </p>
+                        <p>
+                          <a
+                            href="tel:+48452432315"
+                            className="hover:text-white"
+                          >
+                            +48 452 432 315
+                          </a>
+                        </p>
+                        <p>
+                          <a
+                            href="mailto:p.kozolub@gremi.pl"
+                            className="text-[#f03c64] hover:text-[#f77828]"
+                          >
+                            p.kozolub@gremi.pl
+                          </a>
+                        </p>
+                      </div>
                       <div>
                         <p className="text-lg md:text-xl font-semibold">
                           BARTEK JACOŃ
@@ -974,7 +1137,7 @@ export default function EventsPage() {
                         <p>
                           <a
                             href="mailto:b.jacon@gremi.pl"
-                            className="text-rose-300 hover:text-rose-200"
+                            className="text-[#f77828] hover:text-[#f03c64]"
                           >
                             b.jacon@gremi.pl
                           </a>
@@ -998,16 +1161,17 @@ export default function EventsPage() {
                       title={ui.mapTitle}
                       src="https://www.google.com/maps?q=Alvernia+Planet,+Nieporaz,+Ferdynanda+Wspania%C5%82ego+1&amp;output=embed"
                       loadingLabel={ui.loadingMap}
+                      actionLabel={ui.loadMapAction}
                     />
 
-                    <a
+                    <PrimaryButton
                       href="https://maps.app.goo.gl/a45HTibANAsDAi7u7"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center rounded-full px-5 py-2.5 font-semibold text-black bg-gradient-to-b from-amber-400 to-amber-500 ring-1 ring-black/10 shadow-[0_0_30px_rgba(245,158,11,0.35)] hover:brightness-110"
+                      size="md"
                     >
                       {ui.mapButton}
-                    </a>
+                    </PrimaryButton>
                   </div>
                 </div>
               </Card>

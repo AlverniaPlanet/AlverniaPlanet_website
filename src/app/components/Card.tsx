@@ -62,7 +62,7 @@ export default function Card({
         <>
           <h2
             className={cx(
-              "text-2xl sm:text-3xl md:text-4xl font-bold mb-2",
+              "text-2xl sm:text-3xl md:text-4xl font-bold leading-tight text-balance mb-2",
               titleCentered && "text-center",
               titleClassName,
             )}

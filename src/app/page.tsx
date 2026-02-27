@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import Image from "next/image";
 import { useI18n } from "@/app/i18n-provider";
 import Card from "@/app/components/Card";
@@ -9,7 +9,7 @@ import Testimonials, { type Testimonial } from "@/app/components/Testimonials";
 import translationsData, { NEWS_META } from "@/app/aktualnosci/aktualnosci";
 import { AttractionCard } from "@/app/components/AttractionCard";
 
-type Locale = "pl" | "en";
+type Locale = "pl" | "en" | "pt";
 
 type AttractionItem = {
   title: string;
@@ -27,6 +27,23 @@ type SectionCard = {
   href: string;
 };
 
+type TicketOption = {
+  badge: string;
+  title: string;
+  subtitle: string;
+  details: string[];
+};
+
+type TicketSection = {
+  title: string;
+  intro: string;
+  priceLabel: string;
+  price: string;
+  cta: string;
+  ctaHref: string;
+  options: TicketOption[];
+};
+
 type HomeCopy = {
   heroTitle: string;
   attractions: {
@@ -34,14 +51,13 @@ type HomeCopy = {
     intro: string;
     items: AttractionItem[];
   };
+  tickets: TicketSection;
   events: SectionCard;
   testimonials: {
     title: string;
     subtitle: string;
     reviews: Testimonial[];
   };
-  about: SectionCard;
-  tickets: SectionCard;
   news: {
     title: string;
     description: string;
@@ -51,6 +67,8 @@ type HomeCopy = {
   galleryTitle: string;
   galleryCta: string;
 };
+
+const BOOKING_URL = "https://alverniaplanet.bookero.pl";
 
 const HOME_COPY: Record<Locale, HomeCopy> = {
   pl: {
@@ -85,6 +103,28 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
           href: "/atrakcje/wystawa",
           image: "/galeria/Wystawa/HarryPotter_TheExhibition/webp/1.webp",
           imageAlt: "Eksponat na wystawie tematycznej",
+        },
+      ],
+    },
+    tickets: {
+      title: "Bilety na ścieżkę edukacyjną",
+      intro: "Cena jest taka sama dla obu opcji: 69 zł za osobę. Wybierz wariant rezerwacji.",
+      priceLabel: "Cena za osobę",
+      price: "69 zł/os.",
+      cta: "Kup bilet",
+      ctaHref: BOOKING_URL,
+      options: [
+        {
+          badge: "Indywidualne",
+          title: "Bilet indywidualny",
+          subtitle: "1-10 osób na jednym bilecie",
+          details: ["Dla osób indywidualnych i rodzin", "Płatność za osoby"],
+        },
+        {
+          badge: "Grupowe",
+          title: "Bilet grupowy (szkolny)",
+          subtitle: "30-50 osób w grupie",
+          details: ["Dla szkół i grup zorganizowanych", "Płatność za całą grupę"],
         },
       ],
     },
@@ -131,19 +171,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       cta: "Zobacz starsze",
       href: "/aktualnosci",
     },
-    about: {
-      title: "O obiekcie",
-      description:
-        "Alvernia Planet to unikalne centrum edukacji i rozrywki, w którym nauka spotyka się z filmową magią.",
-      cta: "Poznaj nas",
-      href: "/o-alvernia-planet",
-    },
-    tickets: {
-      title: "Bilety",
-      description: "Bilet normalny 35 zł, ulgowy 25 zł, grupowy 20 zł.",
-      cta: "Zapytaj o bilety",
-      href: "/kontakt",
-    },
     galleryTitle: "Galeria",
     galleryCta: "Otwórz całą galerię",
   },
@@ -181,6 +208,28 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         },
       ],
     },
+    tickets: {
+      title: "Educational path tickets",
+      intro: "Same price for both options: 69 PLN per person. Choose the booking type.",
+      priceLabel: "Price per person",
+      price: "69 PLN/person",
+      cta: "Buy tickets",
+      ctaHref: BOOKING_URL,
+      options: [
+        {
+          badge: "Individual",
+          title: "Individual ticket",
+          subtitle: "1-10 people on one ticket",
+          details: ["For individuals and families", "Pay per person"],
+        },
+        {
+          badge: "Group",
+          title: "Group ticket (schools)",
+          subtitle: "30-50 people in a group",
+          details: ["For schools and organized groups", "Pay for the whole group"],
+        },
+      ],
+    },
     events: {
       title: "A unique venue for your event!",
       description:
@@ -199,13 +248,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
             "Amazing, futuristic complex. I played an event there for a group that rented the venue and it set the perfect vibe. I almost didn’t want to leave—would happily live here! If you need a place for an event, this is it.",
           rating: 5,
           url: "https://maps.app.goo.gl/QqgR4n5zPU8iRNxf6",
-        },
-        {
-          name: "Mark L.",
-          date: "December 2024",
-          text:
-            "We arrived with a school group. Flawless logistics, no rush, and clear instructions. Students loved it, teachers appreciated how helpful the crew was.",
-          rating: 5,
         },
         {
           name: "Anna Potocka - Zbryyt",
@@ -231,35 +273,125 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       cta: "See older posts",
       href: "/aktualnosci",
     },
-    about: {
-      title: "About the venue",
-      description:
-        "Alvernia Planet is a unique hub of education and entertainment where science meets cinematic magic.",
-      cta: "Meet us",
-      href: "/o-alvernia-planet",
-    },
-    tickets: {
-      title: "Tickets",
-      description: "Standard ticket 35 PLN, concession 25 PLN, group 20 PLN.",
-      cta: "Ask about tickets",
-      href: "/kontakt",
-    },
     galleryTitle: "Gallery",
     galleryCta: "View full gallery",
+  },
+  pt: {
+    heroTitle: "Bem-vindo à Alvernia Planet",
+    attractions: {
+      title: "Atrações",
+      intro: "Entre no mundo das cúpulas e comece pelas nossas três experiências emblemáticas.",
+      items: [
+        {
+          title: "Cinema 360°",
+          description:
+            "Projeções imersivas em cúpula com imagem a 360° numa das estruturas mais avançadas da Europa.",
+          cta: "Ver o cinema 360°",
+          href: "/atrakcje/kino-360",
+          image: "/galeria/Ogolne/webp/4.webp",
+          imageAlt: "Interior da cúpula preparado para projeção 360°",
+        },
+        {
+          title: "Percurso cinematográfico",
+          description:
+            "Uma visita aos bastidores com cenários, adereços e tecnologia usada nas produções.",
+          cta: "Conheça o percurso",
+          href: "/atrakcje/sciezka-filmowa",
+          image: "/galeria/Sciezka_filmowa/webp/4.webp",
+          imageAlt: "Elementos de cenário no percurso cinematográfico",
+        },
+        {
+          title: "Exposições temáticas",
+          description:
+            "Exposição inspirada no mundo do cinema e da ciência, ideal para famílias e grupos.",
+          cta: "Descobrir a exposição",
+          href: "/atrakcje/wystawa",
+          image: "/galeria/Wystawa/HarryPotter_TheExhibition/webp/1.webp",
+          imageAlt: "Peça de exposição na mostra temática",
+        },
+      ],
+    },
+    tickets: {
+      title: "Bilhetes para o percurso educativo",
+      intro: "Preço igual nas duas opções: 69 PLN por pessoa. Escolha o tipo de reserva.",
+      priceLabel: "Preço por pessoa",
+      price: "69 PLN/pessoa",
+      cta: "Comprar bilhetes",
+      ctaHref: BOOKING_URL,
+      options: [
+        {
+          badge: "Individual",
+          title: "Bilhete individual",
+          subtitle: "1-10 pessoas por bilhete",
+          details: ["Para indivíduos e famílias", "Pagamento por pessoa"],
+        },
+        {
+          badge: "Grupo",
+          title: "Bilhete de grupo (escolas)",
+          subtitle: "30-50 pessoas no grupo",
+          details: ["Para escolas e grupos organizados", "Pagamento pelo grupo inteiro"],
+        },
+      ],
+    },
+    events: {
+      title: "Um espaço único para o seu evento!",
+      description:
+        "Espaços excepcionais para conferências, galas e estreias. Descubra o potencial da Alvernia Planet para eventos.",
+      cta: "Explorar eventos",
+      href: "/wydarzenia",
+    },
+    testimonials: {
+      title: "Opiniões dos visitantes",
+      subtitle: "Algumas avaliações recentes de quem visitou a Alvernia Planet.",
+      reviews: [
+        {
+          name: "Joke Peulen",
+          date: "janeiro 2025",
+          text:
+            "Complexo incrível e futurista. Toquei num evento para uma organização que alugou o espaço e o ambiente foi perfeito. Quase não queria sair daqui. Se procura um lugar para um evento, é este.",
+          rating: 5,
+          url: "https://maps.app.goo.gl/QqgR4n5zPU8iRNxf6",
+        },
+        {
+          name: "Anna Potocka - Zbryyt",
+          date: "agosto 2024",
+          text:
+            "A nossa turma participou na aula educativa “Nem tudo o que vês e ouves é verdade”. Uma ótima sessão para fãs de cinema; a guia envolveu as crianças com paixão e clareza. Recomendamos!",
+          rating: 5,
+          url: "https://maps.app.goo.gl/wBwEfrYd8ecH5Bac7",
+        },
+        {
+          name: "Cagatay Sen",
+          date: "dezembro 2024",
+          text:
+            "A exposição de Harry Potter foi fantástica, com adereços reais e excelente organização. Muito interativa — crianças e adultos ficaram encantados. Único ponto negativo: não havia WC na tenda, foi preciso ir até à área de refeições.",
+          rating: 5,
+          url: "https://maps.app.goo.gl/1B5sisSJGhTiLKrv6",
+        },
+      ],
+    },
+    news: {
+      title: "Notícias",
+      description: "As três atualizações mais recentes da Alvernia Planet.",
+      cta: "Ver anteriores",
+      href: "/aktualnosci",
+    },
+    galleryTitle: "Galeria",
+    galleryCta: "Ver galeria completa",
   },
 };
 
 const GOOGLE_PLACE_URL =
   "https://www.google.com/maps/place/Alvernia+Planet/@50.1022663,19.5444717,637m/data=!3m1!1e3!4m8!3m7!1s0x4716f227b90ec1a1:0xbd1dbadc60237cc3!8m2!3d50.1022629!4d19.5470466!9m1!1b1!16s%2Fg%2F1yy3vkg22?hl=pl&entry=ttu&g_ep=EgoyMDI1MTExNy4wIKXMDSoASAFQAw%3D%3D";
 const CATEGORY_COLORS: Record<string, string> = {
-  "ścieżka filmowa": "from-amber-500 to-orange-500",
-  "kino 360": "from-sky-500 to-blue-500",
-  ogólne: "from-neutral-600 to-neutral-400",
+  "ścieżka filmowa": "from-[#f77828] to-[#f03c64]",
+  "kino 360": "from-[#4fcfde] to-[#a5e6f0]",
+  ogólne: "from-[#171730] to-[#aab4be]",
 };
-const CATEGORY_LABELS: Record<string, { pl: string; en: string }> = {
-  "ścieżka filmowa": { pl: "Ścieżka filmowa", en: "Film path" },
-  "kino 360": { pl: "Kino 360", en: "360 cinema" },
-  ogólne: { pl: "Ogólne", en: "General" },
+const CATEGORY_LABELS: Record<string, { pl: string; en: string; pt: string }> = {
+  "ścieżka filmowa": { pl: "Ścieżka filmowa", en: "Film path", pt: "Percurso cinematográfico" },
+  "kino 360": { pl: "Kino 360", en: "360 cinema", pt: "Cinema 360" },
+  ogólne: { pl: "Ogólne", en: "General", pt: "Geral" },
 };
 
 type HomeNewsItem = {
@@ -285,7 +417,7 @@ function getLatestNews(loc: Locale, limit = 3): HomeNewsItem[] {
 }
 
 function formatDate(locale: Locale, iso: string) {
-  const lang = locale === "pl" ? "pl-PL" : "en-GB";
+  const lang = locale === "pl" ? "pl-PL" : locale === "pt" ? "pt-PT" : "en-GB";
   return new Date(iso).toLocaleDateString(lang, {
     day: "numeric",
     month: "long",
@@ -294,50 +426,47 @@ function formatDate(locale: Locale, iso: string) {
 }
 
 export default function Page() {
-  const [showGifHint, setShowGifHint] = useState(false);
   const { locale } = useI18n();
   const loc = ((locale as Locale) ?? "pl") as Locale;
   const copy = HOME_COPY[loc];
-  const hintText = locale === "en" ? "Scroll down" : "Przewiń w dół";
-  const heroVideoFallback = loc === "en" ? "Your browser does not support the video element." : "Twój browser nie wspiera elementu video.";
+  const heroVideoFallback =
+    loc === "en"
+      ? "Your browser does not support the video element."
+      : loc === "pt"
+      ? "O seu navegador não suporta o elemento de vídeo."
+      : "Twój browser nie wspiera elementu video.";
   const latestNews = useMemo(() => getLatestNews(loc, 3), [loc]);
   const eventPhotos = [
     {
       src: "/galeria/Wydarzenia/webp/1.webp",
-      alt: loc === "en" ? "Stage setup during an event" : "Scenografia sceny podczas wydarzenia",
+      alt:
+        loc === "en"
+          ? "Stage setup during an event"
+          : loc === "pt"
+          ? "Preparação de palco durante um evento"
+          : "Scenografia sceny podczas wydarzenia",
     },
     {
       src: "/galeria/Wydarzenia/webp/4.webp",
-      alt: loc === "en" ? "Guests networking in the dome" : "Goście podczas networkingu w kopule",
+      alt:
+        loc === "en"
+          ? "Guests networking in the dome"
+          : loc === "pt"
+          ? "Convidados a fazer networking na cúpula"
+          : "Goście podczas networkingu w kopule",
     },
     {
       src: "/galeria/Wydarzenia/webp/5.webp",
-      alt: loc === "en" ? "Live performance in the dome" : "Występ na żywo w kopule",
+      alt:
+        loc === "en"
+          ? "Live performance in the dome"
+          : loc === "pt"
+          ? "Atuação ao vivo na cúpula"
+          : "Występ na żywo w kopule",
     },
   ];
 
   const heroVideoRef = useRef<HTMLVideoElement | null>(null);
-  const cycleRef = useRef<number | null>(null);
-  useEffect(() => {
-    const steps: Array<{ show: boolean; dur: number }> = [
-      { show: false, dur: 5000 }, // start: czekaj 5s
-      { show: true,  dur: 5000 }, // pokaż 6s (BYŁO 3s)
-      { show: false, dur: 5000 }, // ukryj 5s
-      { show: true,  dur: 5000 }, // 
-      { show: false, dur: 5000 }, // ukryj 5s
-    ];
-    const run = (i: number) => {
-      // Po trzech pierwszych krokach zapętlamy: pokaż 5s / ukryj 5s
-      const idx = i < steps.length ? i : 3 + ((i - 3) % 2);
-      const { show, dur } = steps[idx];
-      setShowGifHint(show);
-      cycleRef.current = window.setTimeout(() => run(i + 1), dur);
-    };
-    run(0);
-    return () => {
-      if (cycleRef.current) clearTimeout(cycleRef.current);
-    };
-  }, []);
 
   // Safari: wymuś loop/autoplay inline nawet po zakończeniu
   useEffect(() => {
@@ -382,111 +511,61 @@ export default function Page() {
 
   return (
     <main className="relative min-h-screen text-white">
-      {/* Wideo jako tło pełnoekranowe pod AppBar */}
-      <section className="relative z-0 -mt-[64px] sm:-mt-[72px]">
-        <video
-          ref={heroVideoRef}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          poster="/home/AP_ogolne_poster.webp"
-          className="block w-full h-[calc(100svh+64px)] sm:h-[calc(100svh+72px)] object-cover pointer-events-none"
-          controlsList="nodownload noplaybackrate noremoteplayback nofullscreen"
-          disablePictureInPicture
-          tabIndex={-1}
-          onContextMenu={(e) => e.preventDefault()}
-          onError={() => console.warn("[video] playback error — check file names/paths in /public")}
-          onEnded={(e) => {
-            const vid = e.currentTarget;
-            vid.pause();
-            vid.currentTime = 0;
-            vid.load();
-            const p = vid.play();
-            if (p && typeof p.catch === "function") p.catch(() => {});
-          }}
-          onPause={(e) => {
-            const vid = e.currentTarget;
-            if (vid.paused) {
-              const p = vid.play();
-              if (p && typeof p.catch === "function") p.catch(() => {});
-            }
-          }}
-          onTimeUpdate={(e) => {
-            const vid = e.currentTarget;
-            if (vid.duration && vid.currentTime >= vid.duration - 0.2) {
-              vid.currentTime = 0;
-              const p = vid.play();
-              if (p && typeof p.catch === "function") p.catch(() => {});
-            }
-          }}
-        >
-          <source src="/home/AP_ogolne.webm" type="video/webm" />
-          <source src="/home/AP_ogolne.mp4" type="video/mp4" />
-          {heroVideoFallback}
-        </video>
-        <div
-          className={`absolute inset-0 z-[1000] flex items-center justify-center transition-opacity ${
-            showGifHint
-              ? 'opacity-100 duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)]'
-              : 'opacity-0 duration-[1200ms] ease-[cubic-bezier(0.7,0,0.84,0)]'
-          } pointer-events-none`}
-          aria-hidden={!showGifHint}
-        >
-          <div
-            className={`pointer-events-none flex flex-col items-center transform transition-transform force-overlay ${
-              showGifHint
-                ? 'translate-y-0 scale-100 duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)]'
-                : 'translate-y-2 scale-95 duration-[900ms] ease-[cubic-bezier(0.7,0,0.84,0)]'
-            }`}
-          >
-            <button
-              type="button"
-              aria-label={hintText}
-              className={`h-16 w-16 md:h-20 md:w-20 rounded-full bg-white/18 ring-1 ring-white/35 backdrop-blur flex items-center justify-center shadow-lg animate-bounce ${showGifHint ? 'pointer-events-auto' : 'pointer-events-none'}`}
-              onClick={() => {
-                document.getElementById('content-start')?.scrollIntoView({ behavior: 'smooth' });
-              }}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="h-7 w-7 text-white"
+      {/* Wideo hero w "kwadracie" jak na pozostałych podstronach */}
+      <section className="relative z-10 px-4 pt-10 sm:pt-12">
+        <div className="mx-auto w-full max-w-[min(86vw,120rem)]">
+          <div className="relative overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
+            <div className="relative aspect-[16/9] bg-black">
+              <video
+                ref={heroVideoRef}
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                poster="/home/AP_ogolne_poster.webp"
+                className="absolute inset-0 h-full w-full object-cover pointer-events-none"
+                controlsList="nodownload noplaybackrate noremoteplayback nofullscreen"
+                disablePictureInPicture
+                tabIndex={-1}
+                onContextMenu={(e) => e.preventDefault()}
+                onError={() => console.warn("[video] playback error — check file names/paths in /public")}
+                onEnded={(e) => {
+                  const vid = e.currentTarget;
+                  vid.pause();
+                  vid.currentTime = 0;
+                  vid.load();
+                  const p = vid.play();
+                  if (p && typeof p.catch === "function") p.catch(() => {});
+                }}
+                onPause={(e) => {
+                  const vid = e.currentTarget;
+                  if (vid.paused) {
+                    const p = vid.play();
+                    if (p && typeof p.catch === "function") p.catch(() => {});
+                  }
+                }}
+                onTimeUpdate={(e) => {
+                  const vid = e.currentTarget;
+                  if (vid.duration && vid.currentTime >= vid.duration - 0.2) {
+                    vid.currentTime = 0;
+                    const p = vid.play();
+                    if (p && typeof p.catch === "function") p.catch(() => {});
+                  }
+                }}
               >
-                <polyline points="6 9 12 15 18 9" />
-              </svg>
-            </button>
-            <div className="mt-3 text-base md:text-lg font-semibold text-white/90 drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
-              {hintText}
+                <source src="/home/AP_ogolne.webm" type="video/webm" />
+                <source src="/home/AP_ogolne.mp4" type="video/mp4" />
+                {heroVideoFallback}
+              </video>
             </div>
-          </div>
-        </div>
-
-        {/* Soft bottom glow & fade under the video */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-28 sm:h-36"
-        >
-          {/* smooth fade to black */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black" />
-          {/* subtle glow like footer aura */}
-          <div className="absolute inset-x-0 bottom-0 h-full opacity-20 mix-blend-screen bg-[radial-gradient(80%_120%_at_50%_100%,rgba(255,255,255,0.35),rgba(0,0,0,0)_60%)]" />
-          {/* subtle white separator, same as footer line */}
-          <div className="absolute inset-x-0 bottom-0 flex justify-center">
-            <div className="h-px w-full max-w-4xl bg-white/10" />
           </div>
         </div>
       </section>
 
       {/* Content below the hero video */}
       <section id="content-start" className="relative z-10 mt-8 sm:mt-12 px-4 py-14">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-[min(86vw,120rem)] mx-auto">
           <div className="text-center mb-10">
             <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold">
               {copy.heroTitle}
@@ -511,6 +590,62 @@ export default function Page() {
             </Card>
 
             <Card
+              title={copy.tickets.title}
+              className="md:col-span-2"
+              titleCentered
+              titleDivider
+            >
+              <p className="text-center text-gray-200 max-w-3xl mx-auto">
+                {copy.tickets.intro}
+              </p>
+              <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {copy.tickets.options.map((option) => (
+                  <div
+                    key={option.title}
+                    className="group flex h-full flex-col overflow-hidden rounded-3xl border border-[rgba(79,207,222,0.35)] bg-white/5 text-white/90 ring-1 ring-white/10 shadow-[0_18px_45px_rgba(0,0,0,0.35)] transition duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_22px_55px_rgba(79,207,222,0.25)]"
+                  >
+                    <div className="bg-gradient-to-r from-[#4fcfde] to-[#a5e6f0] px-6 py-3 text-center text-xs sm:text-sm font-semibold uppercase tracking-[0.25em] text-white/95">
+                      {option.badge}
+                    </div>
+                    <div className="flex h-full flex-col p-6 sm:p-8 text-center">
+                      <h3 className="text-2xl sm:text-3xl font-semibold text-white">
+                        {option.title}
+                      </h3>
+                      <p className="mt-2 text-sm sm:text-base text-white/75">
+                        {option.subtitle}
+                      </p>
+                      <ul className="mt-6 space-y-3 text-sm text-white/70 text-left mx-auto max-w-sm">
+                        {option.details.map((detail) => (
+                          <li key={detail} className="flex gap-3">
+                            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-[#4fcfde] shrink-0" />
+                            <span>{detail}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      <div className="mt-auto pt-6">
+                        <p className="text-[0.7rem] uppercase tracking-[0.25em] text-white/60">
+                          {copy.tickets.priceLabel}
+                        </p>
+                        <p className="mt-2 text-3xl sm:text-4xl font-bold text-amber-200">
+                          {copy.tickets.price}
+                        </p>
+                        <div className="mt-6 flex justify-center">
+                          <PrimaryButton
+                            href={copy.tickets.ctaHref}
+                            size="md"
+                            className="ticket-pill ring-[color:rgba(240,60,100,0.55)]"
+                          >
+                            {copy.tickets.cta}
+                          </PrimaryButton>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+
+            <Card
               title={copy.events.title}
               className="md:col-span-2 text-center"
               titleCentered
@@ -521,14 +656,14 @@ export default function Page() {
                 {eventPhotos.map((photo) => (
                   <div
                     key={photo.src}
-                    className="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-white/5 ring-1 ring-white/10"
+                    className="group relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-white/5 ring-1 ring-white/10 transition duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_16px_36px_rgba(79,207,222,0.18)] hover:ring-[rgba(79,207,222,0.35)]"
                   >
                     <Image
                       src={photo.src}
                       alt={photo.alt}
                       fill
                       sizes="(min-width: 1024px) 30vw, (min-width: 768px) 33vw, 100vw"
-                      className="object-cover"
+                      className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
                       priority={false}
                     />
                   </div>
@@ -550,15 +685,6 @@ export default function Page() {
               <p className="text-center text-gray-200">{copy.testimonials.subtitle}</p>
               <div className="mt-6">
                 <Testimonials reviews={reviewsToShow} sourceUrl={GOOGLE_PLACE_URL} />
-              </div>
-            </Card>
-
-            <Card title={copy.about.title} titleCentered titleDivider className="md:col-span-2">
-              <p className="text-gray-300">{copy.about.description}</p>
-              <div className="mt-6 flex justify-center">
-                <PrimaryButton href={copy.about.href} size="lg">
-                  {copy.about.cta}
-                </PrimaryButton>
               </div>
             </Card>
 
@@ -618,14 +744,14 @@ export default function Page() {
                 ].map((img) => (
                   <div
                     key={img.src}
-                    className="relative w-full aspect-[16/10] md:aspect-[16/9] rounded-lg bg-white/5 overflow-hidden"
+                    className="group relative w-full aspect-[16/10] md:aspect-[16/9] rounded-lg bg-white/5 overflow-hidden ring-1 ring-white/10 transition duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_16px_36px_rgba(79,207,222,0.18)] hover:ring-[rgba(79,207,222,0.35)]"
                   >
                     <Image
                       src={img.src}
                       alt={img.alt}
                       fill
                       sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
-                      className="object-cover"
+                      className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
                       priority={false}
                     />
                   </div>

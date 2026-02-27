@@ -7,10 +7,9 @@ import { useTheme } from "@/app/theme-provider";
 export default function Loading() {
   const { theme } = useTheme();
   const isLight = theme === "light";
-  const logoFrameClass = `inline-flex items-center justify-center rounded-[28px] bg-white px-12 py-3 ring-0 ${
-    isLight
-      ? "shadow-[0_12px_30px_rgba(15,23,42,0.16)]"
-      : "shadow-[0_18px_40px_rgba(0,0,0,0.5)]"
+  const logoSrc = isLight ? "/Loga/Logo_pozytyw.svg" : "/Loga/Logo_negatyw.svg";
+  const logoFrameClass = `inline-flex items-center justify-center rounded-[28px] px-10 py-3 ${
+    isLight ? "bg-white/80 shadow-[0_12px_30px_rgba(23,23,48,0.16)]" : "bg-transparent"
   }`;
   return (
     <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[var(--ap-bg)]">
@@ -22,10 +21,10 @@ export default function Loading() {
         className={`mb-6 ${logoFrameClass}`}
       >
         <Image
-          src="/logo_alvernia_planet_RGB_crop.jpg"
+          src={logoSrc}
           alt="Alvernia Planet"
           width={300}
-          height={52}
+          height={56}
           className="h-[56px] w-auto object-contain object-center opacity-95"
           priority
         />
@@ -33,7 +32,7 @@ export default function Loading() {
 
       {/* Obracająca się poświata */}
       <motion.div
-        className="absolute w-60 h-60 rounded-full bg-amber-500/20 blur-3xl"
+        className="absolute w-60 h-60 rounded-full bg-[color:var(--ap-accent-soft)] blur-3xl"
         animate={{ rotate: 360 }}
         transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
       />

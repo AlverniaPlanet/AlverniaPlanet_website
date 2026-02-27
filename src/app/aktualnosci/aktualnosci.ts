@@ -7,7 +7,7 @@ const translations = {
       "1": {
         title: "Rozpoczęcie wystawy: Harry Potter™: The Exhibition",
         excerpt:
-          "10 kwietnia 2025 otwieramy w Alvernia Planet wyjątkową wystawę Harry Potter™: The Exhibition. Sprawdź bilety i terminy!",
+          "Zajrzyj do Alvernia Planet — futurystyczne 13 kopuł łączą rozrywkę, edukację i eventy. 30–35 km od Krakowa, tuż przy A4. Poznaj świat filmu!",
       },
       "2": {
         title: "Zakończenie wystawy: Harry Potter™: The Exhibition",
@@ -39,6 +39,27 @@ const translations = {
         title: "Film Path refurbishment",
         excerpt:
           "On October 20, we begin revamping the film path. More details on new attractions coming soon.",
+      },
+    },
+  },
+  pt: {
+    headline: "Notícias",
+    intro: "Eventos, anúncios e novidades da Alvernia Planet.",
+    posts: {
+      "1": {
+        title: "Abertura: Harry Potter™: The Exhibition",
+        excerpt:
+          "A 10 de abril de 2025 abrimos a Harry Potter™: The Exhibition na Alvernia Planet. Consulte bilhetes e datas!",
+      },
+      "2": {
+        title: "Encerramento: Harry Potter™: The Exhibition",
+        excerpt:
+          "A 17 de agosto de 2025 termina a Harry Potter™: The Exhibition. Não perca as últimas datas!",
+      },
+      "3": {
+        title: "Renovação do percurso cinematográfico",
+        excerpt:
+          "A 20 de outubro iniciamos a renovação do percurso cinematográfico. Mais detalhes sobre novas atrações em breve.",
       },
     },
   },

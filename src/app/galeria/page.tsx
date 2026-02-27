@@ -38,7 +38,7 @@ const harryPotterImages = range(8).map((n) => `${EXHIBITION_DIR}/webp/${n}.webp`
 const BLUR_PLACEHOLDER = "data:image/gif;base64,R0lGODlhAQABAAAAACw="; // lekki placeholder dla ładowania
 
 // ===== i18n (PL/EN lokalnie dla strony) =====
-type Locale = "pl" | "en";
+type Locale = "pl" | "en" | "pt";
 const COPY: Record<Locale, {
   title: string;
   subtitle: string;
@@ -85,6 +85,22 @@ const COPY: Record<Locale, {
     ui: {
       loadingImage: "Loading image...",
       imageError: "Failed to load",
+    }
+  },
+  pt: {
+    title: "Galeria",
+    subtitle: "Fotografias dos nossos espaços e eventos.",
+    sections: {
+      general: "Geral",
+      film: "Percurso cinematográfico",
+      events: "Eventos",
+      exhibitions: "Exposições temáticas",
+      hpExhibition: "Harry Potter: The Exhibition 10 Abr - 17 Ago 2025",
+      photoLabel: "Foto",
+    },
+    ui: {
+      loadingImage: "A carregar foto...",
+      imageError: "Falha ao carregar",
     }
   }
 };
@@ -174,6 +190,48 @@ const CAPTIONS: Record<Locale, { general: string[]; film: string[]; events: stri
       "Guest meet & greet",
     ],
   },
+  pt: {
+    general: [
+      "Cúpulas vistas de cima",
+      "Passagens envidraçadas entre cúpulas",
+      "Corredor cápsula",
+      "Vista noturna do complexo",
+      "Entrada da cúpula",
+      "Túnel de entrada envidraçado",
+      "Cúpulas ao entardecer",
+      "Vista do complexo por drone",
+    ],
+    film: [
+      "Estação de IA / VR",
+      "Portal de luz",
+      "Adereços e cenografia",
+      "Palestra no estúdio",
+      "Estações interativas",
+      "Ecrãs de projeção",
+      "Pontes e escadas industriais",
+      "Instalação neon",
+    ],
+    events: [
+      "Conferência na cúpula",
+      "Área de networking",
+      "Banquete na K9",
+      "Gala na cúpula",
+      "Plano do evento e palco",
+      "Catering ao vivo",
+      "Zona de atrações no palco",
+      "Show na cúpula com revelação de carro",
+    ],
+    exhibitions: [
+      "Entrada da exposição",
+      "Knight Bus",
+      "Início do percurso – portal",
+      "Sala imersiva com mapa",
+      "Sala de registo",
+      "Galeria de retratos",
+      "Autocarro da exposição no exterior",
+      "Encontro com convidados",
+    ],
+  },
 };
 
 export default function GalleryPage() {
@@ -208,7 +266,7 @@ export default function GalleryPage() {
 
   return (
     <main className="relative min-h-screen text-white">
-      <motion.div initial="hidden" animate="show" variants={fade} className="mx-auto w-full max-w-6xl px-4 py-16 sm:py-20">
+      <motion.div initial="hidden" animate="show" variants={fade} className="mx-auto w-full max-w-[min(86vw,120rem)] px-4 py-16 sm:py-20">
         {/* Nagłówek strony */}
         <header className="text-center mb-10 sm:mb-12">
           <motion.h1 variants={fadeUp} className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight">
@@ -428,7 +486,7 @@ function Lightbox({ items, index, caption, onClose, onChange }: LightboxProps) {
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.98 }}
           transition={{ duration: 0.2 }}
-          className="relative w-full max-w-6xl h-[80vh]"
+          className="relative w-full max-w-[min(86vw,120rem)] h-[80vh]"
         >
           <Image
             src={items[index]}
@@ -504,7 +562,7 @@ function GalleryTile({ src, alt, caption, loadingText, errorText, onClick, prior
         )}
 
         {errored ? (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-xs text-amber-200">
+          <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-xs text-[#f77828]">
             {errorText}
           </div>
         ) : (

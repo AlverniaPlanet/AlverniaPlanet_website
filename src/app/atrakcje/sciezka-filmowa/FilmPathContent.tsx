@@ -6,7 +6,7 @@ import TourLineGalleryRow from "@/app/components/TourLineGalleryRow";
 import { PrimaryButton } from "@/app/components/PrimaryButton";
 import { useI18n } from "@/app/i18n-provider";
 
-type Locale = "pl" | "en";
+type Locale = "pl" | "en" | "pt";
 
 type Section = { title: string; body: string };
 
@@ -106,6 +106,45 @@ const COPY: Record<
     bookingFrameTitle: "Bookero booking",
     videoFallback: "Your browser does not support the video element.",
   },
+  pt: {
+    heroTag: "Atrações",
+    heroTitle: "Percurso cinematográfico",
+    heroLead: "Percorra a visita que revela como se criam mundos cinematográficos.",
+    story: [
+      {
+        title: "Como se faz um filme?",
+        body: "Nesta visita vais descobrir como se constroem as cenas, como se grava o som, como funciona o chroma key e o que faz a direção de arte.",
+      },
+      {
+        title: "Veja e toque nos adereços",
+        body: "Não são réplicas — são adereços reais usados em filmagens.",
+      },
+      {
+        title: "Descubra a magia do som do cinema",
+        body: "Na sala de pós‑produção vais ver como nasce o som do filme — dos diálogos e efeitos especiais à mistura e gravações foley.",
+      },
+      {
+        title: "Entre na cenografia do filme",
+        body: "Caminhe entre paredes criadas para a história. Sinta o ambiente de cenas que antes existiam apenas no ecrã.",
+      },
+      {
+        title: "Faça parte do set",
+        body: "Participe em workshops e veja, passo a passo, como se cria uma cena filmada aqui mesmo.",
+      },
+      {
+        title: "Quem faz o quê no set?",
+        body: "Quem é o realizador e quem segura realmente a câmara? Quem trata da cenografia e quem cuida do som? Conheça os bastidores da equipa.",
+      },
+    ],
+    k9Title: "Cúpula K9 — zonas interativas para explorar após o percurso",
+    k9Body:
+      "Depois do percurso principal, descanse e explore livremente: instalações de luz, cabines de fotos e pontos interativos na cúpula K9.",
+    bookingTitle: "Reserve a sua visita",
+    bookingBody: "Escolha uma data conveniente e reserve online no calendário Bookero.",
+    bookingButton: "Abrir reserva num novo separador",
+    bookingFrameTitle: "Reserva Bookero",
+    videoFallback: "O seu navegador não suporta o elemento de vídeo.",
+  },
 };
 
 const K9_ITEMS: Record<Locale, K9Item[]> = {
@@ -163,6 +202,33 @@ const K9_ITEMS: Record<Locale, K9Item[]> = {
       image: "/galeria/Sciezka_filmowa/webp/5.webp",
     },
   ],
+  pt: [
+    {
+      title: "Guia de IA",
+      body: "Converse com a IA sobre o percurso, os filmes e os bastidores do set.",
+      image: "/galeria/Sciezka_filmowa/webp/1.webp",
+    },
+    {
+      title: "Portais para outras dimensões",
+      body: "Atravesse portais luminosos e espreite outros mundos cenográficos.",
+      image: "/galeria/Sciezka_filmowa/webp/2.webp",
+    },
+    {
+      title: "Cenografia de filme",
+      body: "Entre num set e explore adereços de ficção científica de perto.",
+      image: "/galeria/Sciezka_filmowa/webp/3.webp",
+    },
+    {
+      title: "Paragem no percurso",
+      body: "Veja um excerto da visita: uma apresentação e demonstração dos bastidores.",
+      image: "/galeria/Sciezka_filmowa/webp/4.webp",
+    },
+    {
+      title: "Quiz de cinema",
+      body: "Veja quanto se recorda e termine o percurso com um quiz interativo.",
+      image: "/galeria/Sciezka_filmowa/webp/5.webp",
+    },
+  ],
 };
 
 const BOOKING_URL = "https://alverniaplanet.bookero.pl";
@@ -177,7 +243,7 @@ export default function FilmPathContent() {
     <main className="relative z-10 min-h-screen">
       {/* Hero wideo (jak na /wydarzenia) */}
       <section className="relative z-10 px-4 pt-12 sm:pt-16">
-        <div className="mx-auto w-full max-w-6xl mb-10 sm:mb-12">
+        <div className="mx-auto w-full max-w-[min(86vw,120rem)] mb-10 sm:mb-12">
           <div className="relative overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
             <div className="relative aspect-[16/9] bg-black">
               <video
@@ -186,7 +252,7 @@ export default function FilmPathContent() {
                 loop
                 muted
                 playsInline
-                preload="auto"
+                preload="metadata"
                 poster="/wycieczka/APE_sciezafilmowa_poster.webp"
                 onEnded={(e) => {
                   e.currentTarget.currentTime = 0;
@@ -217,10 +283,13 @@ export default function FilmPathContent() {
       </section>
 
       <section className="px-4 pb-16 sm:pb-20">
-        <div className="max-w-6xl mx-auto space-y-10 sm:space-y-12">
+        <div className="max-w-[min(86vw,120rem)] mx-auto space-y-10 sm:space-y-12">
           <div className="grid gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {t.story.map((section) => (
-              <Card key={section.title} className="text-center space-y-4 h-full">
+              <Card
+                key={section.title}
+                className="text-center space-y-4 h-full group transition duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_16px_36px_rgba(79,207,222,0.18)] hover:ring-[rgba(79,207,222,0.35)]"
+              >
                 <TourLineAccentTitle>{section.title}</TourLineAccentTitle>
                 <p className="text-lg text-gray-100 leading-relaxed">{section.body}</p>
               </Card>

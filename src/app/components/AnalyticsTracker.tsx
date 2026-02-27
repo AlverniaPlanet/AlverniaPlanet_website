@@ -9,6 +9,7 @@ const LABEL_MAP: Record<string, string> = {
   // PL
   "wydarzenia": "Wydarzenia",
   "jak dojechać": "Jak dojechać",
+  "bilety": "Bilety",
   "bilety i rezerwacje": "Bilety i rezerwacje",
   "aktualności": "Aktualności",
   "galeria": "Galeria",
@@ -25,6 +26,7 @@ const LABEL_MAP: Record<string, string> = {
   // EN -> map to PL
   "events": "Wydarzenia",
   "getting here": "Jak dojechać",
+  "tickets": "Bilety",
   "tickets & bookings": "Bilety i rezerwacje",
   "news": "Aktualności",
   "gallery": "Galeria",
@@ -39,6 +41,23 @@ const LABEL_MAP: Record<string, string> = {
   "cookies policy": "Polityka cookies",
   "minors protection": "Ochrona małoletnich",
   "book your visit": "Rezerwuj wizytę",
+  // PT -> map to PL
+  "eventos": "Wydarzenia",
+  "como chegar": "Jak dojechać",
+  "bilhetes": "Bilety",
+  "bilhetes e reservas": "Bilety i rezerwacje",
+  "notícias": "Aktualności",
+  "início": "Strona główna",
+  "sobre a alvernia planet": "O Alvernia Planet",
+  "contacto": "Kontakt",
+  "exposição temática": "Wystawa tematyczna",
+  "percurso cinematográfico": "Ścieżka filmowa",
+  "cinema 360°": "Kino 360°",
+  "regulamento": "Regulamin",
+  "política de privacidade": "Polityka prywatności",
+  "política de cookies": "Polityka cookies",
+  "proteção de menores": "Ochrona małoletnich",
+  "reservar visita": "Rezerwuj wizytę",
 };
 
 function getLabel(el: HTMLElement) {
@@ -71,6 +90,7 @@ function detectLanguageSwitch(label?: string) {
   const key = label.toLowerCase();
   if (key === "en" || key === "english") return "en";
   if (key === "pl" || key === "polski") return "pl";
+  if (key === "pt" || key === "português" || key === "portugues") return "pt";
   return undefined;
 }
 
