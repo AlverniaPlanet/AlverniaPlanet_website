@@ -168,9 +168,9 @@ export default function WystawaContent() {
   const copy = COPY[loc];
 
   return (
-    <main className="relative z-10 min-h-screen">
+    <main className="relative z-10 min-h-screen ap-page-intro-stagger">
       <section className="relative z-10 px-4 pt-12 sm:pt-16">
-        <div className="mx-auto w-full max-w-[min(86vw,120rem)] mb-10 sm:mb-12">
+        <div className="mx-auto w-full max-w-7xl mb-10 sm:mb-12">
           <div className="relative overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
             <div className="relative aspect-[4/5] sm:aspect-[16/9] bg-black">
               <video
@@ -211,10 +211,10 @@ export default function WystawaContent() {
       </section>
 
       <section className="px-4 pb-16 sm:pb-20">
-        <div className="max-w-[min(86vw,120rem)] mx-auto space-y-10 sm:space-y-12">
+        <div className="max-w-7xl mx-auto space-y-10 sm:space-y-12">
           <Card className="space-y-6" variant="solid">
             <TourLineAccentTitle variant="green">{copy.sectionTitle}</TourLineAccentTitle>
-            <div className="space-y-4 text-base text-gray-100 leading-relaxed max-w-5xl mx-auto">
+            <div className="space-y-4 text-base text-gray-100 leading-relaxed max-w-7xl mx-auto">
               {copy.paragraphs.map((p) => (
                 <p key={p}>{p}</p>
               ))}

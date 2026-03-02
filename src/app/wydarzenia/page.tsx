@@ -786,11 +786,11 @@ export default function EventsPage() {
   }, [isHeroVisible]);
 
   return (
-    <main className="relative min-h-screen">
+    <main className="relative min-h-screen ap-page-intro-stagger">
       {/* Główna treść strony */}
       <section className="relative z-10 px-4 py-16 sm:py-20">
         {/* Hero video z tytułem */}
-        <header className="mx-auto w-full max-w-[min(86vw,120rem)] mb-10 sm:mb-12">
+        <header className="mx-auto w-full max-w-7xl mb-10 sm:mb-12">
           <div className="relative overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
             <div className="relative aspect-[16/9] bg-black" ref={heroContainerRef}>
               <video
@@ -826,8 +826,8 @@ export default function EventsPage() {
           </div>
         </header>
 
-        {/* LISTA KAFELKÓW — styl jak na /aktualnosci */}
-        <section className="mx-auto w-full max-w-[min(86vw,120rem)]">
+        {/* LISTA KAFELKÓW */}
+        <section className="mx-auto w-full max-w-7xl">
           <motion.ul
             initial="hidden"
             animate="show"
@@ -970,7 +970,7 @@ export default function EventsPage() {
             {/* 5. Cztery kopuły obok siebie */}
             <li>
               <div className="mx-2 sm:mx-3 md:mx-4 lg:mx-6 xl:mx-8">
-                <div className="grid gap-6 md:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="grid gap-6 md:gap-8 grid-cols-1 md:grid-cols-2">
                   {/* Kopuła K3 */}
                   <Card variant="solid" dense className={tileHoverClass}>
                     <div className="flex flex-col items-center">
@@ -1054,7 +1054,7 @@ export default function EventsPage() {
               </div>
             </li>
 
-            {/* 6. Mapka graficzna + przycisk do galerii */}
+            {/* 6. Mapka graficzna */}
             <li>
               <Card
                 variant="solid"
@@ -1073,11 +1073,6 @@ export default function EventsPage() {
                     className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-b from-transparent to-black/70"
                     aria-hidden
                   />
-                </div>
-                <div className="flex justify-center mt-6">
-                  <PrimaryButton href="/galeria" size="lg">
-                    Przejdź do galerii
-                  </PrimaryButton>
                 </div>
               </Card>
             </li>

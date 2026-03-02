@@ -46,12 +46,11 @@ export function PrimaryButton(props: PrimaryButtonProps) {
   const classes = cx(baseClass, sizeMap[size], className);
   const plToIntl: Record<string, string> = {
     "/wydarzenia": "/events",
+    "/galeria": "/gallery",
     "/jak-dojechac": "/getting-there",
     "/bilety": "/tickets",
     "/o-alvernia-planet": "/about",
-    "/galeria": "/gallery",
     "/kontakt": "/contact",
-    "/aktualnosci": "/news",
     "/atrakcje/wystawa": "/attractions/exhibition",
     "/atrakcje/sciezka-filmowa": "/attractions/film-path",
     "/atrakcje/kino-360": "/attractions/cinema-360",

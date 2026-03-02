@@ -12,6 +12,15 @@ type Section = { title: string; body: string };
 
 type K9Item = { title: string; body: string; image: string };
 
+type TicketOption = {
+  badge: string;
+  title: string;
+  subtitle: string;
+  details: string[];
+  priceLabel?: string;
+  price?: string;
+};
+
 const COPY: Record<
   Locale,
   {
@@ -21,10 +30,12 @@ const COPY: Record<
     story: Section[];
     k9Title: string;
     k9Body: string;
-    bookingTitle: string;
-    bookingBody: string;
-    bookingButton: string;
-    bookingFrameTitle: string;
+    ticketsTitle: string;
+    ticketsIntro: string;
+    ticketsPriceLabel: string;
+    ticketsPrice: string;
+    ticketsButton: string;
+    ticketsOptions: TicketOption[];
     videoFallback: string;
   }
 > = {
@@ -61,10 +72,27 @@ const COPY: Record<
     k9Title: "Kopuła K9 — interaktywne strefy do eksploracji po trasie",
     k9Body:
       "Po głównej trasie odpocznij i poznaj strefy, które możesz swobodnie eksplorować: instalacje świetlne, fotobudki i interaktywne punkty przygotowane w kopule K9.",
-    bookingTitle: "Zarezerwuj termin",
-    bookingBody: "Wybierz dogodny termin wizyty i zarezerwuj online w kalendarzu Bookero.",
-    bookingButton: "Otwórz rezerwację w nowej karcie",
-    bookingFrameTitle: "Rezerwacja Bookero",
+    ticketsTitle: "Bilety na ścieżkę edukacyjną",
+    ticketsIntro: "Cena jest taka sama dla obu opcji: 69 zł za osobę. Wybierz wariant rezerwacji.",
+    ticketsPriceLabel: "Cena za osobę",
+    ticketsPrice: "69 zł/os.",
+    ticketsButton: "Kup bilet",
+    ticketsOptions: [
+      {
+        badge: "Indywidualne",
+        title: "Bilet indywidualny",
+        subtitle: "1-10 osób na jednym bilecie",
+        details: ["Dla osób indywidualnych i rodzin", "Płatność za osoby"],
+      },
+      {
+        badge: "Grupowe",
+        title: "Bilet grupowy (szkolny)",
+        subtitle: "30-50 osób w grupie",
+        details: ["Dla szkół i grup zorganizowanych", "Płatność za całą grupę"],
+        priceLabel: "Cena za min. 30 osób",
+        price: "2 070 zł/grupa",
+      },
+    ],
     videoFallback: "Twoja przeglądarka nie obsługuje elementu wideo.",
   },
   en: {
@@ -100,10 +128,27 @@ const COPY: Record<
     k9Title: "K9 dome — interactive zones to explore after the tour",
     k9Body:
       "After the main route, take a break and explore the zones freely: light installations, photo booths, and interactive spots prepared in the K9 dome.",
-    bookingTitle: "Book your visit",
-    bookingBody: "Pick a convenient date and reserve online in the Bookero calendar.",
-    bookingButton: "Open booking in a new tab",
-    bookingFrameTitle: "Bookero booking",
+    ticketsTitle: "Educational path tickets",
+    ticketsIntro: "Same price for both options: 69 PLN per person. Choose the booking type.",
+    ticketsPriceLabel: "Price per person",
+    ticketsPrice: "69 PLN/person",
+    ticketsButton: "Buy tickets",
+    ticketsOptions: [
+      {
+        badge: "Individual",
+        title: "Individual ticket",
+        subtitle: "1-10 people on one ticket",
+        details: ["For individuals and families", "Pay per person"],
+      },
+      {
+        badge: "Group",
+        title: "Group ticket (schools)",
+        subtitle: "30-50 people in a group",
+        details: ["For schools and organized groups", "Pay for the whole group"],
+        priceLabel: "Price for min. 30 people",
+        price: "2,070 PLN/group",
+      },
+    ],
     videoFallback: "Your browser does not support the video element.",
   },
   pt: {
@@ -139,10 +184,27 @@ const COPY: Record<
     k9Title: "Cúpula K9 — zonas interativas para explorar após o percurso",
     k9Body:
       "Depois do percurso principal, descanse e explore livremente: instalações de luz, cabines de fotos e pontos interativos na cúpula K9.",
-    bookingTitle: "Reserve a sua visita",
-    bookingBody: "Escolha uma data conveniente e reserve online no calendário Bookero.",
-    bookingButton: "Abrir reserva num novo separador",
-    bookingFrameTitle: "Reserva Bookero",
+    ticketsTitle: "Bilhetes para o percurso educativo",
+    ticketsIntro: "Preço igual nas duas opções: 69 PLN por pessoa. Escolha o tipo de reserva.",
+    ticketsPriceLabel: "Preço por pessoa",
+    ticketsPrice: "69 PLN/pessoa",
+    ticketsButton: "Comprar bilhete",
+    ticketsOptions: [
+      {
+        badge: "Individual",
+        title: "Bilhete individual",
+        subtitle: "1-10 pessoas por bilhete",
+        details: ["Para indivíduos e famílias", "Pagamento por pessoa"],
+      },
+      {
+        badge: "Grupo",
+        title: "Bilhete de grupo (escolas)",
+        subtitle: "30-50 pessoas no grupo",
+        details: ["Para escolas e grupos organizados", "Pagamento pelo grupo inteiro"],
+        priceLabel: "Preço mín. 30 pessoas",
+        price: "2 070 PLN/grupo",
+      },
+    ],
     videoFallback: "O seu navegador não suporta o elemento de vídeo.",
   },
 };
@@ -243,7 +305,7 @@ export default function FilmPathContent() {
     <main className="relative z-10 min-h-screen">
       {/* Hero wideo (jak na /wydarzenia) */}
       <section className="relative z-10 px-4 pt-12 sm:pt-16">
-        <div className="mx-auto w-full max-w-[min(86vw,120rem)] mb-10 sm:mb-12">
+        <div className="mx-auto w-full max-w-7xl mb-10 sm:mb-12">
           <div className="relative overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
             <div className="relative aspect-[16/9] bg-black">
               <video
@@ -283,12 +345,14 @@ export default function FilmPathContent() {
       </section>
 
       <section className="px-4 pb-16 sm:pb-20">
-        <div className="max-w-[min(86vw,120rem)] mx-auto space-y-10 sm:space-y-12">
+        <div className="max-w-7xl mx-auto space-y-10 sm:space-y-12">
           <div className="grid gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {t.story.map((section) => (
+            {t.story.map((section, index) => (
               <Card
                 key={section.title}
-                className="text-center space-y-4 h-full group transition duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_16px_36px_rgba(79,207,222,0.18)] hover:ring-[rgba(79,207,222,0.35)]"
+                motion="off"
+                className="tour-info-card text-center space-y-4 h-full group transition duration-300 ease-out hover:shadow-[0_16px_36px_rgba(79,207,222,0.18)] hover:ring-[rgba(79,207,222,0.35)]"
+                style={{ "--tour-delay": `${(index % 6) * 0.24}s` } as React.CSSProperties}
               >
                 <TourLineAccentTitle>{section.title}</TourLineAccentTitle>
                 <p className="text-lg text-gray-100 leading-relaxed">{section.body}</p>
@@ -307,22 +371,55 @@ export default function FilmPathContent() {
             <TourLineGalleryRow items={k9} />
           </Card>
 
-          <Card title={t.bookingTitle} titleCentered titleDivider>
-            <p className="text-gray-100 text-center max-w-3xl mx-auto">{t.bookingBody}</p>
-            <div className="mt-6">
-              <div className="w-full overflow-hidden rounded-2xl ring-1 ring-white/10 bg-white/5">
-                <iframe
-                  src={BOOKING_URL}
-                  title={t.bookingFrameTitle}
-                  loading="lazy"
-                  className="w-full h-[900px] border-0"
-                />
-              </div>
-            </div>
-            <div className="mt-6 flex justify-center">
-              <PrimaryButton href={BOOKING_URL} target="_blank" rel="noopener noreferrer" size="lg">
-                {t.bookingButton}
-              </PrimaryButton>
+          <Card title={t.ticketsTitle} titleCentered titleDivider dense motion="off">
+            <p className="text-gray-100 text-center max-w-3xl mx-auto">{t.ticketsIntro}</p>
+            <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-12">
+              {t.ticketsOptions.map((option) => (
+                <div
+                  key={option.title}
+                  className="ticket-card group flex h-full flex-col rounded-3xl text-white/90 transition duration-300 ease-out hover:-translate-y-1"
+                >
+                  <div className="ticket-card-top">
+                    <span className="ticket-card-badge">{option.badge}</span>
+                  </div>
+                  <div className="ticket-card-content flex h-full flex-col p-6 sm:p-8 text-center">
+                    <h3 className="ticket-card-title text-2xl sm:text-3xl font-semibold text-white">
+                      {option.title}
+                    </h3>
+                    <p className="ticket-card-subtitle mt-2 text-sm sm:text-base text-white/75">
+                      {option.subtitle}
+                    </p>
+                    <div className="ticket-card-divider mt-6" />
+                    <ul className="ticket-list-panel mt-5 mb-8 space-y-3 text-sm text-white/75 text-left mx-auto max-w-sm">
+                      {option.details.map((detail) => (
+                        <li key={detail} className="ticket-detail flex gap-3">
+                          <span className="ticket-detail-dot mt-2 h-1.5 w-1.5 rounded-full bg-[#4fcfde] shrink-0" />
+                          <span>{detail}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="ticket-price-block mt-auto pt-7">
+                      <p className="ticket-price-label text-[0.7rem] uppercase tracking-[0.25em] text-white/60">
+                        {option.priceLabel ?? t.ticketsPriceLabel}
+                      </p>
+                      <p className="ticket-price mt-2 text-3xl sm:text-4xl font-bold text-amber-200">
+                        {option.price ?? t.ticketsPrice}
+                      </p>
+                      <div className="mt-6 flex justify-center">
+                        <PrimaryButton
+                          href={BOOKING_URL}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          size="md"
+                          className="ticket-pill ring-[color:rgba(240,60,100,0.55)]"
+                        >
+                          {t.ticketsButton}
+                        </PrimaryButton>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </Card>
         </div>

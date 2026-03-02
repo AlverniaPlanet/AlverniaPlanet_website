@@ -69,8 +69,8 @@ export default function TicketsPage() {
   const hasAccess = TICKETS_ACCESS_CODE.length > 0 && accessCode === TICKETS_ACCESS_CODE;
 
   return (
-    <main className="relative min-h-screen text-white px-4 py-10 sm:py-12">
-      <div className="max-w-[min(86vw,120rem)] mx-auto space-y-6">
+    <main className="relative min-h-screen text-white px-4 py-10 sm:py-12 ap-page-intro-stagger">
+      <div className="max-w-7xl mx-auto space-y-6">
         <header className="text-center space-y-3">
           <p className="text-xs uppercase tracking-[0.35em] text-white/60">{copy.tag}</p>
           <h1 className="text-4xl sm:text-5xl font-extrabold">{copy.title}</h1>

@@ -1,6 +1,5 @@
 "use client";
 
-import { motion, type Variants } from "framer-motion";
 import { useEffect, useState, type FormEvent } from "react";
 import Card from "@/app/components/Card";
 import { PrimaryButton } from "@/app/components/PrimaryButton";
@@ -66,10 +65,6 @@ const COPY: Record<
       errorTitle: string;
       errorBody: string;
     };
-    map: {
-      title: string;
-      subtitle: string;
-    };
   }
 > = {
   pl: {
@@ -113,10 +108,6 @@ const COPY: Record<
       errorTitle: "Nie udało się wysłać wiadomości.",
       errorBody: `Spróbuj ponownie za chwilę lub napisz bezpośrednio na ${CONTACT_FORM_EMAIL}.`,
     },
-    map: {
-      title: "Jak nas znaleźć",
-      subtitle: "Sprawdź lokalizację Alvernia Planet na mapie Google.",
-    },
   },
   en: {
     heroTitle: "Contact us",
@@ -158,10 +149,6 @@ const COPY: Record<
       successBody: "We’ll reply as soon as possible.",
       errorTitle: "Message could not be sent.",
       errorBody: `Please try again later or email us directly at ${CONTACT_FORM_EMAIL}.`,
-    },
-    map: {
-      title: "Find us",
-      subtitle: "See Alvernia Planet’s location on Google Maps.",
     },
   },
   pt: {
@@ -205,26 +192,8 @@ const COPY: Record<
       errorTitle: "Não foi possível enviar a mensagem.",
       errorBody: `Tente novamente mais tarde ou escreva-nos por email para ${CONTACT_FORM_EMAIL}.`,
     },
-    map: {
-      title: "Como chegar",
-      subtitle: "Veja a localização da Alvernia Planet no Google Maps.",
-    },
   },
 };
-
-// Animations (spójne z resztą)
-const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 16 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
-};
-
-const stagger: Variants = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.14 } },
-};
-
-const MAP_EMBED_SRC =
-  "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2775.7408423639026!2d19.54447167658207!3d50.10226631237267!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4716f227b90ec1a1%3A0xbd1dbadc60237cc3!2sAlvernia%20Planet!5e1!3m2!1spl!2spl!4v1764111356358!5m2!1spl!2spl";
 
 const inputBaseClass =
   "w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/40 focus:border-[#4fcfde] focus:outline-none focus:ring-2 focus:ring-[#4fcfde]/35";
@@ -336,69 +305,63 @@ export default function KontaktPage() {
       <div className="flex-1 flex flex-col gap-12">
         {/* Nagłówek */}
         <section className="mx-auto max-w-3xl text-center">
-          <motion.div initial="hidden" animate="show" variants={stagger}>
-            <motion.h1
-              className="text-5xl sm:text-6xl font-extrabold tracking-tight"
-              variants={fadeUp}
-            >
+          <div>
+            <h1 className="text-5xl sm:text-6xl font-extrabold tracking-tight">
               {copy.heroTitle}
-            </motion.h1>
-          </motion.div>
+            </h1>
+          </div>
         </section>
 
-        {/* Karty kontaktowe 3 kolumny */}
-        <section className="mx-auto w-full max-w-[min(86vw,120rem)]">
-          <motion.div
-            initial="hidden"
-            animate="show"
-            variants={stagger}
-            className="grid grid-cols-1 gap-6 lg:grid-cols-3"
-          >
+        {/* Karty kontaktowe */}
+        <section className="mx-auto w-full max-w-7xl">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             {/* Infolinia */}
-            <motion.div variants={fadeUp}>
-              <Card variant="solid" className="h-full flex flex-col gap-4 text-center items-center">
+            <div>
+              <Card variant="solid" className="h-full flex flex-col gap-5 text-center items-center">
                 <div className="flex flex-col items-center gap-2">
                   <h2 className="text-2xl font-semibold">{copy.info.title}</h2>
                 </div>
-                <div className="h-[1px] w-full bg-white/15" />
-                <p className="text-sm text-gray-300">
+                <div className="h-[1px] w-full bg-white/15 mt-1" />
+                <p className="text-sm text-gray-300 leading-relaxed px-2 md:px-4 mb-2">
                   {copy.info.description}
                 </p>
-                <div className="w-full space-y-2 rounded-2xl bg-white/5 p-4">
-                  <div className="space-y-1">
-                    <p className="text-sm uppercase tracking-[0.2em] text-white/60">{copy.info.phoneLabel}</p>
-                    <p className="text-lg font-semibold">{formatPhone(PHONE_INFO)}</p>
+                <div className="w-full space-y-5">
+                  <div className="space-y-2 rounded-2xl bg-white/5 p-4">
+                    <div className="space-y-1">
+                      <p className="text-sm uppercase tracking-[0.2em] text-white/60">{copy.info.phoneLabel}</p>
+                      <p className="text-lg font-semibold">{formatPhone(PHONE_INFO)}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-xs uppercase tracking-[0.2em] text-white/60">{copy.info.hoursLabel}</p>
+                      {!hasGoogleConfig ? (
+                        <p className="text-sm text-gray-300">{copy.info.hoursFallback}</p>
+                      ) : hoursState.status === "loading" ? (
+                        <p className="text-sm text-gray-300">{copy.info.hoursLoading}</p>
+                      ) : hoursState.status === "ready" ? (
+                        <ul className="space-y-1 text-sm text-gray-100">
+                          {hoursState.weekdayText.map((line) => (
+                            <li key={line}>{line}</li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-sm text-gray-300">{copy.info.hoursFallback}</p>
+                      )}
+                    </div>
                   </div>
-                  <div className="space-y-1">
-                    <p className="text-xs uppercase tracking-[0.2em] text-white/60">{copy.info.hoursLabel}</p>
-                    {!hasGoogleConfig ? (
-                      <p className="text-sm text-gray-300">{copy.info.hoursFallback}</p>
-                    ) : hoursState.status === "loading" ? (
-                      <p className="text-sm text-gray-300">{copy.info.hoursLoading}</p>
-                    ) : hoursState.status === "ready" ? (
-                      <ul className="space-y-1 text-sm text-gray-100">
-                        {hoursState.weekdayText.map((line) => (
-                          <li key={line}>{line}</li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className="text-sm text-gray-300">{copy.info.hoursFallback}</p>
-                    )}
+                  <div className="w-full space-y-2 rounded-2xl border border-white/10 p-4">
+                    <p className="text-sm uppercase tracking-[0.2em] text-white/60">{copy.info.emailLabel}</p>
+                    <p className="font-semibold text-[#f03c64]">{MAIL_INFO}</p>
                   </div>
-                </div>
-                <div className="w-full space-y-2 rounded-2xl border border-white/10 p-4">
-                  <p className="text-sm uppercase tracking-[0.2em] text-white/60">{copy.info.emailLabel}</p>
-                  <p className="font-semibold text-[#f03c64]">{MAIL_INFO}</p>
                 </div>
               </Card>
-            </motion.div>
+            </div>
 
             {/* Rezerwacje i grupy */}
-            <motion.div variants={fadeUp}>
-              <Card variant="solid" className="h-full flex flex-col gap-4 text-center items-center">
+            <div>
+              <Card variant="solid" className="h-full flex flex-col gap-6 text-center items-center">
                 <h2 className="text-2xl font-semibold">{copy.booking.title}</h2>
-                <div className="h-[1px] w-full bg-white/15" />
-                <p className="text-sm text-gray-300">
+                <div className="h-[1px] w-full bg-white/15 mt-1" />
+                <p className="text-sm text-gray-300 leading-relaxed px-2 md:px-6 mb-3">
                   {copy.booking.description}
                 </p>
                 <div className="w-full space-y-3 rounded-2xl bg-white/5 p-4">
@@ -414,7 +377,7 @@ export default function KontaktPage() {
                     <p className="text-[#f77828]">{MAIL_BOOKING}</p>
                   </div>
                 </div>
-                <div className="w-full rounded-2xl border border-[#4fcfde]/30 bg-[#4fcfde]/10 p-4">
+                <div className="mt-4 w-full rounded-2xl border border-[#4fcfde]/30 bg-[#4fcfde]/10 p-4">
                   <p className="text-sm font-semibold text-[#a5e6f0]">{copy.booking.onlineTitle}</p>
                   <p className="text-sm text-gray-200">
                     {copy.booking.onlineDescription}
@@ -430,14 +393,14 @@ export default function KontaktPage() {
                   </PrimaryButton>
                 </div>
               </Card>
-            </motion.div>
+            </div>
 
             {/* Eventy i sesje zdjęciowe */}
-            <motion.div variants={fadeUp}>
-              <Card variant="solid" className="h-full flex flex-col gap-4 text-center items-center">
+            <div>
+              <Card variant="solid" className="h-full flex flex-col gap-6 text-center items-center">
                 <h2 className="text-2xl font-semibold">{copy.events.title}</h2>
-                <div className="h-[1px] w-full bg-white/15" />
-                <p className="text-sm text-gray-300">
+                <div className="h-[1px] w-full bg-white/15 mt-1" />
+                <p className="text-sm text-gray-300 leading-relaxed px-2 md:px-6 mb-3">
                   {copy.events.description}
                 </p>
                 <div className="w-full space-y-3 rounded-2xl bg-white/5 p-4">
@@ -454,13 +417,13 @@ export default function KontaktPage() {
                   </div>
                 </div>
               </Card>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         </section>
 
         {/* Formularz kontaktowy */}
-        <section className="mx-auto w-full max-w-[min(86vw,120rem)]">
-          <motion.div initial="hidden" animate="show" variants={fadeUp}>
+        <section className="mx-auto w-full max-w-7xl">
+          <div>
             <Card title={copy.form.title} titleCentered titleDivider>
               <p className="text-center text-gray-300">{copy.form.subtitle}</p>
               {formState === "success" ? (
@@ -542,29 +505,7 @@ export default function KontaktPage() {
                 <p className="text-center text-xs text-white/50">{copy.form.requiredNote}</p>
               </form>
             </Card>
-          </motion.div>
-        </section>
-
-
-        {/* Mapa */}
-        <section className="mx-auto w-full max-w-[min(86vw,120rem)]">
-          <motion.div initial="hidden" animate="show" variants={fadeUp}>
-            <Card title={copy.map.title} titleCentered titleDivider>
-              <p className="text-center text-gray-300">{copy.map.subtitle}</p>
-              <div className="mt-6 overflow-hidden rounded-2xl ring-1 ring-white/10 bg-black/40">
-                <div className="relative w-full pb-[56.25%] sm:pb-[45%]">
-                  <iframe
-                    title={copy.map.title}
-                    src={MAP_EMBED_SRC}
-                    loading="lazy"
-                    className="absolute inset-0 h-full w-full border-0"
-                    allowFullScreen
-                    referrerPolicy="no-referrer-when-downgrade"
-                  />
-                </div>
-              </div>
-            </Card>
-          </motion.div>
+          </div>
         </section>
       </div>
     </main>

@@ -269,6 +269,8 @@ export default function JakDojechacPage() {
   const mapWrapperRef = useRef<HTMLDivElement | null>(null);
 
   const selectedOrigin = useMemo(() => activeOrigin ?? "", [activeOrigin]);
+  const isBusesTab = activeTab === "buses";
+  const mapHeightClass = isBusesTab ? "h-[300px]" : "h-[320px]";
   const currentList = useMemo(
     () => (activeTab === "routes" ? nearby : activeTab === "attractions" ? attractions : []),
     [activeTab, nearby, attractions]
@@ -308,12 +310,12 @@ export default function JakDojechacPage() {
   }, [activeTab, mapOrigins, setOrigin]);
 
   return (
-    <main className="relative min-h-screen px-4 py-12 sm:py-16">
+    <main className="relative min-h-screen px-4 py-12 sm:py-16 ap-page-intro-stagger">
       <motion.div
         initial="hidden"
         animate="show"
         variants={fade}
-        className="max-w-5xl mx-auto space-y-10"
+        className="max-w-7xl mx-auto space-y-10"
       >
         <header className="text-center space-y-3">
           <motion.p className="text-xs uppercase tracking-[0.35em] text-white/60" variants={fadeUp}>
@@ -364,7 +366,11 @@ export default function JakDojechacPage() {
             </button>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 items-start">
+          <div
+            className={`mt-3 sm:mt-4 grid gap-6 items-start ${
+              isBusesTab ? "lg:grid-cols-[1.35fr_0.85fr]" : "md:grid-cols-2"
+            }`}
+          >
             <motion.div className="space-y-3" variants={fadeUp}>
               {activeTab === "buses" ? (
                 <>
@@ -467,7 +473,7 @@ export default function JakDojechacPage() {
               ref={mapWrapperRef}
             >
               {!shouldLoadMap ? (
-                <div className="flex h-[320px] items-center justify-center bg-black/50 backdrop-blur-[2px]">
+                <div className={`flex ${mapHeightClass} items-center justify-center bg-black/50 backdrop-blur-[2px]`}>
                   <button
                     type="button"
                     onClick={() => setShouldLoadMap(true)}
@@ -481,7 +487,7 @@ export default function JakDojechacPage() {
                   title={copy.mapTitle}
                   src={mapSrc}
                   loading="lazy"
-                  className="w-full h-[320px] border-0"
+                  className={`w-full ${mapHeightClass} border-0`}
                   allowFullScreen
                   referrerPolicy="no-referrer-when-downgrade"
                 />

@@ -27,10 +27,10 @@ export function AppBar() {
   const paths = {
     home: prefix || "/",
     events: isIntl ? `${prefix}/events` : "/wydarzenia",
+    gallery: isIntl ? `${prefix}/gallery` : "/galeria",
     gettingThere: isIntl ? `${prefix}/getting-there` : "/jak-dojechac",
     tickets: isIntl ? `${prefix}/tickets` : "/bilety",
     about: isIntl ? `${prefix}/about` : "/o-alvernia-planet",
-    gallery: isIntl ? `${prefix}/gallery` : "/galeria",
     contact: isIntl ? `${prefix}/contact` : "/kontakt",
     attractions: {
       exhibition: isIntl ? `${prefix}/attractions/exhibition` : "/atrakcje/wystawa",

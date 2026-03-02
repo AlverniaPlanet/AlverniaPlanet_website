@@ -219,9 +219,9 @@ export default function Kino360Content() {
   const copy = COPY[loc];
 
   return (
-    <main className="kino360-page relative z-10 min-h-screen">
+    <main className="kino360-page relative z-10 min-h-screen ap-page-intro-stagger">
       <section className="relative z-10 px-4 pt-12 sm:pt-16">
-        <div className="mx-auto w-full max-w-[min(86vw,120rem)] mb-10 sm:mb-12">
+        <div className="mx-auto w-full max-w-7xl mb-10 sm:mb-12">
           <div className="relative overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
             <div className="relative aspect-[4/5] sm:aspect-[16/9] bg-[#071020]">
               <video
@@ -265,7 +265,7 @@ export default function Kino360Content() {
       </section>
 
       <section className="px-4 pb-16 sm:pb-20">
-        <div className="max-w-[min(86vw,120rem)] mx-auto space-y-10 sm:space-y-12">
+        <div className="max-w-7xl mx-auto space-y-10 sm:space-y-12">
           <Card variant="solid" className="bg-white/5 ring-1 ring-white/10">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-3">
@@ -289,8 +289,14 @@ export default function Kino360Content() {
           <Card className="space-y-6">
             <TourLineAccentTitle variant="cool">{copy.featuresTitle}</TourLineAccentTitle>
             <div className="grid gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {copy.features.map((item) => (
-                <Card key={item.title} dense className="h-full bg-white/8 ring-1 ring-white/10 text-white/90">
+              {copy.features.map((item, index) => (
+                <Card
+                  key={item.title}
+                  dense
+                  motion="off"
+                  className="tour-info-card h-full bg-white/8 ring-1 ring-white/10 text-white/90"
+                  style={{ "--tour-delay": `${(index % 6) * 0.24}s` } as React.CSSProperties}
+                >
                   <div className="space-y-3">
                     <div className="inline-flex rounded-full bg-cyan-500/15 px-3 py-1 text-[12px] font-semibold uppercase tracking-[0.08em] text-cyan-100 ring-1 ring-cyan-400/25">
                       360°

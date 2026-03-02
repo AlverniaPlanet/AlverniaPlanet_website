@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useMemo } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useI18n } from "@/app/i18n-provider";
 import Card from "@/app/components/Card";
 import { PrimaryButton } from "@/app/components/PrimaryButton";
 import Testimonials, { type Testimonial } from "@/app/components/Testimonials";
-import translationsData, { NEWS_META } from "@/app/aktualnosci/aktualnosci";
 import { AttractionCard } from "@/app/components/AttractionCard";
+import ScrollMotionItem from "@/app/components/ScrollMotionItem";
 
 type Locale = "pl" | "en" | "pt";
 
@@ -32,6 +32,8 @@ type TicketOption = {
   title: string;
   subtitle: string;
   details: string[];
+  priceLabel?: string;
+  price?: string;
 };
 
 type TicketSection = {
@@ -46,6 +48,11 @@ type TicketSection = {
 
 type HomeCopy = {
   heroTitle: string;
+  heroPromo: {
+    message: string;
+    cta: string;
+    href: string;
+  };
   attractions: {
     title: string;
     intro: string;
@@ -58,14 +65,6 @@ type HomeCopy = {
     subtitle: string;
     reviews: Testimonial[];
   };
-  news: {
-    title: string;
-    description: string;
-    cta: string;
-    href: string;
-  };
-  galleryTitle: string;
-  galleryCta: string;
 };
 
 const BOOKING_URL = "https://alverniaplanet.bookero.pl";
@@ -73,6 +72,11 @@ const BOOKING_URL = "https://alverniaplanet.bookero.pl";
 const HOME_COPY: Record<Locale, HomeCopy> = {
   pl: {
     heroTitle: "Witamy w Alvernia Planet",
+    heroPromo: {
+      message: "Nowe otwarcie ścieżki edukacyjnej",
+      cta: "Zobacz i kup bilet",
+      href: "/atrakcje/sciezka-filmowa",
+    },
     attractions: {
       title: "Atrakcje",
       intro: "Wejdź do świata kopuł i zacznij od naszych trzech flagowych doświadczeń.",
@@ -125,6 +129,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
           title: "Bilet grupowy (szkolny)",
           subtitle: "30-50 osób w grupie",
           details: ["Dla szkół i grup zorganizowanych", "Płatność za całą grupę"],
+          priceLabel: "Cena za min. 30 osób",
+          price: "2 070 zł/grupa",
         },
       ],
     },
@@ -165,17 +171,14 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         },
       ],
     },
-    news: {
-      title: "Aktualności",
-      description: "Trzy najnowsze wpisy z Alvernia Planet.",
-      cta: "Zobacz starsze",
-      href: "/aktualnosci",
-    },
-    galleryTitle: "Galeria",
-    galleryCta: "Otwórz całą galerię",
   },
   en: {
     heroTitle: "Welcome to Alvernia Planet",
+    heroPromo: {
+      message: "New opening of the educational path",
+      cta: "See and buy tickets",
+      href: "/atrakcje/sciezka-filmowa",
+    },
     attractions: {
       title: "Attractions",
       intro: "Start with our signature experiences inside the domes.",
@@ -267,17 +270,14 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         },
       ],
     },
-    news: {
-      title: "News",
-      description: "The three latest updates from Alvernia Planet.",
-      cta: "See older posts",
-      href: "/aktualnosci",
-    },
-    galleryTitle: "Gallery",
-    galleryCta: "View full gallery",
   },
   pt: {
     heroTitle: "Bem-vindo à Alvernia Planet",
+    heroPromo: {
+      message: "Nova abertura do percurso educativo",
+      cta: "Ver e comprar bilhete",
+      href: "/atrakcje/sciezka-filmowa",
+    },
     attractions: {
       title: "Atrações",
       intro: "Entre no mundo das cúpulas e comece pelas nossas três experiências emblemáticas.",
@@ -370,103 +370,107 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         },
       ],
     },
-    news: {
-      title: "Notícias",
-      description: "As três atualizações mais recentes da Alvernia Planet.",
-      cta: "Ver anteriores",
-      href: "/aktualnosci",
-    },
-    galleryTitle: "Galeria",
-    galleryCta: "Ver galeria completa",
   },
 };
 
 const GOOGLE_PLACE_URL =
   "https://www.google.com/maps/place/Alvernia+Planet/@50.1022663,19.5444717,637m/data=!3m1!1e3!4m8!3m7!1s0x4716f227b90ec1a1:0xbd1dbadc60237cc3!8m2!3d50.1022629!4d19.5470466!9m1!1b1!16s%2Fg%2F1yy3vkg22?hl=pl&entry=ttu&g_ep=EgoyMDI1MTExNy4wIKXMDSoASAFQAw%3D%3D";
-const CATEGORY_COLORS: Record<string, string> = {
-  "ścieżka filmowa": "from-[#f77828] to-[#f03c64]",
-  "kino 360": "from-[#4fcfde] to-[#a5e6f0]",
-  ogólne: "from-[#171730] to-[#aab4be]",
-};
-const CATEGORY_LABELS: Record<string, { pl: string; en: string; pt: string }> = {
-  "ścieżka filmowa": { pl: "Ścieżka filmowa", en: "Film path", pt: "Percurso cinematográfico" },
-  "kino 360": { pl: "Kino 360", en: "360 cinema", pt: "Cinema 360" },
-  ogólne: { pl: "Ogólne", en: "General", pt: "Geral" },
-};
 
-type HomeNewsItem = {
-  id: string;
-  title: string;
-  excerpt: string;
-  date: string;
-  category: string;
-};
+const EVENT_GALLERY_IMAGES = Array.from(
+  { length: 8 },
+  (_, idx) => `/galeria/Wydarzenia/webp/${idx + 1}.webp`,
+);
 
-function getLatestNews(loc: Locale, limit = 3): HomeNewsItem[] {
-  const posts: Record<string, { title: string; excerpt: string }> = translationsData[loc]?.posts ?? {};
-  return NEWS_META.slice()
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, limit)
-    .map((meta) => ({
-      id: meta.id,
-      title: posts[meta.id]?.title ?? "",
-      excerpt: posts[meta.id]?.excerpt ?? "",
-      date: meta.date,
-      category: meta.category,
-    }));
-}
-
-function formatDate(locale: Locale, iso: string) {
-  const lang = locale === "pl" ? "pl-PL" : locale === "pt" ? "pt-PT" : "en-GB";
-  return new Date(iso).toLocaleDateString(lang, {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-}
+const EVENT_COLUMN_CARD_HEIGHTS = [
+  "h-28 sm:h-32 lg:h-36",
+  "h-36 sm:h-40 lg:h-44",
+  "h-32 sm:h-36 lg:h-40",
+  "h-40 sm:h-44 lg:h-48",
+];
 
 export default function Page() {
   const { locale } = useI18n();
   const loc = ((locale as Locale) ?? "pl") as Locale;
   const copy = HOME_COPY[loc];
+  const [heroIntroVisible, setHeroIntroVisible] = useState(false);
+  const [heroPromoVisible, setHeroPromoVisible] = useState(false);
+  const [contentIntroVisible, setContentIntroVisible] = useState(false);
   const heroVideoFallback =
     loc === "en"
       ? "Your browser does not support the video element."
       : loc === "pt"
       ? "O seu navegador não suporta o elemento de vídeo."
       : "Twój browser nie wspiera elementu video.";
-  const latestNews = useMemo(() => getLatestNews(loc, 3), [loc]);
-  const eventPhotos = [
-    {
-      src: "/galeria/Wydarzenia/webp/1.webp",
-      alt:
-        loc === "en"
-          ? "Stage setup during an event"
-          : loc === "pt"
-          ? "Preparação de palco durante um evento"
-          : "Scenografia sceny podczas wydarzenia",
-    },
-    {
-      src: "/galeria/Wydarzenia/webp/4.webp",
-      alt:
-        loc === "en"
-          ? "Guests networking in the dome"
-          : loc === "pt"
-          ? "Convidados a fazer networking na cúpula"
-          : "Goście podczas networkingu w kopule",
-    },
-    {
-      src: "/galeria/Wydarzenia/webp/5.webp",
-      alt:
-        loc === "en"
-          ? "Live performance in the dome"
-          : loc === "pt"
-          ? "Atuação ao vivo na cúpula"
-          : "Występ na żywo w kopule",
-    },
-  ];
+  const eventPhotoLabel =
+    loc === "en"
+      ? "Event photo"
+      : loc === "pt"
+      ? "Foto do evento"
+      : "Zdjęcie z wydarzenia";
+  const eventPhotos = EVENT_GALLERY_IMAGES.map((src, index) => ({
+    src,
+    alt: `${eventPhotoLabel} ${index + 1}`,
+  }));
 
   const heroVideoRef = useRef<HTMLVideoElement | null>(null);
+  const heroSectionRef = useRef<HTMLElement | null>(null);
+  const shouldKeepHeroPlayingRef = useRef(true);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setHeroIntroVisible(true);
+      setHeroPromoVisible(true);
+      setContentIntroVisible(true);
+      return;
+    }
+
+    const frame = window.requestAnimationFrame(() => {
+      setHeroIntroVisible(true);
+    });
+    const promoTimer = window.setTimeout(() => {
+      setHeroPromoVisible(true);
+    }, 1000);
+    const timer = window.setTimeout(() => {
+      setContentIntroVisible(true);
+    }, 260);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.clearTimeout(promoTimer);
+      window.clearTimeout(timer);
+    };
+  }, []);
+
+  useEffect(() => {
+    const section = heroSectionRef.current;
+    const video = heroVideoRef.current;
+    if (!section || !video) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const keepPlaying = Boolean(entry?.isIntersecting);
+        shouldKeepHeroPlayingRef.current = keepPlaying;
+
+        if (keepPlaying) {
+          const p = video.play();
+          if (p && typeof p.catch === "function") p.catch(() => {});
+        } else {
+          video.pause();
+        }
+      },
+      {
+        threshold: 0.12,
+        rootMargin: "120px 0px -10% 0px",
+      },
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
 
   // Safari: wymuś loop/autoplay inline nawet po zakończeniu
   useEffect(() => {
@@ -478,6 +482,7 @@ export default function Page() {
     video.playsInline = true;
 
     const ensurePlay = () => {
+      if (!shouldKeepHeroPlayingRef.current) return;
       const p = video.play();
       if (p && typeof p.catch === "function") {
         p.catch(() => {});
@@ -485,13 +490,12 @@ export default function Page() {
     };
 
     const handleEnded = () => {
-      video.pause();
+      if (!shouldKeepHeroPlayingRef.current) return;
       video.currentTime = 0;
-      video.load();
       ensurePlay();
     };
     const handlePause = () => {
-      if (video.paused) ensurePlay();
+      if (video.paused && shouldKeepHeroPlayingRef.current) ensurePlay();
     };
 
     ensurePlay();
@@ -510,12 +514,42 @@ export default function Page() {
   const reviewsToShow = copy.testimonials.reviews;
 
   return (
-    <main className="relative min-h-screen text-white">
+    <main className="relative min-h-screen px-4 py-12 sm:py-16 text-white">
       {/* Wideo hero w "kwadracie" jak na pozostałych podstronach */}
-      <section className="relative z-10 px-4 pt-10 sm:pt-12">
-        <div className="mx-auto w-full max-w-[min(86vw,120rem)]">
+      <section
+        ref={heroSectionRef}
+        className={`relative z-10 transition-[opacity,transform] duration-[1300ms] will-change-[opacity,transform] ${
+          heroIntroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
+        }`}
+        style={{
+          transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
+        }}
+      >
+        <div className="mx-auto w-full max-w-7xl">
           <div className="relative overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
             <div className="relative aspect-[16/9] bg-black">
+              <div className="pointer-events-none absolute inset-x-0 top-4 z-20 flex justify-center px-4 sm:top-5">
+                <a
+                  href={copy.heroPromo.href}
+                  className={`hero-film-alert pointer-events-auto inline-flex max-w-full items-center gap-2.5 rounded-full px-3.5 py-2.5 text-xs sm:gap-3.5 sm:px-5 sm:py-3 sm:text-base transition-[opacity,transform] duration-[900ms] ${
+                    heroPromoVisible
+                      ? "hero-film-alert-intro opacity-100 translate-y-0 scale-100"
+                      : "opacity-0 -translate-y-3 scale-95 pointer-events-none"
+                  }`}
+                  style={{ transitionTimingFunction: "cubic-bezier(0.2, 0.9, 0.28, 1)" }}
+                >
+                  <span
+                    className="hero-film-alert-dot mt-0.5 h-2.5 w-2.5 shrink-0 rounded-full bg-[#4fcfde] sm:h-3 sm:w-3"
+                    aria-hidden="true"
+                  />
+                  <span className="hero-film-alert-copy leading-tight font-medium">
+                    <span>{copy.heroPromo.message}</span>
+                    <span className="hero-film-alert-cta ml-2 whitespace-nowrap font-semibold sm:ml-3">
+                      {copy.heroPromo.cta} →
+                    </span>
+                  </span>
+                </a>
+              </div>
               <video
                 ref={heroVideoRef}
                 autoPlay
@@ -529,30 +563,9 @@ export default function Page() {
                 disablePictureInPicture
                 tabIndex={-1}
                 onContextMenu={(e) => e.preventDefault()}
-                onError={() => console.warn("[video] playback error — check file names/paths in /public")}
-                onEnded={(e) => {
-                  const vid = e.currentTarget;
-                  vid.pause();
-                  vid.currentTime = 0;
-                  vid.load();
-                  const p = vid.play();
-                  if (p && typeof p.catch === "function") p.catch(() => {});
-                }}
-                onPause={(e) => {
-                  const vid = e.currentTarget;
-                  if (vid.paused) {
-                    const p = vid.play();
-                    if (p && typeof p.catch === "function") p.catch(() => {});
-                  }
-                }}
-                onTimeUpdate={(e) => {
-                  const vid = e.currentTarget;
-                  if (vid.duration && vid.currentTime >= vid.duration - 0.2) {
-                    vid.currentTime = 0;
-                    const p = vid.play();
-                    if (p && typeof p.catch === "function") p.catch(() => {});
-                  }
-                }}
+                onError={() =>
+                  console.warn("[video] playback error — check file names/paths in /public")
+                }
               >
                 <source src="/home/AP_ogolne.webm" type="video/webm" />
                 <source src="/home/AP_ogolne.mp4" type="video/mp4" />
@@ -564,209 +577,442 @@ export default function Page() {
       </section>
 
       {/* Content below the hero video */}
-      <section id="content-start" className="relative z-10 mt-8 sm:mt-12 px-4 py-14">
-        <div className="max-w-[min(86vw,120rem)] mx-auto">
-          <div className="text-center mb-10">
-            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold">
-              {copy.heroTitle}
-            </h2>
-            <div className="mt-4 h-[1px] w-full max-w-md mx-auto bg-white/20" />
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Card
-              title={copy.attractions.title}
-              className="md:col-span-2"
-              titleCentered
-              titleDivider
-            >
-              <p className="text-center text-gray-200 max-w-3xl mx-auto">
-                {copy.attractions.intro}
-              </p>
-              <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {copy.attractions.items.map((item) => (
-                  <AttractionCard key={item.title} {...item} />
-                ))}
-              </div>
-            </Card>
+      <section
+        id="content-start"
+        className={`relative z-10 mt-16 sm:mt-20 transition-[opacity,transform] duration-[1200ms] will-change-[opacity,transform] ${
+          contentIntroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+        }`}
+        style={{
+          transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
+          transitionDelay: "180ms",
+        }}
+      >
+        <div className="mx-auto max-w-7xl">
+          <ScrollMotionItem strength="strong">
+            <div className="mb-10 text-center">
+              <h2 className="text-4xl sm:text-5xl font-extrabold">
+                {copy.heroTitle}
+              </h2>
+              <div className="mt-4 mx-auto h-[1px] w-full max-w-md bg-white/20" />
+            </div>
+          </ScrollMotionItem>
+          <div className="grid grid-cols-1 gap-20 sm:gap-24">
+            <ScrollMotionItem strength="strong" delay={40}>
+              <Card title={copy.attractions.title} titleCentered titleDivider dense motion="off">
+                <p className="text-center text-gray-200 max-w-3xl mx-auto">{copy.attractions.intro}</p>
+                <AttractionsScroller items={copy.attractions.items} />
+              </Card>
+            </ScrollMotionItem>
 
-            <Card
-              title={copy.tickets.title}
-              className="md:col-span-2"
-              titleCentered
-              titleDivider
-            >
-              <p className="text-center text-gray-200 max-w-3xl mx-auto">
-                {copy.tickets.intro}
-              </p>
-              <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {copy.tickets.options.map((option) => (
-                  <div
-                    key={option.title}
-                    className="group flex h-full flex-col overflow-hidden rounded-3xl border border-[rgba(79,207,222,0.35)] bg-white/5 text-white/90 ring-1 ring-white/10 shadow-[0_18px_45px_rgba(0,0,0,0.35)] transition duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_22px_55px_rgba(79,207,222,0.25)]"
-                  >
-                    <div className="bg-gradient-to-r from-[#4fcfde] to-[#a5e6f0] px-6 py-3 text-center text-xs sm:text-sm font-semibold uppercase tracking-[0.25em] text-white/95">
-                      {option.badge}
-                    </div>
-                    <div className="flex h-full flex-col p-6 sm:p-8 text-center">
-                      <h3 className="text-2xl sm:text-3xl font-semibold text-white">
-                        {option.title}
-                      </h3>
-                      <p className="mt-2 text-sm sm:text-base text-white/75">
-                        {option.subtitle}
-                      </p>
-                      <ul className="mt-6 space-y-3 text-sm text-white/70 text-left mx-auto max-w-sm">
-                        {option.details.map((detail) => (
-                          <li key={detail} className="flex gap-3">
-                            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-[#4fcfde] shrink-0" />
-                            <span>{detail}</span>
-                          </li>
-                        ))}
-                      </ul>
-                      <div className="mt-auto pt-6">
-                        <p className="text-[0.7rem] uppercase tracking-[0.25em] text-white/60">
-                          {copy.tickets.priceLabel}
+            <ScrollMotionItem strength="soft" delay={30} float={false}>
+              <Card title={copy.tickets.title} titleCentered titleDivider dense motion="off">
+                <p className="text-center text-gray-200 max-w-3xl mx-auto">{copy.tickets.intro}</p>
+                <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-12">
+                  {copy.tickets.options.map((option) => (
+                    <div
+                      key={option.title}
+                      className="ticket-card group flex h-full flex-col rounded-3xl text-white/90 transition duration-300 ease-out hover:-translate-y-1"
+                    >
+                      <div className="ticket-card-top">
+                        <span className="ticket-card-badge">{option.badge}</span>
+                      </div>
+                      <div className="ticket-card-content flex h-full flex-col p-6 sm:p-8 text-center">
+                        <h3 className="ticket-card-title text-2xl sm:text-3xl font-semibold text-white">
+                          {option.title}
+                        </h3>
+                        <p className="ticket-card-subtitle mt-2 text-sm sm:text-base text-white/75">
+                          {option.subtitle}
                         </p>
-                        <p className="mt-2 text-3xl sm:text-4xl font-bold text-amber-200">
-                          {copy.tickets.price}
-                        </p>
-                        <div className="mt-6 flex justify-center">
-                          <PrimaryButton
-                            href={copy.tickets.ctaHref}
-                            size="md"
-                            className="ticket-pill ring-[color:rgba(240,60,100,0.55)]"
-                          >
-                            {copy.tickets.cta}
-                          </PrimaryButton>
+                        <div className="ticket-card-divider mt-6" />
+                        <ul className="ticket-list-panel mt-5 mb-8 space-y-3 text-sm text-white/75 text-left mx-auto max-w-sm">
+                          {option.details.map((detail) => (
+                            <li key={detail} className="ticket-detail flex gap-3">
+                              <span className="ticket-detail-dot mt-2 h-1.5 w-1.5 rounded-full bg-[#4fcfde] shrink-0" />
+                              <span>{detail}</span>
+                            </li>
+                          ))}
+                        </ul>
+                        <div className="ticket-price-block mt-auto pt-7">
+                          <p className="ticket-price-label text-[0.7rem] uppercase tracking-[0.25em] text-white/60">
+                            {option.priceLabel ?? copy.tickets.priceLabel}
+                          </p>
+                          <p className="ticket-price mt-2 text-3xl sm:text-4xl font-bold text-amber-200">
+                            {option.price ?? copy.tickets.price}
+                          </p>
+                          <div className="mt-6 flex justify-center">
+                            <PrimaryButton
+                              href={copy.tickets.ctaHref}
+                              size="md"
+                              className="ticket-pill ring-[color:rgba(240,60,100,0.55)]"
+                            >
+                              {copy.tickets.cta}
+                            </PrimaryButton>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </Card>
+                  ))}
+                </div>
+              </Card>
+            </ScrollMotionItem>
 
-            <Card
-              title={copy.events.title}
-              className="md:col-span-2 text-center"
-              titleCentered
-              titleDivider
-            >
-              <p className="text-gray-200 text-lg">{copy.events.description}</p>
-              <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {eventPhotos.map((photo) => (
-                  <div
-                    key={photo.src}
-                    className="group relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-white/5 ring-1 ring-white/10 transition duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_16px_36px_rgba(79,207,222,0.18)] hover:ring-[rgba(79,207,222,0.35)]"
-                  >
-                    <Image
-                      src={photo.src}
-                      alt={photo.alt}
-                      fill
-                      sizes="(min-width: 1024px) 30vw, (min-width: 768px) 33vw, 100vw"
-                      className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
-                      priority={false}
-                    />
-                  </div>
-                ))}
-              </div>
-              <div className="mt-6 flex justify-center">
-                <PrimaryButton href={copy.events.href} size="lg">
-                  {copy.events.cta}
-                </PrimaryButton>
-              </div>
-            </Card>
+            <ScrollMotionItem strength="strong" delay={130}>
+              <Card title={copy.events.title} className="text-center" titleCentered titleDivider dense motion="off">
+                <p className="text-gray-200 text-lg">{copy.events.description}</p>
+                <EventsVerticalShowcase photos={eventPhotos} />
+                <div className="mt-6 flex justify-center">
+                  <PrimaryButton href={copy.events.href} size="lg">
+                    {copy.events.cta}
+                  </PrimaryButton>
+                </div>
+              </Card>
+            </ScrollMotionItem>
 
-            <Card
-              title={copy.testimonials.title}
-              className="md:col-span-2"
-              titleCentered
-              titleDivider
-            >
-              <p className="text-center text-gray-200">{copy.testimonials.subtitle}</p>
-              <div className="mt-6">
-                <Testimonials reviews={reviewsToShow} sourceUrl={GOOGLE_PLACE_URL} />
-              </div>
-            </Card>
+            <ScrollMotionItem strength="strong" delay={170}>
+              <Card title={copy.testimonials.title} titleCentered titleDivider dense motion="off">
+                <p className="text-center text-gray-200">{copy.testimonials.subtitle}</p>
+                <div className="mt-6">
+                  <Testimonials reviews={reviewsToShow} sourceUrl={GOOGLE_PLACE_URL} />
+                </div>
+              </Card>
+            </ScrollMotionItem>
 
-            <Card
-              title={copy.news.title}
-              className="md:col-span-2 text-center"
-              titleCentered
-              titleDivider
-            >
-              <p className="text-gray-200 text-lg">{copy.news.description}</p>
-              <div className="mt-6 space-y-4 text-left">
-                {latestNews.map((item) => {
-                  const categoryLabel = CATEGORY_LABELS[item.category]?.[loc] ?? item.category;
-                  return (
-                    <div
-                      key={item.id}
-                      className="rounded-2xl bg-white/5 ring-1 ring-white/10 p-4 flex flex-col gap-2"
-                    >
-                      <div className="flex flex-wrap items-center gap-2 text-xs">
-                        <span className="inline-flex items-center rounded-full bg-white/10 px-3 py-1 font-semibold text-white/80 ring-1 ring-white/10">
-                          {formatDate(loc, item.date)}
-                        </span>
-                        <span
-                          className={`inline-flex items-center rounded-full bg-gradient-to-r ${
-                            CATEGORY_COLORS[item.category] || "from-gray-600 to-gray-400"
-                          } px-3 py-1 font-semibold text-white shadow-[0_0_10px_rgba(0,0,0,0.3)] text-[12px]`}
-                        >
-                          {categoryLabel}
-                        </span>
-                      </div>
-                      <h3 className="text-lg font-semibold">{item.title}</h3>
-                      <p className="text-sm text-gray-200">{item.excerpt}</p>
-                    </div>
-                  );
-                })}
-              </div>
-              <div className="mt-6 flex justify-center">
-                <PrimaryButton href={copy.news.href} size="lg">
-                  {copy.news.cta}
-                </PrimaryButton>
-              </div>
-            </Card>
-
-            <Card
-              title={copy.galleryTitle}
-              className="md:col-span-2 text-center"
-              titleClassName="mb-2"
-              titleCentered
-              titleDivider
-            >
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 justify-items-center">
-                {[
-                  { src: "/galeria/Ogolne/webp/1.webp", alt: "Kopuły kompleksu – widok z góry" },
-                  { src: "/galeria/Ogolne/webp/2.webp", alt: "Przeszklony łącznik" },
-                  { src: "/galeria/Ogolne/webp/3.webp", alt: "Industrialne wnętrze kopuły" },
-                  { src: "/galeria/Ogolne/webp/4.webp", alt: "Strefa eventowa w kopule" },
-                ].map((img) => (
-                  <div
-                    key={img.src}
-                    className="group relative w-full aspect-[16/10] md:aspect-[16/9] rounded-lg bg-white/5 overflow-hidden ring-1 ring-white/10 transition duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_16px_36px_rgba(79,207,222,0.18)] hover:ring-[rgba(79,207,222,0.35)]"
-                  >
-                    <Image
-                      src={img.src}
-                      alt={img.alt}
-                      fill
-                      sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
-                      className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
-                      priority={false}
-                    />
-                  </div>
-                ))}
-              </div>
-              <div className="mt-6 flex justify-center">
-                <PrimaryButton href="/galeria" size="lg">
-                  {copy.galleryCta}
-                </PrimaryButton>
-              </div>
-            </Card>
           </div>
         </div>
       </section>
-
     </main>
+  );
+}
+
+function AttractionsScroller({ items }: { items: AttractionItem[] }) {
+  const loopItems = [...items, ...items];
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const trackRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    const track = trackRef.current;
+    if (!container || !track) {
+      return;
+    }
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      track.style.transform = "translate3d(0, 0, 0)";
+      return;
+    }
+
+    let frameId: number | null = null;
+    let halfWidth = 0;
+    let offset = 0;
+    let boostVelocity = 0;
+    let lastTime = 0;
+    let lastPaintTime = 0;
+    let isVisible = false;
+    const baseSpeed = window.matchMedia("(max-width: 640px)").matches ? 22 : 18;
+    const minFrameMs = 1000 / 45;
+
+    const clamp = (value: number, min: number, max: number) =>
+      Math.min(max, Math.max(min, value));
+
+    const normalizeOffset = () => {
+      if (halfWidth <= 0) {
+        return;
+      }
+      offset = ((offset % halfWidth) + halfWidth) % halfWidth;
+    };
+
+    const recalculateWidth = () => {
+      halfWidth = track.scrollWidth / 2;
+      normalizeOffset();
+    };
+
+    const animate = (time: number) => {
+      if (!isVisible) {
+        frameId = null;
+        return;
+      }
+
+      if (lastPaintTime && time - lastPaintTime < minFrameMs) {
+        frameId = window.requestAnimationFrame(animate);
+        return;
+      }
+      lastPaintTime = time;
+
+      if (!lastTime) {
+        lastTime = time;
+      }
+      const deltaSeconds = Math.min((time - lastTime) / 1000, 0.05);
+      lastTime = time;
+
+      offset += (baseSpeed + boostVelocity) * deltaSeconds;
+      normalizeOffset();
+      track.style.transform = `translate3d(${-offset.toFixed(2)}px, 0, 0)`;
+
+      boostVelocity *= Math.pow(0.94, deltaSeconds * 60);
+      if (Math.abs(boostVelocity) < 0.2) {
+        boostVelocity = 0;
+      }
+
+      frameId = window.requestAnimationFrame(animate);
+    };
+
+    const startAnimation = () => {
+      if (frameId !== null || !isVisible) return;
+      lastTime = 0;
+      lastPaintTime = 0;
+      frameId = window.requestAnimationFrame(animate);
+    };
+
+    const stopAnimation = () => {
+      if (frameId !== null) {
+        window.cancelAnimationFrame(frameId);
+        frameId = null;
+      }
+    };
+
+    const handleWheel = (event: WheelEvent) => {
+      if (!isVisible) return;
+
+      const horizontalDelta = event.deltaX;
+      const absX = Math.abs(horizontalDelta);
+      const absY = Math.abs(event.deltaY);
+
+      // React only to near-pure horizontal gestures; never block normal page scroll.
+      if (absX < 1.2 || absY > 0.6 || absX <= absY * 2) {
+        return;
+      }
+
+      boostVelocity = clamp(boostVelocity + horizontalDelta * 0.48, -640, 640);
+    };
+
+    recalculateWidth();
+    const resizeObserver = new ResizeObserver(recalculateWidth);
+    resizeObserver.observe(track);
+    resizeObserver.observe(container);
+    const visibilityObserver = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = Boolean(entry?.isIntersecting);
+        if (isVisible) {
+          startAnimation();
+        } else {
+          stopAnimation();
+        }
+      },
+      {
+        threshold: 0.05,
+        rootMargin: "160px 0px",
+      },
+    );
+    visibilityObserver.observe(container);
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        stopAnimation();
+        return;
+      }
+
+      if (isVisible) {
+        startAnimation();
+      }
+    };
+
+    container.addEventListener("wheel", handleWheel, { passive: true });
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      resizeObserver.disconnect();
+      visibilityObserver.disconnect();
+      container.removeEventListener("wheel", handleWheel);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      stopAnimation();
+    };
+  }, [items.length]);
+
+  return (
+    <div
+      ref={containerRef}
+      className="attractions-carousel relative mt-10 overflow-hidden rounded-2xl"
+    >
+      <div
+        className="attractions-edge-fade attractions-edge-fade-left pointer-events-none absolute inset-y-0 left-0 z-10 w-10 bg-gradient-to-r from-[#1a1f36] to-transparent sm:w-16"
+        aria-hidden="true"
+      />
+      <div
+        className="attractions-edge-fade attractions-edge-fade-right pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-gradient-to-l from-[#1a1f36] to-transparent sm:w-16"
+        aria-hidden="true"
+      />
+
+      <div
+        ref={trackRef}
+        className="attractions-track flex min-w-max gap-5 py-2 sm:gap-6 will-change-transform"
+      >
+        {loopItems.map((item, index) => (
+          <div
+            key={`${item.title}-${index}`}
+            className="w-[336px] shrink-0 sm:w-[372px] lg:w-[392px]"
+          >
+            <AttractionCard {...item} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function EventsVerticalShowcase({
+  photos,
+}: {
+  photos: { src: string; alt: string }[];
+}) {
+  if (photos.length === 0) {
+    return null;
+  }
+
+  const columnsCount = 3;
+  const minPerColumn = Math.min(4, photos.length);
+  const columns = Array.from({ length: columnsCount }, () => [] as { src: string; alt: string }[]);
+
+  // Stały podział: kolejne zdjęcia trafiają kolejno do lewej, środkowej i prawej kolumny.
+  photos.forEach((photo, index) => {
+    columns[index % columnsCount].push(photo);
+  });
+
+  // Uzupełniamy kolumny do podobnej długości bez duplikatów w tej samej kolumnie.
+  columns.forEach((column, columnIndex) => {
+    let guard = 0;
+    while (column.length < minPerColumn && guard < photos.length * 3) {
+      const candidate = photos[(columnIndex + guard) % photos.length];
+      if (!column.some((item) => item.src === candidate.src)) {
+        column.push(candidate);
+      }
+      guard += 1;
+    }
+  });
+  const columnVisibility = ["", "hidden sm:block", "hidden lg:block"];
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setIsAnimating(false);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsAnimating(Boolean(entry?.isIntersecting) && !document.hidden);
+      },
+      {
+        threshold: 0.08,
+        rootMargin: "120px 0px",
+      },
+    );
+    observer.observe(container);
+
+    const handleVisibility = () => {
+      if (document.hidden) {
+        setIsAnimating(false);
+        return;
+      }
+
+      const rect = container.getBoundingClientRect();
+      const viewportHeight = window.innerHeight || 0;
+      const inView = rect.top < viewportHeight * 0.92 && rect.bottom > viewportHeight * 0.08;
+      setIsAnimating(inView);
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+
+    return () => {
+      observer.disconnect();
+      document.removeEventListener("visibilitychange", handleVisibility);
+    };
+  }, []);
+
+  return (
+    <div
+      ref={containerRef}
+      className="events-showcase relative mt-10 overflow-hidden rounded-2xl border border-white/12 bg-white/[0.03] p-2.5 sm:p-3.5"
+    >
+      <div
+        className="events-showcase-fade events-showcase-fade-top pointer-events-none absolute inset-x-0 top-0 z-10 h-14 bg-gradient-to-b from-[#1a1f36] via-[#1a1f36]/70 to-transparent"
+        aria-hidden="true"
+      />
+      <div
+        className="events-showcase-fade events-showcase-fade-bottom pointer-events-none absolute inset-x-0 bottom-0 z-10 h-14 bg-gradient-to-t from-[#1a1f36] via-[#1a1f36]/70 to-transparent"
+        aria-hidden="true"
+      />
+
+      <div className="relative grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {columns.map((column, columnIndex) => {
+          const reverse = columnIndex % 2 === 1;
+          return (
+            <div
+              key={`events-column-${columnIndex}`}
+              className={`${columnVisibility[columnIndex]} events-showcase-column h-[300px] overflow-hidden rounded-xl border border-white/10 bg-[#0f1328]/70 p-2 sm:h-[360px] lg:h-[420px]`}
+            >
+              <div
+                className="flex flex-col will-change-transform"
+                style={{
+                  animationName: reverse ? "eventsColumnDown" : "eventsColumnUp",
+                  animationDuration: `${reverse ? 42 : 36}s`,
+                  animationTimingFunction: "linear",
+                  animationIterationCount: "infinite",
+                  animationPlayState: isAnimating ? "running" : "paused",
+                }}
+              >
+                {[0, 1].map((loopIndex) => (
+                  <div
+                    key={`events-loop-${columnIndex}-${loopIndex}`}
+                    className="flex flex-col gap-3 pb-3"
+                  >
+                    {column.map((photo, imageIndex) => (
+                      <div
+                        key={`${photo.src}-${columnIndex}-${loopIndex}-${imageIndex}`}
+                        className={`group relative overflow-hidden rounded-lg border border-white/10 bg-white/5 ${
+                          EVENT_COLUMN_CARD_HEIGHTS[
+                            (imageIndex + columnIndex) % EVENT_COLUMN_CARD_HEIGHTS.length
+                          ]
+                        }`}
+                      >
+                        <Image
+                          src={photo.src}
+                          alt={photo.alt}
+                          fill
+                          sizes="(min-width: 1024px) 28vw, (min-width: 640px) 45vw, 92vw"
+                          className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <style jsx global>{`
+        @keyframes eventsColumnUp {
+          from {
+            transform: translateY(0);
+          }
+          to {
+            transform: translateY(-50%);
+          }
+        }
+
+        @keyframes eventsColumnDown {
+          from {
+            transform: translateY(-50%);
+          }
+          to {
+            transform: translateY(0);
+          }
+        }
+      `}</style>
+    </div>
   );
 }

@@ -17,6 +17,7 @@ const FOOTER_COPY: Record<
   Locale,
   {
     rights: string;
+    designCredit: string;
     socials: string;
     ctaTitle: string;
     ctaSubtitle: string;
@@ -36,6 +37,7 @@ const FOOTER_COPY: Record<
 > = {
   pl: {
     rights: "© {year} Alvernia Planet. Wszystkie prawa zastrzeżone.",
+    designCredit: "Design i realizacja strony:",
     socials: "Wpadnij na nasze social media!",
     ctaTitle: "Masz pytania? Jesteśmy online.",
     ctaSubtitle: "Odpowiemy najszybciej, jak to możliwe — napisz lub zadzwoń.",
@@ -71,7 +73,6 @@ const FOOTER_COPY: Record<
           { label: "Wydarzenia", href: "/wydarzenia" },
           { label: "Jak dojechać", href: "/jak-dojechac" },
           { label: "Bilety i rezerwacje", href: "/kontakt" },
-          { label: "Aktualności", href: "/aktualnosci" },
         ],
       },
       {
@@ -86,6 +87,7 @@ const FOOTER_COPY: Record<
   },
   en: {
     rights: "© {year} Alvernia Planet. All rights reserved.",
+    designCredit: "Design & implementation:",
     socials: "Follow us on social media!",
     ctaTitle: "Questions? We’re here.",
     ctaSubtitle: "We reply as fast as possible — drop us a line or call.",
@@ -121,7 +123,6 @@ const FOOTER_COPY: Record<
           { label: "Events", href: "/wydarzenia" },
           { label: "Getting here", href: "/jak-dojechac" },
           { label: "Tickets & bookings", href: "/kontakt" },
-          { label: "News", href: "/aktualnosci" },
         ],
       },
       {
@@ -136,6 +137,7 @@ const FOOTER_COPY: Record<
   },
   pt: {
     rights: "© {year} Alvernia Planet. Todos os direitos reservados.",
+    designCredit: "Design e implementação:",
     socials: "Segue-nos nas redes sociais!",
     ctaTitle: "Tem perguntas? Estamos online.",
     ctaSubtitle: "Respondemos o mais rápido possível — escreve-nos ou liga.",
@@ -171,7 +173,6 @@ const FOOTER_COPY: Record<
           { label: "Eventos", href: "/wydarzenia" },
           { label: "Como chegar", href: "/jak-dojechac" },
           { label: "Bilhetes e reservas", href: "/kontakt" },
-          { label: "Notícias", href: "/aktualnosci" },
         ],
       },
       {
@@ -187,6 +188,9 @@ const FOOTER_COPY: Record<
 };
 
 const MESSENGER_URL = "https://m.me/alverniaplanet?ref=footer";
+const CZERCODE_URL = "https://czercode.com";
+const CZERCODE_LOGO_BLACK = "/shy/CzerCode_logo_black.svg";
+const CZERCODE_LOGO_WHITE = "/shy/CzerCode_logo_white.svg";
 
 export default function Footer() {
   const { locale } = useI18n();
@@ -217,15 +221,19 @@ export default function Footer() {
   const instagramIconTone = isLight ? "text-pink-600" : "text-pink-300";
   const tiktokIconTone = isLight ? "text-cyan-700" : "text-cyan-200";
   const logoFrameClass = "inline-flex items-center justify-center rounded-2xl px-3 py-1";
+  const czerCodeLogoSrc = isLight ? CZERCODE_LOGO_BLACK : CZERCODE_LOGO_WHITE;
+  const creditTextTone = isLight ? "text-[color:var(--ap-text-muted)]" : "text-gray-400";
+  const creditLinkTone = isLight
+    ? "text-[color:var(--ap-text)] hover:text-[color:var(--ap-accent)]"
+    : "text-white/85 hover:text-[color:var(--ap-ice)]";
   const prefix = loc === "en" || loc === "pt" ? `/${loc}` : "";
   const plToIntl: Record<string, string> = {
     "/wydarzenia": "/events",
+    "/galeria": "/gallery",
     "/jak-dojechac": "/getting-there",
     "/bilety": "/tickets",
     "/o-alvernia-planet": "/about",
-    "/galeria": "/gallery",
     "/kontakt": "/contact",
-    "/aktualnosci": "/news",
     "/atrakcje/wystawa": "/attractions/exhibition",
     "/atrakcje/sciezka-filmowa": "/attractions/film-path",
     "/atrakcje/kino-360": "/attractions/cinema-360",
@@ -246,7 +254,7 @@ export default function Footer() {
 
   return (
     <footer className="relative mt-24 text-white overflow-hidden bg-[var(--ap-bg)]">
-      <div className="relative max-w-[min(86vw,120rem)] mx-auto px-4 py-12 sm:py-14">
+      <div className="relative max-w-7xl mx-auto px-4 py-12 sm:py-14">
         {/* Polityki / regulaminy */}
         <div className="mb-6 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-white/70">
           {copy.policies.map((item, idx) => (
@@ -294,7 +302,9 @@ export default function Footer() {
                 <div className="space-y-2">
                   <div>
                     <p className="text-[11px] uppercase tracking-[0.2em] text-white/60">{copy.emailLabel}</p>
-                    <p className="text-base sm:text-lg font-semibold break-all leading-snug">{copy.email}</p>
+                    <p className="text-sm sm:text-base md:text-[1.05rem] font-semibold leading-snug whitespace-nowrap overflow-hidden text-ellipsis tracking-tight">
+                      {copy.email}
+                    </p>
                   </div>
                   <a
                     href={`mailto:${copy.email}`}
@@ -446,8 +456,28 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 border-t border-white/10 pt-6 flex justify-center text-sm text-gray-400">
-          <p className="text-center">{rights}</p>
+        <div className={`mt-10 border-t border-white/10 pt-6 text-sm ${creditTextTone}`}>
+          <p className="w-full text-center">{rights}</p>
+          <div className="mt-3 w-full flex justify-start">
+            <a
+              href={CZERCODE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`group inline-flex flex-col items-start gap-2 rounded-2xl px-3 py-2 transition ${creditLinkTone}`}
+              onClick={() => trackEvent("footer_credit_click", { provider: "CzerCode", href: CZERCODE_URL })}
+            >
+              <span className="whitespace-nowrap">{copy.designCredit} CzerCode Szymon Czermak</span>
+              <span className="inline-flex items-center justify-start">
+                <Image
+                  src={czerCodeLogoSrc}
+                  alt="CzerCode logo"
+                  width={140}
+                  height={28}
+                  className="h-6 w-auto object-contain"
+                />
+              </span>
+            </a>
+          </div>
         </div>
       </div>
     </footer>

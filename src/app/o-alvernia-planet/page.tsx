@@ -1,9 +1,7 @@
 "use client";
 
 import Card from "@/app/components/Card";
-import { PrimaryButton } from "@/app/components/PrimaryButton";
 import { useI18n } from "@/app/i18n-provider";
-import Image from "next/image";
 
 type Locale = "pl" | "en" | "pt";
 
@@ -15,10 +13,6 @@ const COPY: Record<
     heroSubtitle: string;
     intro: string;
     bullets: string[];
-    wikiLabel: string;
-    wikiHref: string;
-    galleryTitle: string;
-    galleryCta: string;
     highlightTitle: string;
     highlightSections: { title: string; summary: string; points: string[] }[];
   }
@@ -35,10 +29,6 @@ const COPY: Record<
       "Zespół z doświadczeniem w produkcjach i obsłudze wydarzeń",
       "Lokalizacja zapewniająca prywatność, dojazd i parking",
     ],
-    wikiLabel: "Źródło: Wikipedia",
-    wikiHref: "https://pl.wikipedia.org/wiki/Alvernia_Studios",
-    galleryTitle: "Zobacz galerię",
-    galleryCta: "Otwórz galerię",
     highlightTitle: "Wyjątkowe miejsce w środku Europy",
     highlightSections: [
       {
@@ -104,10 +94,6 @@ const COPY: Record<
       "A team experienced in productions and event delivery",
       "Location offering privacy, access, and parking",
     ],
-    wikiLabel: "Source: Wikipedia",
-    wikiHref: "https://pl.wikipedia.org/wiki/Alvernia_Studios",
-    galleryTitle: "See the gallery",
-    galleryCta: "Open gallery",
     highlightTitle: "A unique place in the heart of Europe",
     highlightSections: [
       {
@@ -173,10 +159,6 @@ const COPY: Record<
       "Equipa com experiência em produções e organização de eventos",
       "Localização com privacidade, acesso e estacionamento",
     ],
-    wikiLabel: "Fonte: Wikipedia",
-    wikiHref: "https://pl.wikipedia.org/wiki/Alvernia_Studios",
-    galleryTitle: "Ver galeria",
-    galleryCta: "Abrir galeria",
     highlightTitle: "Um lugar único no coração da Europa",
     highlightSections: [
       {
@@ -232,21 +214,14 @@ const COPY: Record<
   },
 };
 
-const GALLERY_IMAGES = [
-  { src: "/galeria/Ogolne/webp/1.webp", alt: "Kopuły kompleksu – widok z góry" },
-  { src: "/galeria/Ogolne/webp/2.webp", alt: "Przeszklony łącznik" },
-  { src: "/galeria/Ogolne/webp/3.webp", alt: "Industrialne wnętrze kopuły" },
-  { src: "/galeria/Ogolne/webp/4.webp", alt: "Strefa eventowa w kopule" },
-];
-
 export default function AboutAlverniaPage() {
   const { locale } = useI18n();
   const loc = ((locale as Locale) ?? "pl") as Locale;
   const copy = COPY[loc];
 
   return (
-    <main className="relative min-h-screen text-white px-4 py-12 sm:py-16">
-      <div className="max-w-[min(86vw,120rem)] mx-auto space-y-10 sm:space-y-12">
+    <main className="relative min-h-screen text-white px-4 py-12 sm:py-16 ap-page-intro-stagger">
+      <div className="max-w-7xl mx-auto space-y-10 sm:space-y-12">
         <header className="text-center space-y-4">
           <p className="text-xs uppercase tracking-[0.35em] text-white/60">{copy.tag}</p>
           <h1 className="text-4xl sm:text-5xl font-extrabold">{copy.heroTitle}</h1>
@@ -259,9 +234,9 @@ export default function AboutAlverniaPage() {
             {copy.bullets.map((line) => (
               <div
                 key={line}
-                className="flex items-start gap-3 rounded-2xl bg-white/5 ring-1 ring-white/10 p-4"
+                className="group flex items-start gap-3 rounded-2xl bg-white/5 px-4 py-3 ring-1 ring-white/10 transition hover:bg-white/10 hover:ring-white/20"
               >
-                <span className="mt-1 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#4fcfde] text-[#171730] font-bold shadow-[0_0_16px_rgba(79,207,222,0.35)] ring-1 ring-black/15">
+                <span className="mt-1 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[color:var(--ap-accent)] text-[#171730] font-bold shadow-[0_0_16px_rgba(79,207,222,0.35)] ring-1 ring-black/15">
                   ✓
                 </span>
                 <p className="text-gray-100">{line}</p>
@@ -276,23 +251,13 @@ export default function AboutAlverniaPage() {
               {copy.highlightTitle}
             </h2>
             <div className="h-[1px] w-24 mx-auto bg-white/15" />
-            <div className="flex justify-center">
-              <a
-                href={copy.wikiHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs text-white/60 underline decoration-white/25 transition hover:text-white hover:decoration-white/60"
-              >
-                {copy.wikiLabel}
-              </a>
-            </div>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {copy.highlightSections.map((section) => (
               <Card
                 key={section.title}
                 variant="solid"
-                className="bg-white/5 ring-1 ring-white/10"
+                className="bg-white/5 ring-1 ring-white/10 transition duration-300 ease-out hover:bg-white/10 hover:ring-white/20"
                 dense
               >
                 <h3 className="text-lg sm:text-xl font-semibold text-white">
@@ -311,36 +276,6 @@ export default function AboutAlverniaPage() {
             ))}
           </div>
         </section>
-
-        <Card
-          title={copy.galleryTitle}
-          titleCentered
-          titleDivider
-          className="text-center"
-        >
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 justify-items-center">
-            {GALLERY_IMAGES.map((img) => (
-              <div
-                key={img.src}
-                className="relative w-full aspect-[16/10] md:aspect-[16/9] rounded-lg bg-white/5 overflow-hidden"
-              >
-                <Image
-                  src={img.src}
-                  alt={img.alt}
-                  fill
-                  sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
-                  className="object-cover"
-                  priority={false}
-                />
-              </div>
-            ))}
-          </div>
-          <div className="mt-6 flex justify-center">
-            <PrimaryButton href="/galeria" size="lg">
-              {copy.galleryCta}
-            </PrimaryButton>
-          </div>
-        </Card>
       </div>
     </main>
   );

@@ -33,12 +33,6 @@
       "namedRegex": "^/_not\\-found(?:/)?$"
     },
     {
-      "page": "/aktualnosci",
-      "regex": "^/aktualnosci(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/aktualnosci(?:/)?$"
-    },
-    {
       "page": "/atrakcje/kino-360",
       "regex": "^/atrakcje/kino\\-360(?:/)?$",
       "routeKeys": {},
@@ -115,12 +109,6 @@
       "regex": "^/en/getting\\-there(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/en/getting\\-there(?:/)?$"
-    },
-    {
-      "page": "/en/news",
-      "regex": "^/en/news(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/en/news(?:/)?$"
     },
     {
       "page": "/en/tickets",
@@ -211,12 +199,6 @@
       "regex": "^/pt/getting\\-there(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/pt/getting\\-there(?:/)?$"
-    },
-    {
-      "page": "/pt/news",
-      "regex": "^/pt/news(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/pt/news(?:/)?$"
     },
     {
       "page": "/pt/tickets",
