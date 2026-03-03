@@ -864,31 +864,31 @@ function EventsVerticalShowcase({
 }: {
   photos: { src: string; alt: string }[];
 }) {
-  if (photos.length === 0) {
-    return null;
-  }
-
-  const columnsCount = 3;
-  const minPerColumn = Math.min(4, photos.length);
+  const hasPhotos = photos.length > 0;
+  const columnsCount = 2;
+  const minPerColumn = hasPhotos ? Math.min(4, photos.length) : 0;
   const columns = Array.from({ length: columnsCount }, () => [] as { src: string; alt: string }[]);
 
-  // Stały podział: kolejne zdjęcia trafiają kolejno do lewej, środkowej i prawej kolumny.
-  photos.forEach((photo, index) => {
-    columns[index % columnsCount].push(photo);
-  });
+  // Stały podział: kolejne zdjęcia trafiają kolejno do lewej i prawej kolumny.
+  if (hasPhotos) {
+    photos.forEach((photo, index) => {
+      columns[index % columnsCount].push(photo);
+    });
+  }
 
   // Uzupełniamy kolumny do podobnej długości bez duplikatów w tej samej kolumnie.
-  columns.forEach((column, columnIndex) => {
-    let guard = 0;
-    while (column.length < minPerColumn && guard < photos.length * 3) {
-      const candidate = photos[(columnIndex + guard) % photos.length];
-      if (!column.some((item) => item.src === candidate.src)) {
-        column.push(candidate);
+  if (hasPhotos) {
+    columns.forEach((column, columnIndex) => {
+      let guard = 0;
+      while (column.length < minPerColumn && guard < photos.length * 3) {
+        const candidate = photos[(columnIndex + guard) % photos.length];
+        if (!column.some((item) => item.src === candidate.src)) {
+          column.push(candidate);
+        }
+        guard += 1;
       }
-      guard += 1;
-    }
-  });
-  const columnVisibility = ["", "hidden sm:block", "hidden lg:block"];
+    });
+  }
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -931,6 +931,10 @@ function EventsVerticalShowcase({
     };
   }, []);
 
+  if (!hasPhotos) {
+    return null;
+  }
+
   return (
     <div
       ref={containerRef}
@@ -945,13 +949,13 @@ function EventsVerticalShowcase({
         aria-hidden="true"
       />
 
-      <div className="relative grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="relative grid grid-cols-1 gap-3 sm:grid-cols-2">
         {columns.map((column, columnIndex) => {
           const reverse = columnIndex % 2 === 1;
           return (
             <div
               key={`events-column-${columnIndex}`}
-              className={`${columnVisibility[columnIndex]} events-showcase-column h-[300px] overflow-hidden rounded-xl border border-white/10 bg-[#0f1328]/70 p-2 sm:h-[360px] lg:h-[420px]`}
+              className="events-showcase-column h-[300px] overflow-hidden rounded-xl border border-white/10 bg-[#0f1328]/70 p-2 sm:h-[360px] lg:h-[420px]"
             >
               <div
                 className="flex flex-col will-change-transform"
@@ -981,7 +985,7 @@ function EventsVerticalShowcase({
                           src={photo.src}
                           alt={photo.alt}
                           fill
-                          sizes="(min-width: 1024px) 28vw, (min-width: 640px) 45vw, 92vw"
+                          sizes="(min-width: 640px) 45vw, 92vw"
                           className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
                         />
                       </div>
