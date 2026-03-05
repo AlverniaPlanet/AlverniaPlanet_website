@@ -302,7 +302,7 @@ export default function KontaktPage() {
 
   return (
     <main className="relative z-10 text-white px-4 py-12 sm:py-16 flex-1 flex flex-col min-h-screen">
-      <div className="flex-1 flex flex-col gap-12">
+      <div className="flex-1 flex flex-col ap-page-stack">
         {/* Nagłówek */}
         <section className="mx-auto max-w-3xl text-center">
           <div>
@@ -313,7 +313,7 @@ export default function KontaktPage() {
         </section>
 
         {/* Karty kontaktowe */}
-        <section className="mx-auto w-full max-w-7xl">
+        <section className="ap-shell">
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             {/* Infolinia */}
             <div>
@@ -422,7 +422,7 @@ export default function KontaktPage() {
         </section>
 
         {/* Formularz kontaktowy */}
-        <section className="mx-auto w-full max-w-7xl">
+        <section className="ap-shell">
           <div>
             <Card title={copy.form.title} titleCentered titleDivider>
               <p className="text-center text-gray-300">{copy.form.subtitle}</p>

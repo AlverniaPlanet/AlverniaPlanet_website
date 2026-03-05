@@ -16,7 +16,7 @@ export default function BrandLogo({ variant = "dark", className }: BrandLogoProp
   const src = LOGO_SOURCES[variant];
 
   return (
-    <span className={`inline-flex h-10 md:h-12 ${className ?? ""}`}>
+    <span className={`inline-flex h-9 md:h-10 ${className ?? ""}`}>
       <Image
         src={src}
         alt="Alvernia Planet"

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { useI18n } from "@/app/i18n-provider";
 import Card from "@/app/components/Card";
@@ -39,6 +39,8 @@ type TicketOption = {
 type TicketSection = {
   title: string;
   intro: string;
+  headerCta: string;
+  headerCtaSub: string;
   priceLabel: string;
   price: string;
   cta: string;
@@ -113,6 +115,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
     tickets: {
       title: "Bilety na ścieżkę edukacyjną",
       intro: "Cena jest taka sama dla obu opcji: 69 zł za osobę. Wybierz wariant rezerwacji.",
+      headerCta: "Wybierz wariant rezerwacji",
+      headerCtaSub: "Dla rodzin, grup i szkół - jeden krok do rezerwacji.",
       priceLabel: "Cena za osobę",
       price: "69 zł/os.",
       cta: "Kup bilet",
@@ -214,6 +218,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
     tickets: {
       title: "Educational path tickets",
       intro: "Same price for both options: 69 PLN per person. Choose the booking type.",
+      headerCta: "Choose booking option",
+      headerCtaSub: "For families, groups, and schools - one step to booking.",
       priceLabel: "Price per person",
       price: "69 PLN/person",
       cta: "Buy tickets",
@@ -314,6 +320,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
     tickets: {
       title: "Bilhetes para o percurso educativo",
       intro: "Preço igual nas duas opções: 69 PLN por pessoa. Escolha o tipo de reserva.",
+      headerCta: "Escolher opção de reserva",
+      headerCtaSub: "Para famílias, grupos e escolas - um passo até à reserva.",
       priceLabel: "Preço por pessoa",
       price: "69 PLN/pessoa",
       cta: "Comprar bilhetes",
@@ -380,7 +388,9 @@ const EVENT_GALLERY_IMAGES = Array.from(
   { length: 8 },
   (_, idx) => `/galeria/Wydarzenia/webp/${idx + 1}.webp`,
 );
-
+const HERO_WELCOME_AUTO_HIDE_MS = 2500;
+const HERO_WELCOME_FADE_DURATION_MS = 1200;
+const HERO_PROMO_DELAY_MS = 1800;
 const EVENT_COLUMN_CARD_HEIGHTS = [
   "h-28 sm:h-32 lg:h-36",
   "h-36 sm:h-40 lg:h-44",
@@ -392,9 +402,9 @@ export default function Page() {
   const { locale } = useI18n();
   const loc = ((locale as Locale) ?? "pl") as Locale;
   const copy = HOME_COPY[loc];
-  const [heroIntroVisible, setHeroIntroVisible] = useState(false);
-  const [heroPromoVisible, setHeroPromoVisible] = useState(false);
-  const [contentIntroVisible, setContentIntroVisible] = useState(false);
+  const [introReady, setIntroReady] = useState(false);
+  const [secondaryAnimationsReady, setSecondaryAnimationsReady] = useState(false);
+  const [heroWelcomeVisible, setHeroWelcomeVisible] = useState(true);
   const heroVideoFallback =
     loc === "en"
       ? "Your browser does not support the video element."
@@ -407,10 +417,14 @@ export default function Page() {
       : loc === "pt"
       ? "Foto do evento"
       : "Zdjęcie z wydarzenia";
-  const eventPhotos = EVENT_GALLERY_IMAGES.map((src, index) => ({
-    src,
-    alt: `${eventPhotoLabel} ${index + 1}`,
-  }));
+  const eventPhotos = useMemo(
+    () =>
+      EVENT_GALLERY_IMAGES.map((src, index) => ({
+        src,
+        alt: `${eventPhotoLabel} ${index + 1}`,
+      })),
+    [eventPhotoLabel],
+  );
 
   const heroVideoRef = useRef<HTMLVideoElement | null>(null);
   const heroSectionRef = useRef<HTMLElement | null>(null);
@@ -422,27 +436,47 @@ export default function Page() {
     }
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setHeroIntroVisible(true);
-      setHeroPromoVisible(true);
-      setContentIntroVisible(true);
+      setIntroReady(true);
+      setSecondaryAnimationsReady(false);
       return;
     }
 
     const frame = window.requestAnimationFrame(() => {
-      setHeroIntroVisible(true);
+      setIntroReady(true);
     });
-    const promoTimer = window.setTimeout(() => {
-      setHeroPromoVisible(true);
-    }, 1000);
-    const timer = window.setTimeout(() => {
-      setContentIntroVisible(true);
-    }, 260);
+    let idleTimeoutId: ReturnType<typeof setTimeout> | null = null;
+    let idleCallbackId: number | null = null;
+    const win = window as Window & {
+      requestIdleCallback?: (callback: IdleRequestCallback, options?: IdleRequestOptions) => number;
+      cancelIdleCallback?: (handle: number) => void;
+    };
+
+    const startSecondary = () => setSecondaryAnimationsReady(true);
+    if (typeof win.requestIdleCallback === "function") {
+      idleCallbackId = win.requestIdleCallback(startSecondary, { timeout: 1800 });
+    } else {
+      idleTimeoutId = globalThis.setTimeout(startSecondary, 1100);
+    }
 
     return () => {
       window.cancelAnimationFrame(frame);
-      window.clearTimeout(promoTimer);
-      window.clearTimeout(timer);
+      if (idleCallbackId !== null && typeof win.cancelIdleCallback === "function") {
+        win.cancelIdleCallback(idleCallbackId);
+      }
+      if (idleTimeoutId !== null) {
+        window.clearTimeout(idleTimeoutId);
+      }
     };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+    const timer = window.setTimeout(() => {
+      setHeroWelcomeVisible(false);
+    }, HERO_WELCOME_AUTO_HIDE_MS);
+    return () => window.clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -514,29 +548,32 @@ export default function Page() {
   const reviewsToShow = copy.testimonials.reviews;
 
   return (
-    <main className="relative min-h-screen px-4 py-12 sm:py-16 text-white">
+    <main className="relative min-h-screen px-4 py-10 sm:py-14 lg:py-12 text-white">
       {/* Wideo hero w "kwadracie" jak na pozostałych podstronach */}
       <section
         ref={heroSectionRef}
         className={`relative z-10 transition-[opacity,transform] duration-[1300ms] will-change-[opacity,transform] ${
-          heroIntroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
+          introReady ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
         }`}
         style={{
           transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
         }}
       >
-        <div className="mx-auto w-full max-w-7xl">
+        <div className="mx-auto w-full max-w-[72rem]">
           <div className="relative overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
             <div className="relative aspect-[16/9] bg-black">
               <div className="pointer-events-none absolute inset-x-0 top-4 z-20 flex justify-center px-4 sm:top-5">
                 <a
                   href={copy.heroPromo.href}
-                  className={`hero-film-alert pointer-events-auto inline-flex max-w-full items-center gap-2.5 rounded-full px-3.5 py-2.5 text-xs sm:gap-3.5 sm:px-5 sm:py-3 sm:text-base transition-[opacity,transform] duration-[900ms] ${
-                    heroPromoVisible
+                className={`hero-film-alert pointer-events-auto inline-flex max-w-full items-center gap-2 rounded-full px-3 py-2 text-[11px] sm:gap-2.5 sm:px-4 sm:py-2.5 sm:text-sm transition-[opacity,transform] duration-[900ms] ${
+                    introReady
                       ? "hero-film-alert-intro opacity-100 translate-y-0 scale-100"
                       : "opacity-0 -translate-y-3 scale-95 pointer-events-none"
                   }`}
-                  style={{ transitionTimingFunction: "cubic-bezier(0.2, 0.9, 0.28, 1)" }}
+                  style={{
+                    transitionTimingFunction: "cubic-bezier(0.2, 0.9, 0.28, 1)",
+                    transitionDelay: introReady ? `${HERO_PROMO_DELAY_MS}ms` : "0ms",
+                  }}
                 >
                   <span
                     className="hero-film-alert-dot mt-0.5 h-2.5 w-2.5 shrink-0 rounded-full bg-[#4fcfde] sm:h-3 sm:w-3"
@@ -549,6 +586,32 @@ export default function Page() {
                     </span>
                   </span>
                 </a>
+              </div>
+              <div
+                className={`pointer-events-none absolute inset-0 z-[6] bg-black transition-opacity ${
+                  heroWelcomeVisible ? "opacity-45" : "opacity-0"
+                }`}
+                style={{
+                  transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
+                  transitionDuration: `${HERO_WELCOME_FADE_DURATION_MS}ms`,
+                }}
+                aria-hidden
+              />
+              <div
+                className={`pointer-events-none absolute inset-0 z-10 flex items-center justify-center px-4 text-center transition-[opacity,transform,filter] ${
+                  heroWelcomeVisible
+                    ? "opacity-100 translate-y-0 blur-0"
+                    : "opacity-0 -translate-y-2 blur-[2px]"
+                }`}
+                style={{
+                  transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
+                  transitionDuration: `${HERO_WELCOME_FADE_DURATION_MS}ms`,
+                }}
+                aria-hidden
+              >
+                <h1 className="ap-type-hero-title text-white drop-shadow-[0_14px_34px_rgba(0,0,0,0.65)]">
+                  {copy.heroTitle}
+                </h1>
               </div>
               <video
                 ref={heroVideoRef}
@@ -579,45 +642,42 @@ export default function Page() {
       {/* Content below the hero video */}
       <section
         id="content-start"
-        className={`relative z-10 mt-16 sm:mt-20 transition-[opacity,transform] duration-[1200ms] will-change-[opacity,transform] ${
-          contentIntroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+        className={`relative z-10 mt-10 sm:mt-12 transition-[opacity,transform] duration-[1200ms] will-change-[opacity,transform] ${
+          introReady ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
         }`}
         style={{
           transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
           transitionDelay: "180ms",
         }}
       >
-        <div className="mx-auto max-w-7xl">
-          <ScrollMotionItem strength="strong">
-            <div className="mb-10 text-center">
-              <h2 className="text-4xl sm:text-5xl font-extrabold">
-                {copy.heroTitle}
-              </h2>
-              <div className="mt-4 mx-auto h-[1px] w-full max-w-md bg-white/20" />
-            </div>
-          </ScrollMotionItem>
-          <div className="grid grid-cols-1 gap-20 sm:gap-24">
+        <div className="mx-auto max-w-[72rem]">
+          <div className="grid grid-cols-1 gap-16 sm:gap-20">
             <ScrollMotionItem strength="strong" delay={40}>
               <Card title={copy.attractions.title} titleCentered titleDivider dense motion="off">
-                <p className="text-center text-gray-200 max-w-3xl mx-auto">{copy.attractions.intro}</p>
-                <AttractionsScroller items={copy.attractions.items} />
+                <p className="ap-type-section-body text-center max-w-3xl mx-auto">
+                  {copy.attractions.intro}
+                </p>
+                <AttractionsScroller items={copy.attractions.items} animate={secondaryAnimationsReady} />
               </Card>
             </ScrollMotionItem>
 
-            <ScrollMotionItem strength="soft" delay={30} float={false}>
+            <ScrollMotionItem strength="soft" delay={30} float={false} className="home-deferred-block">
               <Card title={copy.tickets.title} titleCentered titleDivider dense motion="off">
-                <p className="text-center text-gray-200 max-w-3xl mx-auto">{copy.tickets.intro}</p>
-                <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-12">
+                <div className="mt-1 text-center">
+                  <p className="ap-type-cta-title">{copy.tickets.headerCta}</p>
+                  <p className="mt-2 ap-type-cta-body">{copy.tickets.headerCtaSub}</p>
+                </div>
+                <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-x-6 gap-y-10">
                   {copy.tickets.options.map((option) => (
                     <div
                       key={option.title}
-                      className="ticket-card group flex h-full flex-col rounded-3xl text-white/90 transition duration-300 ease-out hover:-translate-y-1"
+                      className="ticket-card ap-tile group flex h-full flex-col rounded-3xl text-white/90"
                     >
                       <div className="ticket-card-top">
                         <span className="ticket-card-badge">{option.badge}</span>
                       </div>
-                      <div className="ticket-card-content flex h-full flex-col p-6 sm:p-8 text-center">
-                        <h3 className="ticket-card-title text-2xl sm:text-3xl font-semibold text-white">
+                      <div className="ticket-card-content flex h-full flex-col p-5 sm:p-6 text-center">
+                        <h3 className="ticket-card-title text-xl sm:text-2xl font-semibold text-white">
                           {option.title}
                         </h3>
                         <p className="ticket-card-subtitle mt-2 text-sm sm:text-base text-white/75">
@@ -636,7 +696,7 @@ export default function Page() {
                           <p className="ticket-price-label text-[0.7rem] uppercase tracking-[0.25em] text-white/60">
                             {option.priceLabel ?? copy.tickets.priceLabel}
                           </p>
-                          <p className="ticket-price mt-2 text-3xl sm:text-4xl font-bold text-amber-200">
+                          <p className="ticket-price mt-2 text-2xl sm:text-3xl font-bold text-amber-200">
                             {option.price ?? copy.tickets.price}
                           </p>
                           <div className="mt-6 flex justify-center">
@@ -656,10 +716,10 @@ export default function Page() {
               </Card>
             </ScrollMotionItem>
 
-            <ScrollMotionItem strength="strong" delay={130}>
+            <ScrollMotionItem strength="strong" delay={130} className="home-deferred-block">
               <Card title={copy.events.title} className="text-center" titleCentered titleDivider dense motion="off">
-                <p className="text-gray-200 text-lg">{copy.events.description}</p>
-                <EventsVerticalShowcase photos={eventPhotos} />
+                <p className="ap-type-section-body">{copy.events.description}</p>
+                <EventsVerticalShowcase photos={eventPhotos} allowAnimation={secondaryAnimationsReady} />
                 <div className="mt-6 flex justify-center">
                   <PrimaryButton href={copy.events.href} size="lg">
                     {copy.events.cta}
@@ -668,9 +728,9 @@ export default function Page() {
               </Card>
             </ScrollMotionItem>
 
-            <ScrollMotionItem strength="strong" delay={170}>
+            <ScrollMotionItem strength="strong" delay={170} className="home-deferred-block">
               <Card title={copy.testimonials.title} titleCentered titleDivider dense motion="off">
-                <p className="text-center text-gray-200">{copy.testimonials.subtitle}</p>
+                <p className="ap-type-section-body text-center">{copy.testimonials.subtitle}</p>
                 <div className="mt-6">
                   <Testimonials reviews={reviewsToShow} sourceUrl={GOOGLE_PLACE_URL} />
                 </div>
@@ -684,19 +744,35 @@ export default function Page() {
   );
 }
 
-function AttractionsScroller({ items }: { items: AttractionItem[] }) {
-  const loopItems = [...items, ...items];
+function AttractionsScroller({
+  items,
+  animate: shouldAnimate = true,
+}: {
+  items: AttractionItem[];
+  animate?: boolean;
+}) {
+  const loopItems = useMemo(() => [...items, ...items], [items]);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    if (!shouldAnimate) {
+      return;
+    }
     const container = containerRef.current;
     const track = trackRef.current;
     if (!container || !track) {
       return;
     }
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
+    const lowPowerDevice =
+      (navigator.hardwareConcurrency ?? 8) <= 4 ||
+      (typeof (navigator as Navigator & { deviceMemory?: number }).deviceMemory === "number" &&
+        ((navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 8) <= 4);
+
+    if (prefersReduced || coarsePointer || lowPowerDevice) {
       track.style.transform = "translate3d(0, 0, 0)";
       return;
     }
@@ -708,8 +784,8 @@ function AttractionsScroller({ items }: { items: AttractionItem[] }) {
     let lastTime = 0;
     let lastPaintTime = 0;
     let isVisible = false;
-    const baseSpeed = window.matchMedia("(max-width: 640px)").matches ? 22 : 18;
-    const minFrameMs = 1000 / 45;
+    const baseSpeed = window.matchMedia("(max-width: 640px)").matches ? 18 : 14;
+    const minFrameMs = 1000 / 24;
 
     const clamp = (value: number, min: number, max: number) =>
       Math.min(max, Math.max(min, value));
@@ -726,14 +802,14 @@ function AttractionsScroller({ items }: { items: AttractionItem[] }) {
       normalizeOffset();
     };
 
-    const animate = (time: number) => {
+    const tick = (time: number) => {
       if (!isVisible) {
         frameId = null;
         return;
       }
 
       if (lastPaintTime && time - lastPaintTime < minFrameMs) {
-        frameId = window.requestAnimationFrame(animate);
+        frameId = window.requestAnimationFrame(tick);
         return;
       }
       lastPaintTime = time;
@@ -753,14 +829,14 @@ function AttractionsScroller({ items }: { items: AttractionItem[] }) {
         boostVelocity = 0;
       }
 
-      frameId = window.requestAnimationFrame(animate);
+      frameId = window.requestAnimationFrame(tick);
     };
 
     const startAnimation = () => {
       if (frameId !== null || !isVisible) return;
       lastTime = 0;
       lastPaintTime = 0;
-      frameId = window.requestAnimationFrame(animate);
+      frameId = window.requestAnimationFrame(tick);
     };
 
     const stopAnimation = () => {
@@ -800,7 +876,7 @@ function AttractionsScroller({ items }: { items: AttractionItem[] }) {
       },
       {
         threshold: 0.05,
-        rootMargin: "160px 0px",
+        rootMargin: "80px 0px",
       },
     );
     visibilityObserver.observe(container);
@@ -826,12 +902,12 @@ function AttractionsScroller({ items }: { items: AttractionItem[] }) {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       stopAnimation();
     };
-  }, [items.length]);
+  }, [items.length, shouldAnimate]);
 
   return (
     <div
       ref={containerRef}
-      className="attractions-carousel relative mt-10 overflow-hidden rounded-2xl"
+      className="attractions-carousel relative mt-8 overflow-hidden rounded-2xl"
     >
       <div
         className="attractions-edge-fade attractions-edge-fade-left pointer-events-none absolute inset-y-0 left-0 z-10 w-10 bg-gradient-to-r from-[#1a1f36] to-transparent sm:w-16"
@@ -844,12 +920,12 @@ function AttractionsScroller({ items }: { items: AttractionItem[] }) {
 
       <div
         ref={trackRef}
-        className="attractions-track flex min-w-max gap-5 py-2 sm:gap-6 will-change-transform"
+        className="attractions-track flex min-w-max gap-4 py-2 sm:gap-5 will-change-transform"
       >
         {loopItems.map((item, index) => (
           <div
             key={`${item.title}-${index}`}
-            className="w-[336px] shrink-0 sm:w-[372px] lg:w-[392px]"
+            className="w-[300px] shrink-0 sm:w-[332px] lg:w-[352px]"
           >
             <AttractionCard {...item} />
           </div>
@@ -859,26 +935,28 @@ function AttractionsScroller({ items }: { items: AttractionItem[] }) {
   );
 }
 
-function EventsVerticalShowcase({
+const EventsVerticalShowcase = memo(function EventsVerticalShowcase({
   photos,
+  allowAnimation = true,
 }: {
   photos: { src: string; alt: string }[];
+  allowAnimation?: boolean;
 }) {
   const hasPhotos = photos.length > 0;
   const columnsCount = 2;
-  const minPerColumn = hasPhotos ? Math.min(4, photos.length) : 0;
-  const columns = Array.from({ length: columnsCount }, () => [] as { src: string; alt: string }[]);
+  const [loadedBySrc, setLoadedBySrc] = useState<Record<string, true>>({});
+  const columns = useMemo(() => {
+    if (!hasPhotos) {
+      return Array.from({ length: columnsCount }, () => [] as { src: string; alt: string }[]);
+    }
+    const result = Array.from({ length: columnsCount }, () => [] as { src: string; alt: string }[]);
 
-  // Stały podział: kolejne zdjęcia trafiają kolejno do lewej i prawej kolumny.
-  if (hasPhotos) {
+    const minPerColumn = Math.min(4, photos.length);
     photos.forEach((photo, index) => {
-      columns[index % columnsCount].push(photo);
+      result[index % columnsCount].push(photo);
     });
-  }
 
-  // Uzupełniamy kolumny do podobnej długości bez duplikatów w tej samej kolumnie.
-  if (hasPhotos) {
-    columns.forEach((column, columnIndex) => {
+    result.forEach((column, columnIndex) => {
       let guard = 0;
       while (column.length < minPerColumn && guard < photos.length * 3) {
         const candidate = photos[(columnIndex + guard) % photos.length];
@@ -888,15 +966,29 @@ function EventsVerticalShowcase({
         guard += 1;
       }
     });
-  }
+
+    return result;
+  }, [photos, hasPhotos]);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [slowIntroPhase, setSlowIntroPhase] = useState(true);
 
   useEffect(() => {
+    if (!allowAnimation) {
+      setIsAnimating(false);
+      return;
+    }
     const container = containerRef.current;
     if (!container) return;
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
+    const lowPowerDevice =
+      (navigator.hardwareConcurrency ?? 8) <= 4 ||
+      (typeof (navigator as Navigator & { deviceMemory?: number }).deviceMemory === "number" &&
+        ((navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 8) <= 4);
+
+    if (prefersReduced || coarsePointer || lowPowerDevice) {
       setIsAnimating(false);
       return;
     }
@@ -929,11 +1021,35 @@ function EventsVerticalShowcase({
       observer.disconnect();
       document.removeEventListener("visibilitychange", handleVisibility);
     };
-  }, []);
+  }, [allowAnimation]);
+
+  useEffect(() => {
+    setLoadedBySrc({});
+  }, [photos]);
+
+  useEffect(() => {
+    if (!allowAnimation || !isAnimating) {
+      setSlowIntroPhase(true);
+      return;
+    }
+    const timer = window.setTimeout(() => {
+      setSlowIntroPhase(false);
+    }, 6200);
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [allowAnimation, isAnimating]);
 
   if (!hasPhotos) {
     return null;
   }
+
+  const markImageLoaded = (src: string) => {
+    setLoadedBySrc((prev) => {
+      if (prev[src]) return prev;
+      return { ...prev, [src]: true };
+    });
+  };
 
   return (
     <div
@@ -952,19 +1068,21 @@ function EventsVerticalShowcase({
       <div className="relative grid grid-cols-1 gap-3 sm:grid-cols-2">
         {columns.map((column, columnIndex) => {
           const reverse = columnIndex % 2 === 1;
+          const introDuration = reverse ? 58 : 52;
+          const regularDuration = reverse ? 42 : 36;
           return (
             <div
               key={`events-column-${columnIndex}`}
               className="events-showcase-column h-[300px] overflow-hidden rounded-xl border border-white/10 bg-[#0f1328]/70 p-2 sm:h-[360px] lg:h-[420px]"
             >
               <div
-                className="flex flex-col will-change-transform"
+                className="events-showcase-track flex flex-col will-change-transform"
                 style={{
                   animationName: reverse ? "eventsColumnDown" : "eventsColumnUp",
-                  animationDuration: `${reverse ? 42 : 36}s`,
+                  animationDuration: `${slowIntroPhase ? introDuration : regularDuration}s`,
                   animationTimingFunction: "linear",
                   animationIterationCount: "infinite",
-                  animationPlayState: isAnimating ? "running" : "paused",
+                  animationPlayState: allowAnimation && isAnimating ? "running" : "paused",
                 }}
               >
                 {[0, 1].map((loopIndex) => (
@@ -972,24 +1090,41 @@ function EventsVerticalShowcase({
                     key={`events-loop-${columnIndex}-${loopIndex}`}
                     className="flex flex-col gap-3 pb-3"
                   >
-                    {column.map((photo, imageIndex) => (
-                      <div
-                        key={`${photo.src}-${columnIndex}-${loopIndex}-${imageIndex}`}
-                        className={`group relative overflow-hidden rounded-lg border border-white/10 bg-white/5 ${
-                          EVENT_COLUMN_CARD_HEIGHTS[
-                            (imageIndex + columnIndex) % EVENT_COLUMN_CARD_HEIGHTS.length
-                          ]
-                        }`}
-                      >
-                        <Image
-                          src={photo.src}
-                          alt={photo.alt}
-                          fill
-                          sizes="(min-width: 640px) 45vw, 92vw"
-                          className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
-                        />
-                      </div>
-                    ))}
+                    {column.map((photo, imageIndex) => {
+                      const isLoaded = Boolean(loadedBySrc[photo.src]);
+                      const eager = loopIndex === 0 && imageIndex < 1;
+                      return (
+                        <div
+                          key={`${photo.src}-${columnIndex}-${loopIndex}-${imageIndex}`}
+                          className={`group relative overflow-hidden rounded-lg border border-white/10 bg-white/5 ${
+                            EVENT_COLUMN_CARD_HEIGHTS[
+                              (imageIndex + columnIndex) % EVENT_COLUMN_CARD_HEIGHTS.length
+                            ]
+                          }`}
+                        >
+                          <div
+                            aria-hidden="true"
+                            className={`pointer-events-none absolute inset-0 bg-gradient-to-br from-[#263865]/70 via-[#1a2546]/65 to-[#10192f]/85 transition-opacity duration-500 ${
+                              isLoaded ? "opacity-0" : "opacity-100 animate-pulse"
+                            }`}
+                          />
+                          <Image
+                            src={photo.src}
+                            alt={photo.alt}
+                            fill
+                            sizes="(min-width: 1280px) 280px, (min-width: 640px) 36vw, 88vw"
+                            quality={60}
+                            fetchPriority={eager ? "high" : "low"}
+                            loading={eager ? "eager" : "lazy"}
+                            decoding="async"
+                            onLoad={() => markImageLoaded(photo.src)}
+                            className={`object-cover transition-[opacity,transform] duration-500 ease-out group-hover:scale-[1.04] ${
+                              isLoaded ? "opacity-100" : "opacity-0"
+                            }`}
+                          />
+                        </div>
+                      );
+                    })}
                   </div>
                 ))}
               </div>
@@ -1019,4 +1154,4 @@ function EventsVerticalShowcase({
       `}</style>
     </div>
   );
-}
+});

@@ -305,7 +305,7 @@ export default function FilmPathContent() {
     <main className="relative z-10 min-h-screen">
       {/* Hero wideo (jak na /wydarzenia) */}
       <section className="relative z-10 px-4 pt-12 sm:pt-16">
-        <div className="mx-auto w-full max-w-7xl mb-10 sm:mb-12">
+        <div className="ap-shell mb-10 sm:mb-12">
           <div className="relative overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
             <div className="relative aspect-[16/9] bg-black">
               <video
@@ -328,13 +328,13 @@ export default function FilmPathContent() {
               <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/35 to-black/80" />
               <div className="relative flex h-full items-center justify-center p-6 sm:p-10 text-center force-overlay">
                 <div className="space-y-2">
-                  <p className="text-xs uppercase tracking-[0.3em] force-overlay-muted">
+                  <p className="ap-type-kicker force-overlay-muted">
                     {t.heroTag}
                   </p>
-                  <h1 className="text-4xl sm:text-6xl font-extrabold leading-tight drop-shadow-[0_0_24px_rgba(0,0,0,0.55)]">
+                  <h1 className="ap-type-hero-title force-overlay drop-shadow-[0_0_24px_rgba(0,0,0,0.55)]">
                     {t.heroTitle}
                   </h1>
-                  <p className="force-overlay-dim text-base sm:text-lg max-w-3xl mx-auto">
+                  <p className="ap-type-hero-subtitle force-overlay-dim max-w-3xl mx-auto">
                     {t.heroLead}
                   </p>
                 </div>
@@ -345,17 +345,17 @@ export default function FilmPathContent() {
       </section>
 
       <section className="px-4 pb-16 sm:pb-20">
-        <div className="max-w-7xl mx-auto space-y-10 sm:space-y-12">
+        <div className="ap-shell ap-page-stack">
           <div className="grid gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {t.story.map((section, index) => (
               <Card
                 key={section.title}
                 motion="off"
-                className="tour-info-card text-center space-y-4 h-full group transition duration-300 ease-out hover:shadow-[0_16px_36px_rgba(79,207,222,0.18)] hover:ring-[rgba(79,207,222,0.35)]"
+                className="tour-info-card ap-tile text-center space-y-4 h-full group"
                 style={{ "--tour-delay": `${(index % 6) * 0.24}s` } as React.CSSProperties}
               >
                 <TourLineAccentTitle>{section.title}</TourLineAccentTitle>
-                <p className="text-lg text-gray-100 leading-relaxed">{section.body}</p>
+                <p className="ap-type-section-body text-gray-100">{section.body}</p>
               </Card>
             ))}
           </div>
@@ -363,7 +363,7 @@ export default function FilmPathContent() {
           <Card className="space-y-6">
             <div className="text-center space-y-3">
               <TourLineAccentTitle>{t.k9Title}</TourLineAccentTitle>
-              <p className="text-base text-gray-100 leading-relaxed max-w-3xl mx-auto">
+              <p className="ap-type-section-body text-gray-100 max-w-3xl mx-auto">
                 {t.k9Body}
               </p>
             </div>
@@ -372,18 +372,18 @@ export default function FilmPathContent() {
           </Card>
 
           <Card title={t.ticketsTitle} titleCentered titleDivider dense motion="off">
-            <p className="text-gray-100 text-center max-w-3xl mx-auto">{t.ticketsIntro}</p>
-            <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-12">
+            <p className="ap-type-section-body text-center max-w-3xl mx-auto">{t.ticketsIntro}</p>
+            <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-x-6 gap-y-10">
               {t.ticketsOptions.map((option) => (
                 <div
                   key={option.title}
-                  className="ticket-card group flex h-full flex-col rounded-3xl text-white/90 transition duration-300 ease-out hover:-translate-y-1"
+                  className="ticket-card ap-tile group flex h-full flex-col rounded-3xl text-white/90"
                 >
                   <div className="ticket-card-top">
                     <span className="ticket-card-badge">{option.badge}</span>
                   </div>
-                  <div className="ticket-card-content flex h-full flex-col p-6 sm:p-8 text-center">
-                    <h3 className="ticket-card-title text-2xl sm:text-3xl font-semibold text-white">
+                  <div className="ticket-card-content flex h-full flex-col p-5 sm:p-6 text-center">
+                    <h3 className="ticket-card-title text-xl sm:text-2xl font-semibold text-white">
                       {option.title}
                     </h3>
                     <p className="ticket-card-subtitle mt-2 text-sm sm:text-base text-white/75">
@@ -402,7 +402,7 @@ export default function FilmPathContent() {
                       <p className="ticket-price-label text-[0.7rem] uppercase tracking-[0.25em] text-white/60">
                         {option.priceLabel ?? t.ticketsPriceLabel}
                       </p>
-                      <p className="ticket-price mt-2 text-3xl sm:text-4xl font-bold text-amber-200">
+                      <p className="ticket-price mt-2 text-2xl sm:text-3xl font-bold text-amber-200">
                         {option.price ?? t.ticketsPrice}
                       </p>
                       <div className="mt-6 flex justify-center">

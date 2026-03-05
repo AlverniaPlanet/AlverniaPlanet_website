@@ -16,6 +16,10 @@
   --ap-underline: var(--ap-text);
   --ap-shadow: 0 0 60px rgba(10, 10, 24, 0.55);
   --ap-card-shadow: 0 18px 55px rgba(10, 10, 24, 0.45);
+  --ap-card-hover-lift: -4px;
+  --ap-card-hover-ring: rgba(79, 207, 222, 0.35);
+  --ap-card-hover-outline: rgba(79, 207, 222, 0.46);
+  --ap-card-hover-shadow: 0 16px 36px rgba(79, 207, 222, 0.18);
   --ap-accent: #4fcfde;
   --ap-accent-contrast: #171730;
   --ap-accent-soft: rgba(79, 207, 222, 0.2);
@@ -49,6 +53,10 @@
   --ap-underline: #4fcfde;
   --ap-shadow: 0 10px 24px rgba(23, 23, 48, 0.06);
   --ap-card-shadow: 0 16px 40px rgba(23, 23, 48, 0.08);
+  --ap-card-hover-lift: -4px;
+  --ap-card-hover-ring: rgba(79, 207, 222, 0.58);
+  --ap-card-hover-outline: rgba(79, 207, 222, 0.7);
+  --ap-card-hover-shadow: 0 14px 32px rgba(23, 23, 48, 0.12);
   --ap-accent: #4fcfde;
   --ap-accent-contrast: #171730;
   --ap-accent-soft: rgba(79, 207, 222, 0.18);
@@ -86,6 +94,140 @@ h6 {
 
 p {
   text-wrap: pretty;
+}
+
+.ap-type-kicker {
+  font-size: clamp(0.68rem, 0.62rem + 0.22vw, 0.78rem);
+  line-height: 1.2;
+  font-weight: 500;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--ap-text-muted);
+}
+
+.ap-type-hero-title {
+  font-size: clamp(2.2rem, 1.78rem + 2.05vw, 4rem);
+  line-height: 1.08;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ap-text-strong);
+  text-wrap: balance;
+}
+
+.ap-type-hero-subtitle {
+  font-size: clamp(1.02rem, 0.97rem + 0.55vw, 1.5rem);
+  line-height: 1.55;
+  font-weight: 500;
+  color: var(--ap-text-dim);
+  text-wrap: pretty;
+}
+
+.ap-type-section-title {
+  font-size: clamp(1.7rem, 1.45rem + 1vw, 2.8rem);
+  line-height: 1.18;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--ap-text-strong);
+  text-wrap: balance;
+}
+
+.ap-type-section-body {
+  font-size: clamp(0.98rem, 0.92rem + 0.3vw, 1.12rem);
+  line-height: 1.6;
+  font-weight: 400;
+  color: var(--ap-text-dim);
+  text-wrap: pretty;
+}
+
+.ap-type-cta-title {
+  font-size: clamp(1.05rem, 0.98rem + 0.65vw, 1.55rem);
+  line-height: 1.45;
+  font-weight: 600;
+  color: var(--ap-text);
+  text-wrap: balance;
+}
+
+.ap-type-cta-body {
+  font-size: clamp(0.95rem, 0.9rem + 0.3vw, 1.04rem);
+  line-height: 1.55;
+  font-weight: 400;
+  color: var(--ap-text-muted);
+  text-wrap: pretty;
+}
+
+/* UX polish v1 (łatwe do cofnięcia) */
+[data-ap-nav] {
+  box-shadow: 0 10px 28px rgba(4, 6, 18, 0.2);
+}
+
+[data-ap-nav] nav a,
+[data-ap-nav] nav button {
+  transition:
+    color 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+[data-ap-nav] nav a:focus-visible,
+[data-ap-nav] nav button:focus-visible,
+[data-ap-footer] a:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(79, 207, 222, 0.62);
+  border-radius: 0.6rem;
+}
+
+[data-ap-nav] .ap-nav-dropdown a:focus-visible {
+  background-color: rgba(79, 207, 222, 0.14);
+}
+
+[data-ap-footer] a {
+  transition:
+    color 180ms ease,
+    text-decoration-color 180ms ease,
+    opacity 180ms ease;
+}
+
+.ap-page-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+}
+
+.ap-shell {
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+}
+
+@media (min-width: 640px) {
+  .ap-page-stack {
+    gap: 5rem;
+  }
+}
+
+.ap-card {
+  --card-hover-shift: 0px;
+  transform: translate3d(0, var(--card-hover-shift), 0);
+}
+
+.ap-tile {
+  transition:
+    transform 300ms ease,
+    box-shadow 300ms ease,
+    border-color 300ms ease,
+    background-color 300ms ease;
+}
+
+.ap-tile:hover,
+.ap-tile:focus-within {
+  transform: translate3d(0, var(--ap-card-hover-lift), 0);
+  box-shadow: 0 0 0 1px var(--ap-card-hover-outline), var(--ap-card-hover-shadow);
+  border-color: var(--ap-card-hover-ring);
+}
+
+.home-deferred-block {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 900px;
 }
 
 @supports (scrollbar-gutter: stable) {
@@ -259,7 +401,12 @@ p {
 }
 
 .ticket-card:hover {
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transform: translate3d(0, var(--ap-card-hover-lift), 0);
+  border-color: var(--ap-card-hover-ring);
+  box-shadow:
+    0 0 0 1px var(--ap-card-hover-outline),
+    var(--ap-card-hover-shadow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 .ticket-card::before {
@@ -365,10 +512,8 @@ p {
 }
 
 .theme-light .ticket-card:hover {
-  box-shadow:
-    0 20px 40px rgba(23, 23, 48, 0.14),
-    0 0 20px rgba(79, 207, 222, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  border-color: var(--ap-card-hover-ring);
+  box-shadow: var(--ap-card-hover-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.95);
 }
 
 .theme-light .ticket-card::before {
@@ -431,29 +576,6 @@ p {
 .theme-light .events-showcase {
   background: linear-gradient(180deg, #ffffff 0%, #f6fbff 100%) !important;
   border-color: rgba(79, 207, 222, 0.44) !important;
-}
-
-.theme-light .events-showcase-fade-top {
-  background-image: linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 1) 0%,
-    rgba(255, 255, 255, 0.88) 48%,
-    rgba(255, 255, 255, 0) 100%
-  ) !important;
-}
-
-.theme-light .events-showcase-fade-bottom {
-  background-image: linear-gradient(
-    to top,
-    rgba(255, 255, 255, 1) 0%,
-    rgba(255, 255, 255, 0.88) 48%,
-    rgba(255, 255, 255, 0) 100%
-  ) !important;
-}
-
-.theme-light .events-showcase-column {
-  background: linear-gradient(180deg, #ffffff 0%, #f5f9ff 100%) !important;
-  border-color: rgba(79, 207, 222, 0.34) !important;
 }
 
 .scroll-float {
@@ -557,7 +679,7 @@ p {
 }
 
 .attractions-carousel,
-.events-showcase-column {
+.events-showcase {
   contain: paint;
 }
 

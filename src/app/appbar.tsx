@@ -52,21 +52,24 @@ export function AppBar() {
 
   return (
     <>
-      <header className="sticky top-0 z-30 border-b border-[color:var(--ap-border)] bg-[var(--ap-nav-bg)] backdrop-blur supports-[backdrop-filter]:md:bg-[var(--ap-nav-bg)]">
+      <header
+        data-ap-nav
+        className="sticky top-0 z-30 border-b border-[color:var(--ap-border)] bg-[var(--ap-nav-bg)] backdrop-blur supports-[backdrop-filter]:md:bg-[var(--ap-nav-bg)]"
+      >
         {/* grid 3 kolumny: [lewo] [logo] [prawo] */}
-        <div className="mx-auto grid w-full max-w-[min(96vw,120rem)] grid-cols-[1fr_auto_1fr] items-center gap-3 md:gap-5 px-4 py-2">
+        <div className="mx-auto grid w-full max-w-[min(94vw,96rem)] grid-cols-[1fr_auto_1fr] items-center gap-2 md:gap-3 px-3.5 md:px-4 py-1.5">
           {/* LEWO: burger (mobile) + linki (desktop) */}
-          <div className="flex items-center gap-3 md:gap-4 min-w-0">
+          <div className="flex items-center gap-2.5 md:gap-3 min-w-0">
             {/* burger tylko na mobile */}
             <button
               type="button"
               onClick={() => setOpen((v) => !v)}
               aria-label={open ? t("aria.close_menu") : t("aria.open_menu")}
               aria-expanded={open}
-              className="lg:hidden inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20 hover:bg-white/15 active:scale-95 transition"
+              className="lg:hidden inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20 hover:bg-white/15 active:scale-95 transition"
             >
               <svg
-                className="h-5 w-5 text-white"
+                className="h-4 w-4 text-white"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -88,7 +91,7 @@ export function AppBar() {
             </button>
 
             {/* linki desktop po LEWEJ */}
-            <nav className="hidden lg:flex items-center gap-3 lg:gap-4 text-sm whitespace-nowrap">
+            <nav className="hidden lg:flex items-center gap-2.5 xl:gap-3 text-[11px] xl:text-xs whitespace-nowrap">
               {/* Atrakcje (dropdown: hover + focus + delay to allow clicking) */}
               <div
                 className="relative"
@@ -108,7 +111,7 @@ export function AppBar() {
                   if (attractionsHideTimer.current) window.clearTimeout(attractionsHideTimer.current);
                   attractionsHideTimer.current = window.setTimeout(() => {
                     setOpenAttractions(false);
-                  }, 500);
+                  }, 220);
                 }}
               >
                 <button
@@ -129,10 +132,10 @@ export function AppBar() {
                   </svg>
                 </button>
                 <div
-                  className={`absolute left-0 top-full mt-1 w-56 z-50 origin-top transition-all duration-150 ${openAttractions ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-0.5 pointer-events-none"}`}
+                  className={`ap-nav-dropdown absolute left-0 top-full mt-1 w-56 z-50 origin-top transition-all duration-150 ${openAttractions ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-0.5 pointer-events-none"}`}
                 >
                   <div className="rounded-xl bg-[color:var(--ap-surface-contrast)] backdrop-blur ring-1 ring-[color:var(--ap-border)] shadow-xl overflow-hidden text-[color:var(--ap-text)]">
-                    <ul className="py-2 text-sm">
+                    <ul className="py-2 text-xs">
                       <li>
                         <Link
                           href={paths.attractions.exhibition}
@@ -179,7 +182,7 @@ export function AppBar() {
               </Link>
               <span className="text-white/40">|</span>
               <span
-                className="ticket-pill inline-flex items-center rounded-full px-3 py-1 text-sm bg-white/10 text-white/50 ring-1 ring-white/10 cursor-not-allowed select-none"
+                className="ticket-pill inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] xl:text-xs bg-white/10 text-white/50 ring-1 ring-white/10 cursor-not-allowed select-none"
                 aria-disabled="true"
               >
                 {t("nav.tickets")}
@@ -188,7 +191,7 @@ export function AppBar() {
           </div>
 
           {/* ŚRODEK: logo */}
-          <div className="flex items-center justify-center px-2">
+          <div className="flex items-center justify-center px-1">
             <Link href={paths.home} aria-label={t("aria.home")} className="block">
               <span className={logoFrameClass}>
                 <BrandLogo variant={theme === "light" ? "light" : "dark"} />
@@ -197,9 +200,9 @@ export function AppBar() {
           </div>
 
           {/* PRAWO: O nas + Kontakt (desktop) + Rezerwacja zawsze widoczna + switch języka */}
-          <div className="flex items-center justify-end gap-3 md:gap-4 min-w-0">
+          <div className="flex items-center justify-end gap-2.5 md:gap-3 min-w-0">
             {/* linki desktop po PRAWEJ */}
-            <nav className="hidden lg:flex items-center gap-3 lg:gap-4 text-sm whitespace-nowrap">
+            <nav className="hidden lg:flex items-center gap-2.5 xl:gap-3 text-[11px] xl:text-xs whitespace-nowrap">
               {/* O nas (dropdown) */}
               <div
                 className="relative"
@@ -219,7 +222,7 @@ export function AppBar() {
                   if (aboutHideTimer.current) window.clearTimeout(aboutHideTimer.current);
                   aboutHideTimer.current = window.setTimeout(() => {
                     setOpenAbout(false);
-                  }, 500);
+                  }, 220);
                 }}
               >
                 <button
@@ -240,10 +243,10 @@ export function AppBar() {
                   </svg>
                 </button>
                 <div
-                  className={`absolute right-0 top-full mt-1 w-56 z-50 origin-top transition-all duration-150 ${openAbout ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-0.5 pointer-events-none"}`}
+                  className={`ap-nav-dropdown absolute right-0 top-full mt-1 w-56 z-50 origin-top transition-all duration-150 ${openAbout ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-0.5 pointer-events-none"}`}
                 >
                   <div className="rounded-xl bg-[color:var(--ap-surface-contrast)] backdrop-blur ring-1 ring-[color:var(--ap-border)] shadow-xl overflow-hidden text-[color:var(--ap-text)]">
-                    <ul className="py-2 text-sm">
+                    <ul className="py-2 text-xs">
                       <li>
                         <Link
                           href={paths.about}
@@ -281,7 +284,7 @@ export function AppBar() {
               rel="noopener noreferrer"
               size="sm"
               suppressHydrationWarning
-              className="min-w-[122px] text-center shrink-0"
+              className="min-w-[108px] px-3 py-1.5 lg:text-[11px] xl:text-xs text-center shrink-0"
             >
               {t("cta.booking")}
             </PrimaryButton>
@@ -290,7 +293,7 @@ export function AppBar() {
             <button
               type="button"
               onClick={toggleTheme}
-              className={`hidden md:inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20 hover:bg-white/15 active:scale-95 transition ${
+              className={`hidden md:inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20 hover:bg-white/15 active:scale-95 transition ${
                 theme === "light" ? "text-[color:var(--ap-text)]" : "text-white"
               }`}
               aria-label={theme === "light" ? "Włącz tryb ciemny" : "Włącz tryb jasny"}
@@ -300,7 +303,7 @@ export function AppBar() {
                 <svg
                   aria-hidden="true"
                   viewBox="0 0 24 24"
-                  className="h-5 w-5"
+                  className="h-4 w-4"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="1.8"
@@ -321,7 +324,7 @@ export function AppBar() {
                 <svg
                   aria-hidden="true"
                   viewBox="0 0 24 24"
-                  className="h-5 w-5"
+                  className="h-4 w-4"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="1.8"

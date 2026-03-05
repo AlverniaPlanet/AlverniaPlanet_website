@@ -170,7 +170,7 @@ export default function WystawaContent() {
   return (
     <main className="relative z-10 min-h-screen ap-page-intro-stagger">
       <section className="relative z-10 px-4 pt-12 sm:pt-16">
-        <div className="mx-auto w-full max-w-7xl mb-10 sm:mb-12">
+        <div className="ap-shell mb-10 sm:mb-12">
           <div className="relative overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
             <div className="relative aspect-[4/5] sm:aspect-[16/9] bg-black">
               <video
@@ -194,13 +194,13 @@ export default function WystawaContent() {
               <div className="absolute inset-0 opacity-60 mix-blend-soft-light bg-[radial-gradient(circle_at_18%_22%,rgba(252,211,77,0.28),transparent_38%),radial-gradient(circle_at_78%_20%,rgba(244,114,182,0.24),transparent_36%),radial-gradient(circle_at_50%_78%,rgba(59,130,246,0.28),transparent_44%)]" />
               <div className="relative flex h-full items-center justify-center p-5 sm:p-10 text-center force-overlay">
                 <div className="space-y-3">
-                  <p className="text-xs uppercase tracking-[0.3em] force-overlay-muted">
+                  <p className="ap-type-kicker force-overlay-muted">
                     {copy.heroTag}
                   </p>
-                  <h1 className="text-3xl sm:text-6xl font-extrabold leading-tight drop-shadow-[0_0_24px_rgba(0,0,0,0.55)]">
+                  <h1 className="ap-type-hero-title force-overlay drop-shadow-[0_0_24px_rgba(0,0,0,0.55)]">
                     {copy.heroTitle}
                   </h1>
-                  <p className="force-overlay-dim text-sm sm:text-lg max-w-3xl mx-auto">
+                  <p className="ap-type-hero-subtitle force-overlay-dim max-w-3xl mx-auto">
                     {copy.heroLead}
                   </p>
                 </div>
@@ -211,10 +211,10 @@ export default function WystawaContent() {
       </section>
 
       <section className="px-4 pb-16 sm:pb-20">
-        <div className="max-w-7xl mx-auto space-y-10 sm:space-y-12">
+        <div className="ap-shell ap-page-stack">
           <Card className="space-y-6" variant="solid">
             <TourLineAccentTitle variant="green">{copy.sectionTitle}</TourLineAccentTitle>
-            <div className="space-y-4 text-base text-gray-100 leading-relaxed max-w-7xl mx-auto">
+            <div className="space-y-4 ap-type-section-body text-gray-100 max-w-7xl mx-auto">
               {copy.paragraphs.map((p) => (
                 <p key={p}>{p}</p>
               ))}

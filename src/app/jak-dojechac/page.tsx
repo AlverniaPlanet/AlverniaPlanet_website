@@ -315,16 +315,16 @@ export default function JakDojechacPage() {
         initial="hidden"
         animate="show"
         variants={fade}
-        className="max-w-7xl mx-auto space-y-10"
+        className="ap-shell ap-page-stack"
       >
         <header className="text-center space-y-3">
-          <motion.p className="text-xs uppercase tracking-[0.35em] text-white/60" variants={fadeUp}>
+          <motion.p className="ap-type-kicker" variants={fadeUp}>
             {copy.tag}
           </motion.p>
-          <motion.h1 className="text-4xl sm:text-5xl font-extrabold" variants={fadeUp}>
+          <motion.h1 className="ap-type-hero-title" variants={fadeUp}>
             {copy.title}
           </motion.h1>
-          <motion.p className="text-white/80 text-lg" variants={fadeUp}>
+          <motion.p className="ap-type-hero-subtitle max-w-4xl mx-auto" variants={fadeUp}>
             {copy.subtitle}
           </motion.p>
         </header>
@@ -498,13 +498,13 @@ export default function JakDojechacPage() {
 
         <Card variant="solid" className="overflow-hidden p-0">
           <div className="relative w-full overflow-hidden rounded-2xl ring-1 ring-white/10 bg-black">
-            <div className="relative w-full h-[260px] sm:h-[340px] md:h-[420px] lg:h-[480px]">
+            <div className="relative w-full h-[280px] sm:h-[360px] md:h-auto md:aspect-[16/9]">
               <Image
                 src="/atrakcje.webp"
                 alt="Atrakcje w okolicy"
                 fill
                 sizes="100vw"
-                className="object-cover"
+                className="object-contain object-center"
                 priority={false}
               />
             </div>

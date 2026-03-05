@@ -174,18 +174,18 @@ export default function TourLineGalleryRow({ items }: Props) {
 
       <div
         ref={trackRef}
-        className="flex min-w-max gap-5 py-2 will-change-transform sm:gap-6"
+        className="flex min-w-max gap-4 py-2 will-change-transform sm:gap-5"
       >
         {loopItems.map((item, index) => (
           <div
             key={`${item.title}-${index}`}
-            className="w-[336px] shrink-0 sm:w-[392px]"
+            className="w-[300px] shrink-0 sm:w-[332px] lg:w-[352px]"
           >
             <Card
               variant="solid"
               dense
               motion="off"
-              className="h-full border border-white/12 bg-white/8 text-white/90 shadow-[0_0_0_1px_rgba(255,255,255,0.04)_inset] ring-white/15"
+              className="ap-tile h-full border border-white/12 bg-white/8 text-white/90 shadow-[0_0_0_1px_rgba(255,255,255,0.04)_inset] ring-white/15"
             >
               <div className="flex h-full flex-col gap-4">
                 <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-white/10 shadow-[0_10px_35px_rgba(0,0,0,0.35)] ring-1 ring-white/15">

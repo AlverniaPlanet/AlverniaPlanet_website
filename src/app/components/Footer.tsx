@@ -253,7 +253,10 @@ export default function Footer() {
   const showAutopay = ["/bilety", "/tickets", "/en/tickets", "/pt/tickets"].includes(pathname);
 
   return (
-    <footer className="relative mt-24 text-white overflow-hidden bg-[var(--ap-bg)]">
+    <footer
+      data-ap-footer
+      className="relative mt-24 text-white overflow-hidden bg-[var(--ap-bg)]"
+    >
       <div className="relative max-w-7xl mx-auto px-4 py-12 sm:py-14">
         {/* Polityki / regulaminy */}
         <div className="mb-6 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-white/70">
@@ -283,7 +286,9 @@ export default function Footer() {
           <div className="space-y-2">
             <p className="text-xs uppercase tracking-[0.3em] text-white/60">{copy.contact}</p>
             <h2 className="text-2xl sm:text-3xl font-semibold">{copy.ctaTitle}</h2>
-            <p className="text-white/70 text-sm sm:text-base">{copy.ctaSubtitle}</p>
+            <p className="text-white/70 text-sm sm:text-base leading-relaxed max-w-3xl">
+              {copy.ctaSubtitle}
+            </p>
             <div className="mt-4 grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               <div className={`rounded-2xl px-4 py-3 flex items-center justify-between ${infoCardSurface}`}>
                 <div>
@@ -302,7 +307,7 @@ export default function Footer() {
                 <div className="space-y-2">
                   <div>
                     <p className="text-[11px] uppercase tracking-[0.2em] text-white/60">{copy.emailLabel}</p>
-                    <p className="text-sm sm:text-base md:text-[1.05rem] font-semibold leading-snug whitespace-nowrap overflow-hidden text-ellipsis tracking-tight">
+                    <p className="text-sm sm:text-base md:text-[1.05rem] font-semibold leading-snug break-all sm:break-words tracking-tight">
                       {copy.email}
                     </p>
                   </div>

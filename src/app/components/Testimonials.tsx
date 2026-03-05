@@ -40,7 +40,7 @@ export default function Testimonials({ reviews, sourceUrl }: TestimonialsProps) 
       {reviews.map((review) => (
         <article
           key={`${review.name}-${review.date}`}
-          className="flex h-full flex-col gap-4 rounded-2xl bg-white/5 p-5 ring-1 ring-white/10 shadow-[0_18px_55px_rgba(0,0,0,0.45)] sm:p-6"
+          className="ap-tile flex h-full flex-col gap-4 rounded-2xl bg-white/5 p-5 ring-1 ring-white/10 shadow-[0_18px_55px_rgba(0,0,0,0.45)] sm:p-6"
         >
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-1 text-[#f77828]">

@@ -70,11 +70,11 @@ export default function TicketsPage() {
 
   return (
     <main className="relative min-h-screen text-white px-4 py-10 sm:py-12 ap-page-intro-stagger">
-      <div className="max-w-7xl mx-auto space-y-6">
+      <div className="ap-shell ap-page-stack">
         <header className="text-center space-y-3">
-          <p className="text-xs uppercase tracking-[0.35em] text-white/60">{copy.tag}</p>
-          <h1 className="text-4xl sm:text-5xl font-extrabold">{copy.title}</h1>
-          <p className="text-white/80 text-lg">{copy.subtitle}</p>
+          <p className="ap-type-kicker">{copy.tag}</p>
+          <h1 className="ap-type-hero-title">{copy.title}</h1>
+          <p className="ap-type-hero-subtitle">{copy.subtitle}</p>
         </header>
 
         {hasAccess ? (

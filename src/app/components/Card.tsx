@@ -174,7 +174,9 @@ export default function Card({
         "--card-reveal-y": `${revealDistance}px`,
         "--card-scroll-shift": "0px",
       } as CSSProperties)
-    : {};
+    : ({
+        "--card-hover-shift": "0px",
+      } as CSSProperties);
 
   return (
     <Tag
@@ -188,6 +190,7 @@ export default function Card({
         className,
         motionEnabled &&
           "opacity-0 transition-[opacity,transform] duration-[1100ms] ease-out will-change-transform",
+        !motionEnabled && "transition duration-300 ease-out",
       )}
       style={{ ...motionStyles, ...(style as CSSProperties) }}
       {...rest}

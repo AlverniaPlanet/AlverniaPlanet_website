@@ -314,6 +314,39 @@ const UI_TEXT: Record<
   },
 };
 
+const SECTION_UI: Record<
+  Locale,
+  {
+    highlightsLabel: string;
+    offerLabel: string;
+    differentiatorsLabel: string;
+    domesLabel: string;
+    domesIntro: string;
+  }
+> = {
+  pl: {
+    highlightsLabel: "Najważniejsze atuty",
+    offerLabel: "Formaty wydarzeń",
+    differentiatorsLabel: "Infrastruktura i zaplecze",
+    domesLabel: "Specyfikacja kopuł",
+    domesIntro: "Parametry i możliwości techniczne naszych kopuł eventowych.",
+  },
+  en: {
+    highlightsLabel: "Key highlights",
+    offerLabel: "Event formats",
+    differentiatorsLabel: "Infrastructure and support",
+    domesLabel: "Dome specifications",
+    domesIntro: "Technical parameters and capabilities of our event domes.",
+  },
+  pt: {
+    highlightsLabel: "Destaques principais",
+    offerLabel: "Formatos de evento",
+    differentiatorsLabel: "Infraestrutura e suporte",
+    domesLabel: "Especificações das cúpulas",
+    domesIntro: "Parâmetros e capacidades técnicas das nossas cúpulas para eventos.",
+  },
+};
+
 type DomeContent = { title: string; bullets: string[] };
 
 const DOMES: Record<
@@ -686,6 +719,58 @@ interface MapFrameProps {
   title: string;
 }
 
+interface ReadablePointsProps {
+  items: string[];
+  columns?: 1 | 2;
+  compact?: boolean;
+  className?: string;
+}
+
+function ReadablePoints({
+  items,
+  columns = 1,
+  compact = false,
+  className,
+}: ReadablePointsProps) {
+  return (
+    <ul
+      className={`grid w-full ${
+        columns === 2 ? "sm:grid-cols-2" : "grid-cols-1"
+      } gap-3 ${className ?? ""}`}
+    >
+      {items.map((line, i) => (
+        <li
+          key={`${line}-${i}`}
+          className={`ap-tile flex items-start gap-3 rounded-2xl border border-white/10 bg-white/[0.035] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] ${
+            compact ? "px-3.5 py-2.5 text-sm" : "px-4 py-3.5 text-sm sm:text-[15px]"
+          }`}
+        >
+          <span className="mt-[0.42rem] inline-flex h-2.5 w-2.5 shrink-0 rounded-full bg-[#4fcfde] shadow-[0_0_14px_rgba(79,207,222,0.45)]" />
+          <span className="text-white/90 leading-relaxed">{line}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function DomeSpecBlock({ dome }: { dome: DomeContent }) {
+  return (
+    <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 md:p-6">
+      <div className="flex flex-col gap-4">
+        <h3 className="text-xl md:text-2xl font-bold text-center md:text-left">
+          {dome.title}
+        </h3>
+        <div className="h-[1px] w-full bg-white/15" />
+        <ReadablePoints
+          items={dome.bullets}
+          columns={dome.bullets.length > 4 ? 2 : 1}
+          compact
+        />
+      </div>
+    </section>
+  );
+}
+
 function MapFrame({ src, loadingLabel, actionLabel, title }: MapFrameProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [shouldLoad, setShouldLoad] = useState(false);
@@ -748,13 +833,12 @@ export default function EventsPage() {
   const loc = ((locale as Locale) ?? "pl") as Locale;
   const t = COPY[loc];
   const ui = UI_TEXT[loc];
+  const sectionUi = SECTION_UI[loc];
   const domes = DOMES[loc];
   const videoShowcase = VIDEO_SHOWCASE[loc];
   const heroRef = useRef<HTMLVideoElement | null>(null);
   const heroContainerRef = useRef<HTMLDivElement | null>(null);
   const [isHeroVisible, setIsHeroVisible] = useState(false);
-  const tileHoverClass =
-    "group transition duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_16px_36px_rgba(79,207,222,0.18)] hover:ring-[rgba(79,207,222,0.35)]";
 
   // Hero wideo: start/pauza zależnie od viewportu
   useEffect(() => {
@@ -790,7 +874,7 @@ export default function EventsPage() {
       {/* Główna treść strony */}
       <section className="relative z-10 px-4 py-16 sm:py-20">
         {/* Hero video z tytułem */}
-        <header className="mx-auto w-full max-w-7xl mb-10 sm:mb-12">
+        <header className="ap-shell mb-10 sm:mb-12">
           <div className="relative overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
             <div className="relative aspect-[16/9] bg-black" ref={heroContainerRef}>
               <video
@@ -814,10 +898,10 @@ export default function EventsPage() {
               <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/35 to-black/80" />
               <div className="relative flex h-full items-center justify-center p-6 sm:p-10 text-center force-overlay">
                 <div className="space-y-2">
-                  <p className="text-xs uppercase tracking-[0.3em] force-overlay-muted">
+                  <p className="ap-type-kicker force-overlay-muted">
                     {t.tag}
                   </p>
-                  <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight drop-shadow-[0_0_24px_rgba(0,0,0,0.55)]">
+                  <h1 className="ap-type-hero-title force-overlay drop-shadow-[0_0_24px_rgba(0,0,0,0.55)]">
                     {t.title}
                   </h1>
                 </div>
@@ -827,34 +911,29 @@ export default function EventsPage() {
         </header>
 
         {/* LISTA KAFELKÓW */}
-        <section className="mx-auto w-full max-w-7xl">
+        <section className="ap-shell">
           <motion.ul
             initial="hidden"
             animate="show"
             variants={fade}
-            className="space-y-6 sm:space-y-8 md:space-y-10 lg:space-y-12"
+            className="ap-page-stack"
           >
             {/* 1. Hero card z ogólnym opisem */}
             <li>
-              <Card
-                variant="solid"
-                className={`mx-2 sm:mx-3 md:mx-4 lg:mx-6 xl:mx-8 ${tileHoverClass}`}
-              >
+              <Card variant="solid">
                 <div className="grid gap-6 md:gap-8 md:grid-cols-2 items-stretch">
                   {/* LEFT: bullets */}
                   <div className="md:order-2 flex flex-col items-center text-center md:items-start md:text-left">
-                    <ul className="space-y-3 sm:space-y-3.5 md:space-y-4 w-full max-w-2xl">
-                      {t.bullets.map((line, i) => (
-                        <li key={i} className="flex items-start gap-3">
-                          <span className="mt-1 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-teal-500 text-white font-bold shadow-[0_0_16px_rgba(20,184,166,0.35)] ring-1 ring-white/10">
-                            ✓
-                          </span>
-                          <p className="text-sm sm:text-base text-gray-100 leading-relaxed">
-                            {line}
-                          </p>
-                        </li>
-                      ))}
-                    </ul>
+                    <div className="mb-5 w-full max-w-2xl">
+                      <p className="text-[11px] uppercase tracking-[0.26em] text-white/60">
+                        {sectionUi.highlightsLabel}
+                      </p>
+                      <h2 className="ap-type-section-title mt-2 text-center md:text-left">
+                        {t.venueLabel}
+                      </h2>
+                      <div className="mt-4 h-[1px] w-full bg-white/15" />
+                    </div>
+                    <ReadablePoints items={t.bullets} className="max-w-2xl" />
                   </div>
                   {/* RIGHT: video */}
                   <EventVideo
@@ -870,85 +949,68 @@ export default function EventsPage() {
 
             {/* 2. Druga karta — rodzaje wydarzeń */}
             <li>
-              <Card
-                variant="solid"
-                className={`mx-2 sm:mx-3 md:mx-4 lg:mx-6 xl:mx-8 ${tileHoverClass}`}
-              >
+              <Card variant="solid">
                 <div className="grid gap-6 md:gap-8 md:grid-cols-2 items-stretch">
                   <div className="md:order-1 flex flex-col items-center text-center md:items-start md:text-left">
-                    <h2 className="text-2xl md:text-3xl font-bold leading-snug mb-2 text-center md:text-left">
+                    <p className="text-[11px] uppercase tracking-[0.26em] text-white/60">
+                      {sectionUi.offerLabel}
+                    </p>
+                    <h2 className="ap-type-section-title mb-2 text-center md:text-left">
                       {SECOND[loc].title}
                     </h2>
                     <div className="h-[1px] w-full bg-white/15 mb-6" />
-                    <ul className="space-y-3 sm:space-y-3.5 md:space-y-4 w-full max-w-2xl">
-                      {SECOND[loc].bullets.map((line, i) => (
-                        <li key={i} className="flex items-start gap-3">
-                          <span className="mt-1 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-green-500 text-white font-bold shadow-[0_0_16px_rgba(244,63,94,0.35)] ring-1 ring-white/10">
-                            ✓
-                          </span>
-                          <p className="text-sm sm:text-base text-gray-100 leading-relaxed">
-                            {line}
-                          </p>
-                        </li>
-                      ))}
-                    </ul>
+                    <ReadablePoints
+                      items={SECOND[loc].bullets}
+                      columns={2}
+                      className="max-w-3xl"
+                    />
                   </div>
-                <EventVideo
-                  className="md:order-2"
-                  src="/wydarzenia/banket4.mp4"
-                  poster="/wydarzenia/AP_wydarzenia_poster.webp"
-                  loadingLabel={ui.loadingVideo}
-                  fallbackText={ui.videoFallback}
-                />
+                  <EventVideo
+                    className="md:order-2"
+                    src="/wydarzenia/banket4.mp4"
+                    poster="/wydarzenia/AP_wydarzenia_poster.webp"
+                    loadingLabel={ui.loadingVideo}
+                    fallbackText={ui.videoFallback}
+                  />
                 </div>
               </Card>
             </li>
 
             {/* 3. Trzecia karta — co nas wyróżnia */}
             <li>
-              <Card
-                variant="solid"
-                className={`mx-2 sm:mx-3 md:mx-4 lg:mx-6 xl:mx-8 ${tileHoverClass}`}
-              >
+              <Card variant="solid">
                 <div className="grid gap-6 md:gap-8 md:grid-cols-2 items-stretch">
                   <div className="md:order-2 flex flex-col items-center text-center md:items-start md:text-left">
-                    <h2 className="text-2xl md:text-3xl font-bold leading-snug mb-2 text-center md:text-left">
+                    <p className="text-[11px] uppercase tracking-[0.26em] text-white/60">
+                      {sectionUi.differentiatorsLabel}
+                    </p>
+                    <h2 className="ap-type-section-title mb-2 text-center md:text-left">
                       {THIRD[loc].title}
                     </h2>
                     <div className="h-[1px] w-full bg-white/15 mb-6" />
-                    <ul className="space-y-3 sm:space-y-3.5 md:space-y-4 w-full max-w-2xl">
-                      {THIRD[loc].bullets.map((line, i) => (
-                        <li key={i} className="flex items-start gap-3">
-                          <span className="mt-1 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-lime-500 text-white font-bold shadow-[0_0_16px_rgba(139,92,246,0.35)] ring-1 ring-white/10">
-                            ✓
-                          </span>
-                          <p className="text-sm sm:text-base text-gray-100 leading-relaxed">
-                            {line}
-                          </p>
-                        </li>
-                      ))}
-                    </ul>
+                    <ReadablePoints
+                      items={THIRD[loc].bullets}
+                      columns={2}
+                      className="max-w-3xl"
+                    />
                   </div>
-                <EventVideo
-                  className="md:order-1"
-                  src="/wydarzenia/bankiet3.mp4"
-                  poster="/wydarzenia/AP_wydarzenia_poster.webp"
-                  loadingLabel={ui.loadingVideo}
-                  fallbackText={ui.videoFallback}
-                />
+                  <EventVideo
+                    className="md:order-1"
+                    src="/wydarzenia/bankiet3.mp4"
+                    poster="/wydarzenia/AP_wydarzenia_poster.webp"
+                    loadingLabel={ui.loadingVideo}
+                    fallbackText={ui.videoFallback}
+                  />
                 </div>
               </Card>
             </li>
 
             {/* 4. Trzy wideo obok siebie */}
             <li>
-              <Card
-                variant="glass"
-                className={`mx-2 sm:mx-3 md:mx-4 lg:mx-6 xl:mx-8 ${tileHoverClass}`}
-              >
+              <Card variant="glass">
                 <div className="space-y-6">
                   <div className="text-center space-y-2">
-                    <h2 className="text-2xl md:text-3xl font-bold leading-snug">
+                    <h2 className="ap-type-section-title">
                       {videoShowcase.title}
                     </h2>
                   </div>
@@ -967,99 +1029,32 @@ export default function EventsPage() {
               </Card>
             </li>
 
-            {/* 5. Cztery kopuły obok siebie */}
+            {/* 5. Specyfikacja kopuł */}
             <li>
-              <div className="mx-2 sm:mx-3 md:mx-4 lg:mx-6 xl:mx-8">
-                <div className="grid gap-6 md:gap-8 grid-cols-1 md:grid-cols-2">
-                  {/* Kopuła K3 */}
-                  <Card variant="solid" dense className={tileHoverClass}>
-                    <div className="flex flex-col items-center">
-                      <h3 className="text-xl md:text-2xl font-bold text-center">
-                        {domes.k3.title}
-                      </h3>
-                      <div className="mt-4 mb-8 h-[1px] w-full bg-white/15" />
-                      <ul className="w-full max-w-[28rem] text-left space-y-3 md:space-y-3.5">
-                        {domes.k3.bullets.map((line, i) => (
-                          <li key={i} className="flex items-start gap-3">
-                            <span className="mt-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#4fcfde] text-[#171730] text-[10px] font-bold shadow-[0_0_12px_rgba(79,207,222,0.35)] ring-1 ring-white/10">
-                              ✓
-                            </span>
-                            <span>{line}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </Card>
-
-                  {/* Kopuła K4 */}
-                  <Card variant="solid" dense className={tileHoverClass}>
-                    <div className="flex flex-col items-center">
-                      <h3 className="text-xl md:text-2xl font-bold text-center">
-                        {domes.k4.title}
-                      </h3>
-                      <div className="mt-4 mb-8 h-[1px] w-full bg-white/15" />
-                      <ul className="w-full max-w-[28rem] text-left space-y-3 md:space-y-3.5">
-                        {domes.k4.bullets.map((line, i) => (
-                          <li key={i} className="flex items-start gap-3">
-                            <span className="mt-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#4fcfde] text-[#171730] text-[10px] font-bold shadow-[0_0_12px_rgba(79,207,222,0.35)] ring-1 ring-white/10">
-                              ✓
-                            </span>
-                            <span>{line}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </Card>
-
-                  {/* Kopuła K7 */}
-                  <Card variant="solid" dense className={tileHoverClass}>
-                    <div className="flex flex-col items-center">
-                      <h3 className="text-xl md:text-2xl font-bold text-center">
-                        {domes.k7.title}
-                      </h3>
-                      <div className="mt-4 mb-8 h-[1px] w-full bg-white/15" />
-                      <ul className="w-full max-w-[28rem] text-left space-y-3 md:space-y-3.5">
-                        {domes.k7.bullets.map((line, i) => (
-                          <li key={i} className="flex items-start gap-3">
-                            <span className="mt-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#4fcfde] text-[#171730] text-[10px] font-bold shadow-[0_0_12px_rgba(79,207,222,0.35)] ring-1 ring-white/10">
-                              ✓
-                            </span>
-                            <span>{line}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </Card>
-
-                  {/* Kopuły K10 i K12 */}
-                  <Card variant="solid" dense className={tileHoverClass}>
-                    <div className="flex flex-col items-center">
-                      <h3 className="text-xl md:text-2xl font-bold text-center">
-                        {domes.k10k12.title}
-                      </h3>
-                      <div className="mt-4 mb-8 h-[1px] w-full bg-white/15" />
-                      <ul className="w-full max-w-[28rem] text-left space-y-3 md:space-y-3.5">
-                        {domes.k10k12.bullets.map((line, i) => (
-                          <li key={i} className="flex items-start gap-3">
-                            <span className="mt-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#4fcfde] text-[#171730] text-[10px] font-bold shadow-[0_0_12px_rgba(79,207,222,0.35)] ring-1 ring-white/10">
-                              ✓
-                            </span>
-                            <span>{line}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </Card>
+              <Card variant="solid">
+                <div className="space-y-6">
+                  <div className="text-center">
+                    <h2 className="ap-type-section-title">
+                      {sectionUi.domesLabel}
+                    </h2>
+                    <div className="mx-auto mt-4 h-[1px] w-full max-w-3xl bg-white/15" />
+                    <p className="mt-5 text-center text-sm sm:text-base text-gray-200 max-w-3xl mx-auto">
+                      {sectionUi.domesIntro}
+                    </p>
+                  </div>
+                  <div className="grid gap-5 md:gap-6 grid-cols-1 md:grid-cols-2">
+                    <DomeSpecBlock dome={domes.k3} />
+                    <DomeSpecBlock dome={domes.k4} />
+                    <DomeSpecBlock dome={domes.k7} />
+                    <DomeSpecBlock dome={domes.k10k12} />
+                  </div>
                 </div>
-              </div>
+              </Card>
             </li>
 
             {/* 6. Mapka graficzna */}
             <li>
-              <Card
-                variant="solid"
-                className={`mx-2 sm:mx-3 md:mx-4 lg:mx-6 xl:mx-8 ${tileHoverClass}`}
-              >
+              <Card variant="solid">
                 <div className="relative w-full aspect-[4/3] sm:aspect-[16/10] md:aspect-[16/9] overflow-hidden rounded-2xl ring-1 ring-white/10 bg-black/20">
                   <Image
                     src="/wydarzenia/mapka.webp"
@@ -1079,10 +1074,7 @@ export default function EventsPage() {
 
             {/* 7. Kontakt + mapa Google z loaderem */}
             <li>
-              <Card
-                variant="solid"
-                className={`mx-2 sm:mx-3 md:mx-4 lg:mx-6 xl:mx-8 ${tileHoverClass}`}
-              >
+              <Card variant="solid">
                 <div className="grid gap-8 md:grid-cols-2">
                   <div>
                     <h3 className="text-2xl md:text-3xl font-bold mb-4">

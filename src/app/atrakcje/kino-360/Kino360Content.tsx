@@ -221,7 +221,7 @@ export default function Kino360Content() {
   return (
     <main className="kino360-page relative z-10 min-h-screen ap-page-intro-stagger">
       <section className="relative z-10 px-4 pt-12 sm:pt-16">
-        <div className="mx-auto w-full max-w-7xl mb-10 sm:mb-12">
+        <div className="ap-shell mb-10 sm:mb-12">
           <div className="relative overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
             <div className="relative aspect-[4/5] sm:aspect-[16/9] bg-[#071020]">
               <video
@@ -248,13 +248,13 @@ export default function Kino360Content() {
                   <p className="text-2xl sm:text-4xl font-extrabold text-white drop-shadow-[0_0_24px_rgba(0,0,0,0.55)]">
                     {copy.heroSoon}
                   </p>
-                  <p className="text-xs uppercase tracking-[0.3em] force-overlay-muted">
+                  <p className="ap-type-kicker force-overlay-muted">
                     {copy.heroTag}
                   </p>
-                  <h1 className="text-3xl sm:text-6xl font-extrabold leading-tight drop-shadow-[0_0_24px_rgba(0,0,0,0.55)]">
+                  <h1 className="ap-type-hero-title force-overlay drop-shadow-[0_0_24px_rgba(0,0,0,0.55)]">
                     {copy.heroTitle}
                   </h1>
-                  <p className="force-overlay-dim text-sm sm:text-lg max-w-3xl mx-auto">
+                  <p className="ap-type-hero-subtitle force-overlay-dim max-w-3xl mx-auto">
                     {copy.heroLead}
                   </p>
                 </div>
@@ -265,14 +265,14 @@ export default function Kino360Content() {
       </section>
 
       <section className="px-4 pb-16 sm:pb-20">
-        <div className="max-w-7xl mx-auto space-y-10 sm:space-y-12">
+        <div className="ap-shell ap-page-stack">
           <Card variant="solid" className="bg-white/5 ring-1 ring-white/10">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-3">
                 <span className="inline-flex items-center rounded-full bg-cyan-500/20 px-3 py-1 text-[12px] font-semibold uppercase tracking-[0.08em] text-cyan-100 ring-1 ring-cyan-300/25">
                   {copy.soonBadge}
                 </span>
-                <p className="text-white/85 text-base sm:text-lg">
+                <p className="ap-type-section-body text-white/85">
                   {copy.soonBody}
                 </p>
               </div>
@@ -294,7 +294,7 @@ export default function Kino360Content() {
                   key={item.title}
                   dense
                   motion="off"
-                  className="tour-info-card h-full bg-white/8 ring-1 ring-white/10 text-white/90"
+                  className="tour-info-card ap-tile h-full bg-white/8 ring-1 ring-white/10 text-white/90"
                   style={{ "--tour-delay": `${(index % 6) * 0.24}s` } as React.CSSProperties}
                 >
                   <div className="space-y-3">
@@ -302,7 +302,7 @@ export default function Kino360Content() {
                       360°
                     </div>
                     <h3 className="text-xl font-semibold text-white">{item.title}</h3>
-                    <p className="text-gray-200 leading-relaxed text-sm sm:text-base">{item.body}</p>
+                    <p className="ap-type-section-body text-gray-200">{item.body}</p>
                   </div>
                 </Card>
               ))}
