@@ -20,11 +20,12 @@
   --ap-card-hover-ring: rgba(79, 207, 222, 0.35);
   --ap-card-hover-outline: rgba(79, 207, 222, 0.46);
   --ap-card-hover-shadow: 0 16px 36px rgba(79, 207, 222, 0.18);
-  --ap-accent: #4fcfde;
+  --ap-accent: #46dce7;
   --ap-accent-contrast: #171730;
-  --ap-accent-soft: rgba(79, 207, 222, 0.2);
-  --ap-accent-ring: rgba(23, 23, 48, 0.25);
-  --ap-accent-shadow: 0 0 18px rgba(79, 207, 222, 0.35);
+  --ap-accent-soft: rgba(70, 220, 231, 0.22);
+  --ap-accent-ring: rgba(23, 23, 48, 0.3);
+  --ap-accent-shadow: 0 0 18px rgba(70, 220, 231, 0.36);
+  --ap-brand-red: #f7486c;
   --ap-coral: #f03c64;
   --ap-orange: #f77828;
   --ap-gray: #aab4be;
@@ -57,11 +58,12 @@
   --ap-card-hover-ring: rgba(79, 207, 222, 0.58);
   --ap-card-hover-outline: rgba(79, 207, 222, 0.7);
   --ap-card-hover-shadow: 0 14px 32px rgba(23, 23, 48, 0.12);
-  --ap-accent: #4fcfde;
+  --ap-accent: #46dce7;
   --ap-accent-contrast: #171730;
-  --ap-accent-soft: rgba(79, 207, 222, 0.18);
-  --ap-accent-ring: rgba(79, 207, 222, 0.45);
-  --ap-accent-shadow: 0 0 24px rgba(79, 207, 222, 0.3);
+  --ap-accent-soft: rgba(70, 220, 231, 0.2);
+  --ap-accent-ring: rgba(70, 220, 231, 0.45);
+  --ap-accent-shadow: 0 0 24px rgba(70, 220, 231, 0.3);
+  --ap-brand-red: #f7486c;
   --ap-coral: #f03c64;
   --ap-orange: #f77828;
   --ap-gray: #aab4be;
@@ -374,12 +376,184 @@ p {
   fill: currentColor !important;
 }
 
+/* Bookero inline panel (booking page): force sticky-like readability. */
+#bookero {
+  background-color: #ffffff !important;
+  border-radius: 1rem;
+}
+
+#bookero .bookero-plugin-form-wrapper {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+#bookero .bookero-plugin-form-wrapper :where(
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p,
+    span,
+    label,
+    small,
+    legend,
+    li,
+    dt,
+    dd,
+    a,
+    strong,
+    em,
+    b,
+    input,
+    select,
+    textarea,
+    option,
+    .multiselect,
+    .multiselect *,
+    .multiselect__single,
+    .multiselect__single *,
+    .multiselect__input,
+    .multiselect__input *,
+    .multiselect__option,
+    .multiselect__option *,
+    .multiselect__placeholder,
+    .multiselect__placeholder *,
+    .vti__input,
+    .vti__input *,
+    .vti__dropdown-list,
+    .vti__dropdown-list *,
+    .vti__dropdown-item,
+    .vti__dropdown-item *
+  ) {
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+  opacity: 1 !important;
+}
+
+#bookero :where(input, select, textarea, .multiselect__single, .multiselect__input) {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+}
+
+#bookero :where(input::placeholder, textarea::placeholder, .multiselect__placeholder) {
+  color: rgba(15, 23, 42, 0.55) !important;
+  -webkit-text-fill-color: rgba(15, 23, 42, 0.55) !important;
+  opacity: 1 !important;
+}
+
+#bookero :where(
+    .bookero-plugin-header,
+    .bookero-plugin-header *,
+    .bookero-sticky-plugin-toggle,
+    .add-to-cart-section .add-button,
+    .bookero-plugin-error-btn,
+    .calendar-days-list-cell.is-selected,
+    .calendar-days-list-cell.is-sub-selected,
+    .week-days-hour.is-selected,
+    .week-days-hour.is-sub-selected
+  ) {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+#bookero :where(
+    .bookero-plugin-form-heading.is-inactive,
+    .services-section .field.is-inactive,
+    .params-section:not(.is-active),
+    .add-to-cart-section:not(.is-active),
+    .submit-section:not(.is-active)
+  ) {
+  opacity: 0.72 !important;
+}
+
+/* Bookero sticky readability fixes (especially Safari/iOS text fill handling). */
+#bookero-plugin[data-mode="sticky"] :where(
+    .bookero-plugin-form-heading,
+    .bookero-plugin-form .field label,
+    .bookero-plugin-form .field-note,
+    .bookero-plugin-form .field .note,
+    .bookero-plugin-form-wrapper p,
+    .bookero-plugin-form-wrapper span,
+    .bookero-plugin-form-wrapper small,
+    .bookero-plugin-form-wrapper legend,
+    .bookero-plugin-form-wrapper li,
+    .bookero-plugin-form-wrapper dt,
+    .bookero-plugin-form-wrapper dd,
+    .bookero-plugin-form-wrapper a,
+    .bookero-plugin-form-wrapper strong,
+    .bookero-plugin-form-wrapper em,
+    .bookero-plugin-form-wrapper b,
+    .calendar-nav-month,
+    .calendar-days-heading-cell,
+    .week-days-heading-day,
+    .week-days-heading-date,
+    .week-days-hour-info,
+    .switcher-label,
+    .multiselect__single,
+    .multiselect__placeholder,
+    .multiselect__option,
+    .multiselect__input
+  ) {
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+  opacity: 1 !important;
+}
+
+#bookero-plugin[data-mode="sticky"] :where(input, select, textarea, .multiselect__single, .multiselect__input) {
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+  background-color: #ffffff !important;
+}
+
+#bookero-plugin[data-mode="sticky"] :where(input::placeholder, textarea::placeholder, .multiselect__placeholder) {
+  color: rgba(15, 23, 42, 0.55) !important;
+  -webkit-text-fill-color: rgba(15, 23, 42, 0.55) !important;
+  opacity: 1 !important;
+}
+
+#bookero-plugin[data-mode="sticky"] :where(
+    .bookero-plugin-header,
+    .bookero-plugin-header *,
+    .bookero-sticky-plugin-toggle,
+    .add-to-cart-section .add-button,
+    .bookero-plugin-error-btn,
+    .calendar-days-list-cell.is-selected,
+    .calendar-days-list-cell.is-sub-selected,
+    .week-days-hour.is-selected,
+    .week-days-hour.is-sub-selected
+  ) {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+#bookero-plugin[data-mode="sticky"] :where(
+    .bookero-plugin-form-heading.is-inactive,
+    .services-section .field.is-inactive
+  ) {
+  opacity: 0.72 !important;
+}
+
+/* Sticky launcher button visual override: red "Bilety" CTA. */
+:is(.bookero-sticky-plugin-toggle, #bookero-plugin[data-mode="sticky"] .bookero-sticky-plugin-toggle) {
+  background: var(--ap-brand-red) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: 0 10px 24px rgba(247, 72, 108, 0.35) !important;
+}
+
+:is(.bookero-sticky-plugin-toggle, #bookero-plugin[data-mode="sticky"] .bookero-sticky-plugin-toggle):hover {
+  filter: brightness(1.06);
+}
+
 .ticket-pill {
   color: #ffffff;
   font-weight: 700;
-  background: linear-gradient(135deg, #f03c64 0%, #f77828 100%);
+  background: var(--ap-brand-red);
   border: 1px solid rgba(255, 255, 255, 0.22);
-  box-shadow: 0 8px 18px rgba(240, 60, 100, 0.3), 0 0 18px rgba(247, 120, 40, 0.16);
+  box-shadow: 0 8px 18px rgba(247, 72, 108, 0.32), 0 0 18px rgba(247, 72, 108, 0.2);
   position: relative;
   overflow: hidden;
   transition: transform 0.24s ease, filter 0.24s ease;
@@ -917,4 +1091,255 @@ p {
 .theme-light a,
 .theme-light .underline {
   text-decoration-color: var(--ap-underline);
+}
+
+/* Final hard override for inline Bookero readability on /rezerwuj. */
+body #bookero .bookero-plugin-form .bookero-plugin-form-heading,
+body #bookero .bookero-plugin-form .field label,
+body #bookero .bookero-plugin-form .field-note,
+body #bookero .bookero-plugin-form .field .note,
+body #bookero .bookero-plugin-form .calendar-nav-month,
+body #bookero .bookero-plugin-form .calendar-days-heading-cell,
+body #bookero .bookero-plugin-form .week-days-heading-day,
+body #bookero .bookero-plugin-form .week-days-heading-date,
+body #bookero .bookero-plugin-form .week-days-hour-info,
+body #bookero .bookero-plugin-form .switcher-label {
+  color: #f8fafc !important;
+  -webkit-text-fill-color: #f8fafc !important;
+  opacity: 1 !important;
+}
+
+body #bookero .bookero-plugin-form :is(
+  input,
+  select,
+  textarea,
+  option,
+  .multiselect,
+  .multiselect *,
+  .multiselect__single,
+  .multiselect__single *,
+  .multiselect__input,
+  .multiselect__input *,
+  .multiselect__option,
+  .multiselect__option *,
+  .multiselect__placeholder,
+  .multiselect__placeholder *,
+  .vti__input,
+  .vti__input *,
+  .vti__dropdown-list,
+  .vti__dropdown-list *,
+  .vti__dropdown-item,
+  .vti__dropdown-item *
+) {
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+  opacity: 1 !important;
+}
+
+body #bookero .bookero-plugin-form :is(
+  .bookero-plugin-form-heading.is-inactive,
+  .services-section .field.is-inactive,
+  .params-section:not(.is-active),
+  .add-to-cart-section:not(.is-active),
+  .submit-section:not(.is-active)
+) {
+  opacity: 1 !important;
+}
+
+/* Same override for the actual standard mount root generated by Bookero. */
+body #bookero-plugin[data-mode="standard"] .bookero-plugin-form .bookero-plugin-form-heading,
+body #bookero-plugin[data-mode="standard"] .bookero-plugin-form .field label,
+body #bookero-plugin[data-mode="standard"] .bookero-plugin-form .field-note,
+body #bookero-plugin[data-mode="standard"] .bookero-plugin-form .field .note,
+body #bookero-plugin[data-mode="standard"] .bookero-plugin-form .calendar-nav-month,
+body #bookero-plugin[data-mode="standard"] .bookero-plugin-form .calendar-days-heading-cell,
+body #bookero-plugin[data-mode="standard"] .bookero-plugin-form .week-days-heading-day,
+body #bookero-plugin[data-mode="standard"] .bookero-plugin-form .week-days-heading-date,
+body #bookero-plugin[data-mode="standard"] .bookero-plugin-form .week-days-hour-info,
+body #bookero-plugin[data-mode="standard"] .bookero-plugin-form .switcher-label {
+  color: #f8fafc !important;
+  -webkit-text-fill-color: #f8fafc !important;
+  opacity: 1 !important;
+}
+
+body #bookero-plugin[data-mode="standard"] .bookero-plugin-form :is(
+  input,
+  select,
+  textarea,
+  option,
+  .multiselect,
+  .multiselect *,
+  .multiselect__single,
+  .multiselect__single *,
+  .multiselect__input,
+  .multiselect__input *,
+  .multiselect__option,
+  .multiselect__option *,
+  .multiselect__placeholder,
+  .multiselect__placeholder *,
+  .vti__input,
+  .vti__input *,
+  .vti__dropdown-list,
+  .vti__dropdown-list *,
+  .vti__dropdown-item,
+  .vti__dropdown-item *
+) {
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+  opacity: 1 !important;
+}
+
+body #bookero-plugin[data-mode="standard"] .bookero-plugin-form :is(
+  .bookero-plugin-form-heading.is-inactive,
+  .services-section .field.is-inactive,
+  .params-section:not(.is-active),
+  .add-to-cart-section:not(.is-active),
+  .submit-section:not(.is-active)
+) {
+  opacity: 1 !important;
+}
+
+/* Explicit fixes for dark panel subareas in standard mode. */
+body #bookero-plugin[data-mode="standard"] .bookero-plugin-form :is(
+  .people-section #bookero-plugin-people-number,
+  .people-section #bookero-plugin-children-number,
+  .people-section .people-number-minus,
+  .people-section .people-number-plus,
+  .people-section .children-number-minus,
+  .people-section .children-number-plus,
+  .days-section #bookero-plugin-days-number,
+  .days-section .days-number-minus,
+  .days-section .days-number-plus,
+  .params-section .field input,
+  .params-section .field textarea,
+  .temporary-price-section .temporary-price-quote,
+  .temporary-price-section .temporary-price-method,
+  .temporary-price-section .temporary-price-price,
+  .temporary-price-section .temporary-price-payment-method,
+  .payment-summary-section .payment-summary-quote,
+  .payment-summary-section .payment-summary-price
+) {
+  color: #f8fafc !important;
+  -webkit-text-fill-color: #f8fafc !important;
+}
+
+body #bookero-plugin[data-mode="standard"] .bookero-plugin-form :is(
+  .params-section .field input,
+  .params-section .field textarea,
+  .people-section #bookero-plugin-people-number,
+  .people-section #bookero-plugin-children-number,
+  .days-section #bookero-plugin-days-number
+) {
+  background-color: transparent !important;
+  border-color: rgba(248, 250, 252, 0.72) !important;
+}
+
+/* Datepicker popup in standard mode is on a light surface, so keep dark text there. */
+body :is(#bookero, #bookero-plugin[data-mode="standard"]) .bookero-plugin-form .vdp-datepicker__calendar {
+  background-color: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.16) !important;
+}
+
+body :is(#bookero, #bookero-plugin[data-mode="standard"]) .bookero-plugin-form .vdp-datepicker__calendar,
+body :is(#bookero, #bookero-plugin[data-mode="standard"]) .bookero-plugin-form .vdp-datepicker__calendar * {
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+  opacity: 1 !important;
+}
+
+body :is(#bookero, #bookero-plugin[data-mode="standard"]) .bookero-plugin-form .vdp-datepicker__calendar :is(.disabled, .muted) {
+  color: #94a3b8 !important;
+  -webkit-text-fill-color: #94a3b8 !important;
+}
+
+body :is(#bookero, #bookero-plugin[data-mode="standard"]) .bookero-plugin-form .vdp-datepicker__calendar :is(.selected, .selected *, .day.selected, .day.selected *) {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Step 2 (customer data + agreements) stays on dark panel, so force light text there. */
+body :is(#bookero, #bookero-plugin[data-mode="standard"]) .bookero-plugin-form :is(
+  .customer-section,
+  .customer-section .field label,
+  .customer-section .field-note,
+  .customer-section .field .note,
+  .agreements-section,
+  .agreements-section .agreement-disclaimer,
+  .agreements-section .switcher-label,
+  .invoice-section .field label,
+  .invoice-section .field-note,
+  .invoice-section .field .note,
+  .payment-section .bookero-plugin-discount-code-section,
+  .payment-section .bookero-plugin-pass-code-section,
+  .payment-section .bookero-plugin-discount-code-wrapper > span,
+  .payment-section .bookero-plugin-pass-code-wrapper > span
+) {
+  color: #f8fafc !important;
+  -webkit-text-fill-color: #f8fafc !important;
+  opacity: 1 !important;
+}
+
+body :is(#bookero, #bookero-plugin[data-mode="standard"]) .bookero-plugin-form :is(
+  .customer-section input,
+  .customer-section select,
+  .customer-section textarea,
+  .customer-section .vti__input,
+  .customer-section .vti__dropdown,
+  .invoice-section input,
+  .invoice-section select,
+  .invoice-section textarea,
+  .payment-section .bookero-plugin-discount-code-wrapper > input,
+  .payment-section .bookero-plugin-pass-code-wrapper > input
+) {
+  color: #f8fafc !important;
+  -webkit-text-fill-color: #f8fafc !important;
+  background-color: transparent !important;
+  border-color: rgba(248, 250, 252, 0.72) !important;
+  opacity: 1 !important;
+}
+
+body :is(#bookero, #bookero-plugin[data-mode="standard"]) .bookero-plugin-form :is(
+  .customer-section input::placeholder,
+  .customer-section textarea::placeholder,
+  .invoice-section input::placeholder,
+  .invoice-section textarea::placeholder,
+  .payment-section .bookero-plugin-discount-code-wrapper > input::placeholder,
+  .payment-section .bookero-plugin-pass-code-wrapper > input::placeholder
+) {
+  color: rgba(248, 250, 252, 0.62) !important;
+  -webkit-text-fill-color: rgba(248, 250, 252, 0.62) !important;
+}
+
+/* Discount/pass code inputs: explicit override (Bookero uses dedicated wrappers here). */
+body :is(#bookero, #bookero-plugin[data-mode="standard"]) .bookero-plugin-form :is(
+  .bookero-plugin-discount-code-section input,
+  .bookero-plugin-pass-code-section input
+) {
+  color: #f8fafc !important;
+  -webkit-text-fill-color: #f8fafc !important;
+  background-color: transparent !important;
+  border-color: rgba(248, 250, 252, 0.72) !important;
+}
+
+body :is(#bookero, #bookero-plugin[data-mode="standard"]) .bookero-plugin-form :is(
+  .bookero-plugin-discount-code-section input::placeholder,
+  .bookero-plugin-pass-code-section input::placeholder
+) {
+  color: rgba(248, 250, 252, 0.62) !important;
+  -webkit-text-fill-color: rgba(248, 250, 252, 0.62) !important;
+}
+
+/* Brand cyan for Bookero primary action buttons. */
+body :is(#bookero, #bookero-plugin[data-mode="standard"], #bookero-plugin[data-mode="sticky"]) .bookero-plugin-form :is(
+  .bookero-plugin-header,
+  .bookero-plugin-header button,
+  .add-to-cart-section .add-button,
+  .bookero-plugin-error-btn,
+  .submit-section button,
+  button[type="submit"]
+) {
+  background: var(--ap-accent) !important;
+  border-color: rgba(70, 220, 231, 0.65) !important;
+  color: #171730 !important;
+  -webkit-text-fill-color: #171730 !important;
 }

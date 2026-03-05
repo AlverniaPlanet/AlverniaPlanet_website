@@ -51,12 +51,6 @@
       "namedRegex": "^/atrakcje/wystawa(?:/)?$"
     },
     {
-      "page": "/bilety",
-      "regex": "^/bilety(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/bilety(?:/)?$"
-    },
-    {
       "page": "/en",
       "regex": "^/en(?:/)?$",
       "routeKeys": {},
@@ -111,10 +105,10 @@
       "namedRegex": "^/en/getting\\-there(?:/)?$"
     },
     {
-      "page": "/en/tickets",
-      "regex": "^/en/tickets(?:/)?$",
+      "page": "/en/reserve",
+      "regex": "^/en/reserve(?:/)?$",
       "routeKeys": {},
-      "namedRegex": "^/en/tickets(?:/)?$"
+      "namedRegex": "^/en/reserve(?:/)?$"
     },
     {
       "page": "/favicon.ico",
@@ -201,10 +195,16 @@
       "namedRegex": "^/pt/getting\\-there(?:/)?$"
     },
     {
-      "page": "/pt/tickets",
-      "regex": "^/pt/tickets(?:/)?$",
+      "page": "/pt/reservar",
+      "regex": "^/pt/reservar(?:/)?$",
       "routeKeys": {},
-      "namedRegex": "^/pt/tickets(?:/)?$"
+      "namedRegex": "^/pt/reservar(?:/)?$"
+    },
+    {
+      "page": "/rezerwuj",
+      "regex": "^/rezerwuj(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/rezerwuj(?:/)?$"
     },
     {
       "page": "/robots.txt",

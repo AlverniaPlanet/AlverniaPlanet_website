@@ -36,7 +36,7 @@ const sizeMap: Record<Size, string> = {
 };
 
 const baseClass =
-  "inline-flex items-center justify-center rounded-full font-semibold text-[color:var(--ap-accent-contrast)] bg-[color:var(--ap-accent)] ring-1 ring-[color:var(--ap-accent-ring)] shadow-[0_4px_10px_rgba(79,207,222,0.18)] hover:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ap-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ap-bg)] transition";
+  "inline-flex items-center justify-center rounded-full font-semibold text-[color:var(--ap-accent-contrast)] bg-[color:var(--ap-accent)] ring-1 ring-[color:var(--ap-accent-ring)] shadow-[var(--ap-accent-shadow)] hover:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ap-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ap-bg)] transition";
 
 export function PrimaryButton(props: PrimaryButtonProps) {
   const { locale } = useI18n();
@@ -44,11 +44,10 @@ export function PrimaryButton(props: PrimaryButtonProps) {
     size: Size;
   };
   const classes = cx(baseClass, sizeMap[size], className);
-  const plToIntl: Record<string, string> = {
+  const plToIntlCommon: Record<string, string> = {
     "/wydarzenia": "/events",
     "/galeria": "/gallery",
     "/jak-dojechac": "/getting-there",
-    "/bilety": "/tickets",
     "/o-alvernia-planet": "/about",
     "/kontakt": "/contact",
     "/atrakcje/wystawa": "/attractions/exhibition",
@@ -58,13 +57,18 @@ export function PrimaryButton(props: PrimaryButtonProps) {
 
   if ("href" in props && props.href) {
     const { href, ...linkProps } = rest as AnchorProps;
+    const hrefString = String(href);
     const normalizedHref = (() => {
-      if (!href.startsWith("/")) return href;
-      if (href.startsWith("/en") || href.startsWith("/pt") || href.startsWith("/legal/")) return href;
-      if (locale !== "en" && locale !== "pt") return href;
-      const mapped = plToIntl[href] ?? href;
-      if (mapped === "/") return `/${locale}`;
-      return `/${locale}${mapped.startsWith("/") ? mapped : `/${mapped}`}`;
+      if (!hrefString.startsWith("/")) return hrefString;
+      if (hrefString.startsWith("/en") || hrefString.startsWith("/pt") || hrefString.startsWith("/legal/")) return hrefString;
+      if (locale !== "en" && locale !== "pt") return hrefString;
+      const mapped: Record<string, string> = {
+        ...plToIntlCommon,
+        "/rezerwuj": locale === "en" ? "/reserve" : "/reservar",
+      };
+      const normalized = mapped[hrefString] ?? hrefString;
+      if (normalized === "/") return `/${locale}`;
+      return `/${locale}${normalized.startsWith("/") ? normalized : `/${normalized}`}`;
     })();
     return (
       <Link href={normalizedHref} className={classes} {...linkProps}>

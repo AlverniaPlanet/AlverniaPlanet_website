@@ -2,6 +2,7 @@
 
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useI18n } from "@/app/i18n-provider";
 import Card from "@/app/components/Card";
 import { PrimaryButton } from "@/app/components/PrimaryButton";
@@ -69,8 +70,6 @@ type HomeCopy = {
   };
 };
 
-const BOOKING_URL = "https://alverniaplanet.bookero.pl";
-
 const HOME_COPY: Record<Locale, HomeCopy> = {
   pl: {
     heroTitle: "Witamy w Alvernia Planet",
@@ -120,7 +119,7 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       priceLabel: "Cena za osobę",
       price: "69 zł/os.",
       cta: "Kup bilet",
-      ctaHref: BOOKING_URL,
+      ctaHref: "/rezerwuj",
       options: [
         {
           badge: "Indywidualne",
@@ -223,7 +222,7 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       priceLabel: "Price per person",
       price: "69 PLN/person",
       cta: "Buy tickets",
-      ctaHref: BOOKING_URL,
+      ctaHref: "/en/reserve",
       options: [
         {
           badge: "Individual",
@@ -325,7 +324,7 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       priceLabel: "Preço por pessoa",
       price: "69 PLN/pessoa",
       cta: "Comprar bilhetes",
-      ctaHref: BOOKING_URL,
+      ctaHref: "/pt/reservar",
       options: [
         {
           badge: "Individual",
@@ -563,9 +562,9 @@ export default function Page() {
           <div className="relative overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
             <div className="relative aspect-[16/9] bg-black">
               <div className="pointer-events-none absolute inset-x-0 top-4 z-20 flex justify-center px-4 sm:top-5">
-                <a
+                <Link
                   href={copy.heroPromo.href}
-                className={`hero-film-alert pointer-events-auto inline-flex max-w-full items-center gap-2 rounded-full px-3 py-2 text-[11px] sm:gap-2.5 sm:px-4 sm:py-2.5 sm:text-sm transition-[opacity,transform] duration-[900ms] ${
+                  className={`hero-film-alert pointer-events-auto inline-flex max-w-full items-center gap-2 rounded-full px-3 py-2 text-[11px] sm:gap-2.5 sm:px-4 sm:py-2.5 sm:text-sm transition-[opacity,transform] duration-[900ms] ${
                     introReady
                       ? "hero-film-alert-intro opacity-100 translate-y-0 scale-100"
                       : "opacity-0 -translate-y-3 scale-95 pointer-events-none"
@@ -585,7 +584,7 @@ export default function Page() {
                       {copy.heroPromo.cta} →
                     </span>
                   </span>
-                </a>
+                </Link>
               </div>
               <div
                 className={`pointer-events-none absolute inset-0 z-[6] bg-black transition-opacity ${
@@ -619,7 +618,7 @@ export default function Page() {
                 muted
                 loop
                 playsInline
-                preload="metadata"
+                preload="none"
                 poster="/home/AP_ogolne_poster.webp"
                 className="absolute inset-0 h-full w-full object-cover pointer-events-none"
                 controlsList="nodownload noplaybackrate noremoteplayback nofullscreen"
@@ -766,13 +765,8 @@ function AttractionsScroller({
     }
 
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
-    const lowPowerDevice =
-      (navigator.hardwareConcurrency ?? 8) <= 4 ||
-      (typeof (navigator as Navigator & { deviceMemory?: number }).deviceMemory === "number" &&
-        ((navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 8) <= 4);
 
-    if (prefersReduced || coarsePointer || lowPowerDevice) {
+    if (prefersReduced) {
       track.style.transform = "translate3d(0, 0, 0)";
       return;
     }
@@ -784,6 +778,11 @@ function AttractionsScroller({
     let lastTime = 0;
     let lastPaintTime = 0;
     let isVisible = false;
+    let touchMode: "idle" | "pending" | "horizontal" | "vertical" = "idle";
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchLastX = 0;
+    let touchLastTime = 0;
     const baseSpeed = window.matchMedia("(max-width: 640px)").matches ? 18 : 14;
     const minFrameMs = 1000 / 24;
 
@@ -800,6 +799,10 @@ function AttractionsScroller({
     const recalculateWidth = () => {
       halfWidth = track.scrollWidth / 2;
       normalizeOffset();
+    };
+
+    const applyTrackTransform = () => {
+      track.style.transform = `translate3d(${-offset.toFixed(2)}px, 0, 0)`;
     };
 
     const tick = (time: number) => {
@@ -822,7 +825,7 @@ function AttractionsScroller({
 
       offset += (baseSpeed + boostVelocity) * deltaSeconds;
       normalizeOffset();
-      track.style.transform = `translate3d(${-offset.toFixed(2)}px, 0, 0)`;
+      applyTrackTransform();
 
       boostVelocity *= Math.pow(0.94, deltaSeconds * 60);
       if (Math.abs(boostVelocity) < 0.2) {
@@ -861,6 +864,65 @@ function AttractionsScroller({
       boostVelocity = clamp(boostVelocity + horizontalDelta * 0.48, -640, 640);
     };
 
+    const handleTouchStart = (event: TouchEvent) => {
+      if (!isVisible || event.touches.length !== 1) {
+        return;
+      }
+      const touch = event.touches[0];
+      touchMode = "pending";
+      touchStartX = touch.clientX;
+      touchStartY = touch.clientY;
+      touchLastX = touch.clientX;
+      touchLastTime = performance.now();
+      boostVelocity = 0;
+    };
+
+    const handleTouchMove = (event: TouchEvent) => {
+      if (touchMode === "idle" || event.touches.length !== 1) {
+        return;
+      }
+
+      const touch = event.touches[0];
+
+      if (touchMode === "pending") {
+        const totalX = touch.clientX - touchStartX;
+        const totalY = touch.clientY - touchStartY;
+        if (Math.abs(totalX) < 8 && Math.abs(totalY) < 8) {
+          return;
+        }
+        if (Math.abs(totalX) <= Math.abs(totalY)) {
+          touchMode = "vertical";
+          return;
+        }
+        touchMode = "horizontal";
+        stopAnimation();
+      }
+
+      if (touchMode !== "horizontal") {
+        return;
+      }
+
+      event.preventDefault();
+      const now = performance.now();
+      const deltaX = touch.clientX - touchLastX;
+      const deltaSeconds = Math.max((now - touchLastTime) / 1000, 1 / 120);
+
+      offset -= deltaX;
+      normalizeOffset();
+      applyTrackTransform();
+
+      boostVelocity = clamp((-deltaX / deltaSeconds) * 0.18, -640, 640);
+      touchLastX = touch.clientX;
+      touchLastTime = now;
+    };
+
+    const handleTouchEnd = () => {
+      if (touchMode === "horizontal" && isVisible) {
+        startAnimation();
+      }
+      touchMode = "idle";
+    };
+
     recalculateWidth();
     const resizeObserver = new ResizeObserver(recalculateWidth);
     resizeObserver.observe(track);
@@ -893,12 +955,20 @@ function AttractionsScroller({
     };
 
     container.addEventListener("wheel", handleWheel, { passive: true });
+    container.addEventListener("touchstart", handleTouchStart, { passive: true });
+    container.addEventListener("touchmove", handleTouchMove, { passive: false });
+    container.addEventListener("touchend", handleTouchEnd, { passive: true });
+    container.addEventListener("touchcancel", handleTouchEnd, { passive: true });
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
     return () => {
       resizeObserver.disconnect();
       visibilityObserver.disconnect();
       container.removeEventListener("wheel", handleWheel);
+      container.removeEventListener("touchstart", handleTouchStart);
+      container.removeEventListener("touchmove", handleTouchMove);
+      container.removeEventListener("touchend", handleTouchEnd);
+      container.removeEventListener("touchcancel", handleTouchEnd);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       stopAnimation();
     };
@@ -907,7 +977,7 @@ function AttractionsScroller({
   return (
     <div
       ref={containerRef}
-      className="attractions-carousel relative mt-8 overflow-hidden rounded-2xl"
+      className="attractions-carousel relative mt-8 overflow-hidden rounded-2xl touch-pan-y"
     >
       <div
         className="attractions-edge-fade attractions-edge-fade-left pointer-events-none absolute inset-y-0 left-0 z-10 w-10 bg-gradient-to-r from-[#1a1f36] to-transparent sm:w-16"

@@ -36,10 +36,25 @@ const filmImages = range(8).map((n) => `${FILM_DIR}/webp/${n}.webp`);
 const eventsImages = range(8).map((n) => `${EVENTS_DIR}/webp/${n}.webp`);
 const harryPotterImages = range(8).map((n) => `${EXHIBITION_DIR}/webp/${n}.webp`);
 const BLUR_PLACEHOLDER = "data:image/gif;base64,R0lGODlhAQABAAAAACw="; // lekki placeholder dla ładowania
+const MOSAIC_PATTERN = [
+  "md:col-span-6 md:row-span-2",
+  "md:col-span-3 md:row-span-1",
+  "md:col-span-3 md:row-span-1",
+  "md:col-span-3 md:row-span-1",
+  "md:col-span-3 md:row-span-1",
+  "md:col-span-4 md:row-span-1",
+  "md:col-span-4 md:row-span-1",
+  "md:col-span-4 md:row-span-1",
+];
+
+function getMosaicClass(index: number) {
+  return MOSAIC_PATTERN[index % MOSAIC_PATTERN.length];
+}
 
 // ===== i18n (PL/EN lokalnie dla strony) =====
 type Locale = "pl" | "en" | "pt";
 const COPY: Record<Locale, {
+  tag: string;
   title: string;
   subtitle: string;
   sections: {
@@ -56,6 +71,7 @@ const COPY: Record<Locale, {
   };
 }> = {
   pl: {
+    tag: "Galeria",
     title: "Galeria",
     subtitle: "Zdjęcia z naszych przestrzeni i wydarzeń.",
     sections: {
@@ -72,6 +88,7 @@ const COPY: Record<Locale, {
     }
   },
   en: {
+    tag: "Gallery",
     title: "Gallery",
     subtitle: "Photos from our spaces and events.",
     sections: {
@@ -88,6 +105,7 @@ const COPY: Record<Locale, {
     }
   },
   pt: {
+    tag: "Galeria",
     title: "Galeria",
     subtitle: "Fotografias dos nossos espaços e eventos.",
     sections: {
@@ -265,16 +283,20 @@ export default function GalleryPage() {
   }, [isLightboxOpen]);
 
   return (
-    <main className="relative min-h-screen text-white">
-      <motion.div initial="hidden" animate="show" variants={fade} className="mx-auto w-full max-w-[min(86vw,120rem)] px-4 py-16 sm:py-20">
+    <main className="relative min-h-screen text-white px-4">
+      <motion.div initial="hidden" animate="show" variants={fade} className="ap-shell py-16 sm:py-20">
         {/* Nagłówek strony */}
-        <header className="text-center mb-10 sm:mb-12">
-          <motion.h1 variants={fadeUp} className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight">
+        <header className="mb-10 space-y-5 text-center sm:mb-12">
+          <motion.p variants={fadeUp} className="ap-type-kicker">
+            {t.tag}
+          </motion.p>
+          <motion.h1 variants={fadeUp} className="ap-type-hero-title">
             {t.title}
           </motion.h1>
-          <motion.p variants={fadeUp} className="mt-2 text-white/70">
+          <motion.p variants={fadeUp} className="ap-type-hero-subtitle mx-auto max-w-5xl">
             {t.subtitle}
           </motion.p>
+          <div className="mx-auto h-[1px] w-40 bg-gradient-to-r from-transparent via-white/30 to-transparent" />
         </header>
 
         {/* Sekcja: Ogólne */}
@@ -296,11 +318,14 @@ export default function GalleryPage() {
               </span>
             </div>
 
-            <motion.ul variants={stagger} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <motion.ul
+              variants={stagger}
+              className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-12 md:auto-rows-[132px] lg:auto-rows-[152px]"
+            >
               {generalImages.map((src, i) => {
                 const caption = captions.general[i] ?? `${t.sections.general} • ${t.sections.photoLabel} ${i + 1}`;
                 return (
-                  <motion.li key={src} className="group" variants={fadeUp}>
+                  <motion.li key={src} className={`group ${getMosaicClass(i)}`} variants={fadeUp}>
                     <GalleryTile
                       src={src}
                       alt={caption}
@@ -336,11 +361,14 @@ export default function GalleryPage() {
               </span>
             </div>
 
-            <motion.ul variants={stagger} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <motion.ul
+              variants={stagger}
+              className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-12 md:auto-rows-[132px] lg:auto-rows-[152px]"
+            >
               {filmImages.map((src, i) => {
                 const caption = captions.film[i] ?? `${t.sections.film} • ${t.sections.photoLabel} ${i + 1}`;
                 return (
-                  <motion.li key={src} className="group" variants={fadeUp}>
+                  <motion.li key={src} className={`group ${getMosaicClass(i)}`} variants={fadeUp}>
                     <GalleryTile
                       src={src}
                       alt={caption}
@@ -377,11 +405,14 @@ export default function GalleryPage() {
                 </span>
               </div>
 
-              <motion.ul variants={stagger} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              <motion.ul
+                variants={stagger}
+                className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-12 md:auto-rows-[132px] lg:auto-rows-[152px]"
+              >
                 {harryPotterImages.map((src, i) => {
                   const caption = captions.exhibitions[i] ?? `${t.sections.hpExhibition} • ${t.sections.photoLabel} ${i + 1}`;
                   return (
-                    <motion.li key={src} className="group" variants={fadeUp}>
+                    <motion.li key={src} className={`group ${getMosaicClass(i)}`} variants={fadeUp}>
                       <GalleryTile
                         src={src}
                         alt={caption}
@@ -416,11 +447,14 @@ export default function GalleryPage() {
               </span>
             </div>
 
-            <motion.ul variants={stagger} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <motion.ul
+              variants={stagger}
+              className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-12 md:auto-rows-[132px] lg:auto-rows-[152px]"
+            >
               {eventsImages.map((src, i) => {
                 const caption = captions.events[i] ?? `${t.sections.events} • ${t.sections.photoLabel} ${i + 1}`;
                 return (
-                  <motion.li key={src} className="group" variants={fadeUp}>
+                  <motion.li key={src} className={`group ${getMosaicClass(i)}`} variants={fadeUp}>
                     <GalleryTile
                       src={src}
                       alt={caption}
@@ -552,9 +586,9 @@ function GalleryTile({ src, alt, caption, loadingText, errorText, onClick, prior
       onClick={() => {
         if (!errored) onClick();
       }}
-      className="group overflow-hidden rounded-xl ring-1 ring-white/10 bg-white/5 hover:bg-white/10 transition cursor-zoom-in"
+      className="group flex h-full cursor-zoom-in flex-col overflow-hidden rounded-xl bg-white/5 ring-1 ring-white/10 transition hover:bg-white/10"
     >
-      <div className="relative aspect-[4/3]">
+      <div className="relative aspect-[4/3] md:flex-1 md:aspect-auto md:min-h-0">
         {!loaded && !errored && (
           <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 bg-white/5 animate-pulse text-xs text-white/70">
             {loadingText}

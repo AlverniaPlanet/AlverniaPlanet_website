@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <title>Regulamin przebywania – Alvernia Planet</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root { color-scheme: light; }
+    html, body { height: 100%; margin: 0; }
+    body { font-family: Arial, sans-serif; background: #f7f7fb; color: #0f172a; display: flex; flex-direction: column; }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 16px;
+      border-bottom: 1px solid #d4dbe5;
+      background: #ffffff;
+    }
+    .title { font-size: 0.95rem; font-weight: 700; }
+    .actions a {
+      display: inline-block;
+      text-decoration: none;
+      color: #0f172a;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 0.85rem;
+      background: #f8fafc;
+    }
+    .pdf-frame {
+      flex: 1;
+      width: 100%;
+      border: 0;
+      min-height: 0;
+      background: #e2e8f0;
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="title">Regulamin przebywania na terenie Alvernia Planet</div>
+    <div class="actions">
+      <a href="/legal/Regulamin-przebywania-na-terenie-alvernia-planet.pdf" target="_blank" rel="noopener noreferrer">
+        Otwórz PDF
+      </a>
+    </div>
+  </div>
+
+  <iframe
+    class="pdf-frame"
+    src="/legal/Regulamin-przebywania-na-terenie-alvernia-planet.pdf#view=FitH"
+    title="Regulamin przebywania na terenie Alvernia Planet"
+  >
+    Twoja przeglądarka nie obsługuje podglądu PDF.
+    <a href="/legal/Regulamin-przebywania-na-terenie-alvernia-planet.pdf">Pobierz plik PDF</a>.
+  </iframe>
+</body>
+</html>

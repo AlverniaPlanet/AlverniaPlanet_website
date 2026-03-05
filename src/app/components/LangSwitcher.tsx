@@ -62,7 +62,6 @@ export default function LangSwitcher() {
     "/wydarzenia": "/events",
     "/galeria": "/gallery",
     "/jak-dojechac": "/getting-there",
-    "/bilety": "/tickets",
     "/o-alvernia-planet": "/about",
     "/kontakt": "/contact",
     "/atrakcje/wystawa": "/attractions/exhibition",
@@ -77,12 +76,18 @@ export default function LangSwitcher() {
     },
     {} as Record<string, string>,
   );
+  INTL_TO_PL["/reserve"] = "/rezerwuj";
+  INTL_TO_PL["/reservar"] = "/rezerwuj";
 
   const mapToIntl = (path: string, target: "en" | "pt") => {
     const clean = path || "/";
     if (clean === `/${target}` || clean.startsWith(`/${target}/`)) return clean;
     if (clean === "/") return `/${target}`;
     const withoutPrefix = clean.startsWith("/en") || clean.startsWith("/pt") ? clean.slice(3) || "/" : clean;
+    if (withoutPrefix === "/rezerwuj" || withoutPrefix === "/reserve" || withoutPrefix === "/reservar") {
+      const bookingPath = target === "en" ? "/reserve" : "/reservar";
+      return `/${target}${bookingPath}`;
+    }
     const mapped = PL_TO_INTL[withoutPrefix] || withoutPrefix;
     return `/${target}${mapped.startsWith("/") ? mapped : `/${mapped}`}`.replace(/\/{2,}/g, "/");
   };

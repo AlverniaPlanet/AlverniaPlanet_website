@@ -293,13 +293,12 @@ const K9_ITEMS: Record<Locale, K9Item[]> = {
   ],
 };
 
-const BOOKING_URL = "https://alverniaplanet.bookero.pl";
-
 export default function FilmPathContent() {
   const { locale } = useI18n();
   const loc: Locale = (locale as Locale) ?? "pl";
   const t = COPY[loc];
   const k9 = K9_ITEMS[loc];
+  const bookingHref = loc === "en" ? "/en/reserve" : loc === "pt" ? "/pt/reservar" : "/rezerwuj";
 
   return (
     <main className="relative z-10 min-h-screen">
@@ -314,7 +313,7 @@ export default function FilmPathContent() {
                 loop
                 muted
                 playsInline
-                preload="metadata"
+                preload="none"
                 poster="/wycieczka/APE_sciezafilmowa_poster.webp"
                 onEnded={(e) => {
                   e.currentTarget.currentTime = 0;
@@ -407,9 +406,7 @@ export default function FilmPathContent() {
                       </p>
                       <div className="mt-6 flex justify-center">
                         <PrimaryButton
-                          href={BOOKING_URL}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                          href={bookingHref}
                           size="md"
                           className="ticket-pill ring-[color:rgba(240,60,100,0.55)]"
                         >

@@ -63,15 +63,6 @@ type LayoutConfig<Route extends LayoutRoutes = LayoutRoutes> = {
   type __Unused = __Check
 }
 
-// Validate ../../src/app/bilety/page.tsx
-{
-  type __IsExpected<Specific extends AppPageConfig<"/bilety">> = Specific
-  const handler = {} as typeof import("../../src/app/bilety/page.js")
-  type __Check = __IsExpected<typeof handler>
-  // @ts-ignore
-  type __Unused = __Check
-}
-
 // Validate ../../src/app/en/about/page.tsx
 {
   type __IsExpected<Specific extends AppPageConfig<"/en/about">> = Specific
@@ -153,10 +144,10 @@ type LayoutConfig<Route extends LayoutRoutes = LayoutRoutes> = {
   type __Unused = __Check
 }
 
-// Validate ../../src/app/en/tickets/page.tsx
+// Validate ../../src/app/en/reserve/page.tsx
 {
-  type __IsExpected<Specific extends AppPageConfig<"/en/tickets">> = Specific
-  const handler = {} as typeof import("../../src/app/en/tickets/page.js")
+  type __IsExpected<Specific extends AppPageConfig<"/en/reserve">> = Specific
+  const handler = {} as typeof import("../../src/app/en/reserve/page.js")
   type __Check = __IsExpected<typeof handler>
   // @ts-ignore
   type __Unused = __Check
@@ -288,10 +279,19 @@ type LayoutConfig<Route extends LayoutRoutes = LayoutRoutes> = {
   type __Unused = __Check
 }
 
-// Validate ../../src/app/pt/tickets/page.tsx
+// Validate ../../src/app/pt/reservar/page.tsx
 {
-  type __IsExpected<Specific extends AppPageConfig<"/pt/tickets">> = Specific
-  const handler = {} as typeof import("../../src/app/pt/tickets/page.js")
+  type __IsExpected<Specific extends AppPageConfig<"/pt/reservar">> = Specific
+  const handler = {} as typeof import("../../src/app/pt/reservar/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/rezerwuj/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/rezerwuj">> = Specific
+  const handler = {} as typeof import("../../src/app/rezerwuj/page.js")
   type __Check = __IsExpected<typeof handler>
   // @ts-ignore
   type __Unused = __Check

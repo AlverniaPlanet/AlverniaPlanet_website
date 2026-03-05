@@ -230,7 +230,7 @@ export default function Kino360Content() {
                 loop
                 muted
                 playsInline
-                preload="metadata"
+                preload="none"
                 poster="/kino360/Kino360_poster.webp"
                 onEnded={(e) => {
                   e.currentTarget.currentTime = 0;

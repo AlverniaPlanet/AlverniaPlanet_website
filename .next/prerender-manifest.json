@@ -30,7 +30,12 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/en/attractions/cinema-360": {
+    "/favicon.ico": {
+      "initialHeaders": {
+        "cache-control": "public, max-age=0, must-revalidate",
+        "content-type": "image/x-icon",
+        "x-next-cache-tags": "_N_T_/layout,_N_T_/favicon.ico/layout,_N_T_/favicon.ico/route,_N_T_/favicon.ico"
+      },
       "experimentalBypassFor": [
         {
           "type": "header",
@@ -43,8 +48,33 @@
         }
       ],
       "initialRevalidateSeconds": false,
-      "srcRoute": "/en/attractions/cinema-360",
-      "dataRoute": "/en/attractions/cinema-360.rsc",
+      "srcRoute": "/favicon.ico",
+      "dataRoute": null,
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
+    },
+    "/_not-found": {
+      "initialStatus": 404,
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "next-action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/_not-found",
+      "dataRoute": "/_not-found.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -78,8 +108,7 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/_not-found": {
-      "initialStatus": 404,
+    "/en/reserve": {
       "experimentalBypassFor": [
         {
           "type": "header",
@@ -92,8 +121,128 @@
         }
       ],
       "initialRevalidateSeconds": false,
-      "srcRoute": "/_not-found",
-      "dataRoute": "/_not-found.rsc",
+      "srcRoute": "/en/reserve",
+      "dataRoute": "/en/reserve.rsc",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
+    },
+    "/en/attractions/exhibition": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "next-action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/en/attractions/exhibition",
+      "dataRoute": "/en/attractions/exhibition.rsc",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
+    },
+    "/en/attractions/cinema-360": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "next-action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/en/attractions/cinema-360",
+      "dataRoute": "/en/attractions/cinema-360.rsc",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
+    },
+    "/jak-dojechac": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "next-action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/jak-dojechac",
+      "dataRoute": "/jak-dojechac.rsc",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
+    },
+    "/galeria": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "next-action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/galeria",
+      "dataRoute": "/galeria.rsc",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
+    },
+    "/en": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "next-action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/en",
+      "dataRoute": "/en.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -132,7 +281,7 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/bilety": {
+    "/en/about": {
       "experimentalBypassFor": [
         {
           "type": "header",
@@ -145,8 +294,8 @@
         }
       ],
       "initialRevalidateSeconds": false,
-      "srcRoute": "/bilety",
-      "dataRoute": "/bilety.rsc",
+      "srcRoute": "/en/about",
+      "dataRoute": "/en/about.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -180,12 +329,7 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/favicon.ico": {
-      "initialHeaders": {
-        "cache-control": "public, max-age=0, must-revalidate",
-        "content-type": "image/x-icon",
-        "x-next-cache-tags": "_N_T_/layout,_N_T_/favicon.ico/layout,_N_T_/favicon.ico/route,_N_T_/favicon.ico"
-      },
+    "/o-alvernia-planet": {
       "experimentalBypassFor": [
         {
           "type": "header",
@@ -198,8 +342,8 @@
         }
       ],
       "initialRevalidateSeconds": false,
-      "srcRoute": "/favicon.ico",
-      "dataRoute": null,
+      "srcRoute": "/o-alvernia-planet",
+      "dataRoute": "/o-alvernia-planet.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -209,7 +353,7 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/galeria": {
+    "/pt/attractions/cinema-360": {
       "experimentalBypassFor": [
         {
           "type": "header",
@@ -222,32 +366,8 @@
         }
       ],
       "initialRevalidateSeconds": false,
-      "srcRoute": "/galeria",
-      "dataRoute": "/galeria.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
-    },
-    "/jak-dojechac": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "next-action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/jak-dojechac",
-      "dataRoute": "/jak-dojechac.rsc",
+      "srcRoute": "/pt/attractions/cinema-360",
+      "dataRoute": "/pt/attractions/cinema-360.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -281,7 +401,7 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/en/attractions/film-path": {
+    "/kontakt": {
       "experimentalBypassFor": [
         {
           "type": "header",
@@ -294,8 +414,8 @@
         }
       ],
       "initialRevalidateSeconds": false,
-      "srcRoute": "/en/attractions/film-path",
-      "dataRoute": "/en/attractions/film-path.rsc",
+      "srcRoute": "/kontakt",
+      "dataRoute": "/kontakt.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -329,7 +449,7 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/o-alvernia-planet": {
+    "/en/attractions/film-path": {
       "experimentalBypassFor": [
         {
           "type": "header",
@@ -342,8 +462,8 @@
         }
       ],
       "initialRevalidateSeconds": false,
-      "srcRoute": "/o-alvernia-planet",
-      "dataRoute": "/o-alvernia-planet.rsc",
+      "srcRoute": "/en/attractions/film-path",
+      "dataRoute": "/en/attractions/film-path.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -353,7 +473,7 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/": {
+    "/pt/contact": {
       "experimentalBypassFor": [
         {
           "type": "header",
@@ -366,56 +486,8 @@
         }
       ],
       "initialRevalidateSeconds": false,
-      "srcRoute": "/",
-      "dataRoute": "/index.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
-    },
-    "/en/tickets": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "next-action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/en/tickets",
-      "dataRoute": "/en/tickets.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
-    },
-    "/kontakt": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "next-action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/kontakt",
-      "dataRoute": "/kontakt.rsc",
+      "srcRoute": "/pt/contact",
+      "dataRoute": "/pt/contact.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -440,6 +512,30 @@
       "initialRevalidateSeconds": false,
       "srcRoute": "/pt/about",
       "dataRoute": "/pt/about.rsc",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
+    },
+    "/pt/gallery": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "next-action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/pt/gallery",
+      "dataRoute": "/pt/gallery.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -497,7 +593,7 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/pt/tickets": {
+    "/": {
       "experimentalBypassFor": [
         {
           "type": "header",
@@ -510,56 +606,8 @@
         }
       ],
       "initialRevalidateSeconds": false,
-      "srcRoute": "/pt/tickets",
-      "dataRoute": "/pt/tickets.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
-    },
-    "/pt": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "next-action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/pt",
-      "dataRoute": "/pt.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
-    },
-    "/pt/gallery": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "next-action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/pt/gallery",
-      "dataRoute": "/pt/gallery.rsc",
+      "srcRoute": "/",
+      "dataRoute": "/index.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -593,7 +641,7 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/pt/attractions/cinema-360": {
+    "/pt/reservar": {
       "experimentalBypassFor": [
         {
           "type": "header",
@@ -606,8 +654,128 @@
         }
       ],
       "initialRevalidateSeconds": false,
-      "srcRoute": "/pt/attractions/cinema-360",
-      "dataRoute": "/pt/attractions/cinema-360.rsc",
+      "srcRoute": "/pt/reservar",
+      "dataRoute": "/pt/reservar.rsc",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
+    },
+    "/pt": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "next-action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/pt",
+      "dataRoute": "/pt.rsc",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
+    },
+    "/pt/attractions/exhibition": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "next-action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/pt/attractions/exhibition",
+      "dataRoute": "/pt/attractions/exhibition.rsc",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
+    },
+    "/rezerwuj": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "next-action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/rezerwuj",
+      "dataRoute": "/rezerwuj.rsc",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
+    },
+    "/atrakcje/sciezka-filmowa": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "next-action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/atrakcje/sciezka-filmowa",
+      "dataRoute": "/atrakcje/sciezka-filmowa.rsc",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
+    },
+    "/wydarzenia": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "next-action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/wydarzenia",
+      "dataRoute": "/wydarzenia.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -664,181 +832,13 @@
         "x-next-revalidated-tags",
         "x-next-revalidate-tag-token"
       ]
-    },
-    "/wydarzenia": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "next-action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/wydarzenia",
-      "dataRoute": "/wydarzenia.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
-    },
-    "/pt/attractions/exhibition": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "next-action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/pt/attractions/exhibition",
-      "dataRoute": "/pt/attractions/exhibition.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
-    },
-    "/pt/contact": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "next-action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/pt/contact",
-      "dataRoute": "/pt/contact.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
-    },
-    "/en": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "next-action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/en",
-      "dataRoute": "/en.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
-    },
-    "/atrakcje/sciezka-filmowa": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "next-action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/atrakcje/sciezka-filmowa",
-      "dataRoute": "/atrakcje/sciezka-filmowa.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
-    },
-    "/en/about": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "next-action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/en/about",
-      "dataRoute": "/en/about.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
-    },
-    "/en/attractions/exhibition": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "next-action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/en/attractions/exhibition",
-      "dataRoute": "/en/attractions/exhibition.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
     }
   },
   "dynamicRoutes": {},
   "notFoundRoutes": [],
   "preview": {
-    "previewModeId": "128c00b3150a30f4e11f58831c0949b8",
-    "previewModeSigningKey": "478e65906846579d23d7848c2a3445b7d3855ec0d607776504c2e910571db700",
-    "previewModeEncryptionKey": "ea20d6718583bbf8b531cb3b1e537dc8d1d08be38fe7097bd0c593db15470b0e"
+    "previewModeId": "d5ff534251636abbf1b9ea4a530d10b9",
+    "previewModeSigningKey": "f79080a786a527dc80b8fef7c27b75ea92eeb6da7482ea637290c571041a92f6",
+    "previewModeEncryptionKey": "455b21f1c4902b4d6ab6d485d560a16c87f0f0203ee4ea5fdd4d41cfcf43f3b5"
   }
 }

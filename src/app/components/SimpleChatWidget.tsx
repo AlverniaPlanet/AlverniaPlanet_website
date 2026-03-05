@@ -209,7 +209,7 @@ export default function SimpleChatWidget() {
     () => ({
       contact: prefix + (loc === "pl" ? "/kontakt" : "/contact"),
       directions: prefix + (loc === "pl" ? "/jak-dojechac" : "/getting-there"),
-      tickets: prefix + (loc === "pl" ? "/bilety" : "/tickets"),
+      tickets: prefix + (loc === "pl" ? "/rezerwuj" : loc === "en" ? "/reserve" : "/reservar"),
       events: prefix + (loc === "pl" ? "/wydarzenia" : "/events"),
       gallery: prefix + (loc === "pl" ? "/galeria" : "/gallery"),
       attractions: prefix + (loc === "pl" ? "/atrakcje/wystawa" : "/attractions/exhibition"),

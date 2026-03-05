@@ -10,7 +10,7 @@ const DICTS: Record<Locale, Record<string, string>> = {
     "nav.about": "O nas",
     "nav.contact": "Kontakt",
     "nav.booking": "Rezerwacja",
-    "cta.booking": "Rezerwuj",
+    "cta.booking": "Kup bilet!",
     "nav.news": "Aktualności",
     "nav.attraction": "Atrakcje",
     "nav.gallery": "Galeria",

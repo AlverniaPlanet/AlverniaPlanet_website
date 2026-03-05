@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { FaFacebookF, FaInstagram, FaTiktok, FaFacebookMessenger } from "react-icons/fa";
-import { usePathname } from "next/navigation";
 import { useI18n } from "@/app/i18n-provider";
 import { useTheme } from "@/app/theme-provider";
 import { trackEvent } from "@/lib/analytics";
@@ -53,6 +52,7 @@ const FOOTER_COPY: Record<
     addressLines: ["Alvernia Planet", "ul. Ferdynanda Wspaniałego 1", "32-566 Nieporaz, Polska"],
     policies: [
       { label: "Regulamin", href: "/legal/Regulamin.pdf" },
+      { label: "Regulamin przebywania", href: "/legal/Regulamin-przebywania-na-terenie-alvernia-planet.html" },
       { label: "Polityka prywatności", href: "/legal/polityka-prywatnosci.pdf" },
       { label: "Polityka cookies", href: "/legal/polityka-cookies.pdf" },
       { label: "Ochrona małoletnich", href: "/legal/ochrona-maloletnich.pdf" },
@@ -72,7 +72,7 @@ const FOOTER_COPY: Record<
         links: [
           { label: "Wydarzenia", href: "/wydarzenia" },
           { label: "Jak dojechać", href: "/jak-dojechac" },
-          { label: "Bilety i rezerwacje", href: "/kontakt" },
+          { label: "Bilety i rezerwacje", href: "/rezerwuj" },
         ],
       },
       {
@@ -103,6 +103,7 @@ const FOOTER_COPY: Record<
     addressLines: ["Alvernia Planet", "ul. Ferdynanda Wspaniałego 1", "32-566 Nieporaz, Poland"],
     policies: [
       { label: "Terms & conditions", href: "/legal/Regulamin.pdf" },
+      { label: "Stay regulations", href: "/legal/Regulamin-przebywania-na-terenie-alvernia-planet.html" },
       { label: "Privacy policy", href: "/legal/polityka-prywatnosci.pdf" },
       { label: "Cookies policy", href: "/legal/polityka-cookies.pdf" },
       { label: "Minors protection", href: "/legal/ochrona-maloletnich.pdf" },
@@ -122,7 +123,7 @@ const FOOTER_COPY: Record<
         links: [
           { label: "Events", href: "/wydarzenia" },
           { label: "Getting here", href: "/jak-dojechac" },
-          { label: "Tickets & bookings", href: "/kontakt" },
+          { label: "Tickets & bookings", href: "/rezerwuj" },
         ],
       },
       {
@@ -153,6 +154,7 @@ const FOOTER_COPY: Record<
     addressLines: ["Alvernia Planet", "ul. Ferdynanda Wspaniałego 1", "32-566 Nieporaz, Polónia"],
     policies: [
       { label: "Regulamento", href: "/legal/Regulamin.pdf" },
+      { label: "Regras de permanência", href: "/legal/Regulamin-przebywania-na-terenie-alvernia-planet.html" },
       { label: "Política de privacidade", href: "/legal/polityka-prywatnosci.pdf" },
       { label: "Política de cookies", href: "/legal/polityka-cookies.pdf" },
       { label: "Proteção de menores", href: "/legal/ochrona-maloletnich.pdf" },
@@ -172,7 +174,7 @@ const FOOTER_COPY: Record<
         links: [
           { label: "Eventos", href: "/wydarzenia" },
           { label: "Como chegar", href: "/jak-dojechac" },
-          { label: "Bilhetes e reservas", href: "/kontakt" },
+          { label: "Bilhetes e reservas", href: "/rezerwuj" },
         ],
       },
       {
@@ -195,7 +197,6 @@ const CZERCODE_LOGO_WHITE = "/shy/CzerCode_logo_white.svg";
 export default function Footer() {
   const { locale } = useI18n();
   const { theme } = useTheme();
-  const pathname = usePathname();
   const loc: Locale = (locale as Locale) ?? "pl";
   const copy = FOOTER_COPY[loc];
   const rights = copy.rights.replace("{year}", String(new Date().getFullYear()));
@@ -227,16 +228,19 @@ export default function Footer() {
     ? "text-[color:var(--ap-text)] hover:text-[color:var(--ap-accent)]"
     : "text-white/85 hover:text-[color:var(--ap-ice)]";
   const prefix = loc === "en" || loc === "pt" ? `/${loc}` : "";
-  const plToIntl: Record<string, string> = {
+  const plToIntlCommon: Record<string, string> = {
     "/wydarzenia": "/events",
     "/galeria": "/gallery",
     "/jak-dojechac": "/getting-there",
-    "/bilety": "/tickets",
     "/o-alvernia-planet": "/about",
     "/kontakt": "/contact",
     "/atrakcje/wystawa": "/attractions/exhibition",
     "/atrakcje/sciezka-filmowa": "/attractions/film-path",
     "/atrakcje/kino-360": "/attractions/cinema-360",
+  };
+  const plToIntl: Record<string, string> = {
+    ...plToIntlCommon,
+    "/rezerwuj": loc === "en" ? "/reserve" : "/reservar",
   };
   const withPrefix = (href: string) => {
     if (!href.startsWith("/")) return href;
@@ -250,7 +254,6 @@ export default function Footer() {
   const callLabel = loc === "en" ? "Call" : loc === "pt" ? "Ligar" : "Zadzwoń";
   const emailAction = loc === "en" ? "Email" : loc === "pt" ? "Escrever" : "Napisz";
   const messageAction = loc === "en" ? "Message" : loc === "pt" ? "Mensagem" : "Napisz";
-  const showAutopay = ["/bilety", "/tickets", "/en/tickets", "/pt/tickets"].includes(pathname);
 
   return (
     <footer
@@ -431,16 +434,7 @@ export default function Footer() {
               </div>
             ))}
 
-            <div
-              className={`sm:col-span-2 lg:col-span-3 flex items-center ${
-                showAutopay ? "justify-center" : "sm:justify-start lg:justify-end"
-              }`}
-            >
-              {showAutopay ? (
-                <div className={`mr-4 rounded-2xl px-4 py-3 ${infoCardSurface}`}>
-                  <Image src="/autopay.png" alt="Autopay" width={180} height={48} className="h-8 w-auto" />
-                </div>
-              ) : null}
+            <div className="sm:col-span-2 lg:col-span-3 flex items-center sm:justify-start lg:justify-end">
               <Link
                 href={withPrefix("/")}
                 className="inline-flex items-center"

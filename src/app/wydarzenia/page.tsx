@@ -498,7 +498,7 @@ function EventVideo({
   className,
   loadingLabel,
   fallbackText,
-  preload = "metadata",
+  preload = "none",
 }: EventVideoProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -884,15 +884,15 @@ export default function EventsPage() {
                 loop
                 muted
                 playsInline
-                preload="metadata"
+                preload="none"
                 poster="/wydarzenia/AP_wydarzenia_poster.webp"
                 onEnded={(e) => {
                   e.currentTarget.currentTime = 0;
                   e.currentTarget.play();
                 }}
               >
-                <source src="/wydarzenia/AP_wydarzenia.mp4" type="video/mp4" />
                 <source src="/wydarzenia/AP_wydarzenia.webm" type="video/webm" />
+                <source src="/wydarzenia/AP_wydarzenia.mp4" type="video/mp4" />
                 {ui.videoFallback}
               </video>
               <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/35 to-black/80" />

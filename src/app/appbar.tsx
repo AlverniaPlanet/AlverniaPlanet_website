@@ -9,8 +9,6 @@ import { PrimaryButton } from "@/app/components/PrimaryButton";
 import { useTheme } from "@/app/theme-provider";
 import BrandLogo from "@/app/components/BrandLogo";
 
-const BOOKING_URL = "https://alverniaplanet.bookero.pl"; // upewnij się, że jest https
-
 export function AppBar() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
@@ -23,13 +21,14 @@ export function AppBar() {
   const { locale } = useI18n();
   const isIntl = locale === "en" || locale === "pt";
   const prefix = isIntl ? `/${locale}` : "";
+  const bookingSlug = locale === "en" ? "reserve" : locale === "pt" ? "reservar" : "rezerwuj";
   const logoFrameClass = "inline-flex items-center justify-center rounded-2xl px-0 py-0";
   const paths = {
     home: prefix || "/",
     events: isIntl ? `${prefix}/events` : "/wydarzenia",
     gallery: isIntl ? `${prefix}/gallery` : "/galeria",
     gettingThere: isIntl ? `${prefix}/getting-there` : "/jak-dojechac",
-    tickets: isIntl ? `${prefix}/tickets` : "/bilety",
+    booking: isIntl ? `${prefix}/${bookingSlug}` : `/${bookingSlug}`,
     about: isIntl ? `${prefix}/about` : "/o-alvernia-planet",
     contact: isIntl ? `${prefix}/contact` : "/kontakt",
     attractions: {
@@ -180,13 +179,6 @@ export function AppBar() {
               >
                 {t("nav.getting_there")}
               </Link>
-              <span className="text-white/40">|</span>
-              <span
-                className="ticket-pill inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] xl:text-xs bg-white/10 text-white/50 ring-1 ring-white/10 cursor-not-allowed select-none"
-                aria-disabled="true"
-              >
-                {t("nav.tickets")}
-              </span>
             </nav>
           </div>
 
@@ -279,9 +271,7 @@ export function AppBar() {
 
             {/* CTA zawsze widoczne */}
             <PrimaryButton
-              href={BOOKING_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={paths.booking}
               size="sm"
               suppressHydrationWarning
               className="min-w-[108px] px-3 py-1.5 lg:text-[11px] xl:text-xs text-center shrink-0"
@@ -412,14 +402,6 @@ export function AppBar() {
                 >
                   {t("nav.getting_there")}
                 </Link>
-              </li>
-              <li>
-                <span
-                  className="ticket-pill block rounded-md px-3 py-2 text-sm bg-white/10 text-white/50 ring-1 ring-white/10 cursor-not-allowed select-none"
-                  aria-disabled="true"
-                >
-                  {t("nav.tickets")}
-                </span>
               </li>
               <li className="ml-3">
                 <ul className="space-y-1">

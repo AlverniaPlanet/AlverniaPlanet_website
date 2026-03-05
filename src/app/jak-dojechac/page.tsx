@@ -317,16 +317,17 @@ export default function JakDojechacPage() {
         variants={fade}
         className="ap-shell ap-page-stack"
       >
-        <header className="text-center space-y-3">
+        <header className="text-center space-y-5">
           <motion.p className="ap-type-kicker" variants={fadeUp}>
             {copy.tag}
           </motion.p>
           <motion.h1 className="ap-type-hero-title" variants={fadeUp}>
             {copy.title}
           </motion.h1>
-          <motion.p className="ap-type-hero-subtitle max-w-4xl mx-auto" variants={fadeUp}>
+          <motion.p className="ap-type-hero-subtitle max-w-5xl mx-auto" variants={fadeUp}>
             {copy.subtitle}
           </motion.p>
+          <div className="h-[1px] w-40 mx-auto bg-gradient-to-r from-transparent via-white/30 to-transparent" />
         </header>
 
         <Card variant="solid" className="space-y-6">

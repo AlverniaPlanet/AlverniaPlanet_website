@@ -1,11 +1,19 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Script from "next/script";
+import dynamic from "next/dynamic";
 import AppBar from "@/app/appbar";
 import Footer from "@/app/components/Footer";
+import RoutePrefetcher from "@/app/components/RoutePrefetcher";
 import { I18nProvider } from "./i18n-provider";
 import { ThemeProvider } from "./theme-provider";
-import { AnalyticsTracker } from "./components/AnalyticsTracker";
+
+const FloatingBookingButton = dynamic(
+  () => import("@/app/components/FloatingBookingButton"),
+);
+const AnalyticsTracker = dynamic(
+  () => import("./components/AnalyticsTracker").then((mod) => mod.AnalyticsTracker),
+);
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://alverniaplanet.com";
 const orgSameAs = [
@@ -86,10 +94,10 @@ export default function RootLayout({
     <html lang={initialLocale} suppressHydrationWarning className="theme-dark">
       <body className="min-h-screen bg-[var(--ap-bg)] text-[color:var(--ap-text)] transition-colors duration-300">
         <Script
-          strategy="beforeInteractive"
+          strategy="afterInteractive"
           src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}
         />
-        <Script id="ga4-init" strategy="beforeInteractive">
+        <Script id="ga4-init" strategy="afterInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
@@ -97,7 +105,7 @@ export default function RootLayout({
             gtag('config', '${gaMeasurementId}');
           `}
         </Script>
-        <Script id="gtm-script" strategy="beforeInteractive">
+        <Script id="gtm-script" strategy="afterInteractive">
           {`
             (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
             new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -119,8 +127,10 @@ export default function RootLayout({
           <I18nProvider initialLocale={initialLocale}>
             <div className="relative z-10 min-h-screen flex flex-col">
               <AppBar />
+              <RoutePrefetcher />
               {children}
               <Footer />
+              <FloatingBookingButton />
             </div>
           </I18nProvider>
         </ThemeProvider>
@@ -129,11 +139,6 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaGraph) }}
         />
         <AnalyticsTracker />
-        <Script
-          id="basesystem-shop-script"
-          src="https://sklep.homelinux.net/assets/webcomponents/shop.js?id=fa587381f833df282ce9"
-          strategy="afterInteractive"
-        />
       </body>
     </html>
   );

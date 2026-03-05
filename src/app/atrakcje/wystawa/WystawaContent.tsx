@@ -179,7 +179,7 @@ export default function WystawaContent() {
                 loop
                 muted
                 playsInline
-                preload="metadata"
+                preload="none"
                 poster="/wystawa/AP_wystawaHPX_poster.webp"
                 onEnded={(e) => {
                   e.currentTarget.currentTime = 0;
