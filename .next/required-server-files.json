@@ -60,6 +60,11 @@
       "contentSecurityPolicy": "script-src 'none'; frame-src 'none'; sandbox;",
       "contentDispositionType": "attachment",
       "remotePatterns": [],
+      "qualities": [
+        60,
+        70,
+        75
+      ],
       "unoptimized": true
     },
     "devIndicators": {

@@ -465,7 +465,9 @@ export default function Footer() {
               className={`group inline-flex flex-col items-start gap-2 rounded-2xl px-3 py-2 transition ${creditLinkTone}`}
               onClick={() => trackEvent("footer_credit_click", { provider: "CzerCode", href: CZERCODE_URL })}
             >
-              <span className="whitespace-nowrap">{copy.designCredit} CzerCode Szymon Czermak</span>
+              <span className="max-w-full text-left leading-snug sm:whitespace-nowrap">
+                {copy.designCredit} CzerCode Szymon Czermak
+              </span>
               <span className="inline-flex items-center justify-start">
                 <Image
                   src={czerCodeLogoSrc}

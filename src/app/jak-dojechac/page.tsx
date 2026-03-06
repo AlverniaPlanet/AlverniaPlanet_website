@@ -173,19 +173,19 @@ const ATTRACTIONS: Record<Locale, NearbyItem[]> = {
 const BUS_ROUTES: Record<Locale, BusRoute[]> = {
   pl: [
     {
-      origin: "Trzebinia PKP",
-      heading: "M-Bus: Trzebinia PKP → Alwernia",
-      from: "Trzebinia – PKP",
-      stop: "Alwernia – Szkoła / Alwernia – Spalona",
+      origin: "Krzeszowice Dworzec Komunikacyjny",
+      heading: "M-Bus Matysik: Krzeszowice → Alwernia",
+      from: "Krzeszowice – Dworzec Komunikacyjny (przez Rudno)",
+      stop: "Rudno (na trasie) / Alwernia – Szkoła",
       schedule:
-        "Aktualny rozkład na stronie przewoźnika M-Bus.",
+        "Aktualny rozkład na stronie przewoźnika M-Bus Matysik.",
       scheduleUrl: "https://www.matysikserwis.pl/m-bus/",
     },
     {
       origin: "Krzeszowice Dworzec Komunikacyjny",
-      heading: "MAGOMA: Krzeszowice → Alwernia",
+      heading: "MAGOMA: Krzeszowice → Zalas",
       from: "Krzeszowice – Dworzec Komunikacyjny",
-      stop: "Nieporaz (na trasie) / Alwernia – Szkoła",
+      stop: "Zalas – Centrum",
       schedule:
         "Aktualny rozkład na stronie Gminy Alwernia.",
       scheduleUrl:
@@ -194,19 +194,19 @@ const BUS_ROUTES: Record<Locale, BusRoute[]> = {
   ],
   en: [
     {
-      origin: "Trzebinia PKP",
-      heading: "M-Bus: Trzebinia PKP → Alwernia",
-      from: "Trzebinia – PKP",
-      stop: "Alwernia – School / Alwernia – Spalona",
+      origin: "Krzeszowice Dworzec Komunikacyjny",
+      heading: "M-Bus Matysik: Krzeszowice → Alwernia",
+      from: "Krzeszowice – bus station (via Rudno)",
+      stop: "Rudno (on route) / Alwernia – School",
       schedule:
-        "Current timetable on the M-Bus carrier website.",
+        "Current timetable on the M-Bus Matysik carrier website.",
       scheduleUrl: "https://www.matysikserwis.pl/m-bus/",
     },
     {
       origin: "Krzeszowice Dworzec Komunikacyjny",
-      heading: "MAGOMA: Krzeszowice → Alwernia",
+      heading: "MAGOMA: Krzeszowice → Zalas",
       from: "Krzeszowice – Dworzec Komunikacyjny (bus station)",
-      stop: "Nieporaz (on route) / Alwernia – School",
+      stop: "Zalas – Centrum",
       schedule:
         "Current timetable on the Municipality of Alwernia website.",
       scheduleUrl:
@@ -215,19 +215,19 @@ const BUS_ROUTES: Record<Locale, BusRoute[]> = {
   ],
   pt: [
     {
-      origin: "Trzebinia PKP",
-      heading: "M-Bus: Trzebinia PKP → Alwernia",
-      from: "Trzebinia – PKP",
-      stop: "Alwernia – Escola / Alwernia – Spalona",
+      origin: "Krzeszowice Dworzec Komunikacyjny",
+      heading: "M-Bus Matysik: Krzeszowice → Alwernia",
+      from: "Krzeszowice – terminal de autocarros (via Rudno)",
+      stop: "Rudno (no trajeto) / Alwernia – Escola",
       schedule:
-        "Horário atualizado no site do operador M-Bus.",
+        "Horário atualizado no site do operador M-Bus Matysik.",
       scheduleUrl: "https://www.matysikserwis.pl/m-bus/",
     },
     {
       origin: "Krzeszowice Dworzec Komunikacyjny",
-      heading: "MAGOMA: Krzeszowice → Alwernia",
+      heading: "MAGOMA: Krzeszowice → Zalas",
       from: "Krzeszowice – Dworzec Komunikacyjny (terminal de autocarros)",
-      stop: "Nieporaz (no trajeto) / Alwernia – Escola",
+      stop: "Zalas – Centrum",
       schedule:
         "Horário atualizado no site da Câmara de Alwernia.",
       scheduleUrl:

@@ -111,12 +111,6 @@
       "namedRegex": "^/en/reserve(?:/)?$"
     },
     {
-      "page": "/favicon.ico",
-      "regex": "^/favicon\\.ico(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/favicon\\.ico(?:/)?$"
-    },
-    {
       "page": "/galeria",
       "regex": "^/galeria(?:/)?$",
       "routeKeys": {},

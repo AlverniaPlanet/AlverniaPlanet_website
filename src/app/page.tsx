@@ -389,7 +389,7 @@ const EVENT_GALLERY_IMAGES = Array.from(
 );
 const HERO_WELCOME_AUTO_HIDE_MS = 2500;
 const HERO_WELCOME_FADE_DURATION_MS = 1200;
-const HERO_PROMO_DELAY_MS = 1800;
+const HERO_PROMO_DELAY_MS = 1000;
 const EVENT_COLUMN_CARD_HEIGHTS = [
   "h-28 sm:h-32 lg:h-36",
   "h-36 sm:h-40 lg:h-44",
@@ -561,16 +561,16 @@ export default function Page() {
         <div className="mx-auto w-full max-w-[72rem]">
           <div className="relative overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
             <div className="relative aspect-[16/9] bg-black">
-              <div className="pointer-events-none absolute inset-x-0 top-4 z-20 flex justify-center px-4 sm:top-5">
+              <div className="pointer-events-none absolute inset-x-0 top-7 z-20 flex justify-center px-4 sm:top-8 lg:top-9">
                 <Link
                   href={copy.heroPromo.href}
-                  className={`hero-film-alert pointer-events-auto inline-flex max-w-full items-center gap-2 rounded-full px-3 py-2 text-[11px] sm:gap-2.5 sm:px-4 sm:py-2.5 sm:text-sm transition-[opacity,transform] duration-[900ms] ${
+                  className={`hero-film-alert pointer-events-auto inline-flex max-w-full items-center gap-2 rounded-full px-3 py-2 text-[11px] sm:gap-2.5 sm:px-4 sm:py-2.5 sm:text-sm transition-[opacity,transform,filter] duration-[1200ms] ${
                     introReady
                       ? "hero-film-alert-intro opacity-100 translate-y-0 scale-100"
-                      : "opacity-0 -translate-y-3 scale-95 pointer-events-none"
+                      : "opacity-0 -translate-y-8 scale-[0.88] blur-sm pointer-events-none"
                   }`}
                   style={{
-                    transitionTimingFunction: "cubic-bezier(0.2, 0.9, 0.28, 1)",
+                    transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
                     transitionDelay: introReady ? `${HERO_PROMO_DELAY_MS}ms` : "0ms",
                   }}
                 >
@@ -1012,8 +1012,44 @@ const EventsVerticalShowcase = memo(function EventsVerticalShowcase({
   photos: { src: string; alt: string }[];
   allowAnimation?: boolean;
 }) {
-  const hasPhotos = photos.length > 0;
-  const columnsCount = 2;
+  const [isCompactMode, setIsCompactMode] = useState(false);
+  const [canAnimateOnDevice, setCanAnimateOnDevice] = useState(true);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const updateDeviceProfile = () => {
+      const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
+      const narrowViewport = window.matchMedia("(max-width: 767px)").matches;
+      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const hardwareThreads = navigator.hardwareConcurrency ?? 8;
+      const deviceMemory = (navigator as Navigator & { deviceMemory?: number }).deviceMemory;
+      const veryLowPowerDevice =
+        hardwareThreads <= 2 || (typeof deviceMemory === "number" && deviceMemory <= 2);
+
+      setIsCompactMode(coarsePointer || narrowViewport);
+      setCanAnimateOnDevice(!prefersReducedMotion && !veryLowPowerDevice);
+    };
+
+    updateDeviceProfile();
+    window.addEventListener("resize", updateDeviceProfile, { passive: true });
+    window.addEventListener("orientationchange", updateDeviceProfile);
+
+    return () => {
+      window.removeEventListener("resize", updateDeviceProfile);
+      window.removeEventListener("orientationchange", updateDeviceProfile);
+    };
+  }, []);
+
+  const columnsCount = isCompactMode ? 1 : 2;
+  const effectivePhotos = useMemo(
+    () => (isCompactMode ? photos.slice(0, 6) : photos),
+    [isCompactMode, photos],
+  );
+  const hasPhotos = effectivePhotos.length > 0;
+  const eagerImagesPerColumn = isCompactMode ? 2 : 1;
   const [loadedBySrc, setLoadedBySrc] = useState<Record<string, true>>({});
   const columns = useMemo(() => {
     if (!hasPhotos) {
@@ -1021,15 +1057,17 @@ const EventsVerticalShowcase = memo(function EventsVerticalShowcase({
     }
     const result = Array.from({ length: columnsCount }, () => [] as { src: string; alt: string }[]);
 
-    const minPerColumn = Math.min(4, photos.length);
-    photos.forEach((photo, index) => {
+    const minPerColumn = isCompactMode
+      ? Math.min(3, effectivePhotos.length)
+      : Math.min(4, effectivePhotos.length);
+    effectivePhotos.forEach((photo, index) => {
       result[index % columnsCount].push(photo);
     });
 
     result.forEach((column, columnIndex) => {
       let guard = 0;
-      while (column.length < minPerColumn && guard < photos.length * 3) {
-        const candidate = photos[(columnIndex + guard) % photos.length];
+      while (column.length < minPerColumn && guard < effectivePhotos.length * 3) {
+        const candidate = effectivePhotos[(columnIndex + guard) % effectivePhotos.length];
         if (!column.some((item) => item.src === candidate.src)) {
           column.push(candidate);
         }
@@ -1038,30 +1076,32 @@ const EventsVerticalShowcase = memo(function EventsVerticalShowcase({
     });
 
     return result;
-  }, [photos, hasPhotos]);
+  }, [columnsCount, effectivePhotos, hasPhotos, isCompactMode]);
+
+  const initialImageSources = useMemo(() => {
+    if (!hasPhotos) return [] as string[];
+
+    const srcSet = new Set<string>();
+    columns.forEach((column) => {
+      column.slice(0, eagerImagesPerColumn).forEach((photo) => {
+        srcSet.add(photo.src);
+      });
+    });
+
+    return Array.from(srcSet);
+  }, [columns, eagerImagesPerColumn, hasPhotos]);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
   const [slowIntroPhase, setSlowIntroPhase] = useState(true);
+  const [forceAnimationStart, setForceAnimationStart] = useState(false);
 
   useEffect(() => {
-    if (!allowAnimation) {
+    if (!allowAnimation || !canAnimateOnDevice) {
       setIsAnimating(false);
       return;
     }
     const container = containerRef.current;
     if (!container) return;
-
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
-    const lowPowerDevice =
-      (navigator.hardwareConcurrency ?? 8) <= 4 ||
-      (typeof (navigator as Navigator & { deviceMemory?: number }).deviceMemory === "number" &&
-        ((navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 8) <= 4);
-
-    if (prefersReduced || coarsePointer || lowPowerDevice) {
-      setIsAnimating(false);
-      return;
-    }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -1091,14 +1131,36 @@ const EventsVerticalShowcase = memo(function EventsVerticalShowcase({
       observer.disconnect();
       document.removeEventListener("visibilitychange", handleVisibility);
     };
-  }, [allowAnimation]);
+  }, [allowAnimation, canAnimateOnDevice]);
 
   useEffect(() => {
     setLoadedBySrc({});
-  }, [photos]);
+  }, [photos, isCompactMode]);
 
   useEffect(() => {
-    if (!allowAnimation || !isAnimating) {
+    setForceAnimationStart(false);
+    if (!allowAnimation || !canAnimateOnDevice || !hasPhotos) {
+      return;
+    }
+    const timer = window.setTimeout(() => {
+      setForceAnimationStart(true);
+    }, isCompactMode ? 1700 : 1200);
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [allowAnimation, canAnimateOnDevice, hasPhotos, isCompactMode, photos]);
+
+  const initialImagesReady =
+    initialImageSources.length === 0 ||
+    initialImageSources.every((src) => Boolean(loadedBySrc[src]));
+  const isAnimationRunning =
+    allowAnimation &&
+    canAnimateOnDevice &&
+    isAnimating &&
+    (initialImagesReady || forceAnimationStart);
+
+  useEffect(() => {
+    if (!isAnimationRunning) {
       setSlowIntroPhase(true);
       return;
     }
@@ -1108,7 +1170,7 @@ const EventsVerticalShowcase = memo(function EventsVerticalShowcase({
     return () => {
       window.clearTimeout(timer);
     };
-  }, [allowAnimation, isAnimating]);
+  }, [isAnimationRunning]);
 
   if (!hasPhotos) {
     return null;
@@ -1138,21 +1200,21 @@ const EventsVerticalShowcase = memo(function EventsVerticalShowcase({
       <div className="relative grid grid-cols-1 gap-3 sm:grid-cols-2">
         {columns.map((column, columnIndex) => {
           const reverse = columnIndex % 2 === 1;
-          const introDuration = reverse ? 58 : 52;
-          const regularDuration = reverse ? 42 : 36;
+          const introDuration = reverse ? (isCompactMode ? 66 : 58) : (isCompactMode ? 60 : 52);
+          const regularDuration = reverse ? (isCompactMode ? 48 : 42) : (isCompactMode ? 42 : 36);
           return (
             <div
               key={`events-column-${columnIndex}`}
               className="events-showcase-column h-[300px] overflow-hidden rounded-xl border border-white/10 bg-[#0f1328]/70 p-2 sm:h-[360px] lg:h-[420px]"
             >
               <div
-                className="events-showcase-track flex flex-col will-change-transform"
+                className="events-showcase-track flex flex-col transform-gpu will-change-transform"
                 style={{
                   animationName: reverse ? "eventsColumnDown" : "eventsColumnUp",
                   animationDuration: `${slowIntroPhase ? introDuration : regularDuration}s`,
                   animationTimingFunction: "linear",
                   animationIterationCount: "infinite",
-                  animationPlayState: allowAnimation && isAnimating ? "running" : "paused",
+                  animationPlayState: isAnimationRunning ? "running" : "paused",
                 }}
               >
                 {[0, 1].map((loopIndex) => (
@@ -1162,11 +1224,14 @@ const EventsVerticalShowcase = memo(function EventsVerticalShowcase({
                   >
                     {column.map((photo, imageIndex) => {
                       const isLoaded = Boolean(loadedBySrc[photo.src]);
-                      const eager = loopIndex === 0 && imageIndex < 1;
+                      const eager = loopIndex === 0 && imageIndex < eagerImagesPerColumn;
+                      const loaderState = isLoaded
+                        ? "opacity-0"
+                        : `opacity-100${isCompactMode ? "" : " animate-pulse"}`;
                       return (
                         <div
                           key={`${photo.src}-${columnIndex}-${loopIndex}-${imageIndex}`}
-                          className={`group relative overflow-hidden rounded-lg border border-white/10 bg-white/5 ${
+                          className={`events-showcase-item group relative overflow-hidden rounded-lg border border-white/10 bg-white/5 ${
                             EVENT_COLUMN_CARD_HEIGHTS[
                               (imageIndex + columnIndex) % EVENT_COLUMN_CARD_HEIGHTS.length
                             ]
@@ -1174,9 +1239,7 @@ const EventsVerticalShowcase = memo(function EventsVerticalShowcase({
                         >
                           <div
                             aria-hidden="true"
-                            className={`pointer-events-none absolute inset-0 bg-gradient-to-br from-[#263865]/70 via-[#1a2546]/65 to-[#10192f]/85 transition-opacity duration-500 ${
-                              isLoaded ? "opacity-0" : "opacity-100 animate-pulse"
-                            }`}
+                            className={`events-showcase-loader pointer-events-none absolute inset-0 bg-gradient-to-br from-[#263865]/70 via-[#1a2546]/65 to-[#10192f]/85 transition-opacity duration-500 ${loaderState}`}
                           />
                           <Image
                             src={photo.src}
