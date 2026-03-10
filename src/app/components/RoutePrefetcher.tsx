@@ -11,10 +11,27 @@ export default function RoutePrefetcher() {
   const loc: Locale = (locale as Locale) ?? "pl";
 
   useEffect(() => {
+    const nav = navigator as Navigator & {
+      connection?: {
+        saveData?: boolean;
+        effectiveType?: string;
+      };
+    };
+    const connection = nav.connection;
+
+    if (connection?.saveData) {
+      return;
+    }
+
+    if (typeof connection?.effectiveType === "string" && /(^|-)2g$/.test(connection.effectiveType)) {
+      return;
+    }
+
     let cancelled = false;
     let idleCallbackId: number | null = null;
     let timeoutId: ReturnType<typeof setTimeout> | null = null;
     let queueTimeoutId: ReturnType<typeof setTimeout> | null = null;
+    let loadTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
     const win = window as Window & {
       requestIdleCallback?: (callback: IdleRequestCallback, options?: IdleRequestOptions) => number;
@@ -41,14 +58,28 @@ export default function RoutePrefetcher() {
       prefetchNext();
     };
 
-    if (typeof win.requestIdleCallback === "function") {
-      idleCallbackId = win.requestIdleCallback(runPrefetch, { timeout: 2200 });
+    const schedulePrefetch = () => {
+      if (cancelled) return;
+      if (typeof win.requestIdleCallback === "function") {
+        idleCallbackId = win.requestIdleCallback(runPrefetch, { timeout: 2600 });
+      } else {
+        timeoutId = setTimeout(runPrefetch, 1800);
+      }
+    };
+
+    const onLoad = () => {
+      loadTimeoutId = setTimeout(schedulePrefetch, 180);
+    };
+
+    if (document.readyState === "complete") {
+      schedulePrefetch();
     } else {
-      timeoutId = setTimeout(runPrefetch, 1200);
+      window.addEventListener("load", onLoad, { once: true });
     }
 
     return () => {
       cancelled = true;
+      window.removeEventListener("load", onLoad);
       if (idleCallbackId !== null && typeof win.cancelIdleCallback === "function") {
         win.cancelIdleCallback(idleCallbackId);
       }
@@ -57,6 +88,9 @@ export default function RoutePrefetcher() {
       }
       if (queueTimeoutId !== null) {
         clearTimeout(queueTimeoutId);
+      }
+      if (loadTimeoutId !== null) {
+        clearTimeout(loadTimeoutId);
       }
     };
   }, [loc, router]);

@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState, type RefObject } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useI18n } from "@/app/i18n-provider";
@@ -9,6 +9,7 @@ import { PrimaryButton } from "@/app/components/PrimaryButton";
 import Testimonials, { type Testimonial } from "@/app/components/Testimonials";
 import { AttractionCard } from "@/app/components/AttractionCard";
 import ScrollMotionItem from "@/app/components/ScrollMotionItem";
+import TicketFaqWidget, { type TicketFaqCopy } from "@/app/components/TicketFaqWidget";
 
 type Locale = "pl" | "en" | "pt";
 
@@ -62,12 +63,18 @@ type HomeCopy = {
     items: AttractionItem[];
   };
   tickets: TicketSection;
+  faq: TicketFaqCopy;
   events: SectionCard;
   testimonials: {
     title: string;
     subtitle: string;
     reviews: Testimonial[];
   };
+};
+
+type EventPhoto = {
+  src: string;
+  alt: string;
 };
 
 const HOME_COPY: Record<Locale, HomeCopy> = {
@@ -134,6 +141,61 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
           details: ["Dla szkół i grup zorganizowanych", "Płatność za całą grupę"],
           priceLabel: "Cena za min. 30 osób",
           price: "2 070 zł/grupa",
+        },
+      ],
+    },
+    faq: {
+      badge: "FAQ",
+      title: "Najczęstsze pytania",
+      desktopLabel: "Najczęściej zadawane pytania",
+      subtitle: "Szybkie odpowiedzi przed wizytą i rezerwacją.",
+      mobileOpenLabel: "Pokaż FAQ",
+      mobileCloseLabel: "Ukryj FAQ",
+      items: [
+        {
+          question: "Ile trwa zwiedzanie?",
+          answer:
+            "Zwiedzanie ścieżki filmowej wraz z częścią edukacyjną trwa około 2-2,5 godziny.",
+        },
+        {
+          question: "Ile kosztuje zwiedzanie?",
+          answer:
+            "Cena biletu indywidualnego wynosi 69 zł za osobę. W cenie jest zwiedzanie przestrzeni Alvernia Planet z przewodnikiem oraz część edukacyjna.",
+        },
+        {
+          question: "Czy jest strefa gastro?",
+          answer:
+            "Na miejscu nie ma restauracji, natomiast działa sklepik z pamiątkami, w którym można kupić drobne przekąski i napoje.",
+        },
+        {
+          question: "Czy mają państwo dostępne jakieś warsztaty?",
+          answer:
+            "Standardowa wizyta obejmuje zwiedzanie z przewodnikiem oraz część edukacyjną o produkcji filmowej. Oddzielne warsztaty nie są obecnie prowadzone w ramach standardowego zwiedzania.",
+        },
+        {
+          question: "Czy można wejść bez wcześniejszej rezerwacji biletów?",
+          answer:
+            "Nie - obowiązuje wcześniejsza rezerwacja biletów, ponieważ zwiedzanie odbywa się w określonych godzinach i z przewodnikiem.",
+        },
+        {
+          question: "Czy jesteście otwarci w weekendy?",
+          answer:
+            "Tak - aktualnie zwiedzanie odbywa się w wybrane dni weekendowe, głównie w soboty, a w przyszłości planowane są również niedziele, w zależności od harmonogramu.",
+        },
+        {
+          question: "Czy można przyjechać z rodziną lub przyjaciółmi czy tylko grupy?",
+          answer:
+            "Oczywiście można przyjechać zarówno indywidualnie, na przykład z rodziną lub znajomymi, jak i w grupie zorganizowanej.",
+        },
+        {
+          question: "Jaka produkcja była tu realizowana ostatnio?",
+          answer:
+            "W Alvernia Planet powstawało wiele produkcji filmowych, serialowych i reklamowych - między innymi Akademia Pana Kleksa, 99 Gra o wszystko oraz inne liczne międzynarodowe projekty.",
+        },
+        {
+          question: "Czy wejdziemy na plan zdjęciowy jakiejś produkcji?",
+          answer:
+            "Nie - hale zdjęciowe są miejscem pracy ekip filmowych, dlatego podczas zwiedzania nie ma możliwości wejścia na aktywny plan zdjęciowy.",
         },
       ],
     },
@@ -240,6 +302,61 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         },
       ],
     },
+    faq: {
+      badge: "FAQ",
+      title: "Popular questions",
+      desktopLabel: "Frequently asked questions",
+      subtitle: "Quick answers before your visit and booking.",
+      mobileOpenLabel: "Show FAQ",
+      mobileCloseLabel: "Hide FAQ",
+      items: [
+        {
+          question: "How long does the tour take?",
+          answer:
+            "The film path tour including the educational part lasts about 2 to 2.5 hours.",
+        },
+        {
+          question: "How much does the tour cost?",
+          answer:
+            "The individual ticket costs 69 PLN per person. The price includes a guided tour of the Alvernia Planet spaces and the educational part.",
+        },
+        {
+          question: "Is there a food zone?",
+          answer:
+            "There is no restaurant on site, but there is a souvenir shop where you can buy small snacks and drinks.",
+        },
+        {
+          question: "Do you offer any workshops?",
+          answer:
+            "The standard visit includes a guided tour and an educational segment about film production. Separate workshops are not currently offered as part of the standard visit.",
+        },
+        {
+          question: "Can you enter without booking tickets in advance?",
+          answer:
+            "No. Advance ticket booking is required because visits take place at scheduled times and with a guide.",
+        },
+        {
+          question: "Are you open on weekends?",
+          answer:
+            "Yes. Tours currently take place on selected weekend days, mainly Saturdays, and Sundays may also be added in the future depending on the schedule.",
+        },
+        {
+          question: "Can I come with family or friends, or is it only for groups?",
+          answer:
+            "Of course. You can visit both individually, for example with family or friends, and as part of an organized group.",
+        },
+        {
+          question: "What production was made here most recently?",
+          answer:
+            "Many film, TV and commercial productions have been created at Alvernia Planet, including Akademia Pana Kleksa, 99 Gra o wszystko and many other international projects.",
+        },
+        {
+          question: "Will we enter an active film set during the visit?",
+          answer:
+            "No. Sound stages are workplaces for film crews, so there is no access to an active set during the visit.",
+        },
+      ],
+    },
     events: {
       title: "A unique venue for your event!",
       description:
@@ -341,6 +458,61 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
           details: ["Para escolas e grupos organizados", "Pagamento pelo grupo inteiro"],
           priceLabel: "Preço mín. 30 pessoas",
           price: "2 070 PLN/grupo",
+        },
+      ],
+    },
+    faq: {
+      badge: "FAQ",
+      title: "Perguntas frequentes",
+      desktopLabel: "Perguntas mais frequentes",
+      subtitle: "Respostas rápidas antes da visita e da reserva.",
+      mobileOpenLabel: "Mostrar FAQ",
+      mobileCloseLabel: "Ocultar FAQ",
+      items: [
+        {
+          question: "Quanto tempo dura a visita?",
+          answer:
+            "A visita ao percurso cinematográfico com a parte educativa dura cerca de 2 a 2,5 horas.",
+        },
+        {
+          question: "Quanto custa a visita?",
+          answer:
+            "O bilhete individual custa 69 PLN por pessoa. O preço inclui a visita guiada aos espaços da Alvernia Planet e a parte educativa.",
+        },
+        {
+          question: "Existe zona de restauração?",
+          answer:
+            "No local não existe restaurante, mas há uma loja de recordações onde é possível comprar pequenos snacks e bebidas.",
+        },
+        {
+          question: "Têm workshops disponíveis?",
+          answer:
+            "A visita standard inclui uma visita guiada e uma parte educativa sobre produção cinematográfica. Workshops separados não são atualmente realizados no formato standard da visita.",
+        },
+        {
+          question: "É possível entrar sem reservar bilhetes antecipadamente?",
+          answer:
+            "Não. É obrigatória a reserva prévia, porque as visitas decorrem em horários definidos e com guia.",
+        },
+        {
+          question: "Estão abertos aos fins de semana?",
+          answer:
+            "Sim. Atualmente as visitas decorrem em dias selecionados do fim de semana, principalmente aos sábados, e no futuro poderão incluir também domingos, dependendo do calendário.",
+        },
+        {
+          question: "Posso visitar com família ou amigos ou é só para grupos?",
+          answer:
+            "Claro. Pode visitar individualmente, por exemplo com família ou amigos, e também em grupo organizado.",
+        },
+        {
+          question: "Que produção foi realizada aqui mais recentemente?",
+          answer:
+            "Na Alvernia Planet foram realizadas muitas produções de cinema, séries e publicidade, incluindo Akademia Pana Kleksa, 99 Gra o wszystko e muitos outros projetos internacionais.",
+        },
+        {
+          question: "Vamos entrar num set de filmagem ativo?",
+          answer:
+            "Não. Os estúdios são locais de trabalho das equipas de filmagem, por isso não existe acesso a um set ativo durante a visita.",
         },
       ],
     },
@@ -553,203 +725,345 @@ export default function Page() {
 
   return (
     <main className="relative min-h-screen px-4 py-10 sm:py-14 lg:py-12 text-white">
-      {/* Wideo hero w "kwadracie" jak na pozostałych podstronach */}
-      <section
-        ref={heroSectionRef}
-        className={`relative z-10 transition-[opacity,transform] duration-[1300ms] will-change-[opacity,transform] ${
-          introReady ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
-        }`}
-        style={{
-          transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
-        }}
-      >
-        <div className="mx-auto w-full max-w-[72rem]">
-          <div className="relative overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
-            <div className="relative aspect-[16/9] bg-black">
-              <div className="pointer-events-none absolute inset-x-0 top-7 z-20 flex justify-center px-4 sm:top-8 lg:top-9">
-                <Link
-                  href={copy.heroPromo.href}
-                  className={`hero-film-alert pointer-events-auto inline-flex max-w-full items-center gap-2 rounded-full px-3 py-2 text-[11px] sm:gap-2.5 sm:px-4 sm:py-2.5 sm:text-sm transition-[opacity,transform,filter] ${
-                    introReady
-                      ? "hero-film-alert-intro opacity-100 translate-y-0 scale-100"
-                      : "opacity-0 -translate-y-8 scale-[0.88] blur-sm pointer-events-none"
-                  }`}
-                  style={{
-                    transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
-                    transitionDelay: introReady ? `${HERO_PROMO_DELAY_MS}ms` : "0ms",
-                    transitionDuration: `${HERO_PROMO_FADE_DURATION_MS}ms`,
-                  }}
-                >
-                  <span
-                    className="hero-film-alert-dot mt-0.5 h-2.5 w-2.5 shrink-0 rounded-full bg-[#4fcfde] sm:h-3 sm:w-3"
-                    aria-hidden="true"
-                  />
-                  <span className="hero-film-alert-copy leading-tight font-medium">
-                    <span>{copy.heroPromo.message}</span>
-                    <span className="hero-film-alert-cta ml-2 whitespace-nowrap font-semibold sm:ml-3">
-                      {copy.heroPromo.cta} →
-                    </span>
-                  </span>
-                </Link>
-              </div>
-              <div
-                className={`pointer-events-none absolute inset-0 z-[6] bg-black transition-opacity ${
-                  heroWelcomeVisible ? "opacity-45" : "opacity-0"
-                }`}
-                style={{
-                  transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
-                  transitionDuration: `${HERO_WELCOME_FADE_DURATION_MS}ms`,
-                }}
-                aria-hidden
-              />
-              <div
-                className={`pointer-events-none absolute inset-0 z-10 flex items-center justify-center px-4 text-center transition-[opacity,transform,filter] ${
-                  heroWelcomeVisible
-                    ? "opacity-100 translate-y-0 blur-0"
-                    : "opacity-0 -translate-y-2 blur-[2px]"
-                }`}
-                style={{
-                  transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
-                  transitionDuration: `${HERO_WELCOME_FADE_DURATION_MS}ms`,
-                }}
-                aria-hidden
-              >
-                <h1 className="ap-type-hero-title text-white drop-shadow-[0_14px_34px_rgba(0,0,0,0.65)]">
-                  {copy.heroTitle}
-                </h1>
-              </div>
-              <video
-                ref={heroVideoRef}
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="none"
-                poster="/home/AP_ogolne_poster.webp"
-                className="absolute inset-0 h-full w-full object-cover pointer-events-none"
-                controlsList="nodownload noplaybackrate noremoteplayback nofullscreen"
-                disablePictureInPicture
-                tabIndex={-1}
-                onContextMenu={(e) => e.preventDefault()}
-                onError={() =>
-                  console.warn("[video] playback error — check file names/paths in /public")
-                }
-              >
-                <source src="/home/AP_ogolne.webm" type="video/webm" />
-                <source src="/home/AP_ogolne.mp4" type="video/mp4" />
-                {heroVideoFallback}
-              </video>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Content below the hero video */}
-      <section
-        id="content-start"
-        className={`relative z-10 mt-10 sm:mt-12 transition-[opacity,transform] duration-[1200ms] will-change-[opacity,transform] ${
-          introReady ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-        }`}
-        style={{
-          transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
-          transitionDelay: "180ms",
-        }}
-      >
-        <div className="mx-auto max-w-[72rem]">
-          <div className="grid grid-cols-1 gap-16 sm:gap-20">
-            <ScrollMotionItem strength="strong" delay={40} float>
-              <Card title={copy.attractions.title} titleCentered titleDivider dense motion="off">
-                <p className="ap-type-section-body text-center max-w-3xl mx-auto">
-                  {copy.attractions.intro}
-                </p>
-                <AttractionsScroller items={copy.attractions.items} animate={secondaryAnimationsReady} />
-              </Card>
-            </ScrollMotionItem>
-
-            <ScrollMotionItem strength="soft" delay={30} float={false} className="home-deferred-block">
-              <Card title={copy.tickets.title} titleCentered titleDivider dense motion="off">
-                <div className="mt-1 text-center">
-                  <p className="ap-type-cta-title">{copy.tickets.headerCta}</p>
-                  <p className="mt-2 ap-type-cta-body">{copy.tickets.headerCtaSub}</p>
-                </div>
-                <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-x-6 gap-y-10">
-                  {copy.tickets.options.map((option) => (
-                    <div
-                      key={option.title}
-                      className="ticket-card ap-tile group flex h-full flex-col rounded-3xl text-white/90"
-                    >
-                      <div className="ticket-card-top">
-                        <span className="ticket-card-badge">{option.badge}</span>
-                      </div>
-                      <div className="ticket-card-content flex h-full flex-col p-5 sm:p-6 text-center">
-                        <h3 className="ticket-card-title text-xl sm:text-2xl font-semibold text-white">
-                          {option.title}
-                        </h3>
-                        <p className="ticket-card-subtitle mt-2 text-sm sm:text-base text-white/75">
-                          {option.subtitle}
-                        </p>
-                        <div className="ticket-card-divider mt-6" />
-                        <ul className="ticket-list-panel mt-5 mb-8 space-y-3 text-sm text-white/75 text-left mx-auto max-w-sm">
-                          {option.details.map((detail) => (
-                            <li key={detail} className="ticket-detail flex gap-3">
-                              <span className="ticket-detail-dot mt-2 h-1.5 w-1.5 rounded-full bg-[#4fcfde] shrink-0" />
-                              <span>{detail}</span>
-                            </li>
-                          ))}
-                        </ul>
-                        <div className="ticket-price-block mt-auto pt-7">
-                          <p className="ticket-price-label text-[0.7rem] uppercase tracking-[0.25em] text-white/60">
-                            {option.priceLabel ?? copy.tickets.priceLabel}
-                          </p>
-                          <p className="ticket-price mt-2 text-2xl sm:text-3xl font-bold text-amber-200">
-                            {option.price ?? copy.tickets.price}
-                          </p>
-                          <div className="mt-6 flex justify-center">
-                            <PrimaryButton
-                              href={copy.tickets.ctaHref}
-                              size="md"
-                              className="ticket-pill ring-[color:rgba(240,60,100,0.55)]"
-                            >
-                              {copy.tickets.cta}
-                            </PrimaryButton>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-            </ScrollMotionItem>
-
-            <ScrollMotionItem strength="strong" delay={130} float className="home-deferred-block">
-              <Card title={copy.events.title} className="text-center" titleCentered titleDivider dense motion="off">
-                <p className="ap-type-section-body">{copy.events.description}</p>
-                <EventsVerticalShowcase photos={eventPhotos} allowAnimation={secondaryAnimationsReady} />
-                <div className="mt-6 flex justify-center">
-                  <PrimaryButton href={copy.events.href} size="lg">
-                    {copy.events.cta}
-                  </PrimaryButton>
-                </div>
-              </Card>
-            </ScrollMotionItem>
-
-            <ScrollMotionItem strength="strong" delay={170} float className="home-deferred-block">
-              <Card title={copy.testimonials.title} titleCentered titleDivider dense motion="off">
-                <p className="ap-type-section-body text-center">{copy.testimonials.subtitle}</p>
-                <div className="mt-6">
-                  <Testimonials reviews={reviewsToShow} sourceUrl={GOOGLE_PLACE_URL} />
-                </div>
-              </Card>
-            </ScrollMotionItem>
-
-          </div>
-        </div>
-      </section>
+      <HeroSection
+        heroTitle={copy.heroTitle}
+        heroPromo={copy.heroPromo}
+        heroVideoFallback={heroVideoFallback}
+        introReady={introReady}
+        heroWelcomeVisible={heroWelcomeVisible}
+        heroSectionRef={heroSectionRef}
+        heroVideoRef={heroVideoRef}
+      />
+      <HomeContent
+        introReady={introReady}
+        attractions={copy.attractions}
+        tickets={copy.tickets}
+        events={copy.events}
+        testimonials={copy.testimonials}
+        eventPhotos={eventPhotos}
+        secondaryAnimationsReady={secondaryAnimationsReady}
+        reviews={reviewsToShow}
+      />
+      <HomeFaqSlots faq={copy.faq} />
     </main>
   );
 }
 
-function AttractionsScroller({
+const HeroSection = memo(function HeroSection({
+  heroTitle,
+  heroPromo,
+  heroVideoFallback,
+  introReady,
+  heroWelcomeVisible,
+  heroSectionRef,
+  heroVideoRef,
+}: {
+  heroTitle: string;
+  heroPromo: HomeCopy["heroPromo"];
+  heroVideoFallback: string;
+  introReady: boolean;
+  heroWelcomeVisible: boolean;
+  heroSectionRef: RefObject<HTMLElement | null>;
+  heroVideoRef: RefObject<HTMLVideoElement | null>;
+}) {
+  return (
+    <section
+      ref={heroSectionRef}
+      className={`relative z-10 transition-[opacity,transform] duration-[1300ms] will-change-[opacity,transform] ${
+        introReady ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
+      }`}
+      style={{
+        transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
+      }}
+    >
+      <div className="mx-auto w-full max-w-[72rem]">
+        <div className="relative overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
+          <div className="relative aspect-[16/9] bg-black">
+            <div className="pointer-events-none absolute inset-x-0 top-7 z-20 flex justify-center px-4 sm:top-8 lg:top-9">
+              <Link
+                href={heroPromo.href}
+                className={`hero-film-alert pointer-events-auto inline-flex max-w-full items-center gap-2 rounded-full px-3 py-2 text-[11px] sm:gap-2.5 sm:px-4 sm:py-2.5 sm:text-sm transition-[opacity,transform,filter] ${
+                  introReady
+                    ? "hero-film-alert-intro opacity-100 translate-y-0 scale-100"
+                    : "opacity-0 -translate-y-8 scale-[0.88] blur-sm pointer-events-none"
+                }`}
+                style={{
+                  transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
+                  transitionDelay: introReady ? `${HERO_PROMO_DELAY_MS}ms` : "0ms",
+                  transitionDuration: `${HERO_PROMO_FADE_DURATION_MS}ms`,
+                }}
+              >
+                <span
+                  className="hero-film-alert-dot mt-0.5 h-2.5 w-2.5 shrink-0 rounded-full bg-[#4fcfde] sm:h-3 sm:w-3"
+                  aria-hidden="true"
+                />
+                <span className="hero-film-alert-copy leading-tight font-medium">
+                  <span>{heroPromo.message}</span>
+                  <span className="hero-film-alert-cta ml-2 whitespace-nowrap font-semibold sm:ml-3">
+                    {heroPromo.cta} →
+                  </span>
+                </span>
+              </Link>
+            </div>
+            <div
+              className={`pointer-events-none absolute inset-0 z-[6] bg-black transition-opacity ${
+                heroWelcomeVisible ? "opacity-45" : "opacity-0"
+              }`}
+              style={{
+                transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
+                transitionDuration: `${HERO_WELCOME_FADE_DURATION_MS}ms`,
+              }}
+              aria-hidden
+            />
+            <div
+              className={`pointer-events-none absolute inset-0 z-10 flex items-center justify-center px-4 text-center transition-[opacity,transform,filter] ${
+                heroWelcomeVisible
+                  ? "opacity-100 translate-y-0 blur-0"
+                  : "opacity-0 -translate-y-2 blur-[2px]"
+              }`}
+              style={{
+                transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
+                transitionDuration: `${HERO_WELCOME_FADE_DURATION_MS}ms`,
+              }}
+              aria-hidden
+            >
+              <h1 className="ap-type-hero-title text-white drop-shadow-[0_14px_34px_rgba(0,0,0,0.65)]">
+                {heroTitle}
+              </h1>
+            </div>
+            <video
+              ref={heroVideoRef}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="none"
+              poster="/home/AP_ogolne_poster.webp"
+              className="absolute inset-0 h-full w-full object-cover pointer-events-none"
+              controlsList="nodownload noplaybackrate noremoteplayback nofullscreen"
+              disablePictureInPicture
+              tabIndex={-1}
+              onContextMenu={(e) => e.preventDefault()}
+              onError={() =>
+                console.warn("[video] playback error — check file names/paths in /public")
+              }
+            >
+              <source src="/home/AP_ogolne.webm" type="video/webm" />
+              <source src="/home/AP_ogolne.mp4" type="video/mp4" />
+              {heroVideoFallback}
+            </video>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+});
+
+const HomeContent = memo(function HomeContent({
+  introReady,
+  attractions,
+  tickets,
+  events,
+  testimonials,
+  eventPhotos,
+  secondaryAnimationsReady,
+  reviews,
+}: {
+  introReady: boolean;
+  attractions: HomeCopy["attractions"];
+  tickets: TicketSection;
+  events: SectionCard;
+  testimonials: HomeCopy["testimonials"];
+  eventPhotos: EventPhoto[];
+  secondaryAnimationsReady: boolean;
+  reviews: Testimonial[];
+}) {
+  return (
+    <section
+      id="content-start"
+      className={`relative z-10 mt-10 sm:mt-12 transition-[opacity,transform] duration-[1200ms] will-change-[opacity,transform] ${
+        introReady ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+      }`}
+      style={{
+        transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
+        transitionDelay: "180ms",
+      }}
+    >
+      <div className="mx-auto max-w-[72rem]">
+        <div className="grid grid-cols-1 gap-16 sm:gap-20">
+          <AttractionsSection attractions={attractions} animate={secondaryAnimationsReady} />
+          <TicketsSection tickets={tickets} />
+          <EventsSection events={events} photos={eventPhotos} animate={secondaryAnimationsReady} />
+          <TestimonialsSection testimonials={testimonials} reviews={reviews} />
+        </div>
+      </div>
+    </section>
+  );
+});
+
+const AttractionsSection = memo(function AttractionsSection({
+  attractions,
+  animate,
+}: {
+  attractions: HomeCopy["attractions"];
+  animate: boolean;
+}) {
+  return (
+    <ScrollMotionItem strength="strong" delay={40} float>
+      <Card title={attractions.title} titleCentered titleDivider dense motion="off">
+        <p className="ap-type-section-body text-center max-w-3xl mx-auto">{attractions.intro}</p>
+        <AttractionsScroller items={attractions.items} animate={animate} />
+      </Card>
+    </ScrollMotionItem>
+  );
+});
+
+const TicketOptionCard = memo(function TicketOptionCard({
+  option,
+  defaultPriceLabel,
+  defaultPrice,
+  cta,
+  ctaHref,
+}: {
+  option: TicketOption;
+  defaultPriceLabel: string;
+  defaultPrice: string;
+  cta: string;
+  ctaHref: string;
+}) {
+  return (
+    <div className="ticket-card ap-tile group flex h-full flex-col rounded-3xl text-white/90">
+      <div className="ticket-card-top">
+        <span className="ticket-card-badge">{option.badge}</span>
+      </div>
+      <div className="ticket-card-content flex h-full flex-col p-5 sm:p-6 text-center">
+        <h3 className="ticket-card-title text-xl sm:text-2xl font-semibold text-white">
+          {option.title}
+        </h3>
+        <p className="ticket-card-subtitle mt-2 text-sm sm:text-base text-white/75">
+          {option.subtitle}
+        </p>
+        <div className="ticket-card-divider mt-6" />
+        <ul className="ticket-list-panel mt-5 mb-8 space-y-3 text-sm text-white/75 text-left mx-auto max-w-sm">
+          {option.details.map((detail) => (
+            <li key={detail} className="ticket-detail flex gap-3">
+              <span className="ticket-detail-dot mt-2 h-1.5 w-1.5 rounded-full bg-[#4fcfde] shrink-0" />
+              <span>{detail}</span>
+            </li>
+          ))}
+        </ul>
+        <div className="ticket-price-block mt-auto pt-7">
+          <p className="ticket-price-label text-[0.7rem] uppercase tracking-[0.25em] text-white/60">
+            {option.priceLabel ?? defaultPriceLabel}
+          </p>
+          <p className="ticket-price mt-2 text-2xl sm:text-3xl font-bold text-amber-200">
+            {option.price ?? defaultPrice}
+          </p>
+          <div className="mt-6 flex justify-center">
+            <PrimaryButton
+              href={ctaHref}
+              size="md"
+              className="ticket-pill ring-[color:rgba(240,60,100,0.55)]"
+            >
+              {cta}
+            </PrimaryButton>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+});
+
+const TicketsSection = memo(function TicketsSection({
+  tickets,
+}: {
+  tickets: TicketSection;
+}) {
+  return (
+    <ScrollMotionItem strength="soft" delay={30} float={false} className="home-deferred-block">
+      <Card title={tickets.title} titleCentered titleDivider dense motion="off">
+        <div className="mt-1 text-center">
+          <p className="ap-type-cta-title">{tickets.headerCta}</p>
+          <p className="mt-2 ap-type-cta-body">{tickets.headerCtaSub}</p>
+        </div>
+        <div className="mt-8 grid grid-cols-1 gap-x-6 gap-y-10 lg:grid-cols-2">
+          {tickets.options.map((option) => (
+            <TicketOptionCard
+              key={option.title}
+              option={option}
+              defaultPriceLabel={tickets.priceLabel}
+              defaultPrice={tickets.price}
+              cta={tickets.cta}
+              ctaHref={tickets.ctaHref}
+            />
+          ))}
+        </div>
+      </Card>
+    </ScrollMotionItem>
+  );
+});
+
+const EventsSection = memo(function EventsSection({
+  events,
+  photos,
+  animate,
+}: {
+  events: SectionCard;
+  photos: EventPhoto[];
+  animate: boolean;
+}) {
+  return (
+    <ScrollMotionItem strength="strong" delay={130} float className="home-deferred-block">
+      <Card title={events.title} className="text-center" titleCentered titleDivider dense motion="off">
+        <p className="ap-type-section-body">{events.description}</p>
+        <EventsVerticalShowcase photos={photos} allowAnimation={animate} />
+        <div className="mt-6 flex justify-center">
+          <PrimaryButton href={events.href} size="lg">
+            {events.cta}
+          </PrimaryButton>
+        </div>
+      </Card>
+    </ScrollMotionItem>
+  );
+});
+
+const TestimonialsSection = memo(function TestimonialsSection({
+  testimonials,
+  reviews,
+}: {
+  testimonials: HomeCopy["testimonials"];
+  reviews: Testimonial[];
+}) {
+  return (
+    <ScrollMotionItem strength="strong" delay={170} float className="home-deferred-block">
+      <Card title={testimonials.title} titleCentered titleDivider dense motion="off">
+        <p className="ap-type-section-body text-center">{testimonials.subtitle}</p>
+        <div className="mt-6">
+          <Testimonials reviews={reviews} sourceUrl={GOOGLE_PLACE_URL} />
+        </div>
+      </Card>
+    </ScrollMotionItem>
+  );
+});
+
+const HomeFaqSlots = memo(function HomeFaqSlots({
+  faq,
+}: {
+  faq: TicketFaqCopy;
+}) {
+  return (
+    <>
+      <div className="ticket-faq-fixed-slot xl:hidden">
+        <TicketFaqWidget copy={faq} mode="mobile" />
+      </div>
+      <div className="ticket-faq-fixed-slot hidden xl:block">
+        <TicketFaqWidget copy={faq} mode="desktop" />
+      </div>
+    </>
+  );
+});
+
+const AttractionsScroller = memo(function AttractionsScroller({
   items,
   animate: shouldAnimate = true,
 }: {
@@ -1009,7 +1323,7 @@ function AttractionsScroller({
       </div>
     </div>
   );
-}
+});
 
 const EventsVerticalShowcase = memo(function EventsVerticalShowcase({
   photos,
@@ -1253,7 +1567,7 @@ const EventsVerticalShowcase = memo(function EventsVerticalShowcase({
                             fill
                             sizes="(min-width: 1280px) 280px, (min-width: 640px) 36vw, 88vw"
                             quality={60}
-                            fetchPriority={eager ? "high" : "low"}
+                            fetchPriority={eager ? "auto" : "low"}
                             loading={eager ? "eager" : "lazy"}
                             decoding="async"
                             onLoad={() => markImageLoaded(photo.src)}

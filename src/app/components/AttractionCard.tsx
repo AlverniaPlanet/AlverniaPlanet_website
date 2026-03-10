@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import Card from "@/app/components/Card";
 import { PrimaryButton } from "@/app/components/PrimaryButton";
 import Image from "next/image";
@@ -13,7 +14,7 @@ type AttractionCardProps = {
   imageAlt: string;
 };
 
-export function AttractionCard({
+export const AttractionCard = memo(function AttractionCard({
   title,
   description,
   cta,
@@ -38,6 +39,7 @@ export function AttractionCard({
             quality={70}
             fetchPriority="low"
             loading="lazy"
+            decoding="async"
             className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
             priority={false}
           />
@@ -56,4 +58,4 @@ export function AttractionCard({
       </div>
     </Card>
   );
-}
+});

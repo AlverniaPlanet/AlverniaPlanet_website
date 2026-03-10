@@ -1,8 +1,8 @@
 "use client";
 
+import { memo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { FaFacebookF, FaInstagram, FaTiktok, FaFacebookMessenger } from "react-icons/fa";
 import { useI18n } from "@/app/i18n-provider";
 import { useTheme } from "@/app/theme-provider";
 import { trackEvent } from "@/lib/analytics";
@@ -193,7 +193,51 @@ const CZERCODE_URL = "https://czercode.com";
 const CZERCODE_LOGO_BLACK = "/shy/CzerCode_logo_black.svg";
 const CZERCODE_LOGO_WHITE = "/shy/CzerCode_logo_white.svg";
 
-export default function Footer() {
+function FacebookIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        d="M13.33 21v-8h2.68l.4-3.12h-3.08V7.89c0-.9.25-1.51 1.55-1.51H16.8V3.6c-.33-.04-1.45-.12-2.76-.12-2.74 0-4.62 1.67-4.62 4.75v2.65H6.3V13h3.12v8h3.91Z"
+      />
+    </svg>
+  );
+}
+
+function InstagramIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        d="M7.75 3h8.5A4.75 4.75 0 0 1 21 7.75v8.5A4.75 4.75 0 0 1 16.25 21h-8.5A4.75 4.75 0 0 1 3 16.25v-8.5A4.75 4.75 0 0 1 7.75 3Zm0 1.8A2.95 2.95 0 0 0 4.8 7.75v8.5a2.95 2.95 0 0 0 2.95 2.95h8.5a2.95 2.95 0 0 0 2.95-2.95v-8.5a2.95 2.95 0 0 0-2.95-2.95h-8.5Zm8.9 1.35a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2ZM12 7.15A4.85 4.85 0 1 1 7.15 12 4.86 4.86 0 0 1 12 7.15Zm0 1.8A3.05 3.05 0 1 0 15.05 12 3.05 3.05 0 0 0 12 8.95Z"
+      />
+    </svg>
+  );
+}
+
+function TikTokIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        d="M14.6 3c.22 1.83 1.27 3.5 2.85 4.45a5.8 5.8 0 0 0 2.36.77v2.9a8.36 8.36 0 0 1-3.52-.87v5.1a6.25 6.25 0 1 1-6.23-6.25c.3 0 .57.02.84.07v2.98a3.4 3.4 0 1 0 2.24 3.2V3h2.46Z"
+      />
+    </svg>
+  );
+}
+
+function MessengerIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="currentColor"
+        d="M12 2.8C6.95 2.8 3 6.48 3 11.23c0 2.69 1.32 5.1 3.5 6.68V21l2.92-1.61c.78.22 1.62.34 2.58.34 5.05 0 9-3.68 9-8.5S17.05 2.8 12 2.8Zm.92 11.4-2.3-2.46-4.48 2.46 4.94-5.23 2.34 2.46 4.44-2.46-4.94 5.23Z"
+      />
+    </svg>
+  );
+}
+
+const Footer = memo(function Footer() {
   const { locale } = useI18n();
   const { theme } = useTheme();
   const loc: Locale = (locale as Locale) ?? "pl";
@@ -305,7 +349,7 @@ export default function Footer() {
               <div className={`rounded-2xl px-4 py-3 flex items-center justify-between ${infoCardSurface}`}>
                 <div className="flex items-center gap-3">
                   <span className={`grid h-10 w-10 place-items-center rounded-xl ${messengerIconTone}`}>
-                    <FaFacebookMessenger />
+                    <MessengerIcon className="h-5 w-5" />
                   </span>
                   <div>
                     <p className="text-[11px] uppercase tracking-[0.2em] text-white/60">{copy.messengerLabel}</p>
@@ -357,7 +401,7 @@ export default function Footer() {
                     <span
                       className={`grid h-11 w-11 place-items-center rounded-full transition duration-200 group-hover:-translate-y-1 group-hover:shadow-[0_12px_30px_rgba(59,130,246,0.35)] ${iconWrapperSurface}`}
                     >
-                      <FaFacebookF className={facebookIconTone} />
+                      <FacebookIcon className={`h-5 w-5 ${facebookIconTone}`} />
                     </span>
                   </a>
                   <a
@@ -371,7 +415,7 @@ export default function Footer() {
                     <span
                       className={`grid h-11 w-11 place-items-center rounded-full transition duration-200 group-hover:-translate-y-1 group-hover:shadow-[0_12px_30px_rgba(236,72,153,0.35)] ${iconWrapperSurface}`}
                     >
-                      <FaInstagram className={instagramIconTone} />
+                      <InstagramIcon className={`h-5 w-5 ${instagramIconTone}`} />
                     </span>
                   </a>
                   <a
@@ -385,7 +429,7 @@ export default function Footer() {
                     <span
                       className={`grid h-11 w-11 place-items-center rounded-full transition duration-200 group-hover:-translate-y-1 group-hover:shadow-[0_12px_30px_rgba(34,211,238,0.35)] ${iconWrapperSurface}`}
                     >
-                      <FaTiktok className={tiktokIconTone} />
+                      <TikTokIcon className={`h-5 w-5 ${tiktokIconTone}`} />
                     </span>
                   </a>
                 </div>
@@ -425,8 +469,8 @@ export default function Footer() {
                     alt="Alvernia Planet"
                     width={210}
                     height={40}
+                    sizes="210px"
                     className="h-10 w-auto object-contain object-center"
-                    priority
                   />
                 </span>
               </Link>
@@ -453,6 +497,7 @@ export default function Footer() {
                   alt="CzerCode logo"
                   width={140}
                   height={28}
+                  sizes="140px"
                   className="h-6 w-auto object-contain"
                 />
               </span>
@@ -462,4 +507,6 @@ export default function Footer() {
       </div>
     </footer>
   );
-}
+});
+
+export default Footer;

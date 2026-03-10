@@ -15,8 +15,19 @@ export default function GlobalRevealObserver() {
     const observedNodes = new WeakSet<Element>();
 
     let frameId = 0;
+    let delayedScanTimeoutId = 0;
+    let lateScanTimeoutId = 0;
+    let mutationObserverStopTimeoutId = 0;
     let observer: IntersectionObserver | null = null;
     let mutationObserver: MutationObserver | null = null;
+
+    const isRevealNode = (node: Node) => {
+      if (!(node instanceof HTMLElement)) {
+        return false;
+      }
+
+      return node.matches(REVEAL_SELECTOR) || Boolean(node.querySelector(REVEAL_SELECTOR));
+    };
 
     const scanNodes = (resetVisibility: boolean) => {
       const nodes = Array.from(revealRoot.querySelectorAll<HTMLElement>(REVEAL_SELECTOR));
@@ -65,7 +76,12 @@ export default function GlobalRevealObserver() {
     );
 
     mutationObserver = new MutationObserver((mutations) => {
-      if (!mutations.some((mutation) => mutation.addedNodes.length || mutation.removedNodes.length)) {
+      const hasRevealMutation = mutations.some((mutation) => {
+        const changedNodes = [...Array.from(mutation.addedNodes), ...Array.from(mutation.removedNodes)];
+        return changedNodes.some(isRevealNode);
+      });
+
+      if (!hasRevealMutation) {
         return;
       }
 
@@ -78,9 +94,17 @@ export default function GlobalRevealObserver() {
     });
 
     scheduleScan(true);
+    delayedScanTimeoutId = window.setTimeout(() => scheduleScan(false), 220);
+    lateScanTimeoutId = window.setTimeout(() => scheduleScan(false), 1200);
+    mutationObserverStopTimeoutId = window.setTimeout(() => {
+      mutationObserver?.disconnect();
+    }, 4000);
 
     return () => {
       window.cancelAnimationFrame(frameId);
+      window.clearTimeout(delayedScanTimeoutId);
+      window.clearTimeout(lateScanTimeoutId);
+      window.clearTimeout(mutationObserverStopTimeoutId);
       mutationObserver?.disconnect();
       observer?.disconnect();
     };
