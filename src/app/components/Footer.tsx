@@ -6,8 +6,7 @@ import { FaFacebookF, FaInstagram, FaTiktok, FaFacebookMessenger } from "react-i
 import { useI18n } from "@/app/i18n-provider";
 import { useTheme } from "@/app/theme-provider";
 import { trackEvent } from "@/lib/analytics";
-
-type Locale = "pl" | "en" | "pt";
+import { getLocalizedPath, type Locale } from "@/lib/localizedRoutes";
 type LinkItem = { label: string; href: string };
 type Section = { title: string; links: LinkItem[] };
 type PolicyLink = { label: string; href: string };
@@ -227,29 +226,9 @@ export default function Footer() {
   const creditLinkTone = isLight
     ? "text-[color:var(--ap-text)] hover:text-[color:var(--ap-accent)]"
     : "text-white/85 hover:text-[color:var(--ap-ice)]";
-  const prefix = loc === "en" || loc === "pt" ? `/${loc}` : "";
-  const plToIntlCommon: Record<string, string> = {
-    "/wydarzenia": "/events",
-    "/galeria": "/gallery",
-    "/jak-dojechac": "/getting-there",
-    "/o-alvernia-planet": "/about",
-    "/kontakt": "/contact",
-    "/atrakcje/wystawa": "/attractions/exhibition",
-    "/atrakcje/sciezka-filmowa": "/attractions/film-path",
-    "/atrakcje/kino-360": "/attractions/cinema-360",
-  };
-  const plToIntl: Record<string, string> = {
-    ...plToIntlCommon,
-    "/rezerwuj": loc === "en" ? "/reserve" : "/reservar",
-  };
   const withPrefix = (href: string) => {
     if (!href.startsWith("/")) return href;
-    if (href.startsWith("/legal/")) return href;
-    if (href.startsWith("/en") || href.startsWith("/pt")) return href;
-    if (!prefix) return href;
-    const mapped = plToIntl[href] ?? href;
-    if (mapped === "/") return prefix;
-    return `${prefix}${mapped.startsWith("/") ? mapped : `/${mapped}`}`;
+    return getLocalizedPath(href, loc);
   };
   const callLabel = loc === "en" ? "Call" : loc === "pt" ? "Ligar" : "Zadzwoń";
   const emailAction = loc === "en" ? "Email" : loc === "pt" ? "Escrever" : "Napisz";
@@ -267,7 +246,7 @@ export default function Footer() {
             <span key={item.href} className="flex items-center gap-3">
               <Link
                 href={item.href}
-                className="underline underline-offset-4 decoration-white/30 hover:decoration-white text-white/80 hover:text-white transition"
+                className="underline underline-offset-4 decoration-white/30 text-white/80 transition hover:decoration-white hover:text-white"
                 target="_blank"
                 rel="noopener noreferrer"
                 suppressHydrationWarning
@@ -423,7 +402,7 @@ export default function Footer() {
                     <li key={link.href}>
                       <Link
                         href={withPrefix(link.href)}
-                        className="hover:text-white transition-colors"
+                        className="transition-colors hover:text-white"
                         onClick={() => trackEvent("footer_nav_click", { label: link.label, href: link.href })}
                       >
                         {link.label}

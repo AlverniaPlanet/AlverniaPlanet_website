@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { useI18n } from "@/app/i18n-provider";
 import { mountBookeroInstance, removeBookeroInstancesByTypes } from "@/app/components/bookeroRuntime";
@@ -8,8 +8,10 @@ import { mountBookeroInstance, removeBookeroInstancesByTypes } from "@/app/compo
 const BOOKERO_PLUGIN_ID = "8iWKMAEWtI0P";
 const STICKY_CONTAINER_ID = "bookero-sticky-plugin";
 const STICKY_BUTTON_LABEL = "Bilety";
+const STICKY_LABEL_RETRY_DELAYS = [120, 360, 900, 1800] as const;
 
 const HIDDEN_PATHS = new Set(["/rezerwuj", "/en/reserve", "/pt/reservar"]);
+const STICKY_LABEL_MATCH = /rezerw|book|reserv|ticket|bilhet|bilet/i;
 
 type Locale = "pl" | "en" | "pt";
 
@@ -51,36 +53,78 @@ function removeLeakedInlineBookeroNodes(keepInsideBookingForm: boolean) {
 
 function patchStickyToggleLabel(label: string) {
   const setLabel = (el: HTMLElement) => {
-    if (el.childElementCount === 0) {
-      const raw = (el.textContent ?? "").trim();
-      if (/rezerw|book|reserv/i.test(raw)) {
-        el.textContent = label;
-      }
+    const raw = (el.textContent ?? "").trim();
+    if (!raw || raw === label || !STICKY_LABEL_MATCH.test(raw)) {
       return;
     }
-
-    el.querySelectorAll<HTMLElement>("span, div, p, strong").forEach((node) => {
-      if (node.childElementCount > 0) return;
-      const raw = (node.textContent ?? "").trim();
-      if (/rezerw|book|reserv/i.test(raw)) {
-        node.textContent = label;
-      }
-    });
+    el.textContent = label;
   };
 
   document.querySelectorAll<HTMLElement>(".bookero-sticky-plugin-toggle").forEach((toggle) => {
-    toggle.setAttribute("aria-label", label);
-    setLabel(toggle);
+    if (toggle.getAttribute("aria-label") !== label) {
+      toggle.setAttribute("aria-label", label);
+    }
+    if (toggle.childElementCount === 0) {
+      setLabel(toggle);
+      return;
+    }
+    toggle.querySelectorAll<HTMLElement>("span, div, p, strong").forEach((node) => {
+      if (node.childElementCount > 0) return;
+      setLabel(node);
+    });
   });
 }
 
 export default function FloatingBookingButton() {
   const pathname = usePathname();
-  const { locale } = useI18n();
+  const { locale, t } = useI18n();
   const loc: Locale = (locale as Locale) ?? "pl";
   const normalizedPath = normalizePath(pathname);
   const isHiddenPath = HIDDEN_PATHS.has(normalizedPath);
   const bookeroLang = loc === "en" ? "en" : "pl";
+  const stickyButtonLabel = loc === "pl" ? STICKY_BUTTON_LABEL : t("nav.tickets");
+  const labelRef = useRef(stickyButtonLabel);
+  const labelSyncTimeoutsRef = useRef<number[]>([]);
+  const labelSyncRafRef = useRef<number | null>(null);
+
+  const clearScheduledLabelSync = () => {
+    if (labelSyncRafRef.current !== null) {
+      window.cancelAnimationFrame(labelSyncRafRef.current);
+      labelSyncRafRef.current = null;
+    }
+    labelSyncTimeoutsRef.current.forEach((timeoutId) => {
+      window.clearTimeout(timeoutId);
+    });
+    labelSyncTimeoutsRef.current = [];
+  };
+
+  const scheduleStickyLabelSync = (label: string) => {
+    if (typeof window === "undefined") return;
+
+    clearScheduledLabelSync();
+    patchStickyToggleLabel(label);
+
+    labelSyncRafRef.current = window.requestAnimationFrame(() => {
+      patchStickyToggleLabel(label);
+      labelSyncRafRef.current = null;
+    });
+
+    labelSyncTimeoutsRef.current = STICKY_LABEL_RETRY_DELAYS.map((delay) =>
+      window.setTimeout(() => {
+        patchStickyToggleLabel(label);
+      }, delay),
+    );
+  };
+
+  useEffect(() => {
+    labelRef.current = stickyButtonLabel;
+    if (isHiddenPath) return;
+    scheduleStickyLabelSync(stickyButtonLabel);
+
+    return () => {
+      clearScheduledLabelSync();
+    };
+  }, [stickyButtonLabel, isHiddenPath]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -111,7 +155,6 @@ export default function FloatingBookingButton() {
     removeBookeroInstancesByTypes(["sticky"]);
 
     let cancelled = false;
-    let observer: MutationObserver | null = null;
     let idleCallbackId: number | null = null;
     let idleTimeoutId: number | null = null;
 
@@ -154,16 +197,7 @@ export default function FloatingBookingButton() {
         { persist: true },
       ).finally(() => {
         if (cancelled) return;
-        patchStickyToggleLabel(STICKY_BUTTON_LABEL);
-
-        observer = new MutationObserver(() => {
-          patchStickyToggleLabel(STICKY_BUTTON_LABEL);
-        });
-
-        observer.observe(document.body, {
-          childList: true,
-          subtree: true,
-        });
+        scheduleStickyLabelSync(labelRef.current);
       });
     };
 
@@ -192,7 +226,7 @@ export default function FloatingBookingButton() {
       cancelled = true;
       cleanupIdleHandles();
       cleanupIntentListeners();
-      observer?.disconnect();
+      clearScheduledLabelSync();
       removeStickyBookeroNodes();
     };
   }, [isHiddenPath, bookeroLang, normalizedPath]);

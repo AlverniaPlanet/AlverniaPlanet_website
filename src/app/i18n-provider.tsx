@@ -75,7 +75,6 @@ export function I18nProvider({ children, initialLocale }: { children: React.Reac
     try { localStorage.setItem("locale", locale); } catch {}
     try { document.cookie = `locale=${locale}; Path=/; Max-Age=${60 * 60 * 24 * 400}`; } catch {}
     try { document.documentElement.setAttribute("lang", locale); } catch {}
-    try { document.documentElement.setAttribute("lang", locale); } catch {}
   }, [locale]);
 
   useEffect(() => {

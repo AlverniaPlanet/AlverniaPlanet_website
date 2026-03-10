@@ -1,6 +1,7 @@
 "use client";
 
 import Card from "@/app/components/Card";
+import ScrollMotionItem from "@/app/components/ScrollMotionItem";
 import TourLineAccentTitle from "@/app/components/TourLineAccentTitle";
 import TourLineGalleryRow from "@/app/components/TourLineGalleryRow";
 import { useI18n } from "@/app/i18n-provider";
@@ -168,7 +169,7 @@ export default function WystawaContent() {
   const copy = COPY[loc];
 
   return (
-    <main className="relative z-10 min-h-screen ap-page-intro-stagger">
+    <main className="relative z-10 min-h-screen">
       <section className="relative z-10 px-4 pt-12 sm:pt-16">
         <div className="ap-shell mb-10 sm:mb-12">
           <div className="relative overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
@@ -193,7 +194,7 @@ export default function WystawaContent() {
               <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/45 to-black/85" />
               <div className="absolute inset-0 opacity-60 mix-blend-soft-light bg-[radial-gradient(circle_at_18%_22%,rgba(252,211,77,0.28),transparent_38%),radial-gradient(circle_at_78%_20%,rgba(244,114,182,0.24),transparent_36%),radial-gradient(circle_at_50%_78%,rgba(59,130,246,0.28),transparent_44%)]" />
               <div className="relative flex h-full items-center justify-center p-5 sm:p-10 text-center force-overlay">
-                <div className="space-y-3">
+                <div className="space-y-3 ap-page-intro-stagger">
                   <p className="ap-type-kicker force-overlay-muted">
                     {copy.heroTag}
                   </p>
@@ -212,19 +213,23 @@ export default function WystawaContent() {
 
       <section className="px-4 pb-16 sm:pb-20">
         <div className="ap-shell ap-page-stack">
-          <Card className="space-y-6" variant="solid">
-            <TourLineAccentTitle variant="green">{copy.sectionTitle}</TourLineAccentTitle>
-            <div className="space-y-4 ap-type-section-body text-gray-100 max-w-7xl mx-auto">
-              {copy.paragraphs.map((p) => (
-                <p key={p}>{p}</p>
-              ))}
-            </div>
-          </Card>
+          <ScrollMotionItem strength="strong" delay={40} className="ap-deferred-section">
+            <Card className="space-y-6" variant="solid" motion="off">
+              <TourLineAccentTitle variant="green">{copy.sectionTitle}</TourLineAccentTitle>
+              <div className="space-y-4 ap-type-section-body text-gray-100 max-w-7xl mx-auto">
+                {copy.paragraphs.map((p) => (
+                  <p key={p}>{p}</p>
+                ))}
+              </div>
+            </Card>
+          </ScrollMotionItem>
 
-          <Card className="space-y-6" variant="glass">
-            <TourLineAccentTitle variant="green">{copy.galleryTitle}</TourLineAccentTitle>
-            <TourLineGalleryRow items={copy.galleryItems} />
-          </Card>
+          <ScrollMotionItem strength="soft" delay={120} className="ap-deferred-section">
+            <Card className="space-y-6" variant="glass" motion="off">
+              <TourLineAccentTitle variant="green">{copy.galleryTitle}</TourLineAccentTitle>
+              <TourLineGalleryRow items={copy.galleryItems} />
+            </Card>
+          </ScrollMotionItem>
         </div>
       </section>
     </main>

@@ -38,7 +38,8 @@ export default function ScrollMotionItem({
     const viewportFactor = strength === "strong" ? 0.72 : 0.55;
     const normalizeRange = strength === "strong" ? 0.68 : 1;
     const revealThreshold = strength === "strong" ? 0.03 : 0.1;
-    const revealRootMargin = strength === "strong" ? "0px 0px 14% 0px" : "0px 0px 10% 0px";
+    const revealRootMargin =
+      strength === "strong" ? "0px 0px 14% 0px" : "0px 0px 10% 0px";
 
     let frameId: number | null = null;
     let isActive = false;

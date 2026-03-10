@@ -4,6 +4,7 @@ import Card from "@/app/components/Card";
 import TourLineAccentTitle from "@/app/components/TourLineAccentTitle";
 import TourLineGalleryRow from "@/app/components/TourLineGalleryRow";
 import { PrimaryButton } from "@/app/components/PrimaryButton";
+import ScrollMotionItem from "@/app/components/ScrollMotionItem";
 import { useI18n } from "@/app/i18n-provider";
 
 type Locale = "pl" | "en" | "pt";
@@ -219,7 +220,7 @@ export default function Kino360Content() {
   const copy = COPY[loc];
 
   return (
-    <main className="kino360-page relative z-10 min-h-screen ap-page-intro-stagger">
+    <main className="kino360-page relative z-10 min-h-screen">
       <section className="relative z-10 px-4 pt-12 sm:pt-16">
         <div className="ap-shell mb-10 sm:mb-12">
           <div className="relative overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
@@ -244,7 +245,7 @@ export default function Kino360Content() {
               <div className="absolute inset-0 bg-gradient-to-b from-[#071524]/85 via-[#0b2340]/60 to-black/78" />
               <div className="absolute inset-0 opacity-60 mix-blend-soft-light bg-[radial-gradient(circle_at_20%_25%,rgba(76,153,255,0.25),transparent_45%),radial-gradient(circle_at_75%_20%,rgba(24,103,201,0.22),transparent_42%),radial-gradient(circle_at_50%_75%,rgba(7,48,108,0.28),transparent_46%)]" />
               <div className="relative flex h-full items-center justify-center p-5 sm:p-10 text-center force-overlay">
-                <div className="space-y-3">
+                <div className="space-y-3 ap-page-intro-stagger">
                   <p className="text-2xl sm:text-4xl font-extrabold text-white drop-shadow-[0_0_24px_rgba(0,0,0,0.55)]">
                     {copy.heroSoon}
                   </p>
@@ -266,53 +267,59 @@ export default function Kino360Content() {
 
       <section className="px-4 pb-16 sm:pb-20">
         <div className="ap-shell ap-page-stack">
-          <Card variant="solid" className="bg-white/5 ring-1 ring-white/10">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-center gap-3">
-                <span className="inline-flex items-center rounded-full bg-cyan-500/20 px-3 py-1 text-[12px] font-semibold uppercase tracking-[0.08em] text-cyan-100 ring-1 ring-cyan-300/25">
-                  {copy.soonBadge}
-                </span>
-                <p className="ap-type-section-body text-white/85">
-                  {copy.soonBody}
-                </p>
-              </div>
-              <PrimaryButton
-                href="/kontakt"
-                size="md"
-                className="w-full sm:w-auto bg-transparent text-white ring-1 ring-cyan-300/40 shadow-none hover:bg-white/10 hover:text-white"
-              >
-                {copy.soonCta}
-              </PrimaryButton>
-            </div>
-          </Card>
-
-          <Card className="space-y-6">
-            <TourLineAccentTitle variant="cool">{copy.featuresTitle}</TourLineAccentTitle>
-            <div className="grid gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {copy.features.map((item, index) => (
-                <Card
-                  key={item.title}
-                  dense
-                  motion="off"
-                  className="tour-info-card ap-tile h-full bg-white/8 ring-1 ring-white/10 text-white/90"
-                  style={{ "--tour-delay": `${(index % 6) * 0.24}s` } as React.CSSProperties}
+          <ScrollMotionItem strength="soft" delay={30} className="ap-deferred-section" float={false}>
+            <Card variant="solid" className="bg-white/5 ring-1 ring-white/10" motion="off">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="inline-flex items-center rounded-full bg-cyan-500/20 px-3 py-1 text-[12px] font-semibold uppercase tracking-[0.08em] text-cyan-100 ring-1 ring-cyan-300/25">
+                    {copy.soonBadge}
+                  </span>
+                  <p className="ap-type-section-body text-white/85">
+                    {copy.soonBody}
+                  </p>
+                </div>
+                <PrimaryButton
+                  href="/kontakt"
+                  size="md"
+                  className="w-full sm:w-auto bg-transparent text-white ring-1 ring-cyan-300/40 shadow-none hover:bg-white/10 hover:text-white"
                 >
-                  <div className="space-y-3">
-                    <div className="inline-flex rounded-full bg-cyan-500/15 px-3 py-1 text-[12px] font-semibold uppercase tracking-[0.08em] text-cyan-100 ring-1 ring-cyan-400/25">
-                      360°
-                    </div>
-                    <h3 className="text-xl font-semibold text-white">{item.title}</h3>
-                    <p className="ap-type-section-body text-gray-200">{item.body}</p>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </Card>
+                  {copy.soonCta}
+                </PrimaryButton>
+              </div>
+            </Card>
+          </ScrollMotionItem>
 
-          <Card className="space-y-6" variant="solid">
-            <TourLineAccentTitle variant="cool">{copy.galleryTitle}</TourLineAccentTitle>
-            <TourLineGalleryRow items={copy.galleryItems} />
-          </Card>
+          <ScrollMotionItem strength="strong" delay={110} className="ap-deferred-section">
+            <Card className="space-y-6" motion="off">
+              <TourLineAccentTitle variant="cool">{copy.featuresTitle}</TourLineAccentTitle>
+              <div className="grid gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                {copy.features.map((item, index) => (
+                  <Card
+                    key={item.title}
+                    dense
+                    motion="off"
+                    className="tour-info-card ap-tile h-full bg-white/8 ring-1 ring-white/10 text-white/90"
+                    style={{ "--tour-delay": `${(index % 6) * 0.24}s` } as React.CSSProperties}
+                  >
+                    <div className="space-y-3">
+                      <div className="inline-flex rounded-full bg-cyan-500/15 px-3 py-1 text-[12px] font-semibold uppercase tracking-[0.08em] text-cyan-100 ring-1 ring-cyan-400/25">
+                        360°
+                      </div>
+                      <h3 className="text-xl font-semibold text-white">{item.title}</h3>
+                      <p className="ap-type-section-body text-gray-200">{item.body}</p>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </Card>
+          </ScrollMotionItem>
+
+          <ScrollMotionItem strength="soft" delay={170} className="ap-deferred-section">
+            <Card className="space-y-6" variant="solid" motion="off">
+              <TourLineAccentTitle variant="cool">{copy.galleryTitle}</TourLineAccentTitle>
+              <TourLineGalleryRow items={copy.galleryItems} />
+            </Card>
+          </ScrollMotionItem>
         </div>
       </section>
     </main>

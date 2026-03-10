@@ -3,43 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useI18n } from "@/app/i18n-provider";
-
-type Locale = "pl" | "en" | "pt";
-
-function getPrefetchTargets(locale: Locale): string[] {
-  const prefix = locale === "pl" ? "" : `/${locale}`;
-  const reservePath =
-    locale === "en" ? "/en/reserve" : locale === "pt" ? "/pt/reservar" : "/rezerwuj";
-
-  const toLocalePath = (path: string) => {
-    if (locale === "pl") return path;
-    const map: Record<string, string> = {
-      "/wydarzenia": "/events",
-      "/galeria": "/gallery",
-      "/jak-dojechac": "/getting-there",
-      "/o-alvernia-planet": "/about",
-      "/kontakt": "/contact",
-      "/atrakcje/wystawa": "/attractions/exhibition",
-      "/atrakcje/sciezka-filmowa": "/attractions/film-path",
-      "/atrakcje/kino-360": "/attractions/cinema-360",
-    };
-    const mapped = map[path] ?? path;
-    return `${prefix}${mapped}`;
-  };
-
-  return [
-    toLocalePath("/"),
-    toLocalePath("/wydarzenia"),
-    toLocalePath("/galeria"),
-    toLocalePath("/jak-dojechac"),
-    toLocalePath("/o-alvernia-planet"),
-    toLocalePath("/kontakt"),
-    toLocalePath("/atrakcje/wystawa"),
-    toLocalePath("/atrakcje/sciezka-filmowa"),
-    toLocalePath("/atrakcje/kino-360"),
-    reservePath,
-  ];
-}
+import { getPrefetchTargets, type Locale } from "@/lib/localizedRoutes";
 
 export default function RoutePrefetcher() {
   const router = useRouter();
@@ -50,6 +14,7 @@ export default function RoutePrefetcher() {
     let cancelled = false;
     let idleCallbackId: number | null = null;
     let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    let queueTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
     const win = window as Window & {
       requestIdleCallback?: (callback: IdleRequestCallback, options?: IdleRequestOptions) => number;
@@ -59,13 +24,21 @@ export default function RoutePrefetcher() {
     const runPrefetch = () => {
       if (cancelled) return;
       const targets = getPrefetchTargets(loc);
-      targets.forEach((href) => {
+      let index = 0;
+
+      const prefetchNext = () => {
+        if (cancelled || index >= targets.length) return;
+        const href = targets[index];
+        index += 1;
         try {
           router.prefetch(href);
         } catch {
           // Ignore prefetch failures, they are non-critical.
         }
-      });
+        queueTimeoutId = setTimeout(prefetchNext, 140);
+      };
+
+      prefetchNext();
     };
 
     if (typeof win.requestIdleCallback === "function") {
@@ -81,6 +54,9 @@ export default function RoutePrefetcher() {
       }
       if (timeoutId !== null) {
         clearTimeout(timeoutId);
+      }
+      if (queueTimeoutId !== null) {
+        clearTimeout(queueTimeoutId);
       }
     };
   }, [loc, router]);

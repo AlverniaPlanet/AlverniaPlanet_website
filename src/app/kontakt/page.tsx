@@ -3,6 +3,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import Card from "@/app/components/Card";
 import { PrimaryButton } from "@/app/components/PrimaryButton";
+import ScrollMotionItem from "@/app/components/ScrollMotionItem";
 import { useI18n } from "@/app/i18n-provider";
 
 const PHONE_BOOKING = "+48 723 999 099";
@@ -301,7 +302,7 @@ export default function KontaktPage() {
   }, [hasGoogleConfig, language]);
 
   return (
-    <main className="relative z-10 text-white px-4 py-12 sm:py-16 flex-1 flex flex-col min-h-screen">
+    <main className="relative z-10 text-white px-4 py-12 sm:py-16 flex-1 flex flex-col min-h-screen ap-page-intro-stagger">
       <div className="flex-1 flex flex-col ap-page-stack">
         {/* Nagłówek */}
         <section className="mx-auto max-w-3xl text-center">
@@ -314,10 +315,11 @@ export default function KontaktPage() {
 
         {/* Karty kontaktowe */}
         <section className="ap-shell">
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <ScrollMotionItem strength="strong" delay={40} className="ap-deferred-section" float={false}>
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             {/* Infolinia */}
             <div>
-              <Card variant="solid" className="h-full flex flex-col gap-5 text-center items-center">
+              <Card variant="solid" motion="off" className="h-full flex flex-col gap-5 text-center items-center">
                 <div className="flex flex-col items-center gap-2">
                   <h2 className="text-2xl font-semibold">{copy.info.title}</h2>
                 </div>
@@ -358,7 +360,7 @@ export default function KontaktPage() {
 
             {/* Rezerwacje i grupy */}
             <div>
-              <Card variant="solid" className="h-full flex flex-col gap-6 text-center items-center">
+              <Card variant="solid" motion="off" className="h-full flex flex-col gap-6 text-center items-center">
                 <h2 className="text-2xl font-semibold">{copy.booking.title}</h2>
                 <div className="h-[1px] w-full bg-white/15 mt-1" />
                 <p className="text-sm text-gray-300 leading-relaxed px-2 md:px-6 mb-3">
@@ -397,7 +399,7 @@ export default function KontaktPage() {
 
             {/* Eventy i sesje zdjęciowe */}
             <div>
-              <Card variant="solid" className="h-full flex flex-col gap-6 text-center items-center">
+              <Card variant="solid" motion="off" className="h-full flex flex-col gap-6 text-center items-center">
                 <h2 className="text-2xl font-semibold">{copy.events.title}</h2>
                 <div className="h-[1px] w-full bg-white/15 mt-1" />
                 <p className="text-sm text-gray-300 leading-relaxed px-2 md:px-6 mb-3">
@@ -418,13 +420,15 @@ export default function KontaktPage() {
                 </div>
               </Card>
             </div>
-          </div>
+            </div>
+          </ScrollMotionItem>
         </section>
 
         {/* Formularz kontaktowy */}
         <section className="ap-shell">
-          <div>
-            <Card title={copy.form.title} titleCentered titleDivider>
+          <ScrollMotionItem strength="soft" delay={120} className="ap-deferred-section">
+            <div>
+              <Card title={copy.form.title} titleCentered titleDivider motion="off">
               <p className="text-center text-gray-300">{copy.form.subtitle}</p>
               {formState === "success" ? (
                 <div className="mt-6 mx-auto max-w-2xl rounded-2xl border border-emerald-400/40 bg-emerald-400/10 p-4 text-center">
@@ -504,8 +508,9 @@ export default function KontaktPage() {
                 </PrimaryButton>
                 <p className="text-center text-xs text-white/50">{copy.form.requiredNote}</p>
               </form>
-            </Card>
-          </div>
+              </Card>
+            </div>
+          </ScrollMotionItem>
         </section>
       </div>
     </main>

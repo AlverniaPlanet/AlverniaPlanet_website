@@ -235,6 +235,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
           title: "Group ticket (schools)",
           subtitle: "30-50 people in a group",
           details: ["For schools and organized groups", "Pay for the whole group"],
+          priceLabel: "Price for min. 30 people",
+          price: "2,070 PLN/group",
         },
       ],
     },
@@ -337,6 +339,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
           title: "Bilhete de grupo (escolas)",
           subtitle: "30-50 pessoas no grupo",
           details: ["Para escolas e grupos organizados", "Pagamento pelo grupo inteiro"],
+          priceLabel: "Preço mín. 30 pessoas",
+          price: "2 070 PLN/grupo",
         },
       ],
     },
@@ -389,7 +393,8 @@ const EVENT_GALLERY_IMAGES = Array.from(
 );
 const HERO_WELCOME_AUTO_HIDE_MS = 2500;
 const HERO_WELCOME_FADE_DURATION_MS = 1200;
-const HERO_PROMO_DELAY_MS = 1000;
+const HERO_PROMO_DELAY_MS = 2000;
+const HERO_PROMO_FADE_DURATION_MS = 700;
 const EVENT_COLUMN_CARD_HEIGHTS = [
   "h-28 sm:h-32 lg:h-36",
   "h-36 sm:h-40 lg:h-44",
@@ -564,7 +569,7 @@ export default function Page() {
               <div className="pointer-events-none absolute inset-x-0 top-7 z-20 flex justify-center px-4 sm:top-8 lg:top-9">
                 <Link
                   href={copy.heroPromo.href}
-                  className={`hero-film-alert pointer-events-auto inline-flex max-w-full items-center gap-2 rounded-full px-3 py-2 text-[11px] sm:gap-2.5 sm:px-4 sm:py-2.5 sm:text-sm transition-[opacity,transform,filter] duration-[1200ms] ${
+                  className={`hero-film-alert pointer-events-auto inline-flex max-w-full items-center gap-2 rounded-full px-3 py-2 text-[11px] sm:gap-2.5 sm:px-4 sm:py-2.5 sm:text-sm transition-[opacity,transform,filter] ${
                     introReady
                       ? "hero-film-alert-intro opacity-100 translate-y-0 scale-100"
                       : "opacity-0 -translate-y-8 scale-[0.88] blur-sm pointer-events-none"
@@ -572,6 +577,7 @@ export default function Page() {
                   style={{
                     transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
                     transitionDelay: introReady ? `${HERO_PROMO_DELAY_MS}ms` : "0ms",
+                    transitionDuration: `${HERO_PROMO_FADE_DURATION_MS}ms`,
                   }}
                 >
                   <span
@@ -651,7 +657,7 @@ export default function Page() {
       >
         <div className="mx-auto max-w-[72rem]">
           <div className="grid grid-cols-1 gap-16 sm:gap-20">
-            <ScrollMotionItem strength="strong" delay={40}>
+            <ScrollMotionItem strength="strong" delay={40} float>
               <Card title={copy.attractions.title} titleCentered titleDivider dense motion="off">
                 <p className="ap-type-section-body text-center max-w-3xl mx-auto">
                   {copy.attractions.intro}
@@ -715,7 +721,7 @@ export default function Page() {
               </Card>
             </ScrollMotionItem>
 
-            <ScrollMotionItem strength="strong" delay={130} className="home-deferred-block">
+            <ScrollMotionItem strength="strong" delay={130} float className="home-deferred-block">
               <Card title={copy.events.title} className="text-center" titleCentered titleDivider dense motion="off">
                 <p className="ap-type-section-body">{copy.events.description}</p>
                 <EventsVerticalShowcase photos={eventPhotos} allowAnimation={secondaryAnimationsReady} />
@@ -727,7 +733,7 @@ export default function Page() {
               </Card>
             </ScrollMotionItem>
 
-            <ScrollMotionItem strength="strong" delay={170} className="home-deferred-block">
+            <ScrollMotionItem strength="strong" delay={170} float className="home-deferred-block">
               <Card title={copy.testimonials.title} titleCentered titleDivider dense motion="off">
                 <p className="ap-type-section-body text-center">{copy.testimonials.subtitle}</p>
                 <div className="mt-6">

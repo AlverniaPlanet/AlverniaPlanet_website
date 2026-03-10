@@ -2,6 +2,7 @@
 
 import Card from "@/app/components/Card";
 import BookeroEmbed from "@/app/components/BookeroEmbed";
+import ScrollMotionItem from "@/app/components/ScrollMotionItem";
 import { useI18n } from "@/app/i18n-provider";
 
 const BOOKERO_PLUGIN_ID = "8iWKMAEWtI0P";
@@ -47,7 +48,7 @@ export default function BookingPage() {
   const copy = COPY[loc];
 
   return (
-    <main className="relative min-h-screen text-white px-4 py-12 sm:py-16">
+    <main className="relative min-h-screen text-white px-4 py-12 sm:py-16 ap-page-intro-stagger">
       <div className="ap-shell ap-page-stack">
         <header className="text-center space-y-5">
           <p className="ap-type-kicker">{copy.tag}</p>
@@ -58,17 +59,19 @@ export default function BookingPage() {
           <div className="h-[1px] w-40 mx-auto bg-gradient-to-r from-transparent via-white/30 to-transparent" />
         </header>
 
-        <Card id="bookero-form" variant="solid" className="relative overflow-hidden" motion="off">
-          <BookeroEmbed
-            pluginId={BOOKERO_PLUGIN_ID}
-            containerId="bookero"
-            type="standard"
-            position=""
-            pluginCss
-            lang={bookeroLang}
-            className="w-full min-h-[980px] overflow-hidden rounded-2xl bg-white ring-1 ring-black/10"
-          />
-        </Card>
+        <ScrollMotionItem strength="soft" delay={40} className="ap-deferred-section" float={false}>
+          <Card id="bookero-form" variant="solid" className="relative overflow-hidden" motion="off">
+            <BookeroEmbed
+              pluginId={BOOKERO_PLUGIN_ID}
+              containerId="bookero"
+              type="standard"
+              position=""
+              pluginCss
+              lang={bookeroLang}
+              className="w-full min-h-[980px] overflow-hidden rounded-2xl bg-white ring-1 ring-black/10"
+            />
+          </Card>
+        </ScrollMotionItem>
       </div>
     </main>
   );

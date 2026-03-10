@@ -4,6 +4,7 @@ import Card from "@/app/components/Card";
 import TourLineAccentTitle from "@/app/components/TourLineAccentTitle";
 import TourLineGalleryRow from "@/app/components/TourLineGalleryRow";
 import { PrimaryButton } from "@/app/components/PrimaryButton";
+import ScrollMotionItem from "@/app/components/ScrollMotionItem";
 import { useI18n } from "@/app/i18n-provider";
 
 type Locale = "pl" | "en" | "pt";
@@ -326,7 +327,7 @@ export default function FilmPathContent() {
               </video>
               <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/35 to-black/80" />
               <div className="relative flex h-full items-center justify-center p-6 sm:p-10 text-center force-overlay">
-                <div className="space-y-2">
+                <div className="space-y-2 ap-page-intro-stagger">
                   <p className="ap-type-kicker force-overlay-muted">
                     {t.heroTag}
                   </p>
@@ -345,80 +346,86 @@ export default function FilmPathContent() {
 
       <section className="px-4 pb-16 sm:pb-20">
         <div className="ap-shell ap-page-stack">
-          <div className="grid gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {t.story.map((section, index) => (
-              <Card
-                key={section.title}
-                motion="off"
-                className="tour-info-card ap-tile text-center space-y-4 h-full group"
-                style={{ "--tour-delay": `${(index % 6) * 0.24}s` } as React.CSSProperties}
-              >
-                <TourLineAccentTitle>{section.title}</TourLineAccentTitle>
-                <p className="ap-type-section-body text-gray-100">{section.body}</p>
-              </Card>
-            ))}
-          </div>
-
-          <Card className="space-y-6">
-            <div className="text-center space-y-3">
-              <TourLineAccentTitle>{t.k9Title}</TourLineAccentTitle>
-              <p className="ap-type-section-body text-gray-100 max-w-3xl mx-auto">
-                {t.k9Body}
-              </p>
-            </div>
-
-            <TourLineGalleryRow items={k9} />
-          </Card>
-
-          <Card title={t.ticketsTitle} titleCentered titleDivider dense motion="off">
-            <p className="ap-type-section-body text-center max-w-3xl mx-auto">{t.ticketsIntro}</p>
-            <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-x-6 gap-y-10">
-              {t.ticketsOptions.map((option) => (
-                <div
-                  key={option.title}
-                  className="ticket-card ap-tile group flex h-full flex-col rounded-3xl text-white/90"
+          <ScrollMotionItem strength="strong" delay={40} className="ap-deferred-section">
+            <div className="grid gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {t.story.map((section, index) => (
+                <Card
+                  key={section.title}
+                  motion="off"
+                  className="tour-info-card ap-tile text-center space-y-4 h-full group"
+                  style={{ "--tour-delay": `${(index % 6) * 0.24}s` } as React.CSSProperties}
                 >
-                  <div className="ticket-card-top">
-                    <span className="ticket-card-badge">{option.badge}</span>
-                  </div>
-                  <div className="ticket-card-content flex h-full flex-col p-5 sm:p-6 text-center">
-                    <h3 className="ticket-card-title text-xl sm:text-2xl font-semibold text-white">
-                      {option.title}
-                    </h3>
-                    <p className="ticket-card-subtitle mt-2 text-sm sm:text-base text-white/75">
-                      {option.subtitle}
-                    </p>
-                    <div className="ticket-card-divider mt-6" />
-                    <ul className="ticket-list-panel mt-5 mb-8 space-y-3 text-sm text-white/75 text-left mx-auto max-w-sm">
-                      {option.details.map((detail) => (
-                        <li key={detail} className="ticket-detail flex gap-3">
-                          <span className="ticket-detail-dot mt-2 h-1.5 w-1.5 rounded-full bg-[#4fcfde] shrink-0" />
-                          <span>{detail}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <div className="ticket-price-block mt-auto pt-7">
-                      <p className="ticket-price-label text-[0.7rem] uppercase tracking-[0.25em] text-white/60">
-                        {option.priceLabel ?? t.ticketsPriceLabel}
+                  <TourLineAccentTitle>{section.title}</TourLineAccentTitle>
+                  <p className="ap-type-section-body text-gray-100">{section.body}</p>
+                </Card>
+              ))}
+            </div>
+          </ScrollMotionItem>
+
+          <ScrollMotionItem strength="soft" delay={110} className="ap-deferred-section">
+            <Card className="space-y-6" motion="off">
+              <div className="text-center space-y-3">
+                <TourLineAccentTitle>{t.k9Title}</TourLineAccentTitle>
+                <p className="ap-type-section-body text-gray-100 max-w-3xl mx-auto">
+                  {t.k9Body}
+                </p>
+              </div>
+
+              <TourLineGalleryRow items={k9} />
+            </Card>
+          </ScrollMotionItem>
+
+          <ScrollMotionItem strength="strong" delay={170} className="ap-deferred-section">
+            <Card title={t.ticketsTitle} titleCentered titleDivider dense motion="off">
+              <p className="ap-type-section-body text-center max-w-3xl mx-auto">{t.ticketsIntro}</p>
+              <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-x-6 gap-y-10">
+                {t.ticketsOptions.map((option) => (
+                  <div
+                    key={option.title}
+                    className="ticket-card ap-tile group flex h-full flex-col rounded-3xl text-white/90"
+                  >
+                    <div className="ticket-card-top">
+                      <span className="ticket-card-badge">{option.badge}</span>
+                    </div>
+                    <div className="ticket-card-content flex h-full flex-col p-5 sm:p-6 text-center">
+                      <h3 className="ticket-card-title text-xl sm:text-2xl font-semibold text-white">
+                        {option.title}
+                      </h3>
+                      <p className="ticket-card-subtitle mt-2 text-sm sm:text-base text-white/75">
+                        {option.subtitle}
                       </p>
-                      <p className="ticket-price mt-2 text-2xl sm:text-3xl font-bold text-amber-200">
-                        {option.price ?? t.ticketsPrice}
-                      </p>
-                      <div className="mt-6 flex justify-center">
-                        <PrimaryButton
-                          href={bookingHref}
-                          size="md"
-                          className="ticket-pill ring-[color:rgba(240,60,100,0.55)]"
-                        >
-                          {t.ticketsButton}
-                        </PrimaryButton>
+                      <div className="ticket-card-divider mt-6" />
+                      <ul className="ticket-list-panel mt-5 mb-8 space-y-3 text-sm text-white/75 text-left mx-auto max-w-sm">
+                        {option.details.map((detail) => (
+                          <li key={detail} className="ticket-detail flex gap-3">
+                            <span className="ticket-detail-dot mt-2 h-1.5 w-1.5 rounded-full bg-[#4fcfde] shrink-0" />
+                            <span>{detail}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      <div className="ticket-price-block mt-auto pt-7">
+                        <p className="ticket-price-label text-[0.7rem] uppercase tracking-[0.25em] text-white/60">
+                          {option.priceLabel ?? t.ticketsPriceLabel}
+                        </p>
+                        <p className="ticket-price mt-2 text-2xl sm:text-3xl font-bold text-amber-200">
+                          {option.price ?? t.ticketsPrice}
+                        </p>
+                        <div className="mt-6 flex justify-center">
+                          <PrimaryButton
+                            href={bookingHref}
+                            size="md"
+                            className="ticket-pill ring-[color:rgba(240,60,100,0.55)]"
+                          >
+                            {t.ticketsButton}
+                          </PrimaryButton>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </Card>
+                ))}
+              </div>
+            </Card>
+          </ScrollMotionItem>
         </div>
       </section>
     </main>

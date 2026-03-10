@@ -1,21 +1,26 @@
 "use client";
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { motion, type Variants } from "framer-motion";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo, type ReactNode } from "react";
 import { useI18n } from "@/app/i18n-provider";
 import Card from "@/app/components/Card";
 import { PrimaryButton } from "@/app/components/PrimaryButton";
+import ScrollMotionItem from "@/app/components/ScrollMotionItem";
 import Image from "next/image";
-import Link from "next/link";
-
-// ===== Animations (spójne z resztą serwisu) =====
-const fade: Variants = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { duration: 0.6 } },
-};
 
 // ===== Lokalny słownik (PL/EN) =====
 type Locale = "pl" | "en" | "pt";
+const FORMAT_SHOWCASE_IMAGES = [
+  "/galeria/Wydarzenia/webp/8.webp",
+  "/galeria/Wydarzenia/webp/6.webp",
+  "/galeria/Wydarzenia/webp/5.webp",
+];
+type DomeKey = "k3" | "k4" | "k7" | "k10k12";
+
+const DOME_IMAGE_BY_KEY: Record<DomeKey, string> = {
+  k3: "/galeria/Wydarzenia/webp/1.webp",
+  k4: "/galeria/Wydarzenia/webp/3.webp",
+  k7: "/galeria/Wydarzenia/webp/4.webp",
+  k10k12: "/galeria/Wydarzenia/webp/2.webp",
+};
 
 const COPY: Record<
   Locale,
@@ -23,127 +28,83 @@ const COPY: Record<
     title: string;
     tag: string;
     venueLabel: string;
+    intro: string;
     bullets: string[];
   }
 > = {
   pl: {
-    title: "Wyjątkowe miejsce na event",
+    title: "Wydarzenia w Alvernia Planet",
     tag: "wydarzenia",
     venueLabel: "Alvernia Planet",
+    intro:
+      "Przestrzeń dla marek i organizatorów, którzy chcą zrobić event z realnym efektem wow.",
     bullets: [
-      "To idealne miejsce na organizację wyszukanego eventu",
-      "Przyciąga uwagę nawet najbardziej wymagającego klienta",
-      "Wyjątkowe miejsce na skalę światową",
-      "Unikatowa infrastruktura",
-      "Odosobniona lokalizacja zapewniająca prywatność i bezpieczeństwo",
+      "Ikoniczna architektura i scenografia gotowa pod formaty premium",
+      "Dwie kopuły eventowe po 2 000 m² + dodatkowe strefy wsparcia",
+      "Prywatna lokalizacja i bezpieczny, wygodny dojazd z A4",
+      "Wsparcie zespołu sprzedażowego od briefu po dzień realizacji",
     ],
   },
   en: {
-    title: "A one-of-a-kind venue for events",
+    title: "Events at Alvernia Planet",
     tag: "events",
     venueLabel: "Alvernia Planet",
+    intro:
+      "A destination for brands and organizers who want a memorable event with a true wow factor.",
     bullets: [
-      "A perfect place to host a refined event",
-      "Captures the attention of even the most demanding clients",
-      "A unique venue of world-class scale",
-      "Truly distinctive infrastructure",
-      "Secluded location providing privacy and security",
+      "Iconic architecture and scenery suited for premium formats",
+      "Two event domes, 2,000 m² each, plus supporting spaces",
+      "Private location with easy and secure access from the A4 highway",
+      "Sales team support from initial brief to event day delivery",
     ],
   },
   pt: {
-    title: "Um lugar único para eventos",
+    title: "Eventos na Alvernia Planet",
     tag: "eventos",
     venueLabel: "Alvernia Planet",
+    intro:
+      "Um espaço para marcas e organizadores que querem um evento memorável e com impacto.",
     bullets: [
-      "Um lugar ideal para organizar um evento sofisticado",
-      "Atrai a atenção até dos clientes mais exigentes",
-      "Um espaço único à escala mundial",
-      "Infraestrutura verdadeiramente distinta",
-      "Localização isolada que garante privacidade e segurança",
+      "Arquitetura icónica e cenografia pronta para formatos premium",
+      "Duas cúpulas de 2 000 m² cada + áreas de apoio",
+      "Localização privada com acesso cómodo e seguro pela A4",
+      "Acompanhamento comercial desde o brief até ao dia do evento",
     ],
   },
 };
 
 const SECOND: Record<Locale, { title: string; bullets: string[] }> = {
   pl: {
-    title: "Nieograniczone możliwości zorganizowania:",
+    title: "Jakie wydarzenia organizujemy",
     bullets: [
-      "Ekskluzywnych eventów korporacyjnych",
-      "Spotkań kluczowych klientów",
-      "Targów branżowych",
-      "Konferencji prasowej",
-      "Szkoleń i wykładów",
-      "Pokazów mody",
-      "Koncertów",
-      "Prezentacji",
+      "Eventy korporacyjne i spotkania strategiczne",
+      "Konferencje prasowe, szkolenia i wykłady",
+      "Gale, bankiety i kolacje biznesowe",
+      "Koncerty, premiery i formaty muzyczne",
+      "Pokazy mody i premiery produktów",
+      "Targi oraz prezentacje branżowe",
     ],
   },
   en: {
-    title: "Unlimited possibilities to host",
+    title: "Event formats we host",
     bullets: [
-      "Exclusive corporate events",
-      "Key client meetings",
-      "Industry trade fairs",
-      "Press conferences",
-      "Trainings and lectures",
-      "Fashion shows",
-      "Concerts",
-      "Product presentations",
+      "Corporate events and strategic client meetings",
+      "Press conferences, trainings, and talks",
+      "Galas, banquets, and formal dinners",
+      "Concerts, premieres, and music formats",
+      "Fashion shows and product launches",
+      "Trade fairs and industry presentations",
     ],
   },
   pt: {
-    title: "Possibilidades ilimitadas para organizar:",
+    title: "Formatos de evento que realizamos",
     bullets: [
-      "Eventos corporativos exclusivos",
-      "Reuniões com clientes‑chave",
-      "Feiras do setor",
-      "Conferências de imprensa",
-      "Formações e palestras",
-      "Desfiles de moda",
-      "Concertos",
-      "Apresentações de produto",
-    ],
-  },
-};
-
-const THIRD: Record<Locale, { title: string; bullets: string[] }> = {
-  pl: {
-    title: "Co nas wyróżnia?",
-    bullets: [
-      "Niespotykana architektura",
-      "Dwa studia – kopuły, każde o powierzchni 2 000 m²",
-      "Ponadnormatywne wjazdy do wnętrza kopuł przez naprzeciwległe bramy",
-      "Każda z kopuł może pomieścić 1 200 osób",
-      "Sklepienie centralne ponad 16 m",
-      "Spektakularna akustyka",
-      "Parking na ponad 200 samochodów i autobusów oraz lądowisko dla helikopterów",
-      "Zaplecze: gastronomiczne, garderoby, charakteryzatornie",
-    ],
-  },
-  en: {
-    title: "What makes us unique?",
-    bullets: [
-      "Unconventional architecture",
-      "Two studios – domes, each with 2,000 m² of floor space",
-      "Oversized drive-through access via opposite gates",
-      "Each dome can host up to 1,200 people",
-      "Central dome height over 16 m",
-      "Spectacular acoustics",
-      "Parking for 200+ cars & buses plus a helipad",
-      "Back-of-house: catering, dressing rooms, make-up rooms",
-    ],
-  },
-  pt: {
-    title: "O que nos distingue?",
-    bullets: [
-      "Arquitetura pouco comum",
-      "Dois estúdios — cúpulas, cada uma com 2 000 m²",
-      "Acesso de grandes dimensões por portões opostos",
-      "Cada cúpula pode receber até 1 200 pessoas",
-      "Altura central superior a 16 m",
-      "Acústica espetacular",
-      "Estacionamento para mais de 200 carros e autocarros e heliponto",
-      "Backstage: catering, camarins e salas de maquilhagem",
+      "Eventos corporativos e reuniões estratégicas",
+      "Conferências de imprensa, formações e palestras",
+      "Galas, banquetes e jantares empresariais",
+      "Concertos, estreias e formatos musicais",
+      "Desfiles de moda e lançamentos de produto",
+      "Feiras e apresentações do setor",
     ],
   },
 };
@@ -163,22 +124,22 @@ const VIDEO_SHOWCASE: Record<
       {
         title: "Koncert w kopule",
         body: "Atmosfera live w sferycznej scenie.",
-        src: "https://www.youtube.com/embed/jt6zh-vaFNc",
-        poster: "https://img.youtube.com/vi/jt6zh-vaFNc/hqdefault.jpg",
+        src: "https://www.youtube.com/watch?v=jt6zh-vaFNc&t=12s",
+        poster: "https://i.ytimg.com/vi/jt6zh-vaFNc/hqdefault.jpg",
         embed: true,
       },
       {
         title: "Bankiet i gala",
         body: "Wieczorna aranżacja z elegancką oprawą.",
-        src: "https://www.youtube.com/embed/PWtTaxqxufE",
-        poster: "https://img.youtube.com/vi/PWtTaxqxufE/hqdefault.jpg",
+        src: "https://www.youtube.com/watch?v=PWtTaxqxufE",
+        poster: "https://i.ytimg.com/vi/PWtTaxqxufE/hqdefault.jpg",
         embed: true,
       },
       {
         title: "Club / afterparty",
         body: "Światła i dźwięk w klubowym wydaniu.",
-        src: "https://www.youtube.com/embed/BkdKk5Jc_RA",
-        poster: "https://img.youtube.com/vi/BkdKk5Jc_RA/hqdefault.jpg",
+        src: "https://www.youtube.com/watch?v=BkdKk5Jc_RA",
+        poster: "https://i.ytimg.com/vi/BkdKk5Jc_RA/hqdefault.jpg",
         embed: true,
       },
     ],
@@ -189,22 +150,22 @@ const VIDEO_SHOWCASE: Record<
       {
         title: "Concert in the dome",
         body: "Live atmosphere on a spherical stage.",
-        src: "https://www.youtube.com/embed/jt6zh-vaFNc",
-        poster: "https://img.youtube.com/vi/jt6zh-vaFNc/hqdefault.jpg",
+        src: "https://www.youtube.com/watch?v=jt6zh-vaFNc&t=12s",
+        poster: "https://i.ytimg.com/vi/jt6zh-vaFNc/hqdefault.jpg",
         embed: true,
       },
       {
         title: "Banquet and gala",
         body: "Evening setup with elegant styling.",
-        src: "https://www.youtube.com/embed/PWtTaxqxufE",
-        poster: "https://img.youtube.com/vi/PWtTaxqxufE/hqdefault.jpg",
+        src: "https://www.youtube.com/watch?v=PWtTaxqxufE",
+        poster: "https://i.ytimg.com/vi/PWtTaxqxufE/hqdefault.jpg",
         embed: true,
       },
       {
         title: "Club / afterparty",
         body: "Lights and sound in a club vibe.",
-        src: "https://www.youtube.com/embed/BkdKk5Jc_RA",
-        poster: "https://img.youtube.com/vi/BkdKk5Jc_RA/hqdefault.jpg",
+        src: "https://www.youtube.com/watch?v=BkdKk5Jc_RA",
+        poster: "https://i.ytimg.com/vi/BkdKk5Jc_RA/hqdefault.jpg",
         embed: true,
       },
     ],
@@ -215,101 +176,50 @@ const VIDEO_SHOWCASE: Record<
       {
         title: "Concerto na cúpula",
         body: "Atmosfera ao vivo num palco esférico.",
-        src: "https://www.youtube.com/embed/jt6zh-vaFNc",
-        poster: "https://img.youtube.com/vi/jt6zh-vaFNc/hqdefault.jpg",
+        src: "https://www.youtube.com/watch?v=jt6zh-vaFNc&t=12s",
+        poster: "https://i.ytimg.com/vi/jt6zh-vaFNc/hqdefault.jpg",
         embed: true,
       },
       {
         title: "Banquete e gala",
         body: "Cenário noturno com um toque elegante.",
-        src: "https://www.youtube.com/embed/PWtTaxqxufE",
-        poster: "https://img.youtube.com/vi/PWtTaxqxufE/hqdefault.jpg",
+        src: "https://www.youtube.com/watch?v=PWtTaxqxufE",
+        poster: "https://i.ytimg.com/vi/PWtTaxqxufE/hqdefault.jpg",
         embed: true,
       },
       {
         title: "Club / afterparty",
         body: "Luzes e som em ambiente de clube.",
-        src: "https://www.youtube.com/embed/BkdKk5Jc_RA",
-        poster: "https://img.youtube.com/vi/BkdKk5Jc_RA/hqdefault.jpg",
+        src: "https://www.youtube.com/watch?v=BkdKk5Jc_RA",
+        poster: "https://i.ytimg.com/vi/BkdKk5Jc_RA/hqdefault.jpg",
         embed: true,
       },
     ],
   },
 };
 
-const PREVIEW_IMG: Record<Locale, { src: string; alt: string }>[] = [
-  {
-    pl: { src: "/wydarzenia/Koncert_poster.webp", alt: "Kopuły z lotu ptaka" },
-    en: { src: "/wydarzenia/Koncert_poster.webp", alt: "Domes – aerial view" },
-    pt: { src: "/wydarzenia/Koncert_poster.webp", alt: "Cúpulas vistas de cima" },
-  } as any,
-  {
-    pl: {
-      src: "/wydarzenia/Bankiet_poster.webp",
-      alt: "Wnętrza ścieżki filmowej",
-    },
-    en: {
-      src: "/wydarzenia/Bankiet_poster.webp",
-      alt: "Film path interiors",
-    },
-    pt: {
-      src: "/wydarzenia/Bankiet_poster.webp",
-      alt: "Interiores do percurso cinematográfico",
-    },
-  } as any,
-  {
-    pl: { src: "/wydarzenia/Club_poster.webp", alt: "Scena wydarzenia" },
-    en: { src: "/wydarzenia/Club_poster.webp", alt: "Event scene" },
-    pt: { src: "/wydarzenia/Club_poster.webp", alt: "Palco do evento" },
-  } as any,
-];
-
 // ===== UI tekst (loadery, kontakt, adres, przycisk mapy) =====
 const UI_TEXT: Record<
   Locale,
   {
     loadingVideo: string;
-    loadingMap: string;
-    loadMapAction: string;
     playVideo: string;
-    contactHeading: string;
-    addressHeading: string;
-    mapButton: string;
-    mapTitle: string;
     videoFallback: string;
   }
 > = {
   pl: {
     loadingVideo: "Ładowanie wideo...",
-    loadingMap: "Ładowanie mapy...",
-    loadMapAction: "Załaduj mapę",
     playVideo: "Odtwórz",
-    contactHeading: "Kontakt",
-    addressHeading: "Adres",
-    mapButton: "Zobacz na mapie",
-    mapTitle: "Mapa Alvernia Planet",
     videoFallback: "Twoja przeglądarka nie obsługuje elementu wideo.",
   },
   en: {
     loadingVideo: "Loading video...",
-    loadingMap: "Loading map...",
-    loadMapAction: "Load map",
     playVideo: "Play",
-    contactHeading: "Contact",
-    addressHeading: "Address",
-    mapButton: "View on map",
-    mapTitle: "Map – Alvernia Planet",
     videoFallback: "Your browser does not support the video element.",
   },
   pt: {
     loadingVideo: "A carregar vídeo...",
-    loadingMap: "A carregar mapa...",
-    loadMapAction: "Carregar mapa",
     playVideo: "Reproduzir",
-    contactHeading: "Contacto",
-    addressHeading: "Morada",
-    mapButton: "Ver no mapa",
-    mapTitle: "Mapa – Alvernia Planet",
     videoFallback: "O seu navegador não suporta o elemento de vídeo.",
   },
 };
@@ -319,32 +229,106 @@ const SECTION_UI: Record<
   {
     highlightsLabel: string;
     offerLabel: string;
-    differentiatorsLabel: string;
     domesLabel: string;
     domesIntro: string;
+    domesCardLabel: string;
+    domeImageAltSuffix: string;
+    salesTeamLabel: string;
+    contactCta: string;
   }
 > = {
   pl: {
     highlightsLabel: "Najważniejsze atuty",
     offerLabel: "Formaty wydarzeń",
-    differentiatorsLabel: "Infrastruktura i zaplecze",
-    domesLabel: "Specyfikacja kopuł",
-    domesIntro: "Parametry i możliwości techniczne naszych kopuł eventowych.",
+    domesLabel: "Obiekty dostępne pod wynajem",
+    domesIntro:
+      "To nasze realne przestrzenie eventowe, które możesz wynająć. Poniżej znajdziesz kluczowe parametry każdej z nich.",
+    domesCardLabel: "Wynajem",
+    domeImageAltSuffix: "podgląd obiektu",
+    salesTeamLabel: "Zespół sprzedaży",
+    contactCta: "Zapytaj o termin",
   },
   en: {
     highlightsLabel: "Key highlights",
     offerLabel: "Event formats",
-    differentiatorsLabel: "Infrastructure and support",
-    domesLabel: "Dome specifications",
-    domesIntro: "Technical parameters and capabilities of our event domes.",
+    domesLabel: "Rentable venue spaces",
+    domesIntro:
+      "These are real event spaces available for rent. Below are the key parameters of each venue.",
+    domesCardLabel: "For rent",
+    domeImageAltSuffix: "venue preview",
+    salesTeamLabel: "Sales team",
+    contactCta: "Ask about dates",
   },
   pt: {
     highlightsLabel: "Destaques principais",
     offerLabel: "Formatos de evento",
-    differentiatorsLabel: "Infraestrutura e suporte",
-    domesLabel: "Especificações das cúpulas",
-    domesIntro: "Parâmetros e capacidades técnicas das nossas cúpulas para eventos.",
+    domesLabel: "Espaços disponíveis para aluguer",
+    domesIntro:
+      "Estes são espaços reais para eventos disponíveis para aluguer. Abaixo estão os principais parâmetros de cada espaço.",
+    domesCardLabel: "Para aluguer",
+    domeImageAltSuffix: "pré-visualização do espaço",
+    salesTeamLabel: "Equipa comercial",
+    contactCta: "Pedir disponibilidade",
   },
+};
+
+type ContactItem = {
+  name: string;
+  role: string;
+  phone: string;
+  email: string;
+  accentClass: string;
+};
+
+const CONTACTS: Record<Locale, ContactItem[]> = {
+  pl: [
+    {
+      name: "PIOTR KOZOŁUB",
+      role: "Specjalista ds. sprzedaży",
+      phone: "+48 452 432 315",
+      email: "p.kozolub@gremi.pl",
+      accentClass: "text-[#f03c64] hover:text-[#f77828]",
+    },
+    {
+      name: "BARTEK JACOŃ",
+      role: "Specjalista ds. sprzedaży",
+      phone: "+48 723 999 099",
+      email: "b.jacon@gremi.pl",
+      accentClass: "text-[#f77828] hover:text-[#f03c64]",
+    },
+  ],
+  en: [
+    {
+      name: "PIOTR KOZOŁUB",
+      role: "Sales specialist",
+      phone: "+48 452 432 315",
+      email: "p.kozolub@gremi.pl",
+      accentClass: "text-[#f03c64] hover:text-[#f77828]",
+    },
+    {
+      name: "BARTEK JACOŃ",
+      role: "Sales specialist",
+      phone: "+48 723 999 099",
+      email: "b.jacon@gremi.pl",
+      accentClass: "text-[#f77828] hover:text-[#f03c64]",
+    },
+  ],
+  pt: [
+    {
+      name: "PIOTR KOZOŁUB",
+      role: "Especialista de vendas",
+      phone: "+48 452 432 315",
+      email: "p.kozolub@gremi.pl",
+      accentClass: "text-[#f03c64] hover:text-[#f77828]",
+    },
+    {
+      name: "BARTEK JACOŃ",
+      role: "Especialista de vendas",
+      phone: "+48 723 999 099",
+      email: "b.jacon@gremi.pl",
+      accentClass: "text-[#f77828] hover:text-[#f03c64]",
+    },
+  ],
 };
 
 type DomeContent = { title: string; bullets: string[] };
@@ -480,7 +464,7 @@ const DOMES: Record<
   },
 };
 
-// ===== Komponenty pomocnicze: EventVideo + MapFrame =====
+// ===== Komponenty pomocnicze: EventVideo =====
 interface EventVideoProps {
   src: string;
   srcWebm?: string;
@@ -634,89 +618,42 @@ function EventVideo({
 
 interface VideoTileProps {
   item: VideoItem;
-  loadingLabel: string;
-  fallbackText: string;
   playLabel: string;
 }
 
-function VideoTile({ item, loadingLabel, fallbackText, playLabel }: VideoTileProps) {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [isActivated, setIsActivated] = useState(false);
-
-  if (item.embed) {
-    const poster = item.poster;
-    if (!isActivated) {
-      return (
-        <button
-          type="button"
-          onClick={() => setIsActivated(true)}
-          className="group relative flex h-full flex-col overflow-hidden rounded-2xl bg-white/5 ring-1 ring-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.35)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(247,120,40,0.7)]"
-          aria-label={`${playLabel}: ${item.title}`}
-        >
-          <div
-            className="relative h-48 sm:h-52 md:h-56 w-full bg-black/50"
-            style={
-              poster
-                ? {
-                    backgroundImage: `linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.6) 100%), url(${poster})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                  }
-                : undefined
-            }
-          />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white ring-1 ring-white/20 transition group-hover:bg-white/25">
-              ▶ {playLabel}
-            </span>
-          </div>
-          <div className="absolute inset-x-0 bottom-0 p-3 text-left">
-            <p className="text-sm font-semibold text-white drop-shadow">{item.title}</p>
-          </div>
-        </button>
-      );
-    }
-
-    return (
-      <div className="flex h-full flex-col overflow-hidden rounded-2xl bg-white/5 ring-1 ring-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
-        <div className="relative h-48 sm:h-52 md:h-56 overflow-hidden bg-black/40">
-          {!isLoaded && (
-            <div className="absolute inset-0 z-10 flex items-center justify-center text-xs sm:text-sm force-overlay-dim bg-black/50 backdrop-blur-[2px] animate-pulse pointer-events-none">
-              {loadingLabel}
-            </div>
-          )}
-          <iframe
-            className="absolute inset-0 h-full w-full"
-            src={`${item.src}?rel=0&modestbranding=1&playsinline=1&autoplay=1`}
-            title={item.title}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowFullScreen
-            loading="lazy"
-            onLoad={() => setIsLoaded(true)}
-          />
-        </div>
-      </div>
-    );
-  }
+function VideoTile({ item, playLabel }: VideoTileProps) {
+  const videoHref = item.src.includes("/embed/")
+    ? item.src.replace("/embed/", "/watch?v=")
+    : item.src;
 
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-2xl bg-white/5 ring-1 ring-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
-      <EventVideo
-        className="h-48 sm:h-52 md:h-56"
-        src={item.src}
-        poster={item.poster}
-        loadingLabel={loadingLabel}
-        fallbackText={fallbackText}
-      />
-    </div>
+    <a
+      href={videoHref}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="events-video-tile group flex h-full w-full min-w-0 flex-col overflow-hidden rounded-2xl bg-white/5 ring-1 ring-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.35)] transition-transform duration-300 hover:-translate-y-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(247,120,40,0.7)]"
+      aria-label={`${playLabel}: ${item.title}`}
+    >
+      <div className="relative h-48 sm:h-52 md:h-56 overflow-hidden bg-black/50">
+        <Image
+          src={item.poster}
+          alt={item.title}
+          fill
+          sizes="(min-width: 1024px) 30vw, (min-width: 640px) 46vw, 92vw"
+          className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+          loading="lazy"
+        />
+        <div className="events-video-tile-overlay pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/10" />
+        <span className="events-video-play-badge absolute right-3 top-3 inline-flex items-center gap-2 rounded-full bg-black/45 px-3 py-1.5 text-xs font-semibold text-white ring-1 ring-white/20">
+          ▶ {playLabel}
+        </span>
+      </div>
+      <div className="p-3 sm:p-4">
+        <p className="text-sm sm:text-base font-semibold text-white">{item.title}</p>
+        <p className="mt-1 text-xs sm:text-sm text-white/75">{item.body}</p>
+      </div>
+    </a>
   );
-}
-
-interface MapFrameProps {
-  src: string;
-  loadingLabel: string;
-  actionLabel: string;
-  title: string;
 }
 
 interface ReadablePointsProps {
@@ -736,95 +673,309 @@ function ReadablePoints({
     <ul
       className={`grid w-full ${
         columns === 2 ? "sm:grid-cols-2" : "grid-cols-1"
-      } gap-3 ${className ?? ""}`}
+      } ${compact ? "gap-x-5 gap-y-1" : "gap-x-7 gap-y-1.5"} ${className ?? ""}`}
     >
       {items.map((line, i) => (
         <li
           key={`${line}-${i}`}
-          className={`ap-tile flex items-start gap-3 rounded-2xl border border-white/10 bg-white/[0.035] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] ${
-            compact ? "px-3.5 py-2.5 text-sm" : "px-4 py-3.5 text-sm sm:text-[15px]"
+          className={`group flex items-start gap-3 border-b border-white/10 ${
+            compact ? "py-2 text-sm" : "py-2.5 text-sm sm:text-[15px]"
           }`}
         >
-          <span className="mt-[0.42rem] inline-flex h-2.5 w-2.5 shrink-0 rounded-full bg-[#4fcfde] shadow-[0_0_14px_rgba(79,207,222,0.45)]" />
-          <span className="text-white/90 leading-relaxed">{line}</span>
+          <span className="mt-[0.48rem] inline-flex h-2.5 w-2.5 shrink-0 rounded-full bg-[#4fcfde] shadow-[0_0_12px_rgba(79,207,222,0.4)]" />
+          <span className="text-white/90 leading-relaxed transition-transform duration-300 group-hover:translate-x-0.5">{line}</span>
         </li>
       ))}
     </ul>
   );
 }
 
-function DomeSpecBlock({ dome }: { dome: DomeContent }) {
+function InfoGroup({
+  label,
+  separated = false,
+  children,
+}: {
+  label: string;
+  separated?: boolean;
+  children: ReactNode;
+}) {
   return (
-    <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 md:p-6">
-      <div className="flex flex-col gap-4">
-        <h3 className="text-xl md:text-2xl font-bold text-center md:text-left">
-          {dome.title}
-        </h3>
-        <div className="h-[1px] w-full bg-white/15" />
-        <ReadablePoints
-          items={dome.bullets}
-          columns={dome.bullets.length > 4 ? 2 : 1}
-          compact
-        />
-      </div>
+    <section
+      className={`space-y-2 ${
+        separated ? "events-info-group-separated mt-4 border-t pt-4" : ""
+      }`}
+    >
+      <p className="events-section-label text-[11px] font-semibold uppercase tracking-[0.24em]">
+        {label}
+      </p>
+      {children}
     </section>
   );
 }
 
-function MapFrame({ src, loadingLabel, actionLabel, title }: MapFrameProps) {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [shouldLoad, setShouldLoad] = useState(false);
-  const wrapperRef = useRef<HTMLDivElement | null>(null);
+type GalleryPhoto = { src: string; alt: string };
+
+function DomePointList({ items, columns = 1 }: { items: string[]; columns?: 1 | 2 }) {
+  return (
+    <ul
+      className={`grid ${columns === 2 ? "sm:grid-cols-2 gap-x-6" : "grid-cols-1"} gap-y-2.5`}
+    >
+      {items.map((item, index) => (
+        <li
+          key={`${item}-${index}`}
+          className="events-dome-point flex items-start gap-2.5 text-sm leading-relaxed transition-transform duration-300 hover:translate-x-1 sm:text-[15px]"
+        >
+          <span className="mt-[0.45rem] inline-flex h-2.5 w-2.5 shrink-0 rounded-full bg-[#4fcfde] shadow-[0_0_10px_rgba(79,207,222,0.35)]" />
+          <span>{item}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function EventPhotoColumn({
+  photos,
+  animate = true,
+  className = "",
+}: {
+  photos: GalleryPhoto[];
+  animate?: boolean;
+  className?: string;
+}) {
+  const loopPhotos = useMemo(() => [...photos, ...photos], [photos]);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const trackRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const el = wrapperRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
+    if (!animate) {
+      return;
+    }
+    const container = containerRef.current;
+    const track = trackRef.current;
+    if (!container || !track) {
+      return;
+    }
+
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const disableContinuousScroll = window.matchMedia("(max-width: 1023px)").matches;
+    if (prefersReduced || disableContinuousScroll) {
+      track.style.transform = "translate3d(0, 0, 0)";
+      return;
+    }
+
+    let frameId: number | null = null;
+    let halfHeight = 0;
+    let offset = 0;
+    let isVisible = false;
+    let lastTime = 0;
+    const speed = window.matchMedia("(min-width: 1536px)").matches ? 16 : 12;
+
+    const normalizeOffset = () => {
+      if (halfHeight <= 0) return;
+      offset = ((offset % halfHeight) + halfHeight) % halfHeight;
+    };
+
+    const recalculateHeight = () => {
+      halfHeight = track.scrollHeight / 2;
+      normalizeOffset();
+    };
+
+    const applyTrackTransform = () => {
+      track.style.transform = `translate3d(0, ${-offset.toFixed(2)}px, 0)`;
+    };
+
+    const tick = (time: number) => {
+      if (!isVisible) {
+        frameId = null;
+        return;
+      }
+      if (!lastTime) {
+        lastTime = time;
+      }
+      const deltaSeconds = Math.min((time - lastTime) / 1000, 0.05);
+      lastTime = time;
+
+      offset += speed * deltaSeconds;
+      normalizeOffset();
+      applyTrackTransform();
+
+      frameId = window.requestAnimationFrame(tick);
+    };
+
+    const startAnimation = () => {
+      if (frameId !== null || !isVisible) return;
+      lastTime = 0;
+      frameId = window.requestAnimationFrame(tick);
+    };
+
+    const stopAnimation = () => {
+      if (frameId !== null) {
+        window.cancelAnimationFrame(frameId);
+        frameId = null;
+      }
+    };
+
+    recalculateHeight();
+    const resizeObserver = new ResizeObserver(recalculateHeight);
+    resizeObserver.observe(track);
+    resizeObserver.observe(container);
+
+    const visibilityObserver = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setShouldLoad(true);
-          observer.disconnect();
+        isVisible = Boolean(entry?.isIntersecting);
+        if (isVisible) {
+          startAnimation();
+        } else {
+          stopAnimation();
         }
       },
-      { threshold: 0.2 }
+      {
+        threshold: 0.08,
+        rootMargin: "80px 0px",
+      },
     );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
+    visibilityObserver.observe(container);
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        stopAnimation();
+        return;
+      }
+      if (isVisible) {
+        startAnimation();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      resizeObserver.disconnect();
+      visibilityObserver.disconnect();
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      stopAnimation();
+    };
+  }, [photos.length, animate]);
 
   return (
     <div
-      ref={wrapperRef}
-      className="mt-2 mb-4 h-64 md:h-72 rounded-2xl overflow-hidden ring-1 ring-white/10 relative bg-black/40"
+      ref={containerRef}
+      className={`events-showcase relative h-[22rem] sm:h-[26rem] md:h-[26rem] lg:h-[27rem] overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] ${className}`}
     >
-      {!shouldLoad ? (
-        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 text-sm force-overlay-dim bg-black/50 backdrop-blur-[2px]">
-          <span>{loadingLabel}</span>
-          <button
-            type="button"
-            onClick={() => setShouldLoad(true)}
-            className="inline-flex items-center rounded-full bg-white/10 px-4 py-2 text-xs font-semibold ring-1 ring-white/20 hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(247,120,40,0.7)]"
+      <div
+        className="events-showcase-fade-top pointer-events-none absolute inset-x-0 top-0 z-10 h-10 bg-gradient-to-b from-[#1a1f36] to-transparent sm:h-14"
+        aria-hidden="true"
+      />
+      <div
+        className="events-showcase-fade-bottom pointer-events-none absolute inset-x-0 bottom-0 z-10 h-10 bg-gradient-to-t from-[#1a1f36] to-transparent sm:h-14"
+        aria-hidden="true"
+      />
+      <div
+        ref={trackRef}
+        className="events-showcase-column flex min-h-max flex-col gap-3 p-3 sm:gap-4 sm:p-4 will-change-transform"
+      >
+        {loopPhotos.map((photo, index) => (
+          <div
+            key={`${photo.src}-${index}`}
+            className="events-showcase-item relative h-36 sm:h-40 md:h-48 overflow-hidden rounded-xl border border-white/10 bg-black/30"
           >
-            {actionLabel}
-          </button>
-        </div>
-      ) : !isLoaded ? (
-        <div className="absolute inset-0 z-10 flex items-center justify-center text-xs sm:text-sm force-overlay-dim bg-black/50 backdrop-blur-[2px] animate-pulse pointer-events-none">
-          {loadingLabel}
-        </div>
-      ) : null}
-      {shouldLoad ? (
-        <iframe
-          title={title}
-          src={src}
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-          className="w-full h-full border-0"
-          allowFullScreen
-          onLoad={() => setIsLoaded(true)}
-        />
-      ) : null}
+            <Image
+              src={photo.src}
+              alt={photo.alt}
+              fill
+              sizes="(min-width: 1024px) 42vw, (min-width: 768px) 46vw, 92vw"
+              className="object-cover"
+              loading={index < 3 ? "eager" : "lazy"}
+            />
+          </div>
+        ))}
+      </div>
     </div>
+  );
+}
+
+function DomeSpecBlock({
+  dome,
+  rentalLabel,
+  locale,
+  imageSrc,
+  imageAlt,
+}: {
+  dome: DomeContent;
+  rentalLabel: string;
+  locale: Locale;
+  imageSrc: string;
+  imageAlt: string;
+}) {
+  const highlights = dome.bullets.slice(0, Math.min(2, dome.bullets.length));
+  const details = dome.bullets.slice(highlights.length);
+  const highlightsLabel =
+    locale === "en" ? "Key highlights" : locale === "pt" ? "Destaques" : "Najważniejsze";
+  const detailsLabel =
+    locale === "en"
+      ? "Technical details"
+      : locale === "pt"
+      ? "Detalhes técnicos"
+      : "Szczegóły techniczne";
+
+  return (
+    <section className="events-dome-card rounded-2xl border p-4 transition-transform duration-300 hover:-translate-y-1 sm:p-5 md:p-6">
+      <div className="flex h-full flex-col gap-4">
+        <div className="flex flex-wrap items-start gap-3">
+          <div className="min-w-0 flex-1 space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h3 className="text-xl md:text-2xl font-bold text-center md:text-left">
+                {dome.title}
+              </h3>
+              <span className="events-rental-pill inline-flex items-center rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em]">
+                {rentalLabel}
+              </span>
+            </div>
+          </div>
+          <div className="events-dome-thumb relative h-20 w-full overflow-hidden rounded-xl border sm:w-48 md:w-44">
+            <Image
+              src={imageSrc}
+              alt={imageAlt}
+              fill
+              sizes="(min-width: 1024px) 176px, (min-width: 640px) 192px, 100vw"
+              className="object-cover"
+              loading="lazy"
+            />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
+          </div>
+        </div>
+        <div className="events-dome-divider h-[1px] w-full" />
+        <div className="space-y-3">
+          <p className="events-section-label text-[11px] font-semibold uppercase tracking-[0.24em]">
+            {highlightsLabel}
+          </p>
+          <div className="grid gap-2 sm:grid-cols-2">
+            {highlights.map((item, index) => (
+              <div
+                key={`${dome.title}-highlight-${index}`}
+                className="events-dome-highlight rounded-lg border px-3 py-2.5 text-sm leading-relaxed transition-transform duration-300 hover:-translate-y-0.5 sm:text-[15px]"
+              >
+                {item}
+              </div>
+            ))}
+          </div>
+        </div>
+        {details.length > 0 ? (
+          <details className="events-dome-details group rounded-xl border">
+            <summary className="events-dome-summary flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3">
+              <span className="events-section-label text-[11px] font-semibold uppercase tracking-[0.24em]">
+                {detailsLabel}
+              </span>
+              <span className="events-dome-caret text-sm transition-transform duration-300 group-open:rotate-180">
+                v
+              </span>
+            </summary>
+            <div className="events-dome-details-content border-t px-4 pb-4 pt-3">
+              <DomePointList items={details} columns={details.length > 3 ? 2 : 1} />
+            </div>
+          </details>
+        ) : null}
+      </div>
+    </section>
   );
 }
 
@@ -834,7 +985,17 @@ export default function EventsPage() {
   const t = COPY[loc];
   const ui = UI_TEXT[loc];
   const sectionUi = SECTION_UI[loc];
+  const contactHref = loc === "en" ? "/en/contact" : loc === "pt" ? "/pt/contact" : "/kontakt";
+  const formatShowcasePhotos = useMemo(
+    () =>
+      FORMAT_SHOWCASE_IMAGES.map((src, index) => ({
+        src,
+        alt: `${SECOND[loc].title} ${index + 1}`,
+      })),
+    [loc],
+  );
   const domes = DOMES[loc];
+  const contacts = CONTACTS[loc];
   const videoShowcase = VIDEO_SHOWCASE[loc];
   const heroRef = useRef<HTMLVideoElement | null>(null);
   const heroContainerRef = useRef<HTMLDivElement | null>(null);
@@ -870,7 +1031,7 @@ export default function EventsPage() {
   }, [isHeroVisible]);
 
   return (
-    <main className="relative min-h-screen ap-page-intro-stagger">
+    <main className="events-page relative min-h-screen">
       {/* Główna treść strony */}
       <section className="relative z-10 px-4 py-16 sm:py-20">
         {/* Hero video z tytułem */}
@@ -897,7 +1058,7 @@ export default function EventsPage() {
               </video>
               <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/35 to-black/80" />
               <div className="relative flex h-full items-center justify-center p-6 sm:p-10 text-center force-overlay">
-                <div className="space-y-2">
+                <div className="space-y-2 ap-page-intro-stagger">
                   <p className="ap-type-kicker force-overlay-muted">
                     {t.tag}
                   </p>
@@ -912,258 +1073,184 @@ export default function EventsPage() {
 
         {/* LISTA KAFELKÓW */}
         <section className="ap-shell">
-          <motion.ul
-            initial="hidden"
-            animate="show"
-            variants={fade}
-            className="ap-page-stack"
-          >
-            {/* 1. Hero card z ogólnym opisem */}
+          <ul className="ap-page-stack">
+            {/* 1. Krótki overview */}
             <li>
-              <Card variant="solid">
-                <div className="grid gap-6 md:gap-8 md:grid-cols-2 items-stretch">
-                  {/* LEFT: bullets */}
-                  <div className="md:order-2 flex flex-col items-center text-center md:items-start md:text-left">
-                    <div className="mb-5 w-full max-w-2xl">
-                      <p className="text-[11px] uppercase tracking-[0.26em] text-white/60">
-                        {sectionUi.highlightsLabel}
-                      </p>
-                      <h2 className="ap-type-section-title mt-2 text-center md:text-left">
-                        {t.venueLabel}
-                      </h2>
-                      <div className="mt-4 h-[1px] w-full bg-white/15" />
+              <ScrollMotionItem strength="strong" delay={40} className="ap-deferred-section">
+                <Card variant="solid" motion="off">
+                  <div className="grid gap-6 md:gap-8 md:grid-cols-2 items-stretch">
+                    <div className="md:order-2 flex flex-col items-center text-center md:items-start md:text-left">
+                      <div className="w-full max-w-2xl">
+                        <InfoGroup label={sectionUi.highlightsLabel}>
+                          <h2 className="ap-type-section-title text-center md:text-left">
+                            {t.venueLabel}
+                          </h2>
+                          <p className="ap-type-section-body mt-2 max-w-2xl text-center md:text-left">
+                            {t.intro}
+                          </p>
+                          <ReadablePoints items={t.bullets} className="mt-2 max-w-2xl" />
+                        </InfoGroup>
+                      </div>
                     </div>
-                    <ReadablePoints items={t.bullets} className="max-w-2xl" />
-                  </div>
-                  {/* RIGHT: video */}
-                  <EventVideo
-                    className="md:order-1"
-                    src="/wydarzenia/bankiet1.mp4"
-                    poster="/wydarzenia/AP_wydarzenia_poster.webp"
-                    loadingLabel={ui.loadingVideo}
-                    fallbackText={ui.videoFallback}
-                  />
-                </div>
-              </Card>
-            </li>
-
-            {/* 2. Druga karta — rodzaje wydarzeń */}
-            <li>
-              <Card variant="solid">
-                <div className="grid gap-6 md:gap-8 md:grid-cols-2 items-stretch">
-                  <div className="md:order-1 flex flex-col items-center text-center md:items-start md:text-left">
-                    <p className="text-[11px] uppercase tracking-[0.26em] text-white/60">
-                      {sectionUi.offerLabel}
-                    </p>
-                    <h2 className="ap-type-section-title mb-2 text-center md:text-left">
-                      {SECOND[loc].title}
-                    </h2>
-                    <div className="h-[1px] w-full bg-white/15 mb-6" />
-                    <ReadablePoints
-                      items={SECOND[loc].bullets}
-                      columns={2}
-                      className="max-w-3xl"
+                    <EventVideo
+                      className="md:order-1"
+                      src="/wydarzenia/bankiet1.mp4"
+                      poster="/wydarzenia/AP_wydarzenia_poster.webp"
+                      loadingLabel={ui.loadingVideo}
+                      fallbackText={ui.videoFallback}
                     />
                   </div>
-                  <EventVideo
-                    className="md:order-2"
-                    src="/wydarzenia/banket4.mp4"
-                    poster="/wydarzenia/AP_wydarzenia_poster.webp"
-                    loadingLabel={ui.loadingVideo}
-                    fallbackText={ui.videoFallback}
-                  />
-                </div>
-              </Card>
+                </Card>
+              </ScrollMotionItem>
             </li>
 
-            {/* 3. Trzecia karta — co nas wyróżnia */}
+            {/* 2. Formaty wydarzeń */}
             <li>
-              <Card variant="solid">
-                <div className="grid gap-6 md:gap-8 md:grid-cols-2 items-stretch">
-                  <div className="md:order-2 flex flex-col items-center text-center md:items-start md:text-left">
-                    <p className="text-[11px] uppercase tracking-[0.26em] text-white/60">
-                      {sectionUi.differentiatorsLabel}
-                    </p>
-                    <h2 className="ap-type-section-title mb-2 text-center md:text-left">
-                      {THIRD[loc].title}
-                    </h2>
-                    <div className="h-[1px] w-full bg-white/15 mb-6" />
-                    <ReadablePoints
-                      items={THIRD[loc].bullets}
-                      columns={2}
-                      className="max-w-3xl"
+              <ScrollMotionItem strength="strong" delay={110} className="ap-deferred-section">
+                <Card variant="solid" motion="off">
+                  <div className="grid gap-6 md:gap-8 md:grid-cols-2 items-stretch">
+                    <div className="md:order-1 flex flex-col items-center text-center md:items-start md:text-left">
+                      <div className="w-full max-w-3xl">
+                        <InfoGroup label={sectionUi.offerLabel}>
+                          <h2 className="ap-type-section-title text-center md:text-left">
+                            {SECOND[loc].title}
+                          </h2>
+                          <ReadablePoints
+                            items={SECOND[loc].bullets}
+                            columns={2}
+                            className="mt-2 max-w-3xl"
+                          />
+                        </InfoGroup>
+                      </div>
+                    </div>
+                    <EventPhotoColumn
+                      className="md:order-2"
+                      photos={formatShowcasePhotos}
                     />
                   </div>
-                  <EventVideo
-                    className="md:order-1"
-                    src="/wydarzenia/bankiet3.mp4"
-                    poster="/wydarzenia/AP_wydarzenia_poster.webp"
-                    loadingLabel={ui.loadingVideo}
-                    fallbackText={ui.videoFallback}
-                  />
-                </div>
-              </Card>
+                </Card>
+              </ScrollMotionItem>
+            </li>
+
+            {/* 3. Specyfikacja kopuł */}
+            <li>
+              <ScrollMotionItem strength="strong" delay={180} className="ap-deferred-section">
+                <Card variant="solid" motion="off">
+                  <div className="space-y-6">
+                    <div className="text-center">
+                      <h2 className="ap-type-section-title">
+                        {sectionUi.domesLabel}
+                      </h2>
+                      <div className="events-section-divider mx-auto mt-4 h-[1px] w-full max-w-3xl" />
+                      <p className="events-section-intro mx-auto mt-5 max-w-3xl text-center text-sm sm:text-base">
+                        {sectionUi.domesIntro}
+                      </p>
+                    </div>
+                    <div className="grid gap-5 md:gap-6 grid-cols-1 md:grid-cols-2">
+                      <div>
+                        <DomeSpecBlock
+                          dome={domes.k3}
+                          rentalLabel={sectionUi.domesCardLabel}
+                          locale={loc}
+                          imageSrc={DOME_IMAGE_BY_KEY.k3}
+                          imageAlt={`${domes.k3.title} - ${sectionUi.domeImageAltSuffix}`}
+                        />
+                      </div>
+                      <div>
+                        <DomeSpecBlock
+                          dome={domes.k4}
+                          rentalLabel={sectionUi.domesCardLabel}
+                          locale={loc}
+                          imageSrc={DOME_IMAGE_BY_KEY.k4}
+                          imageAlt={`${domes.k4.title} - ${sectionUi.domeImageAltSuffix}`}
+                        />
+                      </div>
+                      <div>
+                        <DomeSpecBlock
+                          dome={domes.k7}
+                          rentalLabel={sectionUi.domesCardLabel}
+                          locale={loc}
+                          imageSrc={DOME_IMAGE_BY_KEY.k7}
+                          imageAlt={`${domes.k7.title} - ${sectionUi.domeImageAltSuffix}`}
+                        />
+                      </div>
+                      <div>
+                        <DomeSpecBlock
+                          dome={domes.k10k12}
+                          rentalLabel={sectionUi.domesCardLabel}
+                          locale={loc}
+                          imageSrc={DOME_IMAGE_BY_KEY.k10k12}
+                          imageAlt={`${domes.k10k12.title} - ${sectionUi.domeImageAltSuffix}`}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              </ScrollMotionItem>
             </li>
 
             {/* 4. Trzy wideo obok siebie */}
             <li>
-              <Card variant="glass">
-                <div className="space-y-6">
-                  <div className="text-center space-y-2">
-                    <h2 className="ap-type-section-title">
-                      {videoShowcase.title}
-                    </h2>
-                  </div>
-                  <div className="grid gap-4 sm:gap-5 lg:gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    {videoShowcase.items.map((item) => (
-                      <VideoTile
-                        key={item.title}
-                        item={item}
-                        loadingLabel={ui.loadingVideo}
-                        fallbackText={ui.videoFallback}
-                        playLabel={ui.playVideo}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </Card>
-            </li>
-
-            {/* 5. Specyfikacja kopuł */}
-            <li>
-              <Card variant="solid">
-                <div className="space-y-6">
-                  <div className="text-center">
-                    <h2 className="ap-type-section-title">
-                      {sectionUi.domesLabel}
-                    </h2>
-                    <div className="mx-auto mt-4 h-[1px] w-full max-w-3xl bg-white/15" />
-                    <p className="mt-5 text-center text-sm sm:text-base text-gray-200 max-w-3xl mx-auto">
-                      {sectionUi.domesIntro}
-                    </p>
-                  </div>
-                  <div className="grid gap-5 md:gap-6 grid-cols-1 md:grid-cols-2">
-                    <DomeSpecBlock dome={domes.k3} />
-                    <DomeSpecBlock dome={domes.k4} />
-                    <DomeSpecBlock dome={domes.k7} />
-                    <DomeSpecBlock dome={domes.k10k12} />
-                  </div>
-                </div>
-              </Card>
-            </li>
-
-            {/* 6. Mapka graficzna */}
-            <li>
-              <Card variant="solid">
-                <div className="relative w-full aspect-[4/3] sm:aspect-[16/10] md:aspect-[16/9] overflow-hidden rounded-2xl ring-1 ring-white/10 bg-black/20">
-                  <Image
-                    src="/wydarzenia/mapka.webp"
-                    alt="Mapa obiektu Alvernia Planet"
-                    fill
-                    sizes="100vw"
-                    className="object-contain"
-                    priority={false}
-                  />
-                  <div
-                    className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-b from-transparent to-black/70"
-                    aria-hidden
-                  />
-                </div>
-              </Card>
-            </li>
-
-            {/* 7. Kontakt + mapa Google z loaderem */}
-            <li>
-              <Card variant="solid">
-                <div className="grid gap-8 md:grid-cols-2">
-                  <div>
-                    <h3 className="text-2xl md:text-3xl font-bold mb-4">
-                      {ui.contactHeading}
-                    </h3>
-                    <div className="h-[1px] w-full bg-white/15 mb-6" />
-                    <div className="space-y-6 text-gray-100">
-                      <div>
-                        <p className="text-lg md:text-xl font-semibold">
-                          PIOTR KOZOŁUB
-                        </p>
-                        <p className="mt-1 text-sm text-white/80">
-                          Specjalista ds. sprzedaży
-                        </p>
-                        <p>
-                          <a
-                            href="tel:+48452432315"
-                            className="hover:text-white"
-                          >
-                            +48 452 432 315
-                          </a>
-                        </p>
-                        <p>
-                          <a
-                            href="mailto:p.kozolub@gremi.pl"
-                            className="text-[#f03c64] hover:text-[#f77828]"
-                          >
-                            p.kozolub@gremi.pl
-                          </a>
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-lg md:text-xl font-semibold">
-                          BARTEK JACOŃ
-                        </p>
-                        <p className="mt-1 text-sm text-white/80">
-                          Specjalista ds. sprzedaży
-                        </p>
-                        <p>
-                          <a
-                            href="tel:+48723999099"
-                            className="hover:text-white"
-                          >
-                            +48 723 999 099
-                          </a>
-                        </p>
-                        <p>
-                          <a
-                            href="mailto:b.jacon@gremi.pl"
-                            className="text-[#f77828] hover:text-[#f03c64]"
-                          >
-                            b.jacon@gremi.pl
-                          </a>
-                        </p>
-                      </div>
-
+              <ScrollMotionItem strength="soft" delay={250} className="ap-deferred-section">
+                <Card variant="glass" className="events-video-card" motion="off">
+                  <div className="space-y-6">
+                    <div className="text-center space-y-2">
+                      <h2 className="ap-type-section-title">
+                        {videoShowcase.title}
+                      </h2>
+                    </div>
+                    <div className="grid gap-4 sm:gap-5 lg:gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                      {videoShowcase.items.map((item) => (
+                        <div key={item.title} className="w-full min-w-0">
+                          <VideoTile
+                            item={item}
+                            playLabel={ui.playVideo}
+                          />
+                        </div>
+                      ))}
                     </div>
                   </div>
-                  <div>
-                    <h4 className="text-xl md:text-2xl font-semibold mb-3">
-                      {ui.addressHeading}
-                    </h4>
-                    <p className="text-gray-100">Alvernia Planet</p>
-                    <p className="text-gray-100">
-                      Nieporaz, ul. Ferdynanda Wspaniałego 1
-                    </p>
-                    <p className="text-gray-100 mb-4">32-566 Alwernia</p>
-
-                    {/* Osadzona mapka Google pod adresem */}
-                    <MapFrame
-                      title={ui.mapTitle}
-                      src="https://www.google.com/maps?q=Alvernia+Planet,+Nieporaz,+Ferdynanda+Wspania%C5%82ego+1&amp;output=embed"
-                      loadingLabel={ui.loadingMap}
-                      actionLabel={ui.loadMapAction}
-                    />
-
-                    <PrimaryButton
-                      href="https://maps.app.goo.gl/a45HTibANAsDAi7u7"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      size="md"
-                    >
-                      {ui.mapButton}
-                    </PrimaryButton>
-                  </div>
-                </div>
-              </Card>
+                </Card>
+              </ScrollMotionItem>
             </li>
-          </motion.ul>
+
+            {/* 5. Zespół sprzedaży */}
+            <li>
+              <ScrollMotionItem strength="soft" delay={320} className="ap-deferred-section">
+                <Card variant="solid" motion="off">
+                  <div className="w-full max-w-5xl">
+                    <InfoGroup label={sectionUi.salesTeamLabel}>
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        {contacts.slice(0, 2).map((person) => (
+                          <article
+                            key={`event-card-${person.email}`}
+                            className="events-contact-card rounded-xl border p-3 transition-transform duration-300 hover:-translate-y-0.5 sm:p-4"
+                          >
+                            <p className="text-base font-semibold text-white">{person.name}</p>
+                            <p className="mt-1 text-xs sm:text-sm text-white/70">{person.role}</p>
+                            <p className="mt-2 text-sm">
+                              <a
+                                href={`tel:${person.phone.replace(/\s+/g, "")}`}
+                                className="events-contact-link"
+                              >
+                                {person.phone}
+                              </a>
+                            </p>
+                          </article>
+                        ))}
+                      </div>
+                      <div className="mt-4 flex justify-center md:justify-start">
+                        <PrimaryButton href={contactHref} size="md">
+                          {sectionUi.contactCta}
+                        </PrimaryButton>
+                      </div>
+                    </InfoGroup>
+                  </div>
+                </Card>
+              </ScrollMotionItem>
+            </li>
+
+          </ul>
         </section>
       </section>
     </main>

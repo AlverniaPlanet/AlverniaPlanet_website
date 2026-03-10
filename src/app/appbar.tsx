@@ -8,35 +8,47 @@ import LangSwitcher from "@/app/components/LangSwitcher";
 import { PrimaryButton } from "@/app/components/PrimaryButton";
 import { useTheme } from "@/app/theme-provider";
 import BrandLogo from "@/app/components/BrandLogo";
+import {
+  getSitePaths,
+  mapToPolishRoute,
+  normalizePathname,
+  type Locale,
+} from "@/lib/localizedRoutes";
+
+function cx(...classes: Array<string | false | undefined>) {
+  return classes.filter(Boolean).join(" ");
+}
 
 export function AppBar() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
   const { theme, toggleTheme } = useTheme();
   const [openAttractions, setOpenAttractions] = useState(false);
   const [openAbout, setOpenAbout] = useState(false);
   const attractionsHideTimer = useRef<number | null>(null);
   const aboutHideTimer = useRef<number | null>(null);
-  const { locale } = useI18n();
-  const isIntl = locale === "en" || locale === "pt";
-  const prefix = isIntl ? `/${locale}` : "";
-  const bookingSlug = locale === "en" ? "reserve" : locale === "pt" ? "reservar" : "rezerwuj";
+  const loc: Locale = (locale as Locale) ?? "pl";
+  const paths = getSitePaths(loc);
+  const canonicalPath = mapToPolishRoute(normalizePathname(pathname));
   const logoFrameClass = "inline-flex items-center justify-center rounded-2xl px-0 py-0";
-  const paths = {
-    home: prefix || "/",
-    events: isIntl ? `${prefix}/events` : "/wydarzenia",
-    gallery: isIntl ? `${prefix}/gallery` : "/galeria",
-    gettingThere: isIntl ? `${prefix}/getting-there` : "/jak-dojechac",
-    booking: isIntl ? `${prefix}/${bookingSlug}` : `/${bookingSlug}`,
-    about: isIntl ? `${prefix}/about` : "/o-alvernia-planet",
-    contact: isIntl ? `${prefix}/contact` : "/kontakt",
-    attractions: {
-      exhibition: isIntl ? `${prefix}/attractions/exhibition` : "/atrakcje/wystawa",
-      filmPath: isIntl ? `${prefix}/attractions/film-path` : "/atrakcje/sciezka-filmowa",
-      cinema: isIntl ? `${prefix}/attractions/cinema-360` : "/atrakcje/kino-360",
-    },
-  };
+
+  const isCurrentPath = (...targets: string[]) =>
+    targets.some((target) => canonicalPath === mapToPolishRoute(target));
+  const isCurrentSection = (sectionRoot: string) =>
+    canonicalPath === sectionRoot || canonicalPath.startsWith(`${sectionRoot}/`);
+
+  const isAttractionsActive = isCurrentSection("/atrakcje");
+  const isEventsActive = isCurrentPath("/wydarzenia");
+  const isGettingThereActive = isCurrentPath("/jak-dojechac");
+  const isAboutActive = isCurrentPath("/o-alvernia-planet", "/galeria");
+  const isContactActive = isCurrentPath("/kontakt");
+  const isBookingActive = isCurrentPath("/rezerwuj");
+  const isExhibitionActive = isCurrentPath("/atrakcje/wystawa");
+  const isFilmPathActive = isCurrentPath("/atrakcje/sciezka-filmowa");
+  const isCinemaActive = isCurrentPath("/atrakcje/kino-360");
+  const isAboutPageActive = isCurrentPath("/o-alvernia-planet");
+  const isGalleryActive = isCurrentPath("/galeria");
 
   useEffect(() => setOpen(false), [pathname]);
   useEffect(() => {
@@ -65,7 +77,7 @@ export function AppBar() {
               onClick={() => setOpen((v) => !v)}
               aria-label={open ? t("aria.close_menu") : t("aria.open_menu")}
               aria-expanded={open}
-              className="lg:hidden inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20 hover:bg-white/15 active:scale-95 transition"
+              className="ap-icon-button lg:hidden inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20"
             >
               <svg
                 className="h-4 w-4 text-white"
@@ -115,7 +127,10 @@ export function AppBar() {
               >
                 <button
                   type="button"
-                  className="inline-flex items-center gap-1 text-white/90 hover:text-white focus:outline-none"
+                  className={cx(
+                    "ap-nav-link ap-nav-link-button inline-flex items-center gap-1 focus:outline-none",
+                    isAttractionsActive && "is-active",
+                  )}
                   aria-haspopup="true"
                   aria-expanded={openAttractions}
                   onClick={() => setOpenAttractions((v) => !v)}
@@ -133,12 +148,16 @@ export function AppBar() {
                 <div
                   className={`ap-nav-dropdown absolute left-0 top-full mt-1 w-56 z-50 origin-top transition-all duration-150 ${openAttractions ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-0.5 pointer-events-none"}`}
                 >
-                  <div className="rounded-xl bg-[color:var(--ap-surface-contrast)] backdrop-blur ring-1 ring-[color:var(--ap-border)] shadow-xl overflow-hidden text-[color:var(--ap-text)]">
+                  <div className="ap-nav-dropdown-panel rounded-xl bg-[color:var(--ap-surface-contrast)] backdrop-blur ring-1 ring-[color:var(--ap-border)] shadow-xl overflow-hidden text-[color:var(--ap-text)]">
                     <ul className="py-2 text-xs">
                       <li>
                         <Link
                           href={paths.attractions.exhibition}
-                          className="block px-4 py-2 hover:bg-[color:var(--ap-surface-strong)]"
+                          className={cx(
+                            "ap-nav-dropdown-link block px-4 py-2",
+                            isExhibitionActive && "is-active",
+                          )}
+                          aria-current={isExhibitionActive ? "page" : undefined}
                         >
                           {t("menu.attractions.exhibition")}
                         </Link>
@@ -146,7 +165,11 @@ export function AppBar() {
                       <li>
                         <Link
                           href={paths.attractions.filmPath}
-                          className="block px-4 py-2 hover:bg-[color:var(--ap-surface-strong)]"
+                          className={cx(
+                            "ap-nav-dropdown-link block px-4 py-2",
+                            isFilmPathActive && "is-active",
+                          )}
+                          aria-current={isFilmPathActive ? "page" : undefined}
                         >
                           {t("menu.attractions.film_path")}
                         </Link>
@@ -154,7 +177,11 @@ export function AppBar() {
                       <li>
                         <Link
                           href={paths.attractions.cinema}
-                          className="block px-4 py-2 hover:bg-[color:var(--ap-surface-strong)]"
+                          className={cx(
+                            "ap-nav-dropdown-link block px-4 py-2",
+                            isCinemaActive && "is-active",
+                          )}
+                          aria-current={isCinemaActive ? "page" : undefined}
                         >
                           {t("menu.attractions.cinema")}
                         </Link>
@@ -163,18 +190,20 @@ export function AppBar() {
                   </div>
                 </div>
               </div>
-              <span className="text-white/40">|</span>
+              <span className="ap-nav-separator text-white/40">|</span>
               <Link
                 href={paths.events}
-                className="text-white/90 hover:text-white"
+                className={cx("ap-nav-link", isEventsActive && "is-active")}
+                aria-current={isEventsActive ? "page" : undefined}
                 suppressHydrationWarning
               >
                 {t("nav.events")}
               </Link>
-              <span className="text-white/40">|</span>
+              <span className="ap-nav-separator text-white/40">|</span>
               <Link
                 href={paths.gettingThere}
-                className="text-white/90 hover:text-white"
+                className={cx("ap-nav-link", isGettingThereActive && "is-active")}
+                aria-current={isGettingThereActive ? "page" : undefined}
                 suppressHydrationWarning
               >
                 {t("nav.getting_there")}
@@ -219,7 +248,10 @@ export function AppBar() {
               >
                 <button
                   type="button"
-                  className="inline-flex items-center gap-1 text-white/90 hover:text-white focus:outline-none"
+                  className={cx(
+                    "ap-nav-link ap-nav-link-button inline-flex items-center gap-1 focus:outline-none",
+                    isAboutActive && "is-active",
+                  )}
                   aria-haspopup="true"
                   aria-expanded={openAbout}
                   onClick={() => setOpenAbout((v) => !v)}
@@ -237,12 +269,16 @@ export function AppBar() {
                 <div
                   className={`ap-nav-dropdown absolute right-0 top-full mt-1 w-56 z-50 origin-top transition-all duration-150 ${openAbout ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-0.5 pointer-events-none"}`}
                 >
-                  <div className="rounded-xl bg-[color:var(--ap-surface-contrast)] backdrop-blur ring-1 ring-[color:var(--ap-border)] shadow-xl overflow-hidden text-[color:var(--ap-text)]">
+                  <div className="ap-nav-dropdown-panel rounded-xl bg-[color:var(--ap-surface-contrast)] backdrop-blur ring-1 ring-[color:var(--ap-border)] shadow-xl overflow-hidden text-[color:var(--ap-text)]">
                     <ul className="py-2 text-xs">
                       <li>
                         <Link
                           href={paths.about}
-                          className="block px-4 py-2 hover:bg-[color:var(--ap-surface-strong)]"
+                          className={cx(
+                            "ap-nav-dropdown-link block px-4 py-2",
+                            isAboutPageActive && "is-active",
+                          )}
+                          aria-current={isAboutPageActive ? "page" : undefined}
                         >
                           {t("nav.about_alvernia")}
                         </Link>
@@ -250,7 +286,11 @@ export function AppBar() {
                       <li>
                         <Link
                           href={paths.gallery}
-                          className="block px-4 py-2 hover:bg-[color:var(--ap-surface-strong)]"
+                          className={cx(
+                            "ap-nav-dropdown-link block px-4 py-2",
+                            isGalleryActive && "is-active",
+                          )}
+                          aria-current={isGalleryActive ? "page" : undefined}
                         >
                           {t("nav.gallery")}
                         </Link>
@@ -259,10 +299,11 @@ export function AppBar() {
                   </div>
                 </div>
               </div>
-              <span className="text-white/40">|</span>
+              <span className="ap-nav-separator text-white/40">|</span>
               <Link
                 href={paths.contact}
-                className="text-white/90 hover:text-white whitespace-nowrap"
+                className={cx("ap-nav-link whitespace-nowrap", isContactActive && "is-active")}
+                aria-current={isContactActive ? "page" : undefined}
                 suppressHydrationWarning
               >
                 {t("nav.contact")}
@@ -275,6 +316,7 @@ export function AppBar() {
               size="sm"
               suppressHydrationWarning
               className="min-w-[108px] px-3 py-1.5 lg:text-[11px] xl:text-xs text-center shrink-0"
+              aria-current={isBookingActive ? "page" : undefined}
             >
               {t("cta.booking")}
             </PrimaryButton>
@@ -283,7 +325,7 @@ export function AppBar() {
             <button
               type="button"
               onClick={toggleTheme}
-              className={`hidden md:inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20 hover:bg-white/15 active:scale-95 transition ${
+              className={`ap-icon-button hidden md:inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20 ${
                 theme === "light" ? "text-[color:var(--ap-text)]" : "text-white"
               }`}
               aria-label={theme === "light" ? "Włącz tryb ciemny" : "Włącz tryb jasny"}
@@ -347,13 +389,9 @@ export function AppBar() {
           >
             <ul className="space-y-1 px-4 pb-4 pt-1 text-sm">
               <li>
-                <Link
-                  href={paths.home}
-                  className="block rounded-md px-3 py-2 hover:bg-white/10 text-gray-200"
-                  suppressHydrationWarning
-                >
+                <span className={cx("ap-mobile-section-label block px-3 py-2", isAttractionsActive && "is-active")}>
                   {t("nav.attraction")}
-                </Link>
+                </span>
               </li>
               {/* submenu: Atrakcje (mobile) */}
               <li className="ml-3">
@@ -361,7 +399,11 @@ export function AppBar() {
                   <li>
                     <Link
                       href={paths.attractions.exhibition}
-                      className="block rounded-md px-3 py-2 hover:bg-white/10 text-gray-200"
+                      className={cx(
+                        "ap-mobile-link block rounded-md px-3 py-2 text-gray-200",
+                        isExhibitionActive && "is-active",
+                      )}
+                      aria-current={isExhibitionActive ? "page" : undefined}
                     >
                       • {t("menu.attractions.exhibition")}
                     </Link>
@@ -369,7 +411,11 @@ export function AppBar() {
                   <li>
                     <Link
                       href={paths.attractions.filmPath}
-                      className="block rounded-md px-3 py-2 hover:bg-white/10 text-gray-200"
+                      className={cx(
+                        "ap-mobile-link block rounded-md px-3 py-2 text-gray-200",
+                        isFilmPathActive && "is-active",
+                      )}
+                      aria-current={isFilmPathActive ? "page" : undefined}
                     >
                       • {t("menu.attractions.film_path")}
                     </Link>
@@ -377,7 +423,11 @@ export function AppBar() {
                   <li>
                     <Link
                       href={paths.attractions.cinema}
-                      className="block rounded-md px-3 py-2 hover:bg-white/10 text-gray-200"
+                      className={cx(
+                        "ap-mobile-link block rounded-md px-3 py-2 text-gray-200",
+                        isCinemaActive && "is-active",
+                      )}
+                      aria-current={isCinemaActive ? "page" : undefined}
                     >
                       • {t("menu.attractions.cinema")}
                     </Link>
@@ -387,7 +437,11 @@ export function AppBar() {
               <li>
                 <Link
                   href={paths.events}
-                  className="block rounded-md px-3 py-2 hover:bg-white/10 text-gray-200"
+                  className={cx(
+                    "ap-mobile-link block rounded-md px-3 py-2 text-gray-200",
+                    isEventsActive && "is-active",
+                  )}
+                  aria-current={isEventsActive ? "page" : undefined}
                   suppressHydrationWarning
                 >
                   {t("nav.events")}
@@ -397,7 +451,11 @@ export function AppBar() {
               <li>
                 <Link
                   href={paths.gettingThere}
-                  className="block rounded-md px-3 py-2 hover:bg-white/10 text-gray-200"
+                  className={cx(
+                    "ap-mobile-link block rounded-md px-3 py-2 text-gray-200",
+                    isGettingThereActive && "is-active",
+                  )}
+                  aria-current={isGettingThereActive ? "page" : undefined}
                   suppressHydrationWarning
                 >
                   {t("nav.getting_there")}
@@ -408,7 +466,11 @@ export function AppBar() {
                   <li>
                     <Link
                       href={paths.about}
-                      className="block rounded-md px-3 py-2 hover:bg-white/10 text-gray-200"
+                      className={cx(
+                        "ap-mobile-link block rounded-md px-3 py-2 text-gray-200",
+                        isAboutPageActive && "is-active",
+                      )}
+                      aria-current={isAboutPageActive ? "page" : undefined}
                     >
                       • {t("nav.about_alvernia")}
                     </Link>
@@ -416,7 +478,11 @@ export function AppBar() {
                   <li>
                     <Link
                       href={paths.gallery}
-                      className="block rounded-md px-3 py-2 hover:bg-white/10 text-gray-200"
+                      className={cx(
+                        "ap-mobile-link block rounded-md px-3 py-2 text-gray-200",
+                        isGalleryActive && "is-active",
+                      )}
+                      aria-current={isGalleryActive ? "page" : undefined}
                     >
                       • {t("nav.gallery")}
                     </Link>
@@ -426,7 +492,11 @@ export function AppBar() {
               <li>
                 <Link
                   href={paths.contact}
-                  className="block rounded-md px-3 py-2 hover:bg-white/10 text-gray-200"
+                  className={cx(
+                    "ap-mobile-link block rounded-md px-3 py-2 text-gray-200",
+                    isContactActive && "is-active",
+                  )}
+                  aria-current={isContactActive ? "page" : undefined}
                   suppressHydrationWarning
                 >
                   {t("nav.contact")}
@@ -438,7 +508,7 @@ export function AppBar() {
                   <button
                     type="button"
                     onClick={toggleTheme}
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20 hover:bg-white/15 active:scale-95 transition text-white"
+                    className="ap-icon-button inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20 text-white"
                     aria-label={theme === "light" ? "Włącz tryb ciemny" : "Włącz tryb jasny"}
                     title={theme === "light" ? "Tryb ciemny" : "Tryb jasny"}
                   >

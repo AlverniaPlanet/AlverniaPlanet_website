@@ -4,6 +4,7 @@ import Script from "next/script";
 import dynamic from "next/dynamic";
 import AppBar from "@/app/appbar";
 import Footer from "@/app/components/Footer";
+import GlobalRevealObserver from "@/app/components/GlobalRevealObserver";
 import RoutePrefetcher from "@/app/components/RoutePrefetcher";
 import { I18nProvider } from "./i18n-provider";
 import { ThemeProvider } from "./theme-provider";
@@ -125,9 +126,10 @@ export default function RootLayout({
         </noscript>
         <ThemeProvider>
           <I18nProvider initialLocale={initialLocale}>
-            <div className="relative z-10 min-h-screen flex flex-col">
+            <div data-ap-reveal-root className="relative z-10 min-h-screen flex flex-col">
               <AppBar />
               <RoutePrefetcher />
+              <GlobalRevealObserver />
               {children}
               <Footer />
               <FloatingBookingButton />

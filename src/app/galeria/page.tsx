@@ -1,25 +1,10 @@
 "use client";
 import Image from "next/image";
-import { motion, type Variants } from "framer-motion";
+import { motion } from "framer-motion";
 import { useI18n } from "@/app/i18n-provider";
 import { useState, useEffect } from "react";
 import Card from "@/app/components/Card";
-
-// Animations – spójne z resztą serwisu
-const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 16 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
-};
-
-const fade: Variants = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { duration: 0.5 } },
-};
-
-const stagger: Variants = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.08 } },
-};
+import ScrollMotionItem from "@/app/components/ScrollMotionItem";
 
 // helper to generate 1..n
 const range = (n: number) => Array.from({ length: n }, (_, i) => i + 1);
@@ -283,34 +268,33 @@ export default function GalleryPage() {
   }, [isLightboxOpen]);
 
   return (
-    <main className="relative min-h-screen text-white px-4">
-      <motion.div initial="hidden" animate="show" variants={fade} className="ap-shell py-16 sm:py-20">
+    <main className="relative min-h-screen text-white px-4 py-16 sm:py-20">
+      <div className="ap-shell ap-page-stack">
         {/* Nagłówek strony */}
-        <header className="mb-10 space-y-5 text-center sm:mb-12">
-          <motion.p variants={fadeUp} className="ap-type-kicker">
+        <header className="space-y-5 text-center ap-page-intro-stagger">
+          <p className="ap-type-kicker">
             {t.tag}
-          </motion.p>
-          <motion.h1 variants={fadeUp} className="ap-type-hero-title">
+          </p>
+          <h1 className="ap-type-hero-title">
             {t.title}
-          </motion.h1>
-          <motion.p variants={fadeUp} className="ap-type-hero-subtitle mx-auto max-w-5xl">
+          </h1>
+          <p className="ap-type-hero-subtitle mx-auto max-w-5xl">
             {t.subtitle}
-          </motion.p>
+          </p>
           <div className="mx-auto h-[1px] w-40 bg-gradient-to-r from-transparent via-white/30 to-transparent" />
         </header>
 
         {/* Sekcja: Ogólne */}
-        <section aria-labelledby="gallery-general">
-          <motion.div variants={fade}>
-            <Card variant="solid">
+        <ScrollMotionItem strength="strong" delay={40} className="ap-deferred-section">
+          <section aria-labelledby="gallery-general">
+            <Card variant="solid" motion="off">
             <div className="mb-4 flex items-center gap-4">
-              <motion.h2
-                variants={fadeUp}
+              <h2
                 id="gallery-general"
                 className="text-xl sm:text-2xl font-semibold tracking-tight"
               >
                 {t.sections.general}
-              </motion.h2>
+              </h2>
               <div className="h-px flex-1 bg-white/10" />
               {/* mała „pigułka” z liczbą */}
               <span className="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-[12px] font-semibold leading-none text-white/80 ring-1 ring-white/10">
@@ -318,14 +302,11 @@ export default function GalleryPage() {
               </span>
             </div>
 
-            <motion.ul
-              variants={stagger}
-              className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-12 md:auto-rows-[132px] lg:auto-rows-[152px]"
-            >
+            <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-12 md:auto-rows-[132px] lg:auto-rows-[152px]">
               {generalImages.map((src, i) => {
                 const caption = captions.general[i] ?? `${t.sections.general} • ${t.sections.photoLabel} ${i + 1}`;
                 return (
-                  <motion.li key={src} className={`group ${getMosaicClass(i)}`} variants={fadeUp}>
+                  <li key={src} className={`group ${getMosaicClass(i)}`}>
                     <GalleryTile
                       src={src}
                       alt={caption}
@@ -335,40 +316,36 @@ export default function GalleryPage() {
                       onClick={() => openLightbox(generalImages, i, caption)}
                       priority={i === 0}
                     />
-                  </motion.li>
+                  </li>
                 );
               })}
-            </motion.ul>
+            </ul>
             </Card>
-          </motion.div>
-        </section>
+          </section>
+        </ScrollMotionItem>
 
         {/* Sekcja: Ścieżka filmowa */}
-        <section aria-labelledby="gallery-film" className="mt-12 sm:mt-14 md:mt-16">
-          <motion.div variants={fade}>
-            <Card variant="solid">
+        <ScrollMotionItem strength="strong" delay={90} className="ap-deferred-section">
+          <section aria-labelledby="gallery-film">
+            <Card variant="solid" motion="off">
             <div className="mb-4 flex items-center gap-4">
-              <motion.h2
-                variants={fadeUp}
+              <h2
                 id="gallery-film"
                 className="text-xl sm:text-2xl font-semibold tracking-tight"
               >
                 {t.sections.film}
-              </motion.h2>
+              </h2>
               <div className="h-px flex-1 bg-white/10" />
               <span className="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-[12px] font-semibold leading-none text-white/80 ring-1 ring-white/10">
                 {filmImages.length}
               </span>
             </div>
 
-            <motion.ul
-              variants={stagger}
-              className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-12 md:auto-rows-[132px] lg:auto-rows-[152px]"
-            >
+            <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-12 md:auto-rows-[132px] lg:auto-rows-[152px]">
               {filmImages.map((src, i) => {
                 const caption = captions.film[i] ?? `${t.sections.film} • ${t.sections.photoLabel} ${i + 1}`;
                 return (
-                  <motion.li key={src} className={`group ${getMosaicClass(i)}`} variants={fadeUp}>
+                  <li key={src} className={`group ${getMosaicClass(i)}`}>
                     <GalleryTile
                       src={src}
                       alt={caption}
@@ -377,20 +354,20 @@ export default function GalleryPage() {
                       errorText={ui.imageError}
                       onClick={() => openLightbox(filmImages, i, caption)}
                     />
-                  </motion.li>
+                  </li>
                 );
               })}
-            </motion.ul>
+            </ul>
             </Card>
-          </motion.div>
-        </section>
+          </section>
+        </ScrollMotionItem>
 
         {/* Sekcja: Wystawy tematyczne */}
-        <section aria-labelledby="gallery-exhibitions" className="mt-12 sm:mt-14 md:mt-16">
-          <motion.div variants={fade}>
-            <Card variant="solid">
+        <ScrollMotionItem strength="soft" delay={140} className="ap-deferred-section">
+          <section aria-labelledby="gallery-exhibitions">
+            <Card variant="solid" motion="off">
               <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
-                <motion.div variants={fadeUp} className="flex-1">
+                <div className="flex-1">
                   <h2
                     id="gallery-exhibitions"
                     className="text-xl sm:text-2xl font-semibold tracking-tight"
@@ -398,21 +375,18 @@ export default function GalleryPage() {
                     {t.sections.exhibitions}
                   </h2>
                   <p className="mt-1 text-sm text-white/70">{t.sections.hpExhibition}</p>
-                </motion.div>
+                </div>
                 <div className="hidden h-px flex-1 bg-white/10 sm:block" />
                 <span className="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-[12px] font-semibold leading-none text-white/80 ring-1 ring-white/10">
                   {harryPotterImages.length}
                 </span>
               </div>
 
-              <motion.ul
-                variants={stagger}
-                className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-12 md:auto-rows-[132px] lg:auto-rows-[152px]"
-              >
+              <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-12 md:auto-rows-[132px] lg:auto-rows-[152px]">
                 {harryPotterImages.map((src, i) => {
                   const caption = captions.exhibitions[i] ?? `${t.sections.hpExhibition} • ${t.sections.photoLabel} ${i + 1}`;
                   return (
-                    <motion.li key={src} className={`group ${getMosaicClass(i)}`} variants={fadeUp}>
+                    <li key={src} className={`group ${getMosaicClass(i)}`}>
                       <GalleryTile
                         src={src}
                         alt={caption}
@@ -421,40 +395,36 @@ export default function GalleryPage() {
                         errorText={ui.imageError}
                         onClick={() => openLightbox(harryPotterImages, i, caption)}
                       />
-                    </motion.li>
+                    </li>
                   );
                 })}
-              </motion.ul>
+              </ul>
             </Card>
-          </motion.div>
-        </section>
+          </section>
+        </ScrollMotionItem>
 
         {/* Sekcja: Wydarzenia */}
-        <section aria-labelledby="gallery-events" className="mt-12 sm:mt-14 md:mt-16">
-          <motion.div variants={fade}>
-            <Card variant="solid">
+        <ScrollMotionItem strength="strong" delay={190} className="ap-deferred-section">
+          <section aria-labelledby="gallery-events">
+            <Card variant="solid" motion="off">
             <div className="mb-4 flex items-center gap-4">
-              <motion.h2
-                variants={fadeUp}
+              <h2
                 id="gallery-events"
                 className="text-xl sm:text-2xl font-semibold tracking-tight"
               >
                 {t.sections.events}
-              </motion.h2>
+              </h2>
               <div className="h-px flex-1 bg-white/10" />
               <span className="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-[12px] font-semibold leading-none text-white/80 ring-1 ring-white/10">
                 {eventsImages.length}
               </span>
             </div>
 
-            <motion.ul
-              variants={stagger}
-              className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-12 md:auto-rows-[132px] lg:auto-rows-[152px]"
-            >
+            <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-12 md:auto-rows-[132px] lg:auto-rows-[152px]">
               {eventsImages.map((src, i) => {
                 const caption = captions.events[i] ?? `${t.sections.events} • ${t.sections.photoLabel} ${i + 1}`;
                 return (
-                  <motion.li key={src} className={`group ${getMosaicClass(i)}`} variants={fadeUp}>
+                  <li key={src} className={`group ${getMosaicClass(i)}`}>
                     <GalleryTile
                       src={src}
                       alt={caption}
@@ -463,14 +433,14 @@ export default function GalleryPage() {
                       errorText={ui.imageError}
                       onClick={() => openLightbox(eventsImages, i, caption)}
                     />
-                  </motion.li>
+                  </li>
                 );
               })}
-            </motion.ul>
+            </ul>
             </Card>
-          </motion.div>
-        </section>
-      </motion.div>
+          </section>
+        </ScrollMotionItem>
+      </div>
       {isLightboxOpen && (
         <Lightbox
           items={lightboxItems}

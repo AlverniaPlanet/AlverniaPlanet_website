@@ -3,6 +3,7 @@
 import Link, { type LinkProps } from "next/link";
 import * as React from "react";
 import { useI18n } from "@/app/i18n-provider";
+import { getLocalizedPath, type Locale } from "@/lib/localizedRoutes";
 
 function cx(...cls: Array<string | false | undefined>) {
   return cls.filter(Boolean).join(" ");
@@ -36,40 +37,20 @@ const sizeMap: Record<Size, string> = {
 };
 
 const baseClass =
-  "inline-flex items-center justify-center rounded-full font-semibold text-[color:var(--ap-accent-contrast)] bg-[color:var(--ap-accent)] ring-1 ring-[color:var(--ap-accent-ring)] shadow-[var(--ap-accent-shadow)] hover:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ap-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ap-bg)] transition";
+  "ap-primary-button inline-flex items-center justify-center rounded-full font-semibold text-[color:var(--ap-accent-contrast)] bg-[color:var(--ap-accent)] ring-1 ring-[color:var(--ap-accent-ring)] shadow-[var(--ap-accent-shadow)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ap-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ap-bg)] transition";
 
 export function PrimaryButton(props: PrimaryButtonProps) {
   const { locale } = useI18n();
+  const loc: Locale = (locale as Locale) ?? "pl";
   const { size = "md", className, children, ...rest } = props as PrimaryButtonProps & {
     size: Size;
   };
   const classes = cx(baseClass, sizeMap[size], className);
-  const plToIntlCommon: Record<string, string> = {
-    "/wydarzenia": "/events",
-    "/galeria": "/gallery",
-    "/jak-dojechac": "/getting-there",
-    "/o-alvernia-planet": "/about",
-    "/kontakt": "/contact",
-    "/atrakcje/wystawa": "/attractions/exhibition",
-    "/atrakcje/sciezka-filmowa": "/attractions/film-path",
-    "/atrakcje/kino-360": "/attractions/cinema-360",
-  };
 
   if ("href" in props && props.href) {
     const { href, ...linkProps } = rest as AnchorProps;
     const hrefString = String(href);
-    const normalizedHref = (() => {
-      if (!hrefString.startsWith("/")) return hrefString;
-      if (hrefString.startsWith("/en") || hrefString.startsWith("/pt") || hrefString.startsWith("/legal/")) return hrefString;
-      if (locale !== "en" && locale !== "pt") return hrefString;
-      const mapped: Record<string, string> = {
-        ...plToIntlCommon,
-        "/rezerwuj": locale === "en" ? "/reserve" : "/reservar",
-      };
-      const normalized = mapped[hrefString] ?? hrefString;
-      if (normalized === "/") return `/${locale}`;
-      return `/${locale}${normalized.startsWith("/") ? normalized : `/${normalized}`}`;
-    })();
+    const normalizedHref = hrefString.startsWith("/") ? getLocalizedPath(hrefString, loc) : hrefString;
     return (
       <Link href={normalizedHref} className={classes} {...linkProps}>
         {children}

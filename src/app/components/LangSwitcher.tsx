@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useI18n } from "@/app/i18n-provider";
+import { getLocalizedPath, mapToPolishRoute, normalizePathname, type Locale } from "@/lib/localizedRoutes";
 
-type LangOption = { code: "pl" | "en" | "pt"; label: string };
+type LangOption = { code: Locale; label: string };
 
 const OPTIONS: LangOption[] = [
   { code: "pl", label: "Polski" },
@@ -58,52 +59,9 @@ export default function LangSwitcher() {
 
   const active = OPTIONS.find((opt) => opt.code === locale) ?? OPTIONS[0];
 
-  const PL_TO_INTL: Record<string, string> = {
-    "/wydarzenia": "/events",
-    "/galeria": "/gallery",
-    "/jak-dojechac": "/getting-there",
-    "/o-alvernia-planet": "/about",
-    "/kontakt": "/contact",
-    "/atrakcje/wystawa": "/attractions/exhibition",
-    "/atrakcje/sciezka-filmowa": "/attractions/film-path",
-    "/atrakcje/kino-360": "/attractions/cinema-360",
-  };
-
-  const INTL_TO_PL: Record<string, string> = Object.entries(PL_TO_INTL).reduce(
-    (acc, [plPath, intlPath]) => {
-      acc[intlPath] = plPath;
-      return acc;
-    },
-    {} as Record<string, string>,
-  );
-  INTL_TO_PL["/reserve"] = "/rezerwuj";
-  INTL_TO_PL["/reservar"] = "/rezerwuj";
-
-  const mapToIntl = (path: string, target: "en" | "pt") => {
-    const clean = path || "/";
-    if (clean === `/${target}` || clean.startsWith(`/${target}/`)) return clean;
-    if (clean === "/") return `/${target}`;
-    const withoutPrefix = clean.startsWith("/en") || clean.startsWith("/pt") ? clean.slice(3) || "/" : clean;
-    if (withoutPrefix === "/rezerwuj" || withoutPrefix === "/reserve" || withoutPrefix === "/reservar") {
-      const bookingPath = target === "en" ? "/reserve" : "/reservar";
-      return `/${target}${bookingPath}`;
-    }
-    const mapped = PL_TO_INTL[withoutPrefix] || withoutPrefix;
-    return `/${target}${mapped.startsWith("/") ? mapped : `/${mapped}`}`.replace(/\/{2,}/g, "/");
-  };
-
-  const mapToPl = (path: string) => {
-    const clean = path || "/";
-    if (clean === "/") return "/";
-    const withoutPrefix = clean.startsWith("/en") || clean.startsWith("/pt") ? clean.slice(3) || "/" : clean;
-    if (INTL_TO_PL[withoutPrefix]) return INTL_TO_PL[withoutPrefix];
-    return withoutPrefix.startsWith("/") ? withoutPrefix : `/${withoutPrefix}`;
-  };
-
   const switchLocale = (target: LangOption["code"]) => {
-    const current = pathname || "/";
-    const nextPath =
-      target === "en" ? mapToIntl(current, "en") : target === "pt" ? mapToIntl(current, "pt") : mapToPl(current);
+    const current = normalizePathname(pathname);
+    const nextPath = getLocalizedPath(mapToPolishRoute(current), target);
     setLocale(target);
     router.push(nextPath);
   };
@@ -117,13 +75,14 @@ export default function LangSwitcher() {
             key={opt.code}
             type="button"
             onClick={() => switchLocale(opt.code)}
-            className={`inline-flex items-center justify-center rounded-full ring-1 px-2 py-1 transition ${
+            className={`ap-lang-pill inline-flex items-center justify-center rounded-full ring-1 px-2.5 py-1.5 transition ${
               isActive
-                ? "bg-[color:var(--ap-surface-contrast)] ring-[color:var(--ap-border)]"
-                : "bg-[color:var(--ap-surface-strong)] ring-[color:var(--ap-border)] opacity-80 hover:opacity-100"
+                ? "is-active bg-[color:var(--ap-surface-contrast)] ring-[color:var(--ap-border)]"
+                : "bg-[color:var(--ap-surface-strong)] ring-[color:var(--ap-border)] opacity-88 hover:opacity-100"
             }`}
             aria-pressed={isActive}
             aria-label={opt.label}
+            title={opt.label}
           >
             <Flag code={opt.code} />
           </button>

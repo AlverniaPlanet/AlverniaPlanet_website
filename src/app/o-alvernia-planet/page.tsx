@@ -7,6 +7,7 @@ import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 type Locale = "pl" | "en" | "pt";
+const WIKIPEDIA_URL = "https://pl.wikipedia.org/wiki/Alvernia_Planet";
 
 const COPY: Record<
   Locale,
@@ -15,7 +16,11 @@ const COPY: Record<
     heroTitle: string;
     heroSubtitle: string;
     intro: string;
-    galleryCta: string;
+    wikipediaLabel: string;
+    wikipediaTitle: string;
+    wikipediaLead: string;
+    wikipediaCta: string;
+    wikipediaFacts: { title: string; body: string }[];
     bullets: { title: string; body: string; image: string; alt: string }[];
     metrics: { value: string; label: string }[];
     highlightTitle: string;
@@ -29,7 +34,29 @@ const COPY: Record<
     heroSubtitle: "Unikalny w skali świata kompleks kopuł filmowych i centrum wydarzeń.",
     intro:
       "Alvernia Planet łączy świat filmu, technologii i edukacji. Nasze kopuły goszczą eventy, produkcje filmowe i immersyjne atrakcje dla odwiedzających.",
-    galleryCta: "Przejdź do galerii",
+    wikipediaLabel: "Wikipedia",
+    wikipediaTitle: "Alvernia Planet w polskiej Wikipedii",
+    wikipediaLead:
+      "Krótki, niezależny opis historii obiektu, jego architektury i funkcji, zebrany w jednym miejscu.",
+    wikipediaCta: "Przejdź do Wikipedii",
+    wikipediaFacts: [
+      {
+        title: "Historia",
+        body: "Kompleks powstał w latach 2000-2002 jako projekt RMF Media Complex, a później działał jako Alvernia Studios.",
+      },
+      {
+        title: "Przemiana",
+        body: "Od września 2017 roku rozwijany jest jako Alvernia Planet z przeznaczeniem na funkcje eventowe, wystawiennicze i edukacyjne.",
+      },
+      {
+        title: "Architektura",
+        body: "Hasło opisuje obiekt jako 13 kopuł połączonych przeszklonymi korytarzami o wyraźnie futurystycznym charakterze.",
+      },
+      {
+        title: "Edukacja",
+        body: "Wikipedia wskazuje także programy dla grup szkolnych i zajęcia o etapach powstawania filmu, dźwięku oraz postprodukcji.",
+      },
+    ],
     bullets: [
       {
         title: "Architektura industrialna",
@@ -116,7 +143,29 @@ const COPY: Record<
     heroSubtitle: "A unique dome complex for film, events, and immersive experiences.",
     intro:
       "Alvernia Planet blends film, technology, and education. Our domes host events, film productions, and immersive attractions for visitors.",
-    galleryCta: "Go to gallery",
+    wikipediaLabel: "Wikipedia",
+    wikipediaTitle: "Alvernia Planet on Polish Wikipedia",
+    wikipediaLead:
+      "A concise, independent overview of the venue, its history, architecture, and current functions.",
+    wikipediaCta: "Go to Wikipedia",
+    wikipediaFacts: [
+      {
+        title: "History",
+        body: "The complex was built in 2000-2002 as the RMF Media Complex and later operated as Alvernia Studios.",
+      },
+      {
+        title: "Transition",
+        body: "Since September 2017 it has been developed as Alvernia Planet for event, exhibition, and educational uses.",
+      },
+      {
+        title: "Architecture",
+        body: "The article describes 13 domes connected by glazed corridors and a distinctly futuristic architectural form.",
+      },
+      {
+        title: "Education",
+        body: "It also notes educational programs about filmmaking, including scenography, sound, and post-production.",
+      },
+    ],
     bullets: [
       {
         title: "Industrial architecture",
@@ -203,7 +252,29 @@ const COPY: Record<
     heroSubtitle: "Um complexo único de cúpulas e um centro de eventos.",
     intro:
       "A Alvernia Planet combina cinema, tecnologia e educação. As nossas cúpulas recebem eventos, produções e atrações imersivas para visitantes.",
-    galleryCta: "Ir para a galeria",
+    wikipediaLabel: "Wikipedia",
+    wikipediaTitle: "Alvernia Planet na Wikipedia polaca",
+    wikipediaLead:
+      "Um resumo independente da história do complexo, da arquitetura e das funções atuais, reunido num só lugar.",
+    wikipediaCta: "Ir para a Wikipedia",
+    wikipediaFacts: [
+      {
+        title: "Historia",
+        body: "O complexo foi construído entre 2000 e 2002 como projeto RMF Media Complex e mais tarde funcionou como Alvernia Studios.",
+      },
+      {
+        title: "Evolução",
+        body: "Desde setembro de 2017 tem sido desenvolvido como Alvernia Planet para eventos, exposições e educação.",
+      },
+      {
+        title: "Arquitetura",
+        body: "O artigo descreve 13 cúpulas ligadas por corredores envidraçados e uma forma arquitetónica marcadamente futurista.",
+      },
+      {
+        title: "Educação",
+        body: "A página também menciona programas educativos sobre a criação de filmes, cenografia, som e pós-produção.",
+      },
+    ],
     bullets: [
       {
         title: "Arquitetura industrial",
@@ -437,9 +508,84 @@ export default function AboutAlverniaPage() {
               ))}
             </div>
           </div>
+          <div className="relative mt-8 rounded-[1.75rem] border border-white/12 bg-white/[0.04] p-4 sm:p-5 lg:p-6">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div className="max-w-3xl">
+                <a
+                  href={WIKIPEDIA_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/5 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/75 transition hover:border-white/20 hover:bg-white/10 hover:text-white"
+                >
+                  <span className="grid h-6 w-6 place-items-center rounded-full bg-white/10 text-[10px] font-black tracking-normal text-white">
+                    W
+                  </span>
+                  {copy.wikipediaLabel}
+                  <svg
+                    aria-hidden="true"
+                    viewBox="0 0 20 20"
+                    className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.7"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M7 13 13 7" />
+                    <path d="M8 7h5v5" />
+                  </svg>
+                </a>
+                <h2 className="mt-4 text-xl font-semibold text-white sm:text-2xl">{copy.wikipediaTitle}</h2>
+                <p className="mt-2 max-w-2xl text-sm leading-relaxed text-white/70 sm:text-base">
+                  {copy.wikipediaLead}
+                </p>
+              </div>
+              <a
+                href={WIKIPEDIA_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 self-start text-sm font-medium text-[#7de7f1] transition hover:text-white"
+              >
+                <span>Wikipedia</span>
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 20 20"
+                  className="h-3.5 w-3.5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.7"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M7 13 13 7" />
+                  <path d="M8 7h5v5" />
+                </svg>
+              </a>
+            </div>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              {copy.wikipediaFacts.map((fact) => (
+                <article
+                  key={fact.title}
+                  className="rounded-2xl border border-white/10 bg-white/[0.045] px-4 py-3"
+                >
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/45">
+                    {fact.title}
+                  </p>
+                  <p className="mt-2 text-sm leading-relaxed text-white/75 sm:text-[0.95rem]">
+                    {fact.body}
+                  </p>
+                </article>
+              ))}
+            </div>
+          </div>
           <div className="relative mt-8 flex justify-center">
-            <PrimaryButton href="/galeria" size="lg">
-              {copy.galleryCta}
+            <PrimaryButton
+              href={WIKIPEDIA_URL}
+              size="lg"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {copy.wikipediaCta}
             </PrimaryButton>
           </div>
         </Card>
