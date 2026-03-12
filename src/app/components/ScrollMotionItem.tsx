@@ -34,44 +34,11 @@ export default function ScrollMotionItem({
       return;
     }
 
-    const maxShift = strength === "strong" ? 26 : 10;
-    const viewportFactor = strength === "strong" ? 0.72 : 0.55;
-    const normalizeRange = strength === "strong" ? 0.68 : 1;
     const revealThreshold = strength === "strong" ? 0.03 : 0.1;
     const revealRootMargin =
       strength === "strong" ? "0px 0px 14% 0px" : "0px 0px 10% 0px";
 
-    let frameId: number | null = null;
-    let isActive = false;
     let hasRevealed = false;
-    let isTicking = false;
-
-    const updateShift = () => {
-      if (!isActive) {
-        element.style.setProperty("--scroll-shift", "0px");
-        return;
-      }
-
-      const rect = element.getBoundingClientRect();
-      const viewportCenter = window.innerHeight * viewportFactor;
-      const cardCenter = rect.top + rect.height / 2;
-      const delta = cardCenter - viewportCenter;
-      const normalized = Math.max(
-        -1,
-        Math.min(1, delta / (window.innerHeight * normalizeRange)),
-      );
-      const shift = Math.max(-maxShift, Math.min(maxShift, -normalized * maxShift));
-      element.style.setProperty("--scroll-shift", `${shift.toFixed(2)}px`);
-    };
-
-    const requestUpdate = () => {
-      if (isTicking) return;
-      isTicking = true;
-      frameId = window.requestAnimationFrame(() => {
-        isTicking = false;
-        updateShift();
-      });
-    };
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -86,14 +53,9 @@ export default function ScrollMotionItem({
             element.style.opacity = "1";
             element.style.setProperty("--reveal-y", "0px");
           }
-
-          isActive = true;
-          requestUpdate();
+          element.style.setProperty("--scroll-shift", "0px");
           return;
         }
-
-        isActive = false;
-        element.style.setProperty("--scroll-shift", "0px");
       },
       {
         threshold: revealThreshold,
@@ -102,16 +64,9 @@ export default function ScrollMotionItem({
     );
 
     observer.observe(element);
-    window.addEventListener("scroll", requestUpdate, { passive: true });
-    window.addEventListener("resize", requestUpdate);
 
     return () => {
       observer.disconnect();
-      window.removeEventListener("scroll", requestUpdate);
-      window.removeEventListener("resize", requestUpdate);
-      if (frameId !== null) {
-        window.cancelAnimationFrame(frameId);
-      }
     };
   }, [strength]);
 

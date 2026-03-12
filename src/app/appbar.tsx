@@ -65,7 +65,7 @@ export function AppBar() {
     <>
       <header
         data-ap-nav
-        className="sticky top-0 z-30 border-b border-[color:var(--ap-border)] bg-[var(--ap-nav-bg)] backdrop-blur supports-[backdrop-filter]:md:bg-[var(--ap-nav-bg)]"
+        className="sticky top-0 z-30 border-b border-[color:var(--ap-border)] bg-[var(--ap-nav-bg)] supports-[backdrop-filter]:md:bg-[var(--ap-nav-bg)] supports-[backdrop-filter]:md:backdrop-blur"
       >
         {/* grid 3 kolumny: [lewo] [logo] [prawo] */}
         <div className="mx-auto grid w-full max-w-[min(94vw,96rem)] grid-cols-[1fr_auto_1fr] items-center gap-2 md:gap-3 px-3.5 md:px-4 py-1.5">

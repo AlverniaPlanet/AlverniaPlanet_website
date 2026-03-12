@@ -1,5 +1,6 @@
 "use client";
 
+import AdaptiveVideo from "@/app/components/AdaptiveVideo";
 import Card from "@/app/components/Card";
 import TourLineAccentTitle from "@/app/components/TourLineAccentTitle";
 import TourLineGalleryRow from "@/app/components/TourLineGalleryRow";
@@ -308,23 +309,17 @@ export default function FilmPathContent() {
         <div className="ap-shell mb-10 sm:mb-12">
           <div className="relative overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
             <div className="relative aspect-[16/9] bg-black">
-              <video
-                className="absolute inset-0 h-full w-full object-cover"
-                autoPlay
-                loop
-                muted
-                playsInline
-                preload="none"
+              <AdaptiveVideo
+                mp4Src="/wycieczka/APE_sciezafilmowa.mp4"
+                webmSrc="/wycieczka/APE_sciezafilmowa.webm"
                 poster="/wycieczka/APE_sciezafilmowa_poster.webp"
-                onEnded={(e) => {
-                  e.currentTarget.currentTime = 0;
-                  e.currentTarget.play();
-                }}
-              >
-                <source src="/wycieczka/APE_sciezafilmowa.webm" type="video/webm" />
-                <source src="/wycieczka/APE_sciezafilmowa.mp4" type="video/mp4" />
-                {t.videoFallback}
-              </video>
+                className="absolute inset-0 h-full w-full object-cover"
+                sizes="(min-width: 1200px) 72rem, 100vw"
+                fallbackText={t.videoFallback}
+                priority
+                rootMargin="320px 0px"
+                preferPosterOnLowPower
+              />
               <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/35 to-black/80" />
               <div className="relative flex h-full items-center justify-center p-6 sm:p-10 text-center force-overlay">
                 <div className="space-y-2 ap-page-intro-stagger">

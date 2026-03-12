@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Card from "@/app/components/Card";
 import Image from "next/image";
 
@@ -18,16 +18,47 @@ export default function TourLineGalleryRow({ items }: Props) {
   const loopItems = [...items, ...items];
   const containerRef = useRef<HTMLDivElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
+  const [canAnimate, setCanAnimate] = useState(false);
 
   useEffect(() => {
-    const container = containerRef.current;
-    const track = trackRef.current;
-    if (!container || !track) {
+    if (typeof window === "undefined") {
       return;
     }
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      track.style.transform = "translate3d(0, 0, 0)";
+    const nav = navigator as Navigator & {
+      connection?: {
+        saveData?: boolean;
+        effectiveType?: string;
+      };
+      deviceMemory?: number;
+    };
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
+    const narrowViewport = window.matchMedia("(max-width: 767px)").matches;
+    const saveData = Boolean(nav.connection?.saveData);
+    const effectiveType = nav.connection?.effectiveType ?? "";
+    const constrainedNetwork = /(^|-)2g$|3g/.test(effectiveType);
+    const deviceMemory = nav.deviceMemory;
+    const lowMemory = typeof deviceMemory === "number" && deviceMemory <= 4;
+    const lowCpu = (nav.hardwareConcurrency ?? 8) <= 4;
+
+    setCanAnimate(
+      !reducedMotion &&
+        !saveData &&
+        !constrainedNetwork &&
+        !coarsePointer &&
+        !(narrowViewport && (lowMemory || lowCpu)),
+    );
+  }, []);
+
+  useEffect(() => {
+    if (!canAnimate) {
+      return;
+    }
+
+    const container = containerRef.current;
+    const track = trackRef.current;
+    if (!container || !track) {
       return;
     }
 
@@ -156,30 +187,37 @@ export default function TourLineGalleryRow({ items }: Props) {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       stopAnimation();
     };
-  }, [items.length]);
+  }, [canAnimate, items.length]);
+
+  const renderItems = canAnimate ? loopItems : items;
 
   return (
     <div
       ref={containerRef}
-      className="relative mt-2 overflow-hidden rounded-2xl"
+      className={`relative mt-2 rounded-2xl ${canAnimate ? "overflow-hidden" : "overflow-x-auto pb-2"}`}
+      style={canAnimate ? undefined : { scrollbarWidth: "none" }}
     >
-      <div
-        className="pointer-events-none absolute inset-y-0 left-0 z-10 w-10 bg-gradient-to-r from-[color:var(--ap-surface)] to-transparent sm:w-16"
-        aria-hidden="true"
-      />
-      <div
-        className="pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-gradient-to-l from-[color:var(--ap-surface)] to-transparent sm:w-16"
-        aria-hidden="true"
-      />
+      {canAnimate ? (
+        <>
+          <div
+            className="pointer-events-none absolute inset-y-0 left-0 z-10 w-10 bg-gradient-to-r from-[color:var(--ap-surface)] to-transparent sm:w-16"
+            aria-hidden="true"
+          />
+          <div
+            className="pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-gradient-to-l from-[color:var(--ap-surface)] to-transparent sm:w-16"
+            aria-hidden="true"
+          />
+        </>
+      ) : null}
 
       <div
         ref={trackRef}
-        className="flex min-w-max gap-4 py-2 will-change-transform sm:gap-5"
+        className={`flex min-w-max gap-4 py-2 sm:gap-5 ${canAnimate ? "will-change-transform" : "pr-4"}`}
       >
-        {loopItems.map((item, index) => (
+        {renderItems.map((item, index) => (
           <div
             key={`${item.title}-${index}`}
-            className="w-[300px] shrink-0 sm:w-[332px] lg:w-[352px]"
+            className={`w-[300px] shrink-0 sm:w-[332px] lg:w-[352px] ${canAnimate ? "" : "snap-start"}`}
           >
             <Card
               variant="solid"

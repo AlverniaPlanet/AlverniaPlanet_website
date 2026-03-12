@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
 import dynamic from "next/dynamic";
 import AppBar from "@/app/appbar";
 import Footer from "@/app/components/Footer";
 import GlobalRevealObserver from "@/app/components/GlobalRevealObserver";
-import RoutePrefetcher from "@/app/components/RoutePrefetcher";
 import { I18nProvider } from "./i18n-provider";
 import { ThemeProvider } from "./theme-provider";
 
@@ -15,6 +15,12 @@ const FloatingBookingButton = dynamic(
 const AnalyticsTracker = dynamic(
   () => import("./components/AnalyticsTracker").then((mod) => mod.AnalyticsTracker),
 );
+const poppins = Poppins({
+  subsets: ["latin", "latin-ext"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  display: "swap",
+  variable: "--font-ap-sans",
+});
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://alverniaplanet.com";
 const orgSameAs = [
@@ -92,7 +98,11 @@ export default function RootLayout({
   const gtmId = "GTM-TM3MNLWS";
 
   return (
-    <html lang={initialLocale} suppressHydrationWarning className="theme-dark">
+    <html
+      lang={initialLocale}
+      suppressHydrationWarning
+      className={`${poppins.variable} theme-dark`}
+    >
       <body className="min-h-screen bg-[var(--ap-bg)] text-[color:var(--ap-text)] transition-colors duration-300">
         <Script
           strategy="afterInteractive"
@@ -128,7 +138,6 @@ export default function RootLayout({
           <I18nProvider initialLocale={initialLocale}>
             <div data-ap-reveal-root className="relative z-10 min-h-screen flex flex-col">
               <AppBar />
-              <RoutePrefetcher />
               <GlobalRevealObserver />
               {children}
               <Footer />

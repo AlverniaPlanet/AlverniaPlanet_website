@@ -1,5 +1,6 @@
 "use client";
 
+import AdaptiveVideo from "@/app/components/AdaptiveVideo";
 import Card from "@/app/components/Card";
 import ScrollMotionItem from "@/app/components/ScrollMotionItem";
 import TourLineAccentTitle from "@/app/components/TourLineAccentTitle";
@@ -174,23 +175,17 @@ export default function WystawaContent() {
         <div className="ap-shell mb-10 sm:mb-12">
           <div className="relative overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
             <div className="relative aspect-[4/5] sm:aspect-[16/9] bg-black">
-              <video
-                className="absolute inset-0 h-full w-full object-cover"
-                autoPlay
-                loop
-                muted
-                playsInline
-                preload="none"
+              <AdaptiveVideo
+                mp4Src="/wystawa/AP_wystawaHPX.mp4"
+                webmSrc="/wystawa/AP_wystawaHPX.webm"
                 poster="/wystawa/AP_wystawaHPX_poster.webp"
-                onEnded={(e) => {
-                  e.currentTarget.currentTime = 0;
-                  e.currentTarget.play();
-                }}
-              >
-                <source src="/wystawa/AP_wystawaHPX.webm" type="video/webm" />
-                <source src="/wystawa/AP_wystawaHPX.mp4" type="video/mp4" />
-                {copy.videoFallback}
-              </video>
+                className="absolute inset-0 h-full w-full object-cover"
+                sizes="(min-width: 1200px) 72rem, 100vw"
+                fallbackText={copy.videoFallback}
+                priority
+                rootMargin="320px 0px"
+                preferPosterOnLowPower
+              />
               <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/45 to-black/85" />
               <div className="absolute inset-0 opacity-60 mix-blend-soft-light bg-[radial-gradient(circle_at_18%_22%,rgba(252,211,77,0.28),transparent_38%),radial-gradient(circle_at_78%_20%,rgba(244,114,182,0.24),transparent_36%),radial-gradient(circle_at_50%_78%,rgba(59,130,246,0.28),transparent_44%)]" />
               <div className="relative flex h-full items-center justify-center p-5 sm:p-10 text-center force-overlay">

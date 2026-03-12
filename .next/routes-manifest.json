@@ -1,1 +1,239 @@
-{"version":3,"caseSensitive":false,"basePath":"","rewrites":{"beforeFiles":[],"afterFiles":[],"fallback":[]},"redirects":[{"source":"/:path+/","destination":"/:path+","permanent":true,"internal":true,"regex":"^(?:\\/((?:[^\\/]+?)(?:\\/(?:[^\\/]+?))*))\\/$"}],"headers":[]}
+{
+  "version": 3,
+  "pages404": true,
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    }
+  ],
+  "headers": [],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [],
+    "fallback": []
+  },
+  "dynamicRoutes": [],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/atrakcje/kino-360",
+      "regex": "^/atrakcje/kino\\-360(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/atrakcje/kino\\-360(?:/)?$"
+    },
+    {
+      "page": "/atrakcje/sciezka-filmowa",
+      "regex": "^/atrakcje/sciezka\\-filmowa(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/atrakcje/sciezka\\-filmowa(?:/)?$"
+    },
+    {
+      "page": "/atrakcje/wystawa",
+      "regex": "^/atrakcje/wystawa(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/atrakcje/wystawa(?:/)?$"
+    },
+    {
+      "page": "/en",
+      "regex": "^/en(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/en(?:/)?$"
+    },
+    {
+      "page": "/en/about",
+      "regex": "^/en/about(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/en/about(?:/)?$"
+    },
+    {
+      "page": "/en/attractions/cinema-360",
+      "regex": "^/en/attractions/cinema\\-360(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/en/attractions/cinema\\-360(?:/)?$"
+    },
+    {
+      "page": "/en/attractions/exhibition",
+      "regex": "^/en/attractions/exhibition(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/en/attractions/exhibition(?:/)?$"
+    },
+    {
+      "page": "/en/attractions/film-path",
+      "regex": "^/en/attractions/film\\-path(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/en/attractions/film\\-path(?:/)?$"
+    },
+    {
+      "page": "/en/contact",
+      "regex": "^/en/contact(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/en/contact(?:/)?$"
+    },
+    {
+      "page": "/en/events",
+      "regex": "^/en/events(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/en/events(?:/)?$"
+    },
+    {
+      "page": "/en/gallery",
+      "regex": "^/en/gallery(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/en/gallery(?:/)?$"
+    },
+    {
+      "page": "/en/getting-there",
+      "regex": "^/en/getting\\-there(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/en/getting\\-there(?:/)?$"
+    },
+    {
+      "page": "/en/reserve",
+      "regex": "^/en/reserve(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/en/reserve(?:/)?$"
+    },
+    {
+      "page": "/galeria",
+      "regex": "^/galeria(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/galeria(?:/)?$"
+    },
+    {
+      "page": "/jak-dojechac",
+      "regex": "^/jak\\-dojechac(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/jak\\-dojechac(?:/)?$"
+    },
+    {
+      "page": "/kontakt",
+      "regex": "^/kontakt(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/kontakt(?:/)?$"
+    },
+    {
+      "page": "/o-alvernia-planet",
+      "regex": "^/o\\-alvernia\\-planet(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/o\\-alvernia\\-planet(?:/)?$"
+    },
+    {
+      "page": "/pt",
+      "regex": "^/pt(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/pt(?:/)?$"
+    },
+    {
+      "page": "/pt/about",
+      "regex": "^/pt/about(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/pt/about(?:/)?$"
+    },
+    {
+      "page": "/pt/attractions/cinema-360",
+      "regex": "^/pt/attractions/cinema\\-360(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/pt/attractions/cinema\\-360(?:/)?$"
+    },
+    {
+      "page": "/pt/attractions/exhibition",
+      "regex": "^/pt/attractions/exhibition(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/pt/attractions/exhibition(?:/)?$"
+    },
+    {
+      "page": "/pt/attractions/film-path",
+      "regex": "^/pt/attractions/film\\-path(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/pt/attractions/film\\-path(?:/)?$"
+    },
+    {
+      "page": "/pt/contact",
+      "regex": "^/pt/contact(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/pt/contact(?:/)?$"
+    },
+    {
+      "page": "/pt/events",
+      "regex": "^/pt/events(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/pt/events(?:/)?$"
+    },
+    {
+      "page": "/pt/gallery",
+      "regex": "^/pt/gallery(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/pt/gallery(?:/)?$"
+    },
+    {
+      "page": "/pt/getting-there",
+      "regex": "^/pt/getting\\-there(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/pt/getting\\-there(?:/)?$"
+    },
+    {
+      "page": "/pt/reservar",
+      "regex": "^/pt/reservar(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/pt/reservar(?:/)?$"
+    },
+    {
+      "page": "/rezerwuj",
+      "regex": "^/rezerwuj(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/rezerwuj(?:/)?$"
+    },
+    {
+      "page": "/robots.txt",
+      "regex": "^/robots\\.txt(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/robots\\.txt(?:/)?$"
+    },
+    {
+      "page": "/sitemap.xml",
+      "regex": "^/sitemap\\.xml(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/sitemap\\.xml(?:/)?$"
+    },
+    {
+      "page": "/wydarzenia",
+      "regex": "^/wydarzenia(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/wydarzenia(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "rsc",
+    "varyHeader": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+    "prefetchHeader": "next-router-prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSuffix": ".prefetch.rsc",
+    "prefetchSegmentHeader": "next-router-segment-prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments"
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}

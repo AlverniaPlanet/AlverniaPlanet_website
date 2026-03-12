@@ -1,6 +1,6 @@
 "use client";
 
-import { memo } from "react";
+import { memo, type CSSProperties } from "react";
 import Card from "@/app/components/Card";
 import { PrimaryButton } from "@/app/components/PrimaryButton";
 import Image from "next/image";
@@ -27,7 +27,13 @@ export const AttractionCard = memo(function AttractionCard({
       variant="solid"
       dense
       motion="off"
-      className="group ap-tile h-full bg-white/8 ring-white/15 border border-white/12 text-white/90 shadow-[0_0_0_1px_rgba(255,255,255,0.04)_inset]"
+      className="group ap-interactive-surface h-full bg-white/8 ring-white/15 border border-white/12 text-white/90 shadow-[0_0_0_1px_rgba(255,255,255,0.04)_inset]"
+      style={
+        {
+          "--ap-card-hover-base-shadow":
+            "var(--ap-shadow), inset 0 0 0 1px rgba(255,255,255,0.04)",
+        } as CSSProperties
+      }
     >
       <div className="flex h-full flex-col gap-4">
         <div className="relative overflow-hidden rounded-2xl bg-white/10 ring-1 ring-white/15 shadow-[0_10px_35px_rgba(0,0,0,0.35)] aspect-[16/10]">

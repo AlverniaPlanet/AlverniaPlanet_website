@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import { useI18n } from "@/app/i18n-provider";
 import { mountBookeroInstance, removeBookeroInstancesByTypes } from "@/app/components/bookeroRuntime";
+import { getBookingPath } from "@/lib/localizedRoutes";
 
 const BOOKERO_PLUGIN_ID = "8iWKMAEWtI0P";
 const STICKY_CONTAINER_ID = "bookero-sticky-plugin";
@@ -82,10 +84,44 @@ export default function FloatingBookingButton() {
   const normalizedPath = normalizePath(pathname);
   const isHiddenPath = HIDDEN_PATHS.has(normalizedPath);
   const bookeroLang = loc === "en" ? "en" : "pl";
+  const bookingHref = getBookingPath(loc);
   const stickyButtonLabel = loc === "pl" ? STICKY_BUTTON_LABEL : t("nav.tickets");
   const labelRef = useRef(stickyButtonLabel);
   const labelSyncTimeoutsRef = useRef<number[]>([]);
   const labelSyncRafRef = useRef<number | null>(null);
+  const [useNativeFallbackOnly, setUseNativeFallbackOnly] = useState(false);
+  const [runtimeMounted, setRuntimeMounted] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const nav = navigator as Navigator & {
+      connection?: {
+        saveData?: boolean;
+        effectiveType?: string;
+      };
+      deviceMemory?: number;
+    };
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
+    const narrowViewport = window.matchMedia("(max-width: 767px)").matches;
+    const saveData = Boolean(nav.connection?.saveData);
+    const effectiveType = nav.connection?.effectiveType ?? "";
+    const constrainedNetwork = /(^|-)2g$|3g/.test(effectiveType);
+    const deviceMemory = nav.deviceMemory;
+    const lowMemory = typeof deviceMemory === "number" && deviceMemory <= 4;
+    const lowCpu = (nav.hardwareConcurrency ?? 8) <= 4;
+
+    setUseNativeFallbackOnly(
+      reducedMotion ||
+        saveData ||
+        constrainedNetwork ||
+        coarsePointer ||
+        (narrowViewport && (lowMemory || lowCpu)),
+    );
+  }, [normalizedPath]);
 
   const clearScheduledLabelSync = () => {
     if (labelSyncRafRef.current !== null) {
@@ -118,21 +154,22 @@ export default function FloatingBookingButton() {
 
   useEffect(() => {
     labelRef.current = stickyButtonLabel;
-    if (isHiddenPath) return;
+    if (isHiddenPath || useNativeFallbackOnly) return;
     scheduleStickyLabelSync(stickyButtonLabel);
 
     return () => {
       clearScheduledLabelSync();
     };
-  }, [stickyButtonLabel, isHiddenPath]);
+  }, [stickyButtonLabel, isHiddenPath, useNativeFallbackOnly]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
 
     removeLeakedInlineBookeroNodes(isHiddenPath);
     removeBookeroInstancesByTypes(["standard", "inline", "calendar", "weekly"]);
+    setRuntimeMounted(false);
 
-    if (isHiddenPath) {
+    if (isHiddenPath || useNativeFallbackOnly) {
       removeBookeroInstancesByTypes(["sticky"]);
       removeStickyBookeroNodes();
 
@@ -197,6 +234,7 @@ export default function FloatingBookingButton() {
         { persist: true },
       ).finally(() => {
         if (cancelled) return;
+        setRuntimeMounted(true);
         scheduleStickyLabelSync(labelRef.current);
       });
     };
@@ -229,7 +267,15 @@ export default function FloatingBookingButton() {
       clearScheduledLabelSync();
       removeStickyBookeroNodes();
     };
-  }, [isHiddenPath, bookeroLang, normalizedPath]);
+  }, [isHiddenPath, bookeroLang, normalizedPath, useNativeFallbackOnly]);
 
-  return null;
+  if (isHiddenPath) {
+    return null;
+  }
+
+  return useNativeFallbackOnly || !runtimeMounted ? (
+    <Link href={bookingHref} className="ap-native-booking-fallback">
+      {stickyButtonLabel}
+    </Link>
+  ) : null;
 }

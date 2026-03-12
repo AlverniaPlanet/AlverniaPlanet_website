@@ -1,5 +1,6 @@
 "use client";
 
+import AdaptiveVideo from "@/app/components/AdaptiveVideo";
 import Card from "@/app/components/Card";
 import TourLineAccentTitle from "@/app/components/TourLineAccentTitle";
 import TourLineGalleryRow from "@/app/components/TourLineGalleryRow";
@@ -225,23 +226,17 @@ export default function Kino360Content() {
         <div className="ap-shell mb-10 sm:mb-12">
           <div className="relative overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
             <div className="relative aspect-[4/5] sm:aspect-[16/9] bg-[#071020]">
-              <video
-                className="absolute inset-0 h-full w-full object-cover"
-                autoPlay
-                loop
-                muted
-                playsInline
-                preload="none"
+              <AdaptiveVideo
+                mp4Src="/kino360/Kino360.mp4"
+                webmSrc="/kino360/Kino360.webm"
                 poster="/kino360/Kino360_poster.webp"
-                onEnded={(e) => {
-                  e.currentTarget.currentTime = 0;
-                  e.currentTarget.play();
-                }}
-              >
-                <source src="/kino360/Kino360.webm" type="video/webm" />
-                <source src="/kino360/Kino360.mp4" type="video/mp4" />
-                {copy.videoFallback}
-              </video>
+                className="absolute inset-0 h-full w-full object-cover"
+                sizes="(min-width: 1200px) 72rem, 100vw"
+                fallbackText={copy.videoFallback}
+                priority
+                rootMargin="320px 0px"
+                preferPosterOnLowPower
+              />
               <div className="absolute inset-0 bg-gradient-to-b from-[#071524]/85 via-[#0b2340]/60 to-black/78" />
               <div className="absolute inset-0 opacity-60 mix-blend-soft-light bg-[radial-gradient(circle_at_20%_25%,rgba(76,153,255,0.25),transparent_45%),radial-gradient(circle_at_75%_20%,rgba(24,103,201,0.22),transparent_42%),radial-gradient(circle_at_50%_75%,rgba(7,48,108,0.28),transparent_46%)]" />
               <div className="relative flex h-full items-center justify-center p-5 sm:p-10 text-center force-overlay">

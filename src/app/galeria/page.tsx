@@ -1,6 +1,5 @@
 "use client";
 import Image from "next/image";
-import { motion } from "framer-motion";
 import { useI18n } from "@/app/i18n-provider";
 import { useState, useEffect } from "react";
 import Card from "@/app/components/Card";
@@ -485,12 +484,11 @@ function Lightbox({ items, index, caption, onClose, onChange }: LightboxProps) {
       role="dialog"
     >
       <div className="absolute inset-0 flex items-center justify-center p-4" onClick={(e) => e.stopPropagation()}>
-        <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.98 }}
-          transition={{ duration: 0.2 }}
+        <div
           className="relative w-full max-w-[min(86vw,120rem)] h-[80vh]"
+          style={{
+            animation: "galleryLightboxEnter 220ms cubic-bezier(0.22, 1, 0.36, 1) both",
+          }}
         >
           <Image
             src={items[index]}
@@ -531,7 +529,7 @@ function Lightbox({ items, index, caption, onClose, onChange }: LightboxProps) {
           >
             ›
           </button>
-        </motion.div>
+        </div>
       </div>
     </div>
   );
@@ -556,7 +554,7 @@ function GalleryTile({ src, alt, caption, loadingText, errorText, onClick, prior
       onClick={() => {
         if (!errored) onClick();
       }}
-      className="group flex h-full cursor-zoom-in flex-col overflow-hidden rounded-xl bg-white/5 ring-1 ring-white/10 transition hover:bg-white/10"
+      className="ap-interactive-surface group flex h-full cursor-zoom-in flex-col overflow-hidden rounded-xl bg-white/5 ring-1 ring-white/10 hover:bg-white/10"
     >
       <div className="relative aspect-[4/3] md:flex-1 md:aspect-auto md:min-h-0">
         {!loaded && !errored && (

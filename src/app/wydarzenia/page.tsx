@@ -1,6 +1,7 @@
 "use client";
-import { useState, useEffect, useRef, useMemo, type ReactNode } from "react";
+import { useMemo, type ReactNode } from "react";
 import { useI18n } from "@/app/i18n-provider";
+import AdaptiveVideo from "@/app/components/AdaptiveVideo";
 import Card from "@/app/components/Card";
 import { PrimaryButton } from "@/app/components/PrimaryButton";
 import ScrollMotionItem from "@/app/components/ScrollMotionItem";
@@ -9,17 +10,17 @@ import Image from "next/image";
 // ===== Lokalny słownik (PL/EN) =====
 type Locale = "pl" | "en" | "pt";
 const FORMAT_SHOWCASE_IMAGES = [
-  "/galeria/Wydarzenia/webp/8.webp",
-  "/galeria/Wydarzenia/webp/6.webp",
-  "/galeria/Wydarzenia/webp/5.webp",
+  "/wydarzenia/format-showcase-1.webp",
+  "/wydarzenia/format-showcase-2.webp",
+  "/wydarzenia/format-showcase-3.webp",
 ];
 type DomeKey = "k3" | "k4" | "k7" | "k10k12";
 
 const DOME_IMAGE_BY_KEY: Record<DomeKey, string> = {
-  k3: "/galeria/Wydarzenia/webp/1.webp",
-  k4: "/galeria/Wydarzenia/webp/3.webp",
-  k7: "/galeria/Wydarzenia/webp/4.webp",
-  k10k12: "/galeria/Wydarzenia/webp/2.webp",
+  k3: "/wydarzenia/dome-k3-thumb.webp",
+  k4: "/wydarzenia/dome-k4-thumb.jpg",
+  k7: "/wydarzenia/dome-k7-thumb.webp",
+  k10k12: "/wydarzenia/dome-k10k12-thumb.webp",
 };
 
 const COPY: Record<
@@ -472,7 +473,6 @@ interface EventVideoProps {
   className?: string;
   loadingLabel: string;
   fallbackText: string;
-  preload?: "auto" | "metadata" | "none";
 }
 
 function EventVideo({
@@ -482,132 +482,20 @@ function EventVideo({
   className,
   loadingLabel,
   fallbackText,
-  preload = "none",
 }: EventVideoProps) {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-
-  // Jeśli wideo zdążyło się załadować zanim React podpiął zdarzenia,
-  // sprawdzamy jego stan po zamontowaniu komponentu.
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    // readyState >= 2 oznacza, że metadane są załadowane,
-    // >= 3 że mamy już dane do odtwarzania.
-    if (video.readyState >= 2) {
-      setIsLoaded(true);
-    }
-
-    const handleCanPlay = () => {
-      setIsLoaded(true);
-    };
-
-    video.addEventListener("canplay", handleCanPlay);
-    return () => {
-      video.removeEventListener("canplay", handleCanPlay);
-    };
-  }, []);
-
-  // Wstrzymuj poza viewportem, wznawiaj gdy widać (odciążenie CPU)
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0];
-        setIsVisible(entry.isIntersecting);
-        if (!entry.isIntersecting) {
-          video.pause();
-        }
-      },
-      { threshold: 0.35 }
-    );
-
-    observer.observe(video);
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
-
-  // Safari: dopilnuj loop/autoplay inline
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    video.muted = true;
-    video.loop = true;
-    video.playsInline = true;
-
-    const ensurePlay = () => {
-      const p = video.play();
-      if (p && typeof p.catch === "function") {
-        p.catch(() => {});
-      }
-    };
-
-    const handleEnded = () => {
-      video.currentTime = 0;
-      ensurePlay();
-    };
-    const handlePause = () => {
-      if (video.paused && isVisible) ensurePlay();
-    };
-    const handleWebkitEndFullscreen = () => ensurePlay();
-
-    ensurePlay();
-    video.addEventListener("ended", handleEnded);
-    video.addEventListener("pause", handlePause);
-    video.addEventListener("webkitendfullscreen", handleWebkitEndFullscreen as EventListener);
-    return () => {
-      video.removeEventListener("ended", handleEnded);
-      video.removeEventListener("pause", handlePause);
-      video.removeEventListener("webkitendfullscreen", handleWebkitEndFullscreen as EventListener);
-    };
-  }, [isVisible]);
-
-  // Jeśli właśnie weszło w viewport, spróbuj wystartować (muted autoplay powinien przejść)
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    if (isVisible) {
-      const p = video.play();
-      if (p && typeof p.catch === "function") {
-        p.catch(() => {});
-      }
-    }
-  }, [isVisible]);
-
   return (
-    <div
-      className={`relative h-56 md:h-full overflow-hidden rounded-2xl ring-1 ring-white/10 bg-black/20 ${
-        className ?? ""
-      }`}
-      aria-busy={!isLoaded}
-    >
-      <video
-        ref={videoRef}
+    <div className={`relative h-56 md:h-full overflow-hidden rounded-2xl ring-1 ring-white/10 bg-black/20 ${className ?? ""}`}>
+      <AdaptiveVideo
+        mp4Src={src}
+        webmSrc={srcWebm}
+        poster={poster ?? "/wydarzenia/AP_wydarzenia_poster.webp"}
         className="absolute inset-0 h-full w-full object-cover pointer-events-none"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload={preload}
-        {...(poster ? { poster } : {})}
-        onLoadedData={() => setIsLoaded(true)}
-        onCanPlay={() => setIsLoaded(true)}
-      >
-        {srcWebm ? <source src={srcWebm} type="video/webm" /> : null}
-        <source src={src} type="video/mp4" />
-        {fallbackText}
-      </video>
-      {!isLoaded ? (
-        <div className="absolute inset-0 z-10 flex items-center justify-center text-xs sm:text-sm force-overlay-dim bg-black/50 backdrop-blur-[2px] animate-pulse pointer-events-none">
-          {loadingLabel}
-        </div>
-      ) : null}
+        fallbackText={fallbackText}
+        loadingLabel={loadingLabel}
+        showLoadingState
+        rootMargin="180px 0px"
+        preferPosterOnLowPower
+      />
       <div
         className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-b from-transparent to-black/70"
         aria-hidden
@@ -631,7 +519,7 @@ function VideoTile({ item, playLabel }: VideoTileProps) {
       href={videoHref}
       target="_blank"
       rel="noopener noreferrer"
-      className="events-video-tile group flex h-full w-full min-w-0 flex-col overflow-hidden rounded-2xl bg-white/5 ring-1 ring-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.35)] transition-transform duration-300 hover:-translate-y-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(247,120,40,0.7)]"
+      className="events-video-tile ap-interactive-surface group flex h-full w-full min-w-0 flex-col overflow-hidden rounded-2xl bg-white/5 ring-1 ring-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.35)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(247,120,40,0.7)]"
       aria-label={`${playLabel}: ${item.title}`}
     >
       <div className="relative h-48 sm:h-52 md:h-56 overflow-hidden bg-black/50">
@@ -642,6 +530,7 @@ function VideoTile({ item, playLabel }: VideoTileProps) {
           sizes="(min-width: 1024px) 30vw, (min-width: 640px) 46vw, 92vw"
           className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
           loading="lazy"
+          decoding="async"
         />
         <div className="events-video-tile-overlay pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/10" />
         <span className="events-video-play-badge absolute right-3 top-3 inline-flex items-center gap-2 rounded-full bg-black/45 px-3 py-1.5 text-xs font-semibold text-white ring-1 ring-white/20">
@@ -735,159 +624,47 @@ function DomePointList({ items, columns = 1 }: { items: string[]; columns?: 1 | 
 
 function EventPhotoColumn({
   photos,
-  animate = true,
   className = "",
 }: {
   photos: GalleryPhoto[];
-  animate?: boolean;
   className?: string;
 }) {
-  const loopPhotos = useMemo(() => [...photos, ...photos], [photos]);
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const trackRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    if (!animate) {
-      return;
-    }
-    const container = containerRef.current;
-    const track = trackRef.current;
-    if (!container || !track) {
-      return;
-    }
-
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const disableContinuousScroll = window.matchMedia("(max-width: 1023px)").matches;
-    if (prefersReduced || disableContinuousScroll) {
-      track.style.transform = "translate3d(0, 0, 0)";
-      return;
-    }
-
-    let frameId: number | null = null;
-    let halfHeight = 0;
-    let offset = 0;
-    let isVisible = false;
-    let lastTime = 0;
-    const speed = window.matchMedia("(min-width: 1536px)").matches ? 16 : 12;
-
-    const normalizeOffset = () => {
-      if (halfHeight <= 0) return;
-      offset = ((offset % halfHeight) + halfHeight) % halfHeight;
-    };
-
-    const recalculateHeight = () => {
-      halfHeight = track.scrollHeight / 2;
-      normalizeOffset();
-    };
-
-    const applyTrackTransform = () => {
-      track.style.transform = `translate3d(0, ${-offset.toFixed(2)}px, 0)`;
-    };
-
-    const tick = (time: number) => {
-      if (!isVisible) {
-        frameId = null;
-        return;
-      }
-      if (!lastTime) {
-        lastTime = time;
-      }
-      const deltaSeconds = Math.min((time - lastTime) / 1000, 0.05);
-      lastTime = time;
-
-      offset += speed * deltaSeconds;
-      normalizeOffset();
-      applyTrackTransform();
-
-      frameId = window.requestAnimationFrame(tick);
-    };
-
-    const startAnimation = () => {
-      if (frameId !== null || !isVisible) return;
-      lastTime = 0;
-      frameId = window.requestAnimationFrame(tick);
-    };
-
-    const stopAnimation = () => {
-      if (frameId !== null) {
-        window.cancelAnimationFrame(frameId);
-        frameId = null;
-      }
-    };
-
-    recalculateHeight();
-    const resizeObserver = new ResizeObserver(recalculateHeight);
-    resizeObserver.observe(track);
-    resizeObserver.observe(container);
-
-    const visibilityObserver = new IntersectionObserver(
-      ([entry]) => {
-        isVisible = Boolean(entry?.isIntersecting);
-        if (isVisible) {
-          startAnimation();
-        } else {
-          stopAnimation();
-        }
-      },
-      {
-        threshold: 0.08,
-        rootMargin: "80px 0px",
-      },
-    );
-    visibilityObserver.observe(container);
-
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        stopAnimation();
-        return;
-      }
-      if (isVisible) {
-        startAnimation();
-      }
-    };
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    return () => {
-      resizeObserver.disconnect();
-      visibilityObserver.disconnect();
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-      stopAnimation();
-    };
-  }, [photos.length, animate]);
+  const [leadPhoto, ...secondaryPhotos] = photos;
 
   return (
-    <div
-      ref={containerRef}
-      className={`events-showcase relative h-[22rem] sm:h-[26rem] md:h-[26rem] lg:h-[27rem] overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] ${className}`}
-    >
-      <div
-        className="events-showcase-fade-top pointer-events-none absolute inset-x-0 top-0 z-10 h-10 bg-gradient-to-b from-[#1a1f36] to-transparent sm:h-14"
-        aria-hidden="true"
-      />
-      <div
-        className="events-showcase-fade-bottom pointer-events-none absolute inset-x-0 bottom-0 z-10 h-10 bg-gradient-to-t from-[#1a1f36] to-transparent sm:h-14"
-        aria-hidden="true"
-      />
-      <div
-        ref={trackRef}
-        className="events-showcase-column flex min-h-max flex-col gap-3 p-3 sm:gap-4 sm:p-4 will-change-transform"
-      >
-        {loopPhotos.map((photo, index) => (
-          <div
-            key={`${photo.src}-${index}`}
-            className="events-showcase-item relative h-36 sm:h-40 md:h-48 overflow-hidden rounded-xl border border-white/10 bg-black/30"
-          >
+    <div className={`events-showcase overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] ${className}`}>
+      <div className="grid gap-3 p-3 sm:h-[26rem] sm:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] sm:gap-4 sm:p-4 lg:h-[27rem]">
+        {leadPhoto ? (
+          <div className="events-showcase-item relative min-h-[13rem] overflow-hidden rounded-xl border border-white/10 bg-black/30 sm:h-full">
             <Image
-              src={photo.src}
-              alt={photo.alt}
+              src={leadPhoto.src}
+              alt={leadPhoto.alt}
               fill
-              sizes="(min-width: 1024px) 42vw, (min-width: 768px) 46vw, 92vw"
+              sizes="(min-width: 1024px) 28vw, (min-width: 640px) 52vw, 92vw"
               className="object-cover"
-              loading={index < 3 ? "eager" : "lazy"}
+              loading="lazy"
+              decoding="async"
             />
           </div>
-        ))}
+        ) : null}
+        <div className="grid gap-3 sm:grid-rows-2 sm:gap-4">
+          {secondaryPhotos.map((photo) => (
+            <div
+              key={photo.src}
+              className="events-showcase-item relative min-h-[9.5rem] overflow-hidden rounded-xl border border-white/10 bg-black/30 sm:h-full"
+            >
+              <Image
+                src={photo.src}
+                alt={photo.alt}
+                fill
+                sizes="(min-width: 1024px) 20vw, (min-width: 640px) 40vw, 92vw"
+                className="object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -918,7 +695,7 @@ function DomeSpecBlock({
       : "Szczegóły techniczne";
 
   return (
-    <section className="events-dome-card rounded-2xl border p-4 transition-transform duration-300 hover:-translate-y-1 sm:p-5 md:p-6">
+    <section className="events-dome-card ap-interactive-surface rounded-2xl border p-4 sm:p-5 md:p-6">
       <div className="flex h-full flex-col gap-4">
         <div className="flex flex-wrap items-start gap-3">
           <div className="min-w-0 flex-1 space-y-3">
@@ -939,6 +716,7 @@ function DomeSpecBlock({
               sizes="(min-width: 1024px) 176px, (min-width: 640px) 192px, 100vw"
               className="object-cover"
               loading="lazy"
+              decoding="async"
             />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
           </div>
@@ -997,38 +775,6 @@ export default function EventsPage() {
   const domes = DOMES[loc];
   const contacts = CONTACTS[loc];
   const videoShowcase = VIDEO_SHOWCASE[loc];
-  const heroRef = useRef<HTMLVideoElement | null>(null);
-  const heroContainerRef = useRef<HTMLDivElement | null>(null);
-  const [isHeroVisible, setIsHeroVisible] = useState(false);
-
-  // Hero wideo: start/pauza zależnie od viewportu
-  useEffect(() => {
-    const el = heroContainerRef.current;
-    if (!el) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsHeroVisible(entry.isIntersecting);
-      },
-      { threshold: 0.35 }
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const el = heroRef.current;
-    if (!el) return;
-    if (isHeroVisible) {
-      const p = el.play();
-      if (p && typeof p.catch === "function") {
-        p.catch(() => {});
-      }
-    } else {
-      el.pause();
-    }
-  }, [isHeroVisible]);
 
   return (
     <main className="events-page relative min-h-screen">
@@ -1037,25 +783,18 @@ export default function EventsPage() {
         {/* Hero video z tytułem */}
         <header className="ap-shell mb-10 sm:mb-12">
           <div className="relative overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
-            <div className="relative aspect-[16/9] bg-black" ref={heroContainerRef}>
-              <video
-                ref={heroRef}
-                className="absolute inset-0 h-full w-full object-cover"
-                autoPlay
-                loop
-                muted
-                playsInline
-                preload="none"
+            <div className="relative aspect-[16/9] bg-black">
+              <AdaptiveVideo
+                mp4Src="/wydarzenia/AP_wydarzenia.mp4"
+                webmSrc="/wydarzenia/AP_wydarzenia.webm"
                 poster="/wydarzenia/AP_wydarzenia_poster.webp"
-                onEnded={(e) => {
-                  e.currentTarget.currentTime = 0;
-                  e.currentTarget.play();
-                }}
-              >
-                <source src="/wydarzenia/AP_wydarzenia.webm" type="video/webm" />
-                <source src="/wydarzenia/AP_wydarzenia.mp4" type="video/mp4" />
-                {ui.videoFallback}
-              </video>
+                className="absolute inset-0 h-full w-full object-cover"
+                sizes="(min-width: 1200px) 72rem, 100vw"
+                fallbackText={ui.videoFallback}
+                priority
+                rootMargin="320px 0px"
+                preferPosterOnLowPower
+              />
               <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/35 to-black/80" />
               <div className="relative flex h-full items-center justify-center p-6 sm:p-10 text-center force-overlay">
                 <div className="space-y-2 ap-page-intro-stagger">
@@ -1224,7 +963,7 @@ export default function EventsPage() {
                         {contacts.slice(0, 2).map((person) => (
                           <article
                             key={`event-card-${person.email}`}
-                            className="events-contact-card rounded-xl border p-3 transition-transform duration-300 hover:-translate-y-0.5 sm:p-4"
+                            className="events-contact-card ap-interactive-surface rounded-xl border p-3 sm:p-4"
                           >
                             <p className="text-base font-semibold text-white">{person.name}</p>
                             <p className="mt-1 text-xs sm:text-sm text-white/70">{person.role}</p>

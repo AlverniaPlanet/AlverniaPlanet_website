@@ -1,12 +1,12 @@
 "use client";
 
-import { memo, useEffect, useMemo, useRef, useState, type RefObject } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useI18n } from "@/app/i18n-provider";
+import AdaptiveVideo from "@/app/components/AdaptiveVideo";
 import Card from "@/app/components/Card";
 import { PrimaryButton } from "@/app/components/PrimaryButton";
-import Testimonials, { type Testimonial } from "@/app/components/Testimonials";
 import { AttractionCard } from "@/app/components/AttractionCard";
 import ScrollMotionItem from "@/app/components/ScrollMotionItem";
 import TicketFaqWidget, { type TicketFaqCopy } from "@/app/components/TicketFaqWidget";
@@ -20,13 +20,6 @@ type AttractionItem = {
   href: string;
   image: string;
   imageAlt: string;
-};
-
-type SectionCard = {
-  title: string;
-  description: string;
-  cta: string;
-  href: string;
 };
 
 type TicketOption = {
@@ -50,6 +43,16 @@ type TicketSection = {
   options: TicketOption[];
 };
 
+type PromoTile = {
+  eyebrow: string;
+  title: string;
+  description: string;
+  cta: string;
+  href: string;
+  image: string;
+  imageAlt: string;
+};
+
 type HomeCopy = {
   heroTitle: string;
   heroPromo: {
@@ -63,18 +66,8 @@ type HomeCopy = {
     items: AttractionItem[];
   };
   tickets: TicketSection;
+  eventsPromo: PromoTile;
   faq: TicketFaqCopy;
-  events: SectionCard;
-  testimonials: {
-    title: string;
-    subtitle: string;
-    reviews: Testimonial[];
-  };
-};
-
-type EventPhoto = {
-  src: string;
-  alt: string;
 };
 
 const HOME_COPY: Record<Locale, HomeCopy> = {
@@ -144,6 +137,16 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         },
       ],
     },
+    eventsPromo: {
+      eyebrow: "Wydarzenia",
+      title: "Wyjątkowe miejsce na Twój event",
+      description:
+        "Wyjątkowe przestrzenie do konferencji, gal i premier. Sprawdź możliwości organizacji eventów w Alvernia Planet.",
+      cta: "Odkryj wydarzenia",
+      href: "/wydarzenia",
+      image: "/wydarzenia/format-showcase-2.webp",
+      imageAlt: "Przestrzeń eventowa Alvernia Planet podczas konferencji",
+    },
     faq: {
       badge: "FAQ",
       title: "Najczęstsze pytania",
@@ -196,43 +199,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
           question: "Czy wejdziemy na plan zdjęciowy jakiejś produkcji?",
           answer:
             "Nie - hale zdjęciowe są miejscem pracy ekip filmowych, dlatego podczas zwiedzania nie ma możliwości wejścia na aktywny plan zdjęciowy.",
-        },
-      ],
-    },
-    events: {
-      title: "Wyjątkowe miejsce na Twój event!",
-      description:
-        "Wyjątkowe przestrzenie do konferencji, gal i premier. Sprawdź możliwości organizacji eventów w Alvernia Planet.",
-      cta: "Odkryj wydarzenia",
-      href: "/wydarzenia",
-    },
-    testimonials: {
-      title: "Opinie gości",
-      subtitle: "Kilka świeżych recenzji z wizyt w Alvernia Planet.",
-      reviews: [
-        {
-          name: "Joke Peulen",
-          date: "styczeń 2025",
-          text:
-            "Niesamowity i futurystyczny kompleks. Zagrałem tu wydarzenie wynajęte przez organizację i klimat był idealny. Nie chciałem stąd wyjeżdżać, chętnie bym tu zamieszkał. Jeśli szukasz miejsca na event, to jest to.",
-          rating: 5,
-          url: "https://maps.app.goo.gl/QqgR4n5zPU8iRNxf6",
-        },
-        {
-          name: "Anna Potocka - Zbryyt",
-          date: "sierpień 2024",
-          text:
-            "Nasza klasa brała udział w edukacyjnej lekcji „Nie wszystko co widzisz i słyszysz jest prawdą”. Świetna lekcja dla kinomanów, prowadząca potrafiła zaciekawić dzieci i była pełna pasji. Polecamy!",
-          rating: 5,
-          url: "https://maps.app.goo.gl/wBwEfrYd8ecH5Bac7",
-        },
-        {
-          name: "Cagatay Sen",
-          date: "grudzień 2024",
-          text:
-            "Wystawa Harry'ego Pottera była fantastyczna, z prawdziwymi eksponatami i świetną organizacją. Interaktywna atrakcja, dzieci i dorośli byli zachwyceni. Jedyny minus: brak toalety w namiocie, trzeba przejść do jadalni.",
-          rating: 5,
-          url: "https://maps.app.goo.gl/1B5sisSJGhTiLKrv6",
         },
       ],
     },
@@ -302,6 +268,16 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         },
       ],
     },
+    eventsPromo: {
+      eyebrow: "Events",
+      title: "A unique venue for your event",
+      description:
+        "Exceptional spaces for conferences, galas, and premieres. Discover what events you can host at Alvernia Planet.",
+      cta: "Explore events",
+      href: "/wydarzenia",
+      image: "/wydarzenia/format-showcase-2.webp",
+      imageAlt: "Event space at Alvernia Planet during a conference",
+    },
     faq: {
       badge: "FAQ",
       title: "Popular questions",
@@ -354,43 +330,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
           question: "Will we enter an active film set during the visit?",
           answer:
             "No. Sound stages are workplaces for film crews, so there is no access to an active set during the visit.",
-        },
-      ],
-    },
-    events: {
-      title: "A unique venue for your event!",
-      description:
-        "Exceptional spaces for conferences, galas, and premieres. Discover what events you can host at Alvernia Planet.",
-      cta: "Explore events",
-      href: "/wydarzenia",
-    },
-    testimonials: {
-      title: "What visitors say",
-      subtitle: "Recent reviews from guests exploring Alvernia Planet.",
-      reviews: [
-        {
-          name: "Joke Peulen",
-          date: "January 2025",
-          text:
-            "Amazing, futuristic complex. I played an event there for a group that rented the venue and it set the perfect vibe. I almost didn’t want to leave—would happily live here! If you need a place for an event, this is it.",
-          rating: 5,
-          url: "https://maps.app.goo.gl/QqgR4n5zPU8iRNxf6",
-        },
-        {
-          name: "Anna Potocka - Zbryyt",
-          date: "August 2024",
-          text:
-            "Our class joined an educational lesson “Not everything you see and hear is true.” Fantastic session for movie fans; the guide kept kids engaged with passion and clarity. Highly recommended!",
-          rating: 5,
-          url: "https://maps.app.goo.gl/wBwEfrYd8ecH5Bac7",
-        },
-        {
-          name: "Cagatay Sen",
-          date: "December 2024",
-          text:
-            "The Harry Potter exhibition was fantastic—real props and well-thought organization. Very interactive, kids and adults were thrilled. Only minus: no restroom in the tent; you need to walk to the dining area.",
-          rating: 5,
-          url: "https://maps.app.goo.gl/1B5sisSJGhTiLKrv6",
         },
       ],
     },
@@ -461,6 +400,16 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         },
       ],
     },
+    eventsPromo: {
+      eyebrow: "Eventos",
+      title: "Um espaço único para o seu evento",
+      description:
+        "Espaços excepcionais para conferências, galas e estreias. Descubra o potencial da Alvernia Planet para eventos.",
+      cta: "Explorar eventos",
+      href: "/wydarzenia",
+      image: "/wydarzenia/format-showcase-2.webp",
+      imageAlt: "Espaço de eventos da Alvernia Planet durante uma conferência",
+    },
     faq: {
       badge: "FAQ",
       title: "Perguntas frequentes",
@@ -516,63 +465,13 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         },
       ],
     },
-    events: {
-      title: "Um espaço único para o seu evento!",
-      description:
-        "Espaços excepcionais para conferências, galas e estreias. Descubra o potencial da Alvernia Planet para eventos.",
-      cta: "Explorar eventos",
-      href: "/wydarzenia",
-    },
-    testimonials: {
-      title: "Opiniões dos visitantes",
-      subtitle: "Algumas avaliações recentes de quem visitou a Alvernia Planet.",
-      reviews: [
-        {
-          name: "Joke Peulen",
-          date: "janeiro 2025",
-          text:
-            "Complexo incrível e futurista. Toquei num evento para uma organização que alugou o espaço e o ambiente foi perfeito. Quase não queria sair daqui. Se procura um lugar para um evento, é este.",
-          rating: 5,
-          url: "https://maps.app.goo.gl/QqgR4n5zPU8iRNxf6",
-        },
-        {
-          name: "Anna Potocka - Zbryyt",
-          date: "agosto 2024",
-          text:
-            "A nossa turma participou na aula educativa “Nem tudo o que vês e ouves é verdade”. Uma ótima sessão para fãs de cinema; a guia envolveu as crianças com paixão e clareza. Recomendamos!",
-          rating: 5,
-          url: "https://maps.app.goo.gl/wBwEfrYd8ecH5Bac7",
-        },
-        {
-          name: "Cagatay Sen",
-          date: "dezembro 2024",
-          text:
-            "A exposição de Harry Potter foi fantástica, com adereços reais e excelente organização. Muito interativa — crianças e adultos ficaram encantados. Único ponto negativo: não havia WC na tenda, foi preciso ir até à área de refeições.",
-          rating: 5,
-          url: "https://maps.app.goo.gl/1B5sisSJGhTiLKrv6",
-        },
-      ],
-    },
   },
 };
 
-const GOOGLE_PLACE_URL =
-  "https://www.google.com/maps/place/Alvernia+Planet/@50.1022663,19.5444717,637m/data=!3m1!1e3!4m8!3m7!1s0x4716f227b90ec1a1:0xbd1dbadc60237cc3!8m2!3d50.1022629!4d19.5470466!9m1!1b1!16s%2Fg%2F1yy3vkg22?hl=pl&entry=ttu&g_ep=EgoyMDI1MTExNy4wIKXMDSoASAFQAw%3D%3D";
-
-const EVENT_GALLERY_IMAGES = Array.from(
-  { length: 8 },
-  (_, idx) => `/galeria/Wydarzenia/webp/${idx + 1}.webp`,
-);
 const HERO_WELCOME_AUTO_HIDE_MS = 2500;
 const HERO_WELCOME_FADE_DURATION_MS = 1200;
 const HERO_PROMO_DELAY_MS = 2000;
 const HERO_PROMO_FADE_DURATION_MS = 700;
-const EVENT_COLUMN_CARD_HEIGHTS = [
-  "h-28 sm:h-32 lg:h-36",
-  "h-36 sm:h-40 lg:h-44",
-  "h-32 sm:h-36 lg:h-40",
-  "h-40 sm:h-44 lg:h-48",
-];
 
 export default function Page() {
   const { locale } = useI18n();
@@ -587,24 +486,6 @@ export default function Page() {
       : loc === "pt"
       ? "O seu navegador não suporta o elemento de vídeo."
       : "Twój browser nie wspiera elementu video.";
-  const eventPhotoLabel =
-    loc === "en"
-      ? "Event photo"
-      : loc === "pt"
-      ? "Foto do evento"
-      : "Zdjęcie z wydarzenia";
-  const eventPhotos = useMemo(
-    () =>
-      EVENT_GALLERY_IMAGES.map((src, index) => ({
-        src,
-        alt: `${eventPhotoLabel} ${index + 1}`,
-      })),
-    [eventPhotoLabel],
-  );
-
-  const heroVideoRef = useRef<HTMLVideoElement | null>(null);
-  const heroSectionRef = useRef<HTMLElement | null>(null);
-  const shouldKeepHeroPlayingRef = useRef(true);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -655,74 +536,6 @@ export default function Page() {
     return () => window.clearTimeout(timer);
   }, []);
 
-  useEffect(() => {
-    const section = heroSectionRef.current;
-    const video = heroVideoRef.current;
-    if (!section || !video) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        const keepPlaying = Boolean(entry?.isIntersecting);
-        shouldKeepHeroPlayingRef.current = keepPlaying;
-
-        if (keepPlaying) {
-          const p = video.play();
-          if (p && typeof p.catch === "function") p.catch(() => {});
-        } else {
-          video.pause();
-        }
-      },
-      {
-        threshold: 0.12,
-        rootMargin: "120px 0px -10% 0px",
-      },
-    );
-
-    observer.observe(section);
-    return () => observer.disconnect();
-  }, []);
-
-  // Safari: wymuś loop/autoplay inline nawet po zakończeniu
-  useEffect(() => {
-    const video = heroVideoRef.current;
-    if (!video) return;
-
-    video.muted = true;
-    video.loop = true;
-    video.playsInline = true;
-
-    const ensurePlay = () => {
-      if (!shouldKeepHeroPlayingRef.current) return;
-      const p = video.play();
-      if (p && typeof p.catch === "function") {
-        p.catch(() => {});
-      }
-    };
-
-    const handleEnded = () => {
-      if (!shouldKeepHeroPlayingRef.current) return;
-      video.currentTime = 0;
-      ensurePlay();
-    };
-    const handlePause = () => {
-      if (video.paused && shouldKeepHeroPlayingRef.current) ensurePlay();
-    };
-
-    ensurePlay();
-    const handleWebkitEndFullscreen = () => ensurePlay();
-
-    video.addEventListener("ended", handleEnded);
-    video.addEventListener("pause", handlePause);
-    video.addEventListener("webkitendfullscreen", handleWebkitEndFullscreen as EventListener);
-    return () => {
-      video.removeEventListener("ended", handleEnded);
-      video.removeEventListener("pause", handlePause);
-      video.removeEventListener("webkitendfullscreen", handleWebkitEndFullscreen as EventListener);
-    };
-  }, []);
-
-  const reviewsToShow = copy.testimonials.reviews;
-
   return (
     <main className="relative min-h-screen px-4 py-10 sm:py-14 lg:py-12 text-white">
       <HeroSection
@@ -731,18 +544,13 @@ export default function Page() {
         heroVideoFallback={heroVideoFallback}
         introReady={introReady}
         heroWelcomeVisible={heroWelcomeVisible}
-        heroSectionRef={heroSectionRef}
-        heroVideoRef={heroVideoRef}
       />
       <HomeContent
         introReady={introReady}
         attractions={copy.attractions}
         tickets={copy.tickets}
-        events={copy.events}
-        testimonials={copy.testimonials}
-        eventPhotos={eventPhotos}
+        eventsPromo={copy.eventsPromo}
         secondaryAnimationsReady={secondaryAnimationsReady}
-        reviews={reviewsToShow}
       />
       <HomeFaqSlots faq={copy.faq} />
     </main>
@@ -755,20 +563,15 @@ const HeroSection = memo(function HeroSection({
   heroVideoFallback,
   introReady,
   heroWelcomeVisible,
-  heroSectionRef,
-  heroVideoRef,
 }: {
   heroTitle: string;
   heroPromo: HomeCopy["heroPromo"];
   heroVideoFallback: string;
   introReady: boolean;
   heroWelcomeVisible: boolean;
-  heroSectionRef: RefObject<HTMLElement | null>;
-  heroVideoRef: RefObject<HTMLVideoElement | null>;
 }) {
   return (
     <section
-      ref={heroSectionRef}
       className={`relative z-10 transition-[opacity,transform] duration-[1300ms] will-change-[opacity,transform] ${
         introReady ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
       }`}
@@ -831,27 +634,17 @@ const HeroSection = memo(function HeroSection({
                 {heroTitle}
               </h1>
             </div>
-            <video
-              ref={heroVideoRef}
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="none"
+            <AdaptiveVideo
+              mp4Src="/home/AP_ogolne.mp4"
+              webmSrc="/home/AP_ogolne.webm"
               poster="/home/AP_ogolne_poster.webp"
               className="absolute inset-0 h-full w-full object-cover pointer-events-none"
-              controlsList="nodownload noplaybackrate noremoteplayback nofullscreen"
-              disablePictureInPicture
-              tabIndex={-1}
-              onContextMenu={(e) => e.preventDefault()}
-              onError={() =>
-                console.warn("[video] playback error — check file names/paths in /public")
-              }
-            >
-              <source src="/home/AP_ogolne.webm" type="video/webm" />
-              <source src="/home/AP_ogolne.mp4" type="video/mp4" />
-              {heroVideoFallback}
-            </video>
+              sizes="(min-width: 1200px) 72rem, 100vw"
+              fallbackText={heroVideoFallback}
+              priority
+              rootMargin="320px 0px"
+              preferPosterOnLowPower
+            />
           </div>
         </div>
       </div>
@@ -863,20 +656,14 @@ const HomeContent = memo(function HomeContent({
   introReady,
   attractions,
   tickets,
-  events,
-  testimonials,
-  eventPhotos,
+  eventsPromo,
   secondaryAnimationsReady,
-  reviews,
 }: {
   introReady: boolean;
   attractions: HomeCopy["attractions"];
   tickets: TicketSection;
-  events: SectionCard;
-  testimonials: HomeCopy["testimonials"];
-  eventPhotos: EventPhoto[];
+  eventsPromo: PromoTile;
   secondaryAnimationsReady: boolean;
-  reviews: Testimonial[];
 }) {
   return (
     <section
@@ -893,8 +680,7 @@ const HomeContent = memo(function HomeContent({
         <div className="grid grid-cols-1 gap-16 sm:gap-20">
           <AttractionsSection attractions={attractions} animate={secondaryAnimationsReady} />
           <TicketsSection tickets={tickets} />
-          <EventsSection events={events} photos={eventPhotos} animate={secondaryAnimationsReady} />
-          <TestimonialsSection testimonials={testimonials} reviews={reviews} />
+          <EventsPromoSection promo={eventsPromo} />
         </div>
       </div>
     </section>
@@ -1003,43 +789,40 @@ const TicketsSection = memo(function TicketsSection({
   );
 });
 
-const EventsSection = memo(function EventsSection({
-  events,
-  photos,
-  animate,
+const EventsPromoSection = memo(function EventsPromoSection({
+  promo,
 }: {
-  events: SectionCard;
-  photos: EventPhoto[];
-  animate: boolean;
+  promo: PromoTile;
 }) {
   return (
-    <ScrollMotionItem strength="strong" delay={130} float className="home-deferred-block">
-      <Card title={events.title} className="text-center" titleCentered titleDivider dense motion="off">
-        <p className="ap-type-section-body">{events.description}</p>
-        <EventsVerticalShowcase photos={photos} allowAnimation={animate} />
-        <div className="mt-6 flex justify-center">
-          <PrimaryButton href={events.href} size="lg">
-            {events.cta}
-          </PrimaryButton>
-        </div>
-      </Card>
-    </ScrollMotionItem>
-  );
-});
-
-const TestimonialsSection = memo(function TestimonialsSection({
-  testimonials,
-  reviews,
-}: {
-  testimonials: HomeCopy["testimonials"];
-  reviews: Testimonial[];
-}) {
-  return (
-    <ScrollMotionItem strength="strong" delay={170} float className="home-deferred-block">
-      <Card title={testimonials.title} titleCentered titleDivider dense motion="off">
-        <p className="ap-type-section-body text-center">{testimonials.subtitle}</p>
-        <div className="mt-6">
-          <Testimonials reviews={reviews} sourceUrl={GOOGLE_PLACE_URL} />
+    <ScrollMotionItem strength="soft" delay={70} float={false} className="home-deferred-block">
+      <Card variant="solid" dense motion="off" className="ap-interactive-surface overflow-hidden">
+        <div className="grid items-center gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-8">
+          <div className="mx-auto max-w-2xl text-center lg:mx-0 lg:text-left">
+            <p className="ap-type-kicker">{promo.eyebrow}</p>
+            <h2 className="mt-2 ap-type-section-title text-balance">{promo.title}</h2>
+            <p className="mt-3 ap-type-section-body max-w-2xl">{promo.description}</p>
+            <div className="mt-6 flex justify-center lg:justify-start">
+              <PrimaryButton href={promo.href} size="md">
+                {promo.cta}
+              </PrimaryButton>
+            </div>
+          </div>
+          <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-black/20 ring-1 ring-white/12 shadow-[0_18px_42px_rgba(0,0,0,0.28)]">
+            <Image
+              src={promo.image}
+              alt={promo.imageAlt}
+              fill
+              sizes="(min-width: 1024px) 34rem, 100vw"
+              className="object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+            <div
+              className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-[#141830]/38 via-transparent to-[#4fcfde]/12"
+              aria-hidden="true"
+            />
+          </div>
         </div>
       </Card>
     </ScrollMotionItem>
@@ -1073,9 +856,42 @@ const AttractionsScroller = memo(function AttractionsScroller({
   const loopItems = useMemo(() => [...items, ...items], [items]);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
+  const [canAnimate, setCanAnimate] = useState(false);
 
   useEffect(() => {
-    if (!shouldAnimate) {
+    if (typeof window === "undefined" || !shouldAnimate) {
+      setCanAnimate(false);
+      return;
+    }
+
+    const nav = navigator as Navigator & {
+      connection?: {
+        saveData?: boolean;
+        effectiveType?: string;
+      };
+      deviceMemory?: number;
+    };
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
+    const narrowViewport = window.matchMedia("(max-width: 767px)").matches;
+    const saveData = Boolean(nav.connection?.saveData);
+    const effectiveType = nav.connection?.effectiveType ?? "";
+    const constrainedNetwork = /(^|-)2g$|3g/.test(effectiveType);
+    const deviceMemory = nav.deviceMemory;
+    const lowMemory = typeof deviceMemory === "number" && deviceMemory <= 4;
+    const lowCpu = (nav.hardwareConcurrency ?? 8) <= 4;
+
+    setCanAnimate(
+      !reducedMotion &&
+        !saveData &&
+        !constrainedNetwork &&
+        !coarsePointer &&
+        !(narrowViewport && (lowMemory || lowCpu)),
+    );
+  }, [shouldAnimate]);
+
+  useEffect(() => {
+    if (!canAnimate) {
       return;
     }
     const container = containerRef.current;
@@ -1292,319 +1108,48 @@ const AttractionsScroller = memo(function AttractionsScroller({
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       stopAnimation();
     };
-  }, [items.length, shouldAnimate]);
+  }, [canAnimate, items.length]);
+
+  const renderItems = canAnimate ? loopItems : items;
 
   return (
     <div
       ref={containerRef}
-      className="attractions-carousel relative mt-8 overflow-hidden rounded-2xl touch-pan-y"
+      className={`attractions-carousel relative mt-8 rounded-2xl touch-pan-y ${
+        canAnimate ? "overflow-hidden" : "overflow-x-auto pb-2"
+      }`}
+      style={canAnimate ? undefined : { scrollbarWidth: "none" }}
     >
-      <div
-        className="attractions-edge-fade attractions-edge-fade-left pointer-events-none absolute inset-y-0 left-0 z-10 w-10 bg-gradient-to-r from-[#1a1f36] to-transparent sm:w-16"
-        aria-hidden="true"
-      />
-      <div
-        className="attractions-edge-fade attractions-edge-fade-right pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-gradient-to-l from-[#1a1f36] to-transparent sm:w-16"
-        aria-hidden="true"
-      />
+      {canAnimate ? (
+        <>
+          <div
+            className="attractions-edge-fade attractions-edge-fade-left pointer-events-none absolute inset-y-0 left-0 z-10 w-10 bg-gradient-to-r from-[#1a1f36] to-transparent sm:w-16"
+            aria-hidden="true"
+          />
+          <div
+            className="attractions-edge-fade attractions-edge-fade-right pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-gradient-to-l from-[#1a1f36] to-transparent sm:w-16"
+            aria-hidden="true"
+          />
+        </>
+      ) : null}
 
       <div
         ref={trackRef}
-        className="attractions-track flex min-w-max gap-4 py-2 sm:gap-5 will-change-transform"
+        className={`attractions-track flex min-w-max gap-4 py-2 sm:gap-5 ${
+          canAnimate ? "will-change-transform" : "pr-4"
+        }`}
       >
-        {loopItems.map((item, index) => (
+        {renderItems.map((item, index) => (
           <div
             key={`${item.title}-${index}`}
-            className="w-[300px] shrink-0 sm:w-[332px] lg:w-[352px]"
+            className={`w-[300px] shrink-0 sm:w-[332px] lg:w-[352px] ${
+              canAnimate ? "" : "snap-start"
+            }`}
           >
             <AttractionCard {...item} />
           </div>
         ))}
       </div>
-    </div>
-  );
-});
-
-const EventsVerticalShowcase = memo(function EventsVerticalShowcase({
-  photos,
-  allowAnimation = true,
-}: {
-  photos: { src: string; alt: string }[];
-  allowAnimation?: boolean;
-}) {
-  const [isCompactMode, setIsCompactMode] = useState(false);
-  const [canAnimateOnDevice, setCanAnimateOnDevice] = useState(true);
-
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-
-    const updateDeviceProfile = () => {
-      const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
-      const narrowViewport = window.matchMedia("(max-width: 767px)").matches;
-      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const hardwareThreads = navigator.hardwareConcurrency ?? 8;
-      const deviceMemory = (navigator as Navigator & { deviceMemory?: number }).deviceMemory;
-      const veryLowPowerDevice =
-        hardwareThreads <= 2 || (typeof deviceMemory === "number" && deviceMemory <= 2);
-
-      setIsCompactMode(coarsePointer || narrowViewport);
-      setCanAnimateOnDevice(!prefersReducedMotion && !veryLowPowerDevice);
-    };
-
-    updateDeviceProfile();
-    window.addEventListener("resize", updateDeviceProfile, { passive: true });
-    window.addEventListener("orientationchange", updateDeviceProfile);
-
-    return () => {
-      window.removeEventListener("resize", updateDeviceProfile);
-      window.removeEventListener("orientationchange", updateDeviceProfile);
-    };
-  }, []);
-
-  const columnsCount = isCompactMode ? 1 : 2;
-  const effectivePhotos = useMemo(
-    () => (isCompactMode ? photos.slice(0, 6) : photos),
-    [isCompactMode, photos],
-  );
-  const hasPhotos = effectivePhotos.length > 0;
-  const eagerImagesPerColumn = isCompactMode ? 2 : 1;
-  const [loadedBySrc, setLoadedBySrc] = useState<Record<string, true>>({});
-  const columns = useMemo(() => {
-    if (!hasPhotos) {
-      return Array.from({ length: columnsCount }, () => [] as { src: string; alt: string }[]);
-    }
-    const result = Array.from({ length: columnsCount }, () => [] as { src: string; alt: string }[]);
-
-    const minPerColumn = isCompactMode
-      ? Math.min(3, effectivePhotos.length)
-      : Math.min(4, effectivePhotos.length);
-    effectivePhotos.forEach((photo, index) => {
-      result[index % columnsCount].push(photo);
-    });
-
-    result.forEach((column, columnIndex) => {
-      let guard = 0;
-      while (column.length < minPerColumn && guard < effectivePhotos.length * 3) {
-        const candidate = effectivePhotos[(columnIndex + guard) % effectivePhotos.length];
-        if (!column.some((item) => item.src === candidate.src)) {
-          column.push(candidate);
-        }
-        guard += 1;
-      }
-    });
-
-    return result;
-  }, [columnsCount, effectivePhotos, hasPhotos, isCompactMode]);
-
-  const initialImageSources = useMemo(() => {
-    if (!hasPhotos) return [] as string[];
-
-    const srcSet = new Set<string>();
-    columns.forEach((column) => {
-      column.slice(0, eagerImagesPerColumn).forEach((photo) => {
-        srcSet.add(photo.src);
-      });
-    });
-
-    return Array.from(srcSet);
-  }, [columns, eagerImagesPerColumn, hasPhotos]);
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [slowIntroPhase, setSlowIntroPhase] = useState(true);
-  const [forceAnimationStart, setForceAnimationStart] = useState(false);
-
-  useEffect(() => {
-    if (!allowAnimation || !canAnimateOnDevice) {
-      setIsAnimating(false);
-      return;
-    }
-    const container = containerRef.current;
-    if (!container) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsAnimating(Boolean(entry?.isIntersecting) && !document.hidden);
-      },
-      {
-        threshold: 0.08,
-        rootMargin: "120px 0px",
-      },
-    );
-    observer.observe(container);
-
-    const handleVisibility = () => {
-      if (document.hidden) {
-        setIsAnimating(false);
-        return;
-      }
-
-      const rect = container.getBoundingClientRect();
-      const viewportHeight = window.innerHeight || 0;
-      const inView = rect.top < viewportHeight * 0.92 && rect.bottom > viewportHeight * 0.08;
-      setIsAnimating(inView);
-    };
-    document.addEventListener("visibilitychange", handleVisibility);
-
-    return () => {
-      observer.disconnect();
-      document.removeEventListener("visibilitychange", handleVisibility);
-    };
-  }, [allowAnimation, canAnimateOnDevice]);
-
-  useEffect(() => {
-    setLoadedBySrc({});
-  }, [photos, isCompactMode]);
-
-  useEffect(() => {
-    setForceAnimationStart(false);
-    if (!allowAnimation || !canAnimateOnDevice || !hasPhotos) {
-      return;
-    }
-    const timer = window.setTimeout(() => {
-      setForceAnimationStart(true);
-    }, isCompactMode ? 1700 : 1200);
-    return () => {
-      window.clearTimeout(timer);
-    };
-  }, [allowAnimation, canAnimateOnDevice, hasPhotos, isCompactMode, photos]);
-
-  const initialImagesReady =
-    initialImageSources.length === 0 ||
-    initialImageSources.every((src) => Boolean(loadedBySrc[src]));
-  const isAnimationRunning =
-    allowAnimation &&
-    canAnimateOnDevice &&
-    isAnimating &&
-    (initialImagesReady || forceAnimationStart);
-
-  useEffect(() => {
-    if (!isAnimationRunning) {
-      setSlowIntroPhase(true);
-      return;
-    }
-    const timer = window.setTimeout(() => {
-      setSlowIntroPhase(false);
-    }, 6200);
-    return () => {
-      window.clearTimeout(timer);
-    };
-  }, [isAnimationRunning]);
-
-  if (!hasPhotos) {
-    return null;
-  }
-
-  const markImageLoaded = (src: string) => {
-    setLoadedBySrc((prev) => {
-      if (prev[src]) return prev;
-      return { ...prev, [src]: true };
-    });
-  };
-
-  return (
-    <div
-      ref={containerRef}
-      className="events-showcase relative mt-10 overflow-hidden rounded-2xl border border-white/12 bg-white/[0.03] p-2.5 sm:p-3.5"
-    >
-      <div
-        className="events-showcase-fade events-showcase-fade-top pointer-events-none absolute inset-x-0 top-0 z-10 h-14 bg-gradient-to-b from-[#1a1f36] via-[#1a1f36]/70 to-transparent"
-        aria-hidden="true"
-      />
-      <div
-        className="events-showcase-fade events-showcase-fade-bottom pointer-events-none absolute inset-x-0 bottom-0 z-10 h-14 bg-gradient-to-t from-[#1a1f36] via-[#1a1f36]/70 to-transparent"
-        aria-hidden="true"
-      />
-
-      <div className="relative grid grid-cols-1 gap-3 sm:grid-cols-2">
-        {columns.map((column, columnIndex) => {
-          const reverse = columnIndex % 2 === 1;
-          const introDuration = reverse ? (isCompactMode ? 66 : 58) : (isCompactMode ? 60 : 52);
-          const regularDuration = reverse ? (isCompactMode ? 48 : 42) : (isCompactMode ? 42 : 36);
-          return (
-            <div
-              key={`events-column-${columnIndex}`}
-              className="events-showcase-column h-[300px] overflow-hidden rounded-xl border border-white/10 bg-[#0f1328]/70 p-2 sm:h-[360px] lg:h-[420px]"
-            >
-              <div
-                className="events-showcase-track flex flex-col transform-gpu will-change-transform"
-                style={{
-                  animationName: reverse ? "eventsColumnDown" : "eventsColumnUp",
-                  animationDuration: `${slowIntroPhase ? introDuration : regularDuration}s`,
-                  animationTimingFunction: "linear",
-                  animationIterationCount: "infinite",
-                  animationPlayState: isAnimationRunning ? "running" : "paused",
-                }}
-              >
-                {[0, 1].map((loopIndex) => (
-                  <div
-                    key={`events-loop-${columnIndex}-${loopIndex}`}
-                    className="flex flex-col gap-3 pb-3"
-                  >
-                    {column.map((photo, imageIndex) => {
-                      const isLoaded = Boolean(loadedBySrc[photo.src]);
-                      const eager = loopIndex === 0 && imageIndex < eagerImagesPerColumn;
-                      const loaderState = isLoaded
-                        ? "opacity-0"
-                        : `opacity-100${isCompactMode ? "" : " animate-pulse"}`;
-                      return (
-                        <div
-                          key={`${photo.src}-${columnIndex}-${loopIndex}-${imageIndex}`}
-                          className={`events-showcase-item group relative overflow-hidden rounded-lg border border-white/10 bg-white/5 ${
-                            EVENT_COLUMN_CARD_HEIGHTS[
-                              (imageIndex + columnIndex) % EVENT_COLUMN_CARD_HEIGHTS.length
-                            ]
-                          }`}
-                        >
-                          <div
-                            aria-hidden="true"
-                            className={`events-showcase-loader pointer-events-none absolute inset-0 bg-gradient-to-br from-[#263865]/70 via-[#1a2546]/65 to-[#10192f]/85 transition-opacity duration-500 ${loaderState}`}
-                          />
-                          <Image
-                            src={photo.src}
-                            alt={photo.alt}
-                            fill
-                            sizes="(min-width: 1280px) 280px, (min-width: 640px) 36vw, 88vw"
-                            quality={60}
-                            fetchPriority={eager ? "auto" : "low"}
-                            loading={eager ? "eager" : "lazy"}
-                            decoding="async"
-                            onLoad={() => markImageLoaded(photo.src)}
-                            className={`object-cover transition-[opacity,transform] duration-500 ease-out group-hover:scale-[1.04] ${
-                              isLoaded ? "opacity-100" : "opacity-0"
-                            }`}
-                          />
-                        </div>
-                      );
-                    })}
-                  </div>
-                ))}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      <style jsx global>{`
-        @keyframes eventsColumnUp {
-          from {
-            transform: translateY(0);
-          }
-          to {
-            transform: translateY(-50%);
-          }
-        }
-
-        @keyframes eventsColumnDown {
-          from {
-            transform: translateY(-50%);
-          }
-          to {
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </div>
   );
 });
