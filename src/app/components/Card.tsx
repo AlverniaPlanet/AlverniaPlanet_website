@@ -1,7 +1,6 @@
 "use client";
 import * as React from "react";
 import { type CSSProperties } from "react";
-import { useRevealParallax } from "@/app/components/useRevealParallax";
 
 function cx(...cls: Array<string | false | undefined>) {
   return cls.filter(Boolean).join(" ");
@@ -51,11 +50,8 @@ export default function Card({
   ...rest
 }: CardProps) {
   const Tag = as as React.ElementType;
-  const ref = React.useRef<HTMLElement | null>(null);
-  const motionStrength = motion === "strong" ? "strong" : "soft";
-  const motionEnabled = motion !== "off";
-
-  useRevealParallax(ref, motionStrength, motionEnabled);
+  void motion;
+  void motionDelay;
 
   const base = "ap-card rounded-3xl ring-1 ring-[color:var(--ap-border)] shadow-[var(--ap-shadow)]";
   const bg =
@@ -68,18 +64,9 @@ export default function Card({
   const halo = glow
     ? "after:pointer-events-none after:absolute after:inset-0 after:rounded-3xl after:shadow-[0_0_80px_rgba(255,255,255,0.07)]"
     : "";
-  const effectiveDelay = Math.round(motionDelay * 0.35);
-  const motionStyles: CSSProperties = motionEnabled
-    ? ({
-        "--ap-reveal-delay": `${effectiveDelay}ms`,
-      } as CSSProperties)
-    : {};
 
   return (
     <Tag
-      ref={ref}
-      data-ap-reveal={motionEnabled ? "true" : undefined}
-      data-ap-reveal-strength={motionEnabled ? motionStrength : undefined}
       className={cx(
         "relative",
         base,
@@ -87,10 +74,9 @@ export default function Card({
         pad,
         halo,
         className,
-        motionEnabled && "ap-reveal",
-        !motionEnabled && "transition duration-300 ease-out",
+        "transition duration-300 ease-out",
       )}
-      style={{ ...motionStyles, ...(style as CSSProperties) }}
+      style={style as CSSProperties}
       {...rest}
     >
       <div>

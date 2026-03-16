@@ -520,60 +520,6 @@ p {
   border-color: var(--ap-card-hover-ring);
 }
 
-.ap-reveal {
-  --ap-reveal-delay: 0ms;
-  --ap-reveal-distance: 16px;
-  --ap-reveal-scale: 0.988;
-  --ap-scroll-shift: 0px;
-  --ap-pointer-shift-x: 0px;
-  --ap-pointer-shift-y: 0px;
-  opacity: 0;
-  transform: translate3d(
-      var(--ap-pointer-shift-x),
-      calc(
-        var(--ap-reveal-distance) +
-        var(--ap-scroll-shift) +
-        var(--card-hover-shift, 0px) +
-        var(--ap-pointer-shift-y)
-      ),
-      0
-    )
-    scale(var(--ap-reveal-scale));
-  transform-origin: 50% 24%;
-  transition:
-    opacity 700ms cubic-bezier(0.2, 0.65, 0.2, 1),
-    transform 1020ms cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 240ms var(--ap-ease-standard),
-    border-color 240ms var(--ap-ease-standard);
-  transition-delay: var(--ap-reveal-delay);
-}
-
-.ap-reveal[data-ap-reveal-strength="soft"] {
-  --ap-reveal-distance: 12px;
-  --ap-reveal-scale: 0.992;
-}
-
-.ap-reveal[data-ap-reveal-strength="strong"] {
-  --ap-reveal-distance: 22px;
-  --ap-reveal-scale: 0.982;
-}
-
-.ap-reveal.is-visible {
-  opacity: 1;
-  transform: translate3d(
-      var(--ap-pointer-shift-x),
-      calc(var(--ap-scroll-shift) + var(--card-hover-shift, 0px) + var(--ap-pointer-shift-y)),
-      0
-    )
-    scale(1);
-  transition:
-    opacity 520ms cubic-bezier(0.2, 0.65, 0.2, 1),
-    transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 240ms var(--ap-ease-standard),
-    border-color 240ms var(--ap-ease-standard);
-  transition-delay: 0ms;
-}
-
 .home-deferred-block {
   content-visibility: auto;
   contain-intrinsic-size: 1px 900px;
@@ -599,12 +545,6 @@ p {
 @media (prefers-reduced-motion: reduce) {
   :root {
     scroll-behavior: auto;
-  }
-
-  .ap-reveal {
-    opacity: 1 !important;
-    transform: none !important;
-    transition: none !important;
   }
 
   .ap-nav-link,

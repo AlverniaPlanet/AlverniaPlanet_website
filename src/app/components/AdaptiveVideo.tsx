@@ -33,23 +33,11 @@ function shouldPreferPosterOnly() {
 
   const nav = navigator as NavigatorWithHints;
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
-  const narrowViewport = window.matchMedia("(max-width: 767px)").matches;
   const saveData = Boolean(nav.connection?.saveData);
   const effectiveType = nav.connection?.effectiveType ?? "";
   const constrainedNetwork = /(^|-)2g$|3g/.test(effectiveType);
-  const deviceMemory = nav.deviceMemory;
-  const lowMemory = typeof deviceMemory === "number" && deviceMemory <= 4;
-  const hardwareThreads = nav.hardwareConcurrency ?? 8;
-  const lowCpu = hardwareThreads <= 4;
 
-  return (
-    reducedMotion ||
-    saveData ||
-    constrainedNetwork ||
-    (coarsePointer && (lowMemory || lowCpu)) ||
-    (narrowViewport && lowMemory)
-  );
+  return reducedMotion || saveData || constrainedNetwork;
 }
 
 export default function AdaptiveVideo({
@@ -125,6 +113,9 @@ export default function AdaptiveVideo({
       if (cancelled) {
         return;
       }
+
+      video.muted = true;
+      video.defaultMuted = true;
 
       if (document.hidden || !isVisible) {
         video.pause();
@@ -203,6 +194,7 @@ export default function AdaptiveVideo({
           muted
           loop
           playsInline
+          poster={poster}
           preload={priority ? "metadata" : "none"}
           controlsList="nodownload noplaybackrate noremoteplayback nofullscreen"
           disablePictureInPicture

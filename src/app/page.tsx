@@ -10,6 +10,7 @@ import { PrimaryButton } from "@/app/components/PrimaryButton";
 import { AttractionCard } from "@/app/components/AttractionCard";
 import ScrollMotionItem from "@/app/components/ScrollMotionItem";
 import TicketFaqWidget, { type TicketFaqCopy } from "@/app/components/TicketFaqWidget";
+import { waitForImagesReady } from "@/app/components/waitForImagesReady";
 
 type Locale = "pl" | "en" | "pt";
 
@@ -49,7 +50,7 @@ type PromoTile = {
   description: string;
   cta: string;
   href: string;
-  image: string;
+  images: string[];
   imageAlt: string;
 };
 
@@ -144,7 +145,11 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         "Wyjątkowe przestrzenie do konferencji, gal i premier. Sprawdź możliwości organizacji eventów w Alvernia Planet.",
       cta: "Odkryj wydarzenia",
       href: "/wydarzenia",
-      image: "/wydarzenia/format-showcase-2.webp",
+      images: [
+        "/wydarzenia/format-showcase-1.webp",
+        "/wydarzenia/format-showcase-2.webp",
+        "/wydarzenia/format-showcase-3.webp",
+      ],
       imageAlt: "Przestrzeń eventowa Alvernia Planet podczas konferencji",
     },
     faq: {
@@ -275,7 +280,11 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         "Exceptional spaces for conferences, galas, and premieres. Discover what events you can host at Alvernia Planet.",
       cta: "Explore events",
       href: "/wydarzenia",
-      image: "/wydarzenia/format-showcase-2.webp",
+      images: [
+        "/wydarzenia/format-showcase-1.webp",
+        "/wydarzenia/format-showcase-2.webp",
+        "/wydarzenia/format-showcase-3.webp",
+      ],
       imageAlt: "Event space at Alvernia Planet during a conference",
     },
     faq: {
@@ -407,7 +416,11 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         "Espaços excepcionais para conferências, galas e estreias. Descubra o potencial da Alvernia Planet para eventos.",
       cta: "Explorar eventos",
       href: "/wydarzenia",
-      image: "/wydarzenia/format-showcase-2.webp",
+      images: [
+        "/wydarzenia/format-showcase-1.webp",
+        "/wydarzenia/format-showcase-2.webp",
+        "/wydarzenia/format-showcase-3.webp",
+      ],
       imageAlt: "Espaço de eventos da Alvernia Planet durante uma conferência",
     },
     faq: {
@@ -472,6 +485,8 @@ const HERO_WELCOME_AUTO_HIDE_MS = 2500;
 const HERO_WELCOME_FADE_DURATION_MS = 1200;
 const HERO_PROMO_DELAY_MS = 2000;
 const HERO_PROMO_FADE_DURATION_MS = 700;
+const EVENTS_PROMO_ROTATION_MS = 5200;
+const EVENTS_PROMO_FADE_MS = 2400;
 
 export default function Page() {
   const { locale } = useI18n();
@@ -695,7 +710,7 @@ const AttractionsSection = memo(function AttractionsSection({
   animate: boolean;
 }) {
   return (
-    <ScrollMotionItem strength="strong" delay={40} float>
+    <ScrollMotionItem strength="strong" delay={40}>
       <Card title={attractions.title} titleCentered titleDivider dense motion="off">
         <p className="ap-type-section-body text-center max-w-3xl mx-auto">{attractions.intro}</p>
         <AttractionsScroller items={attractions.items} animate={animate} />
@@ -794,6 +809,108 @@ const EventsPromoSection = memo(function EventsPromoSection({
 }: {
   promo: PromoTile;
 }) {
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [currentImageSrc, setCurrentImageSrc] = useState(promo.images[0] ?? "");
+  const [previousImageSrc, setPreviousImageSrc] = useState<string | null>(null);
+  const [isCrossfading, setIsCrossfading] = useState(false);
+  const [imagesReady, setImagesReady] = useState(promo.images.length <= 1);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    setActiveImageIndex(0);
+    setCurrentImageSrc(promo.images[0] ?? "");
+    setPreviousImageSrc(null);
+    setIsCrossfading(false);
+    setImagesReady(promo.images.length <= 1);
+
+    if (promo.images.length <= 1 || typeof window === "undefined") {
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    void waitForImagesReady(promo.images).then(() => {
+      if (!cancelled) {
+        setImagesReady(true);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [promo.images]);
+
+  useEffect(() => {
+    if (!imagesReady || promo.images.length <= 1 || typeof window === "undefined") {
+      return;
+    }
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+
+    const intervalId = window.setInterval(() => {
+      if (document.hidden) {
+        return;
+      }
+
+      setActiveImageIndex((currentIndex) => (currentIndex + 1) % promo.images.length);
+    }, EVENTS_PROMO_ROTATION_MS);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, [imagesReady, promo.images]);
+
+  useEffect(() => {
+    const nextImageSrc = promo.images[activeImageIndex];
+    if (!imagesReady || !nextImageSrc || nextImageSrc === currentImageSrc || typeof window === "undefined") {
+      return;
+    }
+
+    let cancelled = false;
+    let firstFrameId = 0;
+    let secondFrameId = 0;
+    let timeoutId: number | null = null;
+
+    setPreviousImageSrc(currentImageSrc);
+    setCurrentImageSrc(nextImageSrc);
+    setIsCrossfading(false);
+
+    firstFrameId = window.requestAnimationFrame(() => {
+      if (cancelled) {
+        return;
+      }
+
+      secondFrameId = window.requestAnimationFrame(() => {
+        if (cancelled) {
+          return;
+        }
+
+        setIsCrossfading(true);
+      });
+    });
+
+    timeoutId = window.setTimeout(() => {
+      if (cancelled) {
+        return;
+      }
+
+      setPreviousImageSrc(null);
+      setIsCrossfading(false);
+    }, EVENTS_PROMO_FADE_MS);
+
+    return () => {
+      cancelled = true;
+      window.cancelAnimationFrame(firstFrameId);
+      window.cancelAnimationFrame(secondFrameId);
+      if (timeoutId !== null) {
+        window.clearTimeout(timeoutId);
+      }
+    };
+  }, [activeImageIndex, currentImageSrc, imagesReady, promo.images]);
+
   return (
     <ScrollMotionItem strength="soft" delay={70} float={false} className="home-deferred-block">
       <Card variant="solid" dense motion="off" className="ap-interactive-surface overflow-hidden">
@@ -809,15 +926,34 @@ const EventsPromoSection = memo(function EventsPromoSection({
             </div>
           </div>
           <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-black/20 ring-1 ring-white/12 shadow-[0_18px_42px_rgba(0,0,0,0.28)]">
-            <Image
-              src={promo.image}
-              alt={promo.imageAlt}
-              fill
-              sizes="(min-width: 1024px) 34rem, 100vw"
-              className="object-cover"
-              loading="lazy"
-              decoding="async"
-            />
+            {previousImageSrc ? (
+              <Image
+                src={previousImageSrc}
+                alt={promo.imageAlt}
+                fill
+                sizes="(min-width: 1024px) 34rem, 100vw"
+                key={previousImageSrc}
+                className={`object-cover transition-opacity duration-[2400ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                  isCrossfading ? "opacity-0" : "opacity-100"
+                }`}
+                loading="eager"
+                decoding="async"
+              />
+            ) : null}
+            {currentImageSrc ? (
+              <Image
+                src={currentImageSrc}
+                alt={promo.imageAlt}
+                fill
+                sizes="(min-width: 1024px) 34rem, 100vw"
+                key={currentImageSrc}
+                className={`object-cover transition-opacity duration-[2400ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                  previousImageSrc ? (isCrossfading ? "opacity-100" : "opacity-0") : "opacity-100"
+                }`}
+                loading="eager"
+                decoding="async"
+              />
+            ) : null}
             <div
               className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-[#141830]/38 via-transparent to-[#4fcfde]/12"
               aria-hidden="true"
@@ -1115,8 +1251,8 @@ const AttractionsScroller = memo(function AttractionsScroller({
   return (
     <div
       ref={containerRef}
-      className={`attractions-carousel relative mt-8 rounded-2xl touch-pan-y ${
-        canAnimate ? "overflow-hidden" : "overflow-x-auto pb-2"
+      className={`attractions-carousel relative mt-8 rounded-2xl ${
+        canAnimate ? "overflow-hidden touch-pan-y" : "overflow-x-auto pb-2 snap-x snap-mandatory touch-auto"
       }`}
       style={canAnimate ? undefined : { scrollbarWidth: "none" }}
     >

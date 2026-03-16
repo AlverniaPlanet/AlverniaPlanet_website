@@ -1,10 +1,11 @@
 "use client";
-import { useMemo, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useI18n } from "@/app/i18n-provider";
 import AdaptiveVideo from "@/app/components/AdaptiveVideo";
 import Card from "@/app/components/Card";
 import { PrimaryButton } from "@/app/components/PrimaryButton";
 import ScrollMotionItem from "@/app/components/ScrollMotionItem";
+import { waitForImagesReady } from "@/app/components/waitForImagesReady";
 import Image from "next/image";
 
 // ===== Lokalny słownik (PL/EN) =====
@@ -13,7 +14,12 @@ const FORMAT_SHOWCASE_IMAGES = [
   "/wydarzenia/format-showcase-1.webp",
   "/wydarzenia/format-showcase-2.webp",
   "/wydarzenia/format-showcase-3.webp",
+  "/wydarzenia/format-showcase-4.webp",
+  "/wydarzenia/format-showcase-5.webp",
+  "/wydarzenia/format-showcase-6.webp",
 ];
+const FORMAT_SHOWCASE_WAVE_DELAYS_MS = [1000, 1000, 1000, 3000] as const;
+const FORMAT_SHOWCASE_FADE_MS = 2400;
 type DomeKey = "k3" | "k4" | "k7" | "k10k12";
 
 const DOME_IMAGE_BY_KEY: Record<DomeKey, string> = {
@@ -604,6 +610,98 @@ function InfoGroup({
 
 type GalleryPhoto = { src: string; alt: string };
 
+function WavePhotoSlot({
+  photo,
+  sizes,
+  className,
+}: {
+  photo: GalleryPhoto;
+  sizes: string;
+  className: string;
+}) {
+  const [currentPhoto, setCurrentPhoto] = useState(photo);
+  const [previousPhoto, setPreviousPhoto] = useState<GalleryPhoto | null>(null);
+  const [isCrossfading, setIsCrossfading] = useState(false);
+
+  useEffect(() => {
+    if (photo.src === currentPhoto.src) {
+      return;
+    }
+
+    let cancelled = false;
+    let firstFrameId = 0;
+    let secondFrameId = 0;
+    let timeoutId: number | null = null;
+
+    setPreviousPhoto(currentPhoto);
+    setCurrentPhoto(photo);
+    setIsCrossfading(false);
+
+    firstFrameId = window.requestAnimationFrame(() => {
+      if (cancelled) {
+        return;
+      }
+
+      secondFrameId = window.requestAnimationFrame(() => {
+        if (cancelled) {
+          return;
+        }
+
+        setIsCrossfading(true);
+      });
+    });
+
+    timeoutId = window.setTimeout(() => {
+      if (cancelled) {
+        return;
+      }
+
+      setPreviousPhoto(null);
+      setIsCrossfading(false);
+    }, FORMAT_SHOWCASE_FADE_MS);
+
+    return () => {
+      cancelled = true;
+      window.cancelAnimationFrame(firstFrameId);
+      window.cancelAnimationFrame(secondFrameId);
+      if (timeoutId !== null) {
+        window.clearTimeout(timeoutId);
+      }
+    };
+  }, [photo, currentPhoto]);
+
+  return (
+    <div className={className}>
+      {previousPhoto ? (
+        <Image
+          src={previousPhoto.src}
+          alt={previousPhoto.alt}
+          fill
+          sizes={sizes}
+          key={previousPhoto.src}
+          className={`object-cover transition-opacity duration-[2400ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
+            isCrossfading ? "opacity-0" : "opacity-100"
+          }`}
+          loading="eager"
+          decoding="async"
+        />
+      ) : null}
+      <Image
+        src={currentPhoto.src}
+        alt={currentPhoto.alt}
+        fill
+        sizes={sizes}
+        key={currentPhoto.src}
+        className={`object-cover transition-opacity duration-[2400ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          previousPhoto ? (isCrossfading ? "opacity-100" : "opacity-0") : "opacity-100"
+        }`}
+        loading="eager"
+        decoding="async"
+      />
+    </div>
+  );
+}
+
 function DomePointList({ items, columns = 1 }: { items: string[]; columns?: 1 | 2 }) {
   return (
     <ul
@@ -629,41 +727,174 @@ function EventPhotoColumn({
   photos: GalleryPhoto[];
   className?: string;
 }) {
-  const [leadPhoto, ...secondaryPhotos] = photos;
+  const slotStartIndices = useMemo(() => {
+    if (photos.length === 0) {
+      return [0, 0, 0];
+    }
+
+    return [
+      0,
+      Math.min(2, photos.length - 1),
+      Math.min(4, photos.length - 1),
+    ];
+  }, [photos.length]);
+  const [slotIndices, setSlotIndices] = useState(slotStartIndices);
+  const [canAnimate, setCanAnimate] = useState(false);
+
+  const getNextUniqueIndex = (
+    currentIndices: number[],
+    activeSlotIndex: number,
+    totalPhotos: number,
+  ) => {
+    const blockedIndices = new Set(
+      currentIndices
+        .filter((_, slotIndex) => slotIndex !== activeSlotIndex)
+        .map((index) => ((index % totalPhotos) + totalPhotos) % totalPhotos),
+    );
+
+    for (let step = 1; step <= totalPhotos; step += 1) {
+      const candidateIndex = (currentIndices[activeSlotIndex] + step) % totalPhotos;
+      if (!blockedIndices.has(candidateIndex)) {
+        return candidateIndex;
+      }
+    }
+
+    return currentIndices[activeSlotIndex] % totalPhotos;
+  };
+
+  useEffect(() => {
+    setSlotIndices(slotStartIndices);
+  }, [slotStartIndices]);
+
+  const [photosReady, setPhotosReady] = useState(photos.length <= 1);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    setPhotosReady(photos.length <= 1);
+
+    if (photos.length <= 1 || typeof window === "undefined") {
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    void waitForImagesReady(photos.map((photo) => photo.src)).then(() => {
+      if (!cancelled) {
+        setPhotosReady(true);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [photos]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const nav = navigator as Navigator & {
+      connection?: {
+        saveData?: boolean;
+        effectiveType?: string;
+      };
+      deviceMemory?: number;
+    };
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
+    const narrowViewport = window.matchMedia("(max-width: 1023px)").matches;
+    const saveData = Boolean(nav.connection?.saveData);
+    const effectiveType = nav.connection?.effectiveType ?? "";
+    const constrainedNetwork = /(^|-)2g$|3g/.test(effectiveType);
+    const lowMemory = typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4;
+    const lowCpu = (nav.hardwareConcurrency ?? 8) <= 4;
+
+    setCanAnimate(
+      photos.length > 3 &&
+        !reducedMotion &&
+        !saveData &&
+        !constrainedNetwork &&
+        !coarsePointer &&
+        !narrowViewport &&
+        !lowMemory &&
+        !lowCpu &&
+        photosReady,
+    );
+  }, [photos.length, photosReady]);
+
+  useEffect(() => {
+    if (!photosReady || !canAnimate || photos.length <= 3 || typeof window === "undefined") {
+      return;
+    }
+
+    let phase = 0;
+    let timeoutId: number | null = null;
+    let cancelled = false;
+
+    const scheduleNextStep = () => {
+      timeoutId = window.setTimeout(() => {
+        if (cancelled) {
+          return;
+        }
+
+        if (!document.hidden && phase < 3) {
+          setSlotIndices((currentIndices) => {
+            const nextIndices = [...currentIndices];
+            nextIndices[phase] = getNextUniqueIndex(currentIndices, phase, photos.length);
+            return nextIndices;
+          });
+        }
+
+        phase = (phase + 1) % FORMAT_SHOWCASE_WAVE_DELAYS_MS.length;
+        scheduleNextStep();
+      }, FORMAT_SHOWCASE_WAVE_DELAYS_MS[phase]);
+    };
+
+    scheduleNextStep();
+
+    return () => {
+      cancelled = true;
+      if (timeoutId !== null) {
+        window.clearTimeout(timeoutId);
+      }
+    };
+  }, [canAnimate, photos.length, photosReady]);
+
+  if (photos.length === 0) {
+    return null;
+  }
+
+  const [leadPhoto, topPhoto, bottomPhoto] = slotIndices.map(
+    (photoIndex) => photos[photoIndex % photos.length],
+  );
 
   return (
     <div className={`events-showcase overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] ${className}`}>
       <div className="grid gap-3 p-3 sm:h-[26rem] sm:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] sm:gap-4 sm:p-4 lg:h-[27rem]">
         {leadPhoto ? (
-          <div className="events-showcase-item relative min-h-[13rem] overflow-hidden rounded-xl border border-white/10 bg-black/30 sm:h-full">
-            <Image
-              src={leadPhoto.src}
-              alt={leadPhoto.alt}
-              fill
-              sizes="(min-width: 1024px) 28vw, (min-width: 640px) 52vw, 92vw"
-              className="object-cover"
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
+          <WavePhotoSlot
+            photo={leadPhoto}
+            sizes="(min-width: 1024px) 28vw, (min-width: 640px) 52vw, 92vw"
+            className="events-showcase-item relative min-h-[13rem] overflow-hidden rounded-xl border border-white/10 bg-black/30 sm:h-full"
+          />
         ) : null}
         <div className="grid gap-3 sm:grid-rows-2 sm:gap-4">
-          {secondaryPhotos.map((photo) => (
-            <div
-              key={photo.src}
+          {topPhoto ? (
+            <WavePhotoSlot
+              photo={topPhoto}
+              sizes="(min-width: 1024px) 20vw, (min-width: 640px) 40vw, 92vw"
               className="events-showcase-item relative min-h-[9.5rem] overflow-hidden rounded-xl border border-white/10 bg-black/30 sm:h-full"
-            >
-              <Image
-                src={photo.src}
-                alt={photo.alt}
-                fill
-                sizes="(min-width: 1024px) 20vw, (min-width: 640px) 40vw, 92vw"
-                className="object-cover"
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
-          ))}
+            />
+          ) : null}
+          {bottomPhoto ? (
+            <WavePhotoSlot
+              photo={bottomPhoto}
+              sizes="(min-width: 1024px) 20vw, (min-width: 640px) 40vw, 92vw"
+              className="events-showcase-item relative min-h-[9.5rem] overflow-hidden rounded-xl border border-white/10 bg-black/30 sm:h-full"
+            />
+          ) : null}
         </div>
       </div>
     </div>
