@@ -90,8 +90,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // Dla static/SSG nie korzystamy z cookies() po stronie serwera
-  // Domyślny język: PL, a przełączanie języka obsługuje I18nProvider po stronie klienta
   const initialLocale: "pl" | "en" | "pt" = "pl";
   const gaMeasurementId = "G-WGCVPPB9KW";
   const gtmId = "GTM-TM3MNLWS";
