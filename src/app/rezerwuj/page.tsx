@@ -4,6 +4,8 @@ import Card from "@/app/components/Card";
 import BookeroEmbed from "@/app/components/BookeroEmbed";
 import ScrollMotionItem from "@/app/components/ScrollMotionItem";
 import { useI18n } from "@/app/i18n-provider";
+import { BOOKING_CATEGORY_PARAM, BOOKING_QUANTITY_PARAM, BOOKING_SERVICE_PARAM } from "@/lib/booking";
+import { useSearchParams } from "next/navigation";
 
 const BOOKERO_PLUGIN_ID = "8iWKMAEWtI0P";
 
@@ -46,6 +48,11 @@ export default function BookingPage() {
   const loc: Locale = (locale as Locale) ?? "pl";
   const bookeroLang = loc === "en" ? "en" : "pl";
   const copy = COPY[loc];
+  const searchParams = useSearchParams();
+  const preselectCategory = searchParams.get(BOOKING_CATEGORY_PARAM) ?? "";
+  const preselectService = searchParams.get(BOOKING_SERVICE_PARAM) ?? "";
+  const preselectQuantityValue = Number.parseInt(searchParams.get(BOOKING_QUANTITY_PARAM) ?? "", 10);
+  const preselectQuantity = Number.isFinite(preselectQuantityValue) ? preselectQuantityValue : undefined;
 
   return (
     <main className="relative min-h-screen text-white px-4 py-12 sm:py-16 ap-page-intro-stagger">
@@ -68,6 +75,9 @@ export default function BookingPage() {
               position=""
               pluginCss
               lang={bookeroLang}
+              preselectCategory={preselectCategory}
+              preselectService={preselectService}
+              preselectQuantity={preselectQuantity}
               className="w-full min-h-[980px] overflow-hidden rounded-2xl bg-white ring-1 ring-black/10"
             />
           </Card>

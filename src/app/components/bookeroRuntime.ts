@@ -82,6 +82,24 @@ function ensureBookeroStyle() {
   document.head.appendChild(styleLink);
 }
 
+function hasMountedBookeroDom(config: BookeroInstanceConfig) {
+  const modeSelector = config.type ? `#bookero-plugin[data-mode="${config.type}"]` : "#bookero-plugin";
+  const pluginRoot =
+    document.querySelector<HTMLElement>(`#bookero-form ${modeSelector}`) ??
+    document.querySelector<HTMLElement>(modeSelector);
+
+  if (pluginRoot) {
+    return true;
+  }
+
+  if (!config.container) {
+    return false;
+  }
+
+  const container = document.getElementById(config.container);
+  return !!container?.firstElementChild;
+}
+
 async function ensureBookeroScript(): Promise<void> {
   if (typeof window === "undefined") return;
   if (window.__bookeroRuntimeReady) return;
@@ -175,6 +193,15 @@ export async function mountBookeroInstance(
 
   upsertConfig(config);
   await ensureBookeroScript();
+
+  if (config.container && config.type !== "sticky") {
+    ensureContainer(config.container);
+  }
+
+  if (window.__bookeroRuntimeReady && !hasMountedBookeroDom(config)) {
+    document.body.dispatchEvent(new CustomEvent("bookero-plugin:add-instance", { detail: config }));
+  }
+
   if (!persist) {
     removeConfig(config.container, config.type);
   }

@@ -7,6 +7,11 @@ import TourLineGalleryRow from "@/app/components/TourLineGalleryRow";
 import { PrimaryButton } from "@/app/components/PrimaryButton";
 import ScrollMotionItem from "@/app/components/ScrollMotionItem";
 import { useI18n } from "@/app/i18n-provider";
+import {
+  buildBookingPath,
+  FILM_PATH_BOOKING_CATEGORY,
+  FILM_PATH_BOOKING_SERVICES,
+} from "@/lib/booking";
 
 type Locale = "pl" | "en" | "pt";
 
@@ -21,6 +26,8 @@ type TicketOption = {
   details: string[];
   priceLabel?: string;
   price?: string;
+  bookingServiceName: string;
+  bookingQuantity?: number;
 };
 
 const COPY: Record<
@@ -85,6 +92,7 @@ const COPY: Record<
         title: "Bilet indywidualny",
         subtitle: "1-10 osób na jednym bilecie",
         details: ["Dla osób indywidualnych i rodzin", "Płatność za osoby"],
+        bookingServiceName: FILM_PATH_BOOKING_SERVICES.normal,
       },
       {
         badge: "Grupowe",
@@ -93,6 +101,8 @@ const COPY: Record<
         details: ["Dla szkół i grup zorganizowanych", "Płatność za całą grupę"],
         priceLabel: "Cena za min. 30 osób",
         price: "2 070 zł/grupa",
+        bookingServiceName: FILM_PATH_BOOKING_SERVICES.group,
+        bookingQuantity: 30,
       },
     ],
     videoFallback: "Twoja przeglądarka nie obsługuje elementu wideo.",
@@ -141,6 +151,7 @@ const COPY: Record<
         title: "Individual ticket",
         subtitle: "1-10 people on one ticket",
         details: ["For individuals and families", "Pay per person"],
+        bookingServiceName: FILM_PATH_BOOKING_SERVICES.normal,
       },
       {
         badge: "Group",
@@ -149,6 +160,8 @@ const COPY: Record<
         details: ["For schools and organized groups", "Pay for the whole group"],
         priceLabel: "Price for min. 30 people",
         price: "2,070 PLN/group",
+        bookingServiceName: FILM_PATH_BOOKING_SERVICES.group,
+        bookingQuantity: 30,
       },
     ],
     videoFallback: "Your browser does not support the video element.",
@@ -197,6 +210,7 @@ const COPY: Record<
         title: "Bilhete individual",
         subtitle: "1-10 pessoas por bilhete",
         details: ["Para indivíduos e famílias", "Pagamento por pessoa"],
+        bookingServiceName: FILM_PATH_BOOKING_SERVICES.normal,
       },
       {
         badge: "Grupo",
@@ -205,6 +219,8 @@ const COPY: Record<
         details: ["Para escolas e grupos organizados", "Pagamento pelo grupo inteiro"],
         priceLabel: "Preço mín. 30 pessoas",
         price: "2 070 PLN/grupo",
+        bookingServiceName: FILM_PATH_BOOKING_SERVICES.group,
+        bookingQuantity: 30,
       },
     ],
     videoFallback: "O seu navegador não suporta o elemento de vídeo.",
@@ -300,7 +316,6 @@ export default function FilmPathContent() {
   const loc: Locale = (locale as Locale) ?? "pl";
   const t = COPY[loc];
   const k9 = K9_ITEMS[loc];
-  const bookingHref = loc === "en" ? "/en/reserve" : loc === "pt" ? "/pt/reservar" : "/rezerwuj";
 
   return (
     <main className="relative z-10 min-h-screen">
@@ -407,7 +422,11 @@ export default function FilmPathContent() {
                         </p>
                         <div className="mt-6 flex justify-center">
                           <PrimaryButton
-                            href={bookingHref}
+                            href={buildBookingPath(loc, {
+                              category: FILM_PATH_BOOKING_CATEGORY,
+                              service: option.bookingServiceName,
+                              quantity: option.bookingQuantity,
+                            })}
                             size="md"
                             className="ticket-pill ring-[color:rgba(240,60,100,0.55)]"
                           >

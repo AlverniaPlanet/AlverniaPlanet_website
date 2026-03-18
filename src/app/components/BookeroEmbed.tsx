@@ -12,7 +12,496 @@ type Props = {
   pluginCss?: boolean;
   forceLightText?: boolean;
   className?: string;
+  preselectCategory?: string;
+  preselectService?: string;
+  preselectQuantity?: number;
 };
+
+const PRESELECT_POLL_INTERVAL_MS = 250;
+const PRESELECT_MAX_ATTEMPTS = 160;
+const PRESELECT_STABLE_ATTEMPTS = 12;
+const PRESELECT_MAX_RUNTIME_MS = 20000;
+
+type BookingFieldKind = "category" | "service" | "quantity";
+
+const BOOKING_FIELD_LABEL_PATTERNS: Record<BookingFieldKind, string[]> = {
+  category: [
+    "wybierz kategorie uslug",
+    "choose service category",
+    "escolha a categoria",
+  ],
+  service: [
+    "wybierz usluge",
+    "choose service",
+    "escolha o servico",
+  ],
+  quantity: [
+    "liczba osob",
+    "number of people",
+    "numero de pessoas",
+  ],
+};
+
+function normalizeText(value: string | null | undefined) {
+  return (value ?? "")
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[°º˚]/g, "°")
+    .replace(/\*/g, "")
+    .replace(/ł/g, "l")
+    .replace(/Ł/g, "l")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+}
+
+function isVisibleSelect(select: HTMLSelectElement) {
+  const style = window.getComputedStyle(select);
+  if (style.display === "none" || style.visibility === "hidden") {
+    return false;
+  }
+
+  const rect = select.getBoundingClientRect();
+  return rect.width > 0 && rect.height > 0;
+}
+
+function isVisibleElement(element: HTMLElement) {
+  const style = window.getComputedStyle(element);
+  if (style.display === "none" || style.visibility === "hidden") {
+    return false;
+  }
+
+  const rect = element.getBoundingClientRect();
+  return rect.width > 0 && rect.height > 0;
+}
+
+function getMatchingOption(select: HTMLSelectElement, targetText: string) {
+  const normalizedTarget = normalizeText(targetText);
+
+  return Array.from(select.options).find((option) => {
+    const normalizedOption = normalizeText(option.textContent ?? option.label);
+    return normalizedOption === normalizedTarget;
+  });
+}
+
+function getOrderedSelects(root: ParentNode) {
+  const allSelects = Array.from(root.querySelectorAll("select")).filter(
+    (select): select is HTMLSelectElement => select instanceof HTMLSelectElement,
+  );
+
+  return [
+    ...allSelects.filter(
+      (select) => !select.disabled && !select.closest(".field.is-inactive") && isVisibleSelect(select),
+    ),
+    ...allSelects.filter(
+      (select) => !select.disabled && !select.closest(".field.is-inactive") && !isVisibleSelect(select),
+    ),
+    ...allSelects.filter(
+      (select) => !select.disabled && !!select.closest(".field.is-inactive") && isVisibleSelect(select),
+    ),
+    ...allSelects.filter((select) => !select.disabled && !!select.closest(".field.is-inactive")),
+    ...allSelects.filter((select) => select.disabled),
+  ];
+}
+
+function findSelectForOptionText(root: ParentNode, targetText: string) {
+  return getOrderedSelects(root).find((select) => getMatchingOption(select, targetText));
+}
+
+function getCurrentMultiselectText(multiselect: HTMLElement) {
+  return normalizeText(
+    multiselect.querySelector<HTMLElement>(".multiselect__single, .multiselect__placeholder")?.textContent ??
+      "",
+  );
+}
+
+function getMatchingMultiselectOption(multiselect: HTMLElement, targetText: string) {
+  const normalizedTarget = normalizeText(targetText);
+
+  return Array.from(multiselect.querySelectorAll<HTMLElement>(".multiselect__option")).find((option) => {
+    if (option.classList.contains("multiselect__option--disabled")) {
+      return false;
+    }
+
+    return normalizeText(option.textContent) === normalizedTarget;
+  });
+}
+
+function getOrderedMultiselects(root: ParentNode) {
+  const allMultiselects = Array.from(root.querySelectorAll(".multiselect")).filter(
+    (multiselect): multiselect is HTMLElement => multiselect instanceof HTMLElement,
+  );
+
+  return [
+    ...allMultiselects.filter(
+      (multiselect) =>
+        !multiselect.closest(".field.is-inactive") &&
+        !multiselect.classList.contains("multiselect--disabled") &&
+        isVisibleElement(multiselect),
+    ),
+    ...allMultiselects.filter(
+      (multiselect) =>
+        !multiselect.closest(".field.is-inactive") &&
+        !multiselect.classList.contains("multiselect--disabled") &&
+        !isVisibleElement(multiselect),
+    ),
+  ];
+}
+
+function findMultiselectForOptionText(root: ParentNode, targetText: string) {
+  const orderedMultiselects = getOrderedMultiselects(root);
+
+  return orderedMultiselects.find((multiselect) => getMatchingMultiselectOption(multiselect, targetText));
+}
+
+function getBookingFieldCandidates(root: ParentNode) {
+  return Array.from(
+    root.querySelectorAll<HTMLElement>(".field, fieldset, .multiselect, select, input, [role='spinbutton'], button"),
+  ).filter(
+    (element) => element instanceof HTMLElement,
+  );
+}
+
+function matchesBookingFieldLabel(element: HTMLElement, kind: BookingFieldKind) {
+  const textCandidates = [
+    element.querySelector("label")?.textContent,
+    element.querySelector("legend")?.textContent,
+    element.closest(".field")?.querySelector("label")?.textContent,
+    element.closest("fieldset")?.querySelector("legend")?.textContent,
+    element.getAttribute("aria-label"),
+    element.getAttribute("data-label"),
+  ];
+
+  const normalizedCandidates = textCandidates.map((value) => normalizeText(value));
+  return BOOKING_FIELD_LABEL_PATTERNS[kind].some((pattern) =>
+    normalizedCandidates.some((candidate) => candidate.includes(pattern)),
+  );
+}
+
+function findBookingFieldRoot(root: ParentNode, kind: BookingFieldKind) {
+  const candidates = getBookingFieldCandidates(root);
+  const orderedCandidates = [
+    ...candidates.filter(
+      (candidate) =>
+        matchesBookingFieldLabel(candidate, kind) &&
+        !candidate.closest(".field.is-inactive") &&
+        isVisibleElement(candidate),
+    ),
+    ...candidates.filter(
+      (candidate) =>
+        matchesBookingFieldLabel(candidate, kind) &&
+        !candidate.closest(".field.is-inactive") &&
+        !isVisibleElement(candidate),
+    ),
+    ...candidates.filter((candidate) => matchesBookingFieldLabel(candidate, kind)),
+  ];
+
+  const matchedCandidate = orderedCandidates[0];
+  if (!matchedCandidate) {
+    return null;
+  }
+
+  const closestField = matchedCandidate.closest(".field");
+  return closestField instanceof HTMLElement ? closestField : matchedCandidate;
+}
+
+function applySelectOptionByText(root: ParentNode, targetText: string) {
+  const select = findSelectForOptionText(root, targetText);
+  if (!select || select.disabled) {
+    return false;
+  }
+
+  const option = getMatchingOption(select, targetText);
+  if (!option) {
+    return false;
+  }
+
+  const normalizedTarget = normalizeText(option.textContent ?? option.label);
+  const normalizedCurrent = normalizeText(select.selectedOptions[0]?.textContent);
+
+  if (normalizedCurrent !== normalizedTarget || select.value !== option.value) {
+    select.value = option.value;
+
+    for (const currentOption of Array.from(select.options)) {
+      currentOption.selected = currentOption.value === option.value;
+    }
+
+    select.dispatchEvent(new Event("input", { bubbles: true }));
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+
+  return normalizeText(select.selectedOptions[0]?.textContent) === normalizedTarget;
+}
+
+function isMultiselectOpen(multiselect: HTMLElement) {
+  if (multiselect.classList.contains("multiselect--active")) {
+    return true;
+  }
+
+  const contentWrapper = multiselect.querySelector<HTMLElement>(".multiselect__content-wrapper");
+  if (!contentWrapper) {
+    return false;
+  }
+
+  return isVisibleElement(contentWrapper);
+}
+
+function getMatchingOpenMultiselectOption(targetText: string) {
+  const normalizedTarget = normalizeText(targetText);
+
+  return Array.from(document.querySelectorAll<HTMLElement>(".multiselect__option")).find((option) => {
+    if (!isVisibleElement(option)) {
+      return false;
+    }
+
+    if (option.classList.contains("multiselect__option--disabled")) {
+      return false;
+    }
+
+    return normalizeText(option.textContent) === normalizedTarget;
+  });
+}
+
+function applyMultiselectOptionByText(root: ParentNode, targetText: string) {
+  const multiselect = findMultiselectForOptionText(root, targetText);
+  if (!multiselect) {
+    return false;
+  }
+
+  const normalizedTarget = normalizeText(targetText);
+  if (getCurrentMultiselectText(multiselect) === normalizedTarget) {
+    return true;
+  }
+
+  if (!isMultiselectOpen(multiselect)) {
+    const toggle =
+      multiselect.querySelector<HTMLElement>(".multiselect__select") ??
+      multiselect.querySelector<HTMLElement>(".multiselect__tags") ??
+      multiselect;
+
+    toggle.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
+    toggle.click();
+    return false;
+  }
+
+  const option = getMatchingMultiselectOption(multiselect, targetText) ?? getMatchingOpenMultiselectOption(targetText);
+  if (!option) {
+    return false;
+  }
+
+  option.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
+  option.click();
+
+  return getCurrentMultiselectText(multiselect) === normalizedTarget;
+}
+
+function applyBookingFieldValue(root: ParentNode, targetText: string, kind?: BookingFieldKind) {
+  const fieldRoot = kind ? findBookingFieldRoot(root, kind) : null;
+  const searchRoot = fieldRoot ?? root;
+
+  return applySelectOptionByText(searchRoot, targetText) || applyMultiselectOptionByText(searchRoot, targetText);
+}
+
+function getOrderedQuantityInputs(root: ParentNode) {
+  const allInputs = Array.from(root.querySelectorAll("input")).filter(
+    (input): input is HTMLInputElement => input instanceof HTMLInputElement,
+  );
+
+  const isCandidate = (input: HTMLInputElement) =>
+    !input.disabled &&
+    !input.closest(".field.is-inactive") &&
+    (input.type === "number" ||
+      input.inputMode === "numeric" ||
+      input.inputMode === "decimal" ||
+      /\d/.test(input.value) ||
+      input.getAttribute("role") === "spinbutton");
+
+  return [
+    ...allInputs.filter((input) => isCandidate(input) && isVisibleElement(input)),
+    ...allInputs.filter((input) => isCandidate(input) && !isVisibleElement(input)),
+  ];
+}
+
+function getOrderedQuantityValueElements(root: ParentNode) {
+  const allElements = Array.from(
+    root.querySelectorAll<HTMLElement>("[role='spinbutton'], [aria-valuenow], span, div, p, strong"),
+  ).filter((element) => element instanceof HTMLElement);
+
+  const isCandidate = (element: HTMLElement) => {
+    const ariaValue = element.getAttribute("aria-valuenow");
+    const text = (element.textContent ?? "").trim();
+    return !!ariaValue || /^\d+$/.test(text);
+  };
+
+  return [
+    ...allElements.filter(
+      (element) => isCandidate(element) && !element.closest(".field.is-inactive") && isVisibleElement(element),
+    ),
+    ...allElements.filter((element) => isCandidate(element) && !element.closest(".field.is-inactive")),
+  ];
+}
+
+function parseNumericValue(value: string | null | undefined) {
+  const digits = (value ?? "").replace(/[^\d-]/g, "");
+  if (!digits) {
+    return null;
+  }
+
+  const parsed = Number.parseInt(digits, 10);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function findQuantityInput(fieldRoot: HTMLElement) {
+  return getOrderedQuantityInputs(fieldRoot.shadowRoot ?? fieldRoot)[0];
+}
+
+function findVisibleQuantityInput(fieldRoot: HTMLElement) {
+  return getOrderedQuantityInputs(fieldRoot.shadowRoot ?? fieldRoot).find((input) => isVisibleElement(input));
+}
+
+function findHiddenQuantityInput(fieldRoot: HTMLElement) {
+  return getOrderedQuantityInputs(fieldRoot.shadowRoot ?? fieldRoot).find((input) => !isVisibleElement(input));
+}
+
+function findQuantityValueElement(fieldRoot: HTMLElement) {
+  return getOrderedQuantityValueElements(fieldRoot.shadowRoot ?? fieldRoot).find((element) => {
+    if (element instanceof HTMLInputElement) {
+      return false;
+    }
+
+    const text = (element.textContent ?? "").trim();
+    const ariaValue = element.getAttribute("aria-valuenow");
+    return /^\d+$/.test(text) || /^\d+$/.test(ariaValue ?? "");
+  });
+}
+
+function getNativeInputValueSetter() {
+  return Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
+}
+
+function dispatchInputEvents(element: HTMLElement) {
+  element.dispatchEvent(new Event("input", { bubbles: true, composed: true }));
+  element.dispatchEvent(new Event("change", { bubbles: true, composed: true }));
+  element.dispatchEvent(new Event("blur", { bubbles: true, composed: true }));
+}
+
+function getStepperButtons(fieldRoot: HTMLElement) {
+  const buttons = Array.from((fieldRoot.shadowRoot ?? fieldRoot).querySelectorAll("button")).filter(
+    (button): button is HTMLButtonElement => button instanceof HTMLButtonElement && !button.disabled,
+  );
+
+  const matchButton = (patterns: string[], fallbackText: string) =>
+    buttons.find((button) => {
+      const text = normalizeText(button.textContent);
+      const label = normalizeText(button.getAttribute("aria-label"));
+      return text === fallbackText || patterns.some((pattern) => label.includes(pattern));
+    });
+
+  return {
+    decrement: matchButton(["minus", "decrease", "decrement", "less", "mniej"], "-"),
+    increment: matchButton(["plus", "increase", "increment", "more", "wiecej"], "+"),
+  };
+}
+
+function readQuantityValue(fieldRoot: HTMLElement) {
+  const visibleInput = findVisibleQuantityInput(fieldRoot);
+  if (visibleInput) {
+    return parseNumericValue(visibleInput.value);
+  }
+
+  const valueElement = findQuantityValueElement(fieldRoot);
+  if (valueElement) {
+    return parseNumericValue(valueElement.getAttribute("aria-valuenow") ?? valueElement.textContent);
+  }
+
+  const hiddenInput = findHiddenQuantityInput(fieldRoot);
+  if (hiddenInput) {
+    return parseNumericValue(hiddenInput.value);
+  }
+
+  return null;
+}
+
+function applyQuantityValue(root: ParentNode, targetValue: number) {
+  const fieldRoot = findBookingFieldRoot(root, "quantity");
+  if (!fieldRoot) {
+    return false;
+  }
+
+  const input = findVisibleQuantityInput(fieldRoot);
+  if (input) {
+    const setValue = getNativeInputValueSetter();
+    const nextValue = String(targetValue);
+    const currentValue = parseNumericValue(input.value);
+
+    if (currentValue !== targetValue) {
+      input.focus();
+      if (setValue) {
+        setValue.call(input, nextValue);
+      } else {
+        input.value = nextValue;
+      }
+      input.setAttribute("value", nextValue);
+      dispatchInputEvents(input);
+    }
+
+    return parseNumericValue(input.value) === targetValue;
+  }
+
+  const { increment, decrement } = getStepperButtons(fieldRoot);
+  const currentValue = readQuantityValue(fieldRoot);
+
+  if (currentValue !== null && (increment || decrement)) {
+    const button = targetValue > currentValue ? increment : decrement;
+    if (!button) {
+      return currentValue === targetValue;
+    }
+
+    const maxSteps = Math.min(Math.abs(targetValue - currentValue), 60);
+    let latestValue: number | null = currentValue;
+
+    for (let step = 0; step < maxSteps && latestValue !== targetValue; step += 1) {
+      button.click();
+      latestValue = readQuantityValue(fieldRoot);
+    }
+
+    return latestValue === targetValue;
+  }
+
+  const hiddenInput = findHiddenQuantityInput(fieldRoot) ?? findQuantityInput(fieldRoot);
+  if (!hiddenInput) {
+    return false;
+  }
+
+  const setValue = getNativeInputValueSetter();
+  const nextValue = String(targetValue);
+  const currentValueFromHidden = parseNumericValue(hiddenInput.value);
+
+  if (currentValueFromHidden !== targetValue) {
+    if (setValue) {
+      setValue.call(hiddenInput, nextValue);
+    } else {
+      hiddenInput.value = nextValue;
+    }
+    hiddenInput.setAttribute("value", nextValue);
+    dispatchInputEvents(hiddenInput);
+  }
+
+  return parseNumericValue(hiddenInput.value) === targetValue;
+}
+
+function getBookeroSearchRoot(container: HTMLDivElement | null, type: string) {
+  const modeSelector = type ? `#bookero-plugin[data-mode="${type}"]` : "#bookero-plugin";
+  const pluginRoot =
+    document.querySelector<HTMLElement>(`#bookero-form ${modeSelector}`) ??
+    document.querySelector<HTMLElement>(modeSelector);
+
+  if (pluginRoot) {
+    return pluginRoot;
+  }
+
+  return container ?? document;
+}
 
 export default function BookeroEmbed({
   pluginId,
@@ -23,6 +512,9 @@ export default function BookeroEmbed({
   pluginCss = true,
   forceLightText = false,
   className,
+  preselectCategory,
+  preselectService,
+  preselectQuantity,
 }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -183,6 +675,72 @@ export default function BookeroEmbed({
       observer.disconnect();
     };
   }, [forceLightText, containerId, type, lang]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const quantityTarget =
+      typeof preselectQuantity === "number" && Number.isFinite(preselectQuantity) ? preselectQuantity : null;
+    const hasQuantityTarget = quantityTarget !== null;
+    if (!preselectCategory && !preselectService && !hasQuantityTarget) return;
+    if (type === "sticky") return;
+
+    let attempts = 0;
+    let stableAttempts = 0;
+    const startedAt = Date.now();
+
+    const syncSelection = () => {
+      const root = getBookeroSearchRoot(containerRef.current, type);
+      if (!root) {
+        attempts += 1;
+        if (attempts >= PRESELECT_MAX_ATTEMPTS) {
+          window.clearInterval(intervalId);
+        }
+        return;
+      }
+
+      const categoryReady = preselectCategory ? applyBookingFieldValue(root, preselectCategory, "category") : true;
+      const quantityReady = categoryReady && hasQuantityTarget ? applyQuantityValue(root, quantityTarget) : true;
+      const serviceReady =
+        categoryReady && quantityReady && preselectService
+          ? applyBookingFieldValue(root, preselectService, "service")
+          : !preselectService;
+      const quantityConfirmed =
+        categoryReady && serviceReady && hasQuantityTarget ? applyQuantityValue(root, quantityTarget) : true;
+
+      attempts += 1;
+      const selectionReady = categoryReady && quantityReady && serviceReady && quantityConfirmed;
+      stableAttempts = selectionReady ? stableAttempts + 1 : 0;
+
+      if (
+        stableAttempts >= PRESELECT_STABLE_ATTEMPTS ||
+        attempts >= PRESELECT_MAX_ATTEMPTS ||
+        Date.now() - startedAt >= PRESELECT_MAX_RUNTIME_MS
+      ) {
+        window.clearInterval(intervalId);
+        observer.disconnect();
+      }
+    };
+
+    const intervalId = window.setInterval(syncSelection, PRESELECT_POLL_INTERVAL_MS);
+    const observer = new MutationObserver(() => {
+      stableAttempts = 0;
+      syncSelection();
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      characterData: true,
+    });
+
+    syncSelection();
+
+    return () => {
+      window.clearInterval(intervalId);
+      observer.disconnect();
+    };
+  }, [preselectCategory, preselectQuantity, preselectService, type]);
 
   return (
     <div

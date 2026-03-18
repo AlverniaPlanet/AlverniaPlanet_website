@@ -1094,7 +1094,7 @@ p {
   position: fixed;
   left: clamp(1.35rem, 2vw, 1.9rem);
   bottom: clamp(4rem, 8vh, 5.1rem);
-  width: min(14.75rem, calc(100vw - 4.75rem));
+  width: min(12.75rem, calc(100vw - 4.5rem));
   min-height: 4.2rem;
   pointer-events: none;
   z-index: 1400;
@@ -1131,10 +1131,10 @@ p {
 }
 
 .ticket-faq-fab.is-desktop-expanded {
-  width: min(14.75rem, calc(100vw - 4.75rem));
+  width: min(12.75rem, calc(100vw - 4.5rem));
   min-height: 4.2rem;
   border-radius: 1.35rem;
-  padding-right: 1rem;
+  padding-right: 0.85rem;
 }
 
 .ticket-faq-fab:hover,
@@ -1189,7 +1189,7 @@ p {
 }
 
 .ticket-faq-fab.is-desktop-expanded .ticket-faq-fab-copy {
-  max-width: 8.9rem;
+  max-width: 6.8rem;
   opacity: 1;
   transform: translate3d(0, 0, 0);
 }
@@ -1204,8 +1204,8 @@ p {
 }
 
 .ticket-faq-fab-copy-label {
-  font-size: 0.8rem;
-  line-height: 1.16;
+  font-size: 0.74rem;
+  line-height: 1.12;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.94);
   text-wrap: balance;
@@ -1233,7 +1233,7 @@ p {
   position: absolute;
   left: calc(100% + 0.95rem);
   bottom: 0;
-  width: min(21rem, 30vw);
+  width: min(18.5rem, 28vw);
   opacity: 0;
   transform: translate3d(-14px, 0, 0) scale(0.98);
   transform-origin: 0% 100%;
@@ -1713,11 +1713,22 @@ p {
 
 @media (max-width: 1535px) {
   .ticket-faq-desktop-shell {
-    width: 3.35rem;
+    width: min(10.75rem, calc(100vw - 2.5rem));
+  }
+
+  .ticket-faq-fab.is-desktop-expanded {
+    width: min(10.75rem, calc(100vw - 2.5rem));
+  }
+
+  .ticket-faq-fab.is-desktop-expanded .ticket-faq-fab-copy {
+    max-width: 4.95rem;
   }
 
   .ticket-faq-desktop-panel {
-    width: min(20rem, 34vw);
+    left: 0;
+    bottom: calc(100% + 0.8rem);
+    width: min(17rem, calc(100vw - 2.5rem));
+    transform-origin: 0% 100%;
   }
 }
 

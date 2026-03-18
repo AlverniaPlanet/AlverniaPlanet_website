@@ -5,6 +5,7 @@ import Script from "next/script";
 import dynamic from "next/dynamic";
 import AppBar from "@/app/appbar";
 import Footer from "@/app/components/Footer";
+import BookeroRuntimeWarmup from "@/app/components/BookeroRuntimeWarmup";
 import { I18nProvider } from "./i18n-provider";
 import { ThemeProvider } from "./theme-provider";
 
@@ -146,6 +147,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaGraph) }}
         />
         <AnalyticsTracker />
+        <BookeroRuntimeWarmup />
       </body>
     </html>
   );

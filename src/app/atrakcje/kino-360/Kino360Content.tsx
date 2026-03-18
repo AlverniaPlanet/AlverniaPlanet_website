@@ -7,11 +7,24 @@ import TourLineGalleryRow from "@/app/components/TourLineGalleryRow";
 import { PrimaryButton } from "@/app/components/PrimaryButton";
 import ScrollMotionItem from "@/app/components/ScrollMotionItem";
 import { useI18n } from "@/app/i18n-provider";
+import {
+  buildBookingPath,
+  CINEMA_360_BOOKING_CATEGORY,
+  CINEMA_360_BOOKING_SERVICES,
+} from "@/lib/booking";
 
 type Locale = "pl" | "en" | "pt";
 
 type Feature = { title: string; body: string };
 type GalleryItem = { title: string; body: string; image: string };
+type TicketOption = {
+  badge: string;
+  title: string;
+  subtitle: string;
+  details: string[];
+  price: string;
+  bookingServiceName: string;
+};
 
 const COPY: Record<
   Locale,
@@ -24,22 +37,29 @@ const COPY: Record<
     soonBadge: string;
     soonBody: string;
     soonCta: string;
+    soonCtaHref: string;
     featuresTitle: string;
     features: Feature[];
     galleryTitle: string;
     galleryItems: GalleryItem[];
+    ticketsTitle: string;
+    ticketsIntro: string;
+    ticketsPriceLabel: string;
+    ticketsButton: string;
+    ticketsOptions: TicketOption[];
   }
 > = {
   pl: {
-    heroSoon: "Wkrótce",
+    heroSoon: "Otwarcie już w kwietniu",
     heroTag: "Atrakcje",
     heroTitle: "Kino 360°",
     heroLead:
       "Pełne zanurzenie w sferycznym obrazie i dźwięku — seanse, pokazy edukacyjne i prezentacje specjalne.",
     videoFallback: "Twój browser nie wspiera elementu video.",
-    soonBadge: "Wkrótce",
-    soonBody: " ",
-    soonCta: "Napisz do nas po więcej informacji",
+    soonBadge: "Otwarcie już w kwietniu",
+    soonBody: "Pierwsze seanse i pokazy w Kinie 360° startują już w kwietniu.",
+    soonCta: "Zobacz bilety",
+    soonCtaHref: "#kino360-tickets",
     featuresTitle: "Co czeka w kinie 360°",
     features: [
       {
@@ -90,17 +110,41 @@ const COPY: Record<
         image: "/galeria/Ogolne/webp/1.webp",
       },
     ],
+    ticketsTitle: "Bilety do Kina 360°",
+    ticketsIntro:
+      "Wybierz wariant biletu. Po kliknięciu formularz otworzy od razu dokładnie ten bilet.",
+    ticketsPriceLabel: "Cena za osobę",
+    ticketsButton: "Kup bilet",
+    ticketsOptions: [
+      {
+        badge: "Normalny",
+        title: "Bilet normalny",
+        subtitle: "Seans w Kinie 360°",
+        details: ["Cena regularna za osobę"],
+        price: "49 zł",
+        bookingServiceName: CINEMA_360_BOOKING_SERVICES.normal,
+      },
+      {
+        badge: "Ulgowy",
+        title: "Bilet ulgowy",
+        subtitle: "Seans w Kinie 360°",
+        details: ["Cena ulgowa za osobę"],
+        price: "39 zł",
+        bookingServiceName: CINEMA_360_BOOKING_SERVICES.reduced,
+      },
+    ],
   },
   en: {
-    heroSoon: "Coming soon",
+    heroSoon: "Opening in April",
     heroTag: "Attractions",
     heroTitle: "360° cinema",
     heroLead:
       "Total immersion in spherical image and sound—screenings, educational shows, and special presentations.",
     videoFallback: "Your browser does not support the video element.",
-    soonBadge: "Coming soon",
-    soonBody: " ",
-    soonCta: "Write to us for more information",
+    soonBadge: "Opening in April",
+    soonBody: "The first screenings and public shows in the 360° Cinema start in April.",
+    soonCta: "See tickets",
+    soonCtaHref: "#kino360-tickets",
     featuresTitle: "What awaits in the 360° cinema",
     features: [
       {
@@ -151,17 +195,41 @@ const COPY: Record<
         image: "/galeria/Ogolne/webp/1.webp",
       },
     ],
+    ticketsTitle: "360° cinema tickets",
+    ticketsIntro:
+      "Choose a ticket type. After clicking, the booking form will open with that exact ticket selected.",
+    ticketsPriceLabel: "Price per person",
+    ticketsButton: "Buy tickets",
+    ticketsOptions: [
+      {
+        badge: "Standard",
+        title: "Standard ticket",
+        subtitle: "360° cinema screening",
+        details: ["Regular price per person"],
+        price: "49 PLN",
+        bookingServiceName: CINEMA_360_BOOKING_SERVICES.normal,
+      },
+      {
+        badge: "Reduced",
+        title: "Reduced ticket",
+        subtitle: "360° cinema screening",
+        details: ["Reduced price per person"],
+        price: "39 PLN",
+        bookingServiceName: CINEMA_360_BOOKING_SERVICES.reduced,
+      },
+    ],
   },
   pt: {
-    heroSoon: "Em breve",
+    heroSoon: "Abertura já em abril",
     heroTag: "Atrações",
     heroTitle: "Cinema 360°",
     heroLead:
       "Imersão total em imagem e som esféricos — sessões, ações educativas e apresentações especiais.",
     videoFallback: "O seu navegador não suporta o elemento de vídeo.",
-    soonBadge: "Em breve",
-    soonBody: " ",
-    soonCta: "Escreva-nos para mais informações",
+    soonBadge: "Abertura já em abril",
+    soonBody: "As primeiras sessões e apresentações no Cinema 360° arrancam já em abril.",
+    soonCta: "Ver bilhetes",
+    soonCtaHref: "#kino360-tickets",
     featuresTitle: "O que o espera no cinema 360°",
     features: [
       {
@@ -210,6 +278,29 @@ const COPY: Record<
         title: "Em torno do complexo",
         body: "Depois da sessão, os visitantes podem explorar outras zonas da Alvernia Planet.",
         image: "/galeria/Ogolne/webp/1.webp",
+      },
+    ],
+    ticketsTitle: "Bilhetes para o Cinema 360°",
+    ticketsIntro:
+      "Escolha o tipo de bilhete. Após o clique, o formulário abre com esse bilhete já selecionado.",
+    ticketsPriceLabel: "Preço por pessoa",
+    ticketsButton: "Comprar bilhete",
+    ticketsOptions: [
+      {
+        badge: "Normal",
+        title: "Bilhete normal",
+        subtitle: "Sessão no Cinema 360°",
+        details: ["Preço normal por pessoa"],
+        price: "49 PLN",
+        bookingServiceName: CINEMA_360_BOOKING_SERVICES.normal,
+      },
+      {
+        badge: "Reduzido",
+        title: "Bilhete reduzido",
+        subtitle: "Sessão no Cinema 360°",
+        details: ["Preço reduzido por pessoa"],
+        price: "39 PLN",
+        bookingServiceName: CINEMA_360_BOOKING_SERVICES.reduced,
       },
     ],
   },
@@ -274,7 +365,7 @@ export default function Kino360Content() {
                   </p>
                 </div>
                 <PrimaryButton
-                  href="/kontakt"
+                  href={copy.soonCtaHref}
                   size="md"
                   className="w-full sm:w-auto bg-transparent text-white ring-1 ring-cyan-300/40 shadow-none hover:bg-white/10 hover:text-white"
                 >
@@ -313,6 +404,68 @@ export default function Kino360Content() {
             <Card className="space-y-6" variant="solid" motion="off">
               <TourLineAccentTitle variant="cool">{copy.galleryTitle}</TourLineAccentTitle>
               <TourLineGalleryRow items={copy.galleryItems} />
+            </Card>
+          </ScrollMotionItem>
+
+          <ScrollMotionItem strength="strong" delay={220} className="ap-deferred-section">
+            <Card
+              id="kino360-tickets"
+              title={copy.ticketsTitle}
+              titleCentered
+              titleDivider
+              dense
+              motion="off"
+            >
+              <p className="ap-type-section-body text-center max-w-3xl mx-auto">{copy.ticketsIntro}</p>
+              <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-x-6 gap-y-10">
+                {copy.ticketsOptions.map((option) => (
+                  <div
+                    key={option.title}
+                    className="ticket-card ap-tile group flex h-full flex-col rounded-3xl text-white/90"
+                  >
+                    <div className="ticket-card-top">
+                      <span className="ticket-card-badge">{option.badge}</span>
+                    </div>
+                    <div className="ticket-card-content flex h-full flex-col p-5 sm:p-6 text-center">
+                      <h3 className="ticket-card-title text-xl sm:text-2xl font-semibold text-white">
+                        {option.title}
+                      </h3>
+                      <p className="ticket-card-subtitle mt-2 text-sm sm:text-base text-white/75">
+                        {option.subtitle}
+                      </p>
+                      <div className="ticket-card-divider mt-6" />
+                      <ul className="ticket-list-panel mt-5 mb-8 space-y-3 text-sm text-white/75 text-left mx-auto max-w-sm">
+                        {option.details.map((detail) => (
+                          <li key={detail} className="ticket-detail flex gap-3">
+                            <span className="ticket-detail-dot mt-2 h-1.5 w-1.5 rounded-full bg-[#4fcfde] shrink-0" />
+                            <span>{detail}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      <div className="ticket-price-block mt-auto pt-7">
+                        <p className="ticket-price-label text-[0.7rem] uppercase tracking-[0.25em] text-white/60">
+                          {copy.ticketsPriceLabel}
+                        </p>
+                        <p className="ticket-price mt-2 text-2xl sm:text-3xl font-bold text-amber-200">
+                          {option.price}
+                        </p>
+                        <div className="mt-6 flex justify-center">
+                          <PrimaryButton
+                            href={buildBookingPath(loc, {
+                              category: CINEMA_360_BOOKING_CATEGORY,
+                              service: option.bookingServiceName,
+                            })}
+                            size="md"
+                            className="ticket-pill ring-[color:rgba(240,60,100,0.55)]"
+                          >
+                            {copy.ticketsButton}
+                          </PrimaryButton>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </Card>
           </ScrollMotionItem>
         </div>

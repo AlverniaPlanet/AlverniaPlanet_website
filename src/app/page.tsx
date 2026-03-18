@@ -11,6 +11,11 @@ import { AttractionCard } from "@/app/components/AttractionCard";
 import ScrollMotionItem from "@/app/components/ScrollMotionItem";
 import TicketFaqWidget, { type TicketFaqCopy } from "@/app/components/TicketFaqWidget";
 import { waitForImagesReady } from "@/app/components/waitForImagesReady";
+import {
+  buildBookingPath,
+  FILM_PATH_BOOKING_CATEGORY,
+  FILM_PATH_BOOKING_SERVICES,
+} from "@/lib/booking";
 
 type Locale = "pl" | "en" | "pt";
 
@@ -30,6 +35,8 @@ type TicketOption = {
   details: string[];
   priceLabel?: string;
   price?: string;
+  bookingServiceName?: string;
+  bookingQuantity?: number;
 };
 
 type TicketSection = {
@@ -127,6 +134,7 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
           title: "Bilet indywidualny",
           subtitle: "1-10 osób na jednym bilecie",
           details: ["Dla osób indywidualnych i rodzin", "Płatność za osoby"],
+          bookingServiceName: FILM_PATH_BOOKING_SERVICES.normal,
         },
         {
           badge: "Grupowe",
@@ -135,6 +143,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
           details: ["Dla szkół i grup zorganizowanych", "Płatność za całą grupę"],
           priceLabel: "Cena za min. 30 osób",
           price: "2 070 zł/grupa",
+          bookingServiceName: FILM_PATH_BOOKING_SERVICES.group,
+          bookingQuantity: 30,
         },
       ],
     },
@@ -262,6 +272,7 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
           title: "Individual ticket",
           subtitle: "1-10 people on one ticket",
           details: ["For individuals and families", "Pay per person"],
+          bookingServiceName: FILM_PATH_BOOKING_SERVICES.normal,
         },
         {
           badge: "Group",
@@ -270,6 +281,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
           details: ["For schools and organized groups", "Pay for the whole group"],
           priceLabel: "Price for min. 30 people",
           price: "2,070 PLN/group",
+          bookingServiceName: FILM_PATH_BOOKING_SERVICES.group,
+          bookingQuantity: 30,
         },
       ],
     },
@@ -398,6 +411,7 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
           title: "Bilhete individual",
           subtitle: "1-10 pessoas por bilhete",
           details: ["Para indivíduos e famílias", "Pagamento por pessoa"],
+          bookingServiceName: FILM_PATH_BOOKING_SERVICES.normal,
         },
         {
           badge: "Grupo",
@@ -406,6 +420,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
           details: ["Para escolas e grupos organizados", "Pagamento pelo grupo inteiro"],
           priceLabel: "Preço mín. 30 pessoas",
           price: "2 070 PLN/grupo",
+          bookingServiceName: FILM_PATH_BOOKING_SERVICES.group,
+          bookingQuantity: 30,
         },
       ],
     },
@@ -566,6 +582,7 @@ export default function Page() {
         tickets={copy.tickets}
         eventsPromo={copy.eventsPromo}
         secondaryAnimationsReady={secondaryAnimationsReady}
+        locale={loc}
       />
       <HomeFaqSlots faq={copy.faq} />
     </main>
@@ -673,12 +690,14 @@ const HomeContent = memo(function HomeContent({
   tickets,
   eventsPromo,
   secondaryAnimationsReady,
+  locale,
 }: {
   introReady: boolean;
   attractions: HomeCopy["attractions"];
   tickets: TicketSection;
   eventsPromo: PromoTile;
   secondaryAnimationsReady: boolean;
+  locale: Locale;
 }) {
   return (
     <section
@@ -694,7 +713,7 @@ const HomeContent = memo(function HomeContent({
       <div className="mx-auto max-w-[72rem]">
         <div className="grid grid-cols-1 gap-16 sm:gap-20">
           <AttractionsSection attractions={attractions} animate={secondaryAnimationsReady} />
-          <TicketsSection tickets={tickets} />
+          <TicketsSection tickets={tickets} locale={locale} />
           <EventsPromoSection promo={eventsPromo} />
         </div>
       </div>
@@ -777,8 +796,10 @@ const TicketOptionCard = memo(function TicketOptionCard({
 
 const TicketsSection = memo(function TicketsSection({
   tickets,
+  locale,
 }: {
   tickets: TicketSection;
+  locale: Locale;
 }) {
   return (
     <ScrollMotionItem strength="soft" delay={30} float={false} className="home-deferred-block">
@@ -795,7 +816,15 @@ const TicketsSection = memo(function TicketsSection({
               defaultPriceLabel={tickets.priceLabel}
               defaultPrice={tickets.price}
               cta={tickets.cta}
-              ctaHref={tickets.ctaHref}
+              ctaHref={
+                option.bookingServiceName
+                  ? buildBookingPath(locale, {
+                      category: FILM_PATH_BOOKING_CATEGORY,
+                      service: option.bookingServiceName,
+                      quantity: option.bookingQuantity,
+                    })
+                  : tickets.ctaHref
+              }
             />
           ))}
         </div>
