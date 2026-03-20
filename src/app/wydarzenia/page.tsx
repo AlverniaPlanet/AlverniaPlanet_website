@@ -1,12 +1,14 @@
 "use client";
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useI18n } from "@/app/i18n-provider";
 import AdaptiveVideo from "@/app/components/AdaptiveVideo";
 import Card from "@/app/components/Card";
 import { PrimaryButton } from "@/app/components/PrimaryButton";
 import ScrollMotionItem from "@/app/components/ScrollMotionItem";
 import { waitForImagesReady } from "@/app/components/waitForImagesReady";
+import { getLocalizedPath } from "@/lib/localizedRoutes";
 import Image from "next/image";
+import { DOME_VR_SCENES_BY_KEY, VR_UI, type VrDomeKey } from "./vr/vrData";
 
 // ===== Lokalny słownik (PL/EN) =====
 type Locale = "pl" | "en" | "pt";
@@ -21,12 +23,37 @@ const FORMAT_SHOWCASE_IMAGES = [
 const FORMAT_SHOWCASE_WAVE_DELAYS_MS = [1000, 1000, 1000, 3000] as const;
 const FORMAT_SHOWCASE_FADE_MS = 2400;
 type DomeKey = "k3" | "k4" | "k7" | "k10k12";
+type DomeMapHotspot = {
+  id: string;
+  dome: DomeKey;
+  label: string;
+  x: number;
+  y: number;
+  size: number;
+};
 
 const DOME_IMAGE_BY_KEY: Record<DomeKey, string> = {
   k3: "/wydarzenia/dome-k3-thumb.webp",
   k4: "/wydarzenia/dome-k4-thumb.jpg",
   k7: "/wydarzenia/dome-k7-thumb.webp",
   k10k12: "/wydarzenia/dome-k10k12-thumb.webp",
+};
+
+const DOME_MAP_HOTSPOTS: DomeMapHotspot[] = [
+  { id: "k3", dome: "k3", label: "K3", x: 59.1, y: 18.8, size: 15.1 },
+  { id: "k4", dome: "k4", label: "K4", x: 78.0, y: 27.6, size: 15.1 },
+  { id: "k7", dome: "k7", label: "K7", x: 52.0, y: 50.68, size: 8.8 },
+  { id: "k10", dome: "k10k12", label: "K10", x: 73.5, y: 48.3, size: 7.5 },
+  { id: "k12", dome: "k10k12", label: "K12", x: 69.8, y: 60.5, size: 7.5 },
+];
+
+const SHOW_ALL_DOME_AREAS = true;
+
+const EVENT_DOME_TO_VR_KEY: Record<DomeKey, VrDomeKey> = {
+  k3: "k3",
+  k4: "k4",
+  k7: "k7",
+  k10k12: "k10",
 };
 
 const COPY: Record<
@@ -240,6 +267,10 @@ const SECTION_UI: Record<
     domesIntro: string;
     domesCardLabel: string;
     domeImageAltSuffix: string;
+    domesMapLabel: string;
+    domesMapHint: string;
+    domesMapAlt: string;
+    domesMapSelectLabel: string;
     salesTeamLabel: string;
     contactCta: string;
   }
@@ -252,6 +283,10 @@ const SECTION_UI: Record<
       "To nasze realne przestrzenie eventowe, które możesz wynająć. Poniżej znajdziesz kluczowe parametry każdej z nich.",
     domesCardLabel: "Wynajem",
     domeImageAltSuffix: "podgląd obiektu",
+    domesMapLabel: "Mapa techniczna kopuł",
+    domesMapHint: "Najedź albo kliknij kopułę na planie, a pod mapą pokażą się jej szczegóły techniczne.",
+    domesMapAlt: "Techniczna mapa kopuł Alvernia Planet",
+    domesMapSelectLabel: "Wybierz kopułę",
     salesTeamLabel: "Zespół sprzedaży",
     contactCta: "Zapytaj o termin",
   },
@@ -263,6 +298,10 @@ const SECTION_UI: Record<
       "These are real event spaces available for rent. Below are the key parameters of each venue.",
     domesCardLabel: "For rent",
     domeImageAltSuffix: "venue preview",
+    domesMapLabel: "Technical dome map",
+    domesMapHint: "Hover over or click a dome on the plan to view its technical details below the map.",
+    domesMapAlt: "Technical map of the Alvernia Planet domes",
+    domesMapSelectLabel: "Select dome",
     salesTeamLabel: "Sales team",
     contactCta: "Ask about dates",
   },
@@ -274,6 +313,10 @@ const SECTION_UI: Record<
       "Estes são espaços reais para eventos disponíveis para aluguer. Abaixo estão os principais parâmetros de cada espaço.",
     domesCardLabel: "Para aluguer",
     domeImageAltSuffix: "pré-visualização do espaço",
+    domesMapLabel: "Mapa técnica das cúpulas",
+    domesMapHint: "Passe o cursor ou clique numa cúpula no plano para ver os detalhes técnicos abaixo do mapa.",
+    domesMapAlt: "Mapa técnica das cúpulas da Alvernia Planet",
+    domesMapSelectLabel: "Selecionar cúpula",
     salesTeamLabel: "Equipa comercial",
     contactCta: "Pedir disponibilidade",
   },
@@ -907,12 +950,18 @@ function DomeSpecBlock({
   locale,
   imageSrc,
   imageAlt,
+  vrSceneCount,
+  vrHref,
+  vrUi,
 }: {
   dome: DomeContent;
   rentalLabel: string;
   locale: Locale;
   imageSrc: string;
   imageAlt: string;
+  vrSceneCount: number;
+  vrHref: string;
+  vrUi: (typeof VR_UI)[Locale];
 }) {
   const highlights = dome.bullets.slice(0, Math.min(2, dome.bullets.length));
   const details = dome.bullets.slice(highlights.length);
@@ -983,8 +1032,147 @@ function DomeSpecBlock({
             </div>
           </details>
         ) : null}
+        {vrSceneCount > 0 ? (
+          <div className="rounded-2xl border border-white/10 bg-white/[0.035] p-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p className="events-section-label text-[11px] font-semibold uppercase tracking-[0.24em]">
+                {vrUi.label}
+              </p>
+              <span className="inline-flex items-center rounded-full border border-white/12 bg-white/6 px-3 py-1 text-[11px] font-medium text-white/72">
+                {vrUi.sceneCount(vrSceneCount)}
+              </span>
+            </div>
+            <p className="mt-3 text-sm leading-relaxed text-white/72">
+              {vrUi.intro}
+            </p>
+            <div className="mt-4">
+              <PrimaryButton size="md" className="ring-[color:rgba(79,207,222,0.42)]" href={vrHref}>
+                {vrUi.openCta}
+              </PrimaryButton>
+            </div>
+          </div>
+        ) : null}
       </div>
     </section>
+  );
+}
+
+function DomeMapExperience({
+  domes,
+  locale,
+  sectionUi,
+}: {
+  domes: (typeof DOMES)[Locale];
+  locale: Locale;
+  sectionUi: (typeof SECTION_UI)[Locale];
+}) {
+  const [activeDomeKey, setActiveDomeKey] = useState<DomeKey>("k3");
+  const detailsRef = useRef<HTMLDivElement | null>(null);
+  const lastAutoScrollAtRef = useRef(0);
+  const activeDome = domes[activeDomeKey];
+
+  const activateDome = (dome: DomeKey) => {
+    setActiveDomeKey(dome);
+
+    const panel = detailsRef.current;
+    if (!panel || typeof window === "undefined") {
+      return;
+    }
+
+    const now = Date.now();
+    if (now - lastAutoScrollAtRef.current < 700) {
+      return;
+    }
+
+    const rect = panel.getBoundingClientRect();
+    const desiredPanelTop = Math.min(window.innerHeight * 0.78, window.innerHeight - 120);
+    const targetTop = window.scrollY + rect.top - desiredPanelTop;
+    const panelBelowFold = rect.top > desiredPanelTop + 36;
+
+    if (!panelBelowFold) {
+      return;
+    }
+
+    lastAutoScrollAtRef.current = now;
+    window.scrollTo({
+      top: Math.max(0, targetTop),
+      behavior: "smooth",
+    });
+  };
+
+  return (
+    <div className="space-y-5 md:space-y-6">
+      <section className="events-dome-card ap-interactive-surface rounded-2xl border p-4 sm:p-5 md:p-6">
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <p className="events-section-label text-[11px] font-semibold uppercase tracking-[0.24em]">
+              {sectionUi.domesMapLabel}
+            </p>
+            <p className="events-section-intro mx-auto max-w-4xl text-center text-lg font-semibold leading-relaxed sm:text-xl md:text-2xl">
+              {sectionUi.domesMapHint}
+            </p>
+          </div>
+          <div className="relative aspect-[1676/1276] overflow-hidden rounded-[1.75rem] border border-white/12 bg-[#070b16]/90 shadow-[0_30px_80px_rgba(2,6,18,0.46)]">
+            <Image
+              src="/wydarzenia/mapka.webp"
+              alt={sectionUi.domesMapAlt}
+              fill
+              sizes="(min-width: 1280px) 76vw, (min-width: 768px) 92vw, 96vw"
+              className="object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_52%_42%,transparent_0%,transparent_44%,rgba(6,10,24,0.18)_72%,rgba(6,10,24,0.34)_100%)]" />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-[#070b16]/34 via-transparent to-transparent" />
+            {DOME_MAP_HOTSPOTS.map((spot) => {
+              const isActive = activeDomeKey === spot.dome;
+
+              return (
+                <button
+                  key={spot.id}
+                  type="button"
+                  className={`group absolute aspect-square -translate-x-1/2 -translate-y-1/2 rounded-full transition duration-300 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-[#7ef6ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#070b16] ${
+                    isActive ? "z-20" : "z-10 hover:z-20"
+                  }`}
+                  style={{
+                    left: `${spot.x}%`,
+                    top: `${spot.y}%`,
+                    width: `${spot.size}%`,
+                  }}
+                  aria-label={`${sectionUi.domesMapSelectLabel}: ${spot.label}`}
+                  aria-pressed={isActive}
+                  onMouseEnter={() => activateDome(spot.dome)}
+                  onFocus={() => activateDome(spot.dome)}
+                  onClick={() => activateDome(spot.dome)}
+                >
+                  <span
+                    className={`absolute inset-0 rounded-full transition duration-300 ${
+                      isActive
+                        ? "border-[4px] border-[#7ef6ff] bg-[#79f1ff]/20 shadow-[0_0_0_2px_rgba(8,16,30,0.38),0_0_0_10px_rgba(126,246,255,0.18),0_0_34px_rgba(126,246,255,0.42),inset_0_0_38px_rgba(126,246,255,0.14)]"
+                        : SHOW_ALL_DOME_AREAS
+                        ? "border-[3px] border-[#ffe869] bg-[#ffe869]/16 shadow-[0_0_0_2px_rgba(7,12,24,0.28),0_0_0_8px_rgba(255,232,105,0.14),inset_0_0_24px_rgba(255,232,105,0.1)]"
+                        : "border border-white/6 bg-transparent group-hover:border-[#7ef6ff]/58 group-hover:bg-[#79f1ff]/7 group-hover:shadow-[0_0_0_6px_rgba(126,246,255,0.05)]"
+                    }`}
+                  />
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+      <div ref={detailsRef} key={activeDomeKey}>
+        <DomeSpecBlock
+          dome={activeDome}
+          rentalLabel={sectionUi.domesCardLabel}
+          locale={locale}
+          imageSrc={DOME_IMAGE_BY_KEY[activeDomeKey]}
+          imageAlt={`${activeDome.title} - ${sectionUi.domeImageAltSuffix}`}
+          vrSceneCount={DOME_VR_SCENES_BY_KEY[EVENT_DOME_TO_VR_KEY[activeDomeKey]].length}
+          vrHref={`${getLocalizedPath("/wydarzenia/vr", locale)}?dome=${EVENT_DOME_TO_VR_KEY[activeDomeKey]}`}
+          vrUi={VR_UI[locale]}
+        />
+      </div>
+    </div>
   );
 }
 
@@ -1116,44 +1304,7 @@ export default function EventsPage() {
                         {sectionUi.domesIntro}
                       </p>
                     </div>
-                    <div className="grid gap-5 md:gap-6 grid-cols-1 md:grid-cols-2">
-                      <div>
-                        <DomeSpecBlock
-                          dome={domes.k3}
-                          rentalLabel={sectionUi.domesCardLabel}
-                          locale={loc}
-                          imageSrc={DOME_IMAGE_BY_KEY.k3}
-                          imageAlt={`${domes.k3.title} - ${sectionUi.domeImageAltSuffix}`}
-                        />
-                      </div>
-                      <div>
-                        <DomeSpecBlock
-                          dome={domes.k4}
-                          rentalLabel={sectionUi.domesCardLabel}
-                          locale={loc}
-                          imageSrc={DOME_IMAGE_BY_KEY.k4}
-                          imageAlt={`${domes.k4.title} - ${sectionUi.domeImageAltSuffix}`}
-                        />
-                      </div>
-                      <div>
-                        <DomeSpecBlock
-                          dome={domes.k7}
-                          rentalLabel={sectionUi.domesCardLabel}
-                          locale={loc}
-                          imageSrc={DOME_IMAGE_BY_KEY.k7}
-                          imageAlt={`${domes.k7.title} - ${sectionUi.domeImageAltSuffix}`}
-                        />
-                      </div>
-                      <div>
-                        <DomeSpecBlock
-                          dome={domes.k10k12}
-                          rentalLabel={sectionUi.domesCardLabel}
-                          locale={loc}
-                          imageSrc={DOME_IMAGE_BY_KEY.k10k12}
-                          imageAlt={`${domes.k10k12.title} - ${sectionUi.domeImageAltSuffix}`}
-                        />
-                      </div>
-                    </div>
+                    <DomeMapExperience domes={domes} locale={loc} sectionUi={sectionUi} />
                   </div>
                 </Card>
               </ScrollMotionItem>

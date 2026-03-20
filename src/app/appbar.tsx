@@ -41,7 +41,7 @@ export function AppBar() {
   const isAttractionsActive = isCurrentSection("/atrakcje");
   const isEventsActive = isCurrentPath("/wydarzenia");
   const isGettingThereActive = isCurrentPath("/jak-dojechac");
-  const isAboutActive = isCurrentPath("/o-alvernia-planet", "/galeria");
+  const isAboutActive = isCurrentPath("/o-alvernia-planet", "/galeria", "/wydarzenia/vr");
   const isContactActive = isCurrentPath("/kontakt");
   const isBookingActive = isCurrentPath("/rezerwuj");
   const isExhibitionActive = isCurrentPath("/atrakcje/wystawa");
@@ -49,6 +49,7 @@ export function AppBar() {
   const isCinemaActive = isCurrentPath("/atrakcje/kino-360");
   const isAboutPageActive = isCurrentPath("/o-alvernia-planet");
   const isGalleryActive = isCurrentPath("/galeria");
+  const isVrTourActive = isCurrentPath("/wydarzenia/vr");
 
   useEffect(() => setOpen(false), [pathname]);
   useEffect(() => {
@@ -267,7 +268,7 @@ export function AppBar() {
                   </svg>
                 </button>
                 <div
-                  className={`ap-nav-dropdown absolute right-0 top-full mt-1 w-56 z-50 origin-top transition-all duration-150 ${openAbout ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-0.5 pointer-events-none"}`}
+                  className={`ap-nav-dropdown absolute right-0 top-full mt-1 w-72 z-50 origin-top transition-all duration-150 ${openAbout ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-0.5 pointer-events-none"}`}
                 >
                   <div className="ap-nav-dropdown-panel rounded-xl bg-[color:var(--ap-surface-contrast)] backdrop-blur ring-1 ring-[color:var(--ap-border)] shadow-xl overflow-hidden text-[color:var(--ap-text)]">
                     <ul className="py-2 text-xs">
@@ -293,6 +294,18 @@ export function AppBar() {
                           aria-current={isGalleryActive ? "page" : undefined}
                         >
                           {t("nav.gallery")}
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          href={paths.vrTour}
+                          className={cx(
+                            "ap-nav-dropdown-link block px-4 py-2",
+                            isVrTourActive && "is-active",
+                          )}
+                          aria-current={isVrTourActive ? "page" : undefined}
+                        >
+                          {t("nav.virtual_walk")}
                         </Link>
                       </li>
                     </ul>
@@ -485,6 +498,18 @@ export function AppBar() {
                       aria-current={isGalleryActive ? "page" : undefined}
                     >
                       • {t("nav.gallery")}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href={paths.vrTour}
+                      className={cx(
+                        "ap-mobile-link block rounded-md px-3 py-2 text-gray-200",
+                        isVrTourActive && "is-active",
+                      )}
+                      aria-current={isVrTourActive ? "page" : undefined}
+                    >
+                      • {t("nav.virtual_walk")}
                     </Link>
                   </li>
                 </ul>

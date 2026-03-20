@@ -93,6 +93,12 @@
       "namedRegex": "^/en/events(?:/)?$"
     },
     {
+      "page": "/en/events/vr",
+      "regex": "^/en/events/vr(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/en/events/vr(?:/)?$"
+    },
+    {
       "page": "/en/gallery",
       "regex": "^/en/gallery(?:/)?$",
       "routeKeys": {},
@@ -177,6 +183,12 @@
       "namedRegex": "^/pt/events(?:/)?$"
     },
     {
+      "page": "/pt/events/vr",
+      "regex": "^/pt/events/vr(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/pt/events/vr(?:/)?$"
+    },
+    {
       "page": "/pt/gallery",
       "regex": "^/pt/gallery(?:/)?$",
       "routeKeys": {},
@@ -217,6 +229,12 @@
       "regex": "^/wydarzenia(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/wydarzenia(?:/)?$"
+    },
+    {
+      "page": "/wydarzenia/vr",
+      "regex": "^/wydarzenia/vr(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/wydarzenia/vr(?:/)?$"
     }
   ],
   "dataRoutes": [],

@@ -3,6 +3,7 @@
 import Card from "@/app/components/Card";
 import { PrimaryButton } from "@/app/components/PrimaryButton";
 import { useI18n } from "@/app/i18n-provider";
+import { getLocalizedPath } from "@/lib/localizedRoutes";
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -26,6 +27,13 @@ const COPY: Record<
     highlightTitle: string;
     highlightSubtitle: string;
     highlightSections: { title: string; summary: string; points: string[]; tag: string }[];
+    vrFeature: {
+      title: string;
+      subtitle: string;
+      body: string;
+      cta: string;
+      tags: string[];
+    };
   }
 > = {
   pl: {
@@ -136,6 +144,13 @@ const COPY: Record<
         ],
       },
     ],
+    vrFeature: {
+      title: "Wirtualny spacer po kopułach",
+      subtitle: "Panoramy 360° z wnętrza Alvernia Planet",
+      body: "Przejdź do osobnej zakładki z widokami VR i rozejrzyj się po kopułach oraz wybranych przestrzeniach kompleksu. Znajdziesz tam wszystkie panoramy dostępne w archiwum, od recepcji po wnętrza poszczególnych kopuł.",
+      cta: "Otwórz wirtualny spacer",
+      tags: ["Panoramy 360°", "Kopuły i przestrzenie", "Osobna podstrona VR"],
+    },
   },
   en: {
     tag: "About us",
@@ -245,6 +260,13 @@ const COPY: Record<
         ],
       },
     ],
+    vrFeature: {
+      title: "Virtual dome tour",
+      subtitle: "360° panoramas from inside Alvernia Planet",
+      body: "Open a dedicated VR section and look around the domes and selected spaces of the complex. It gathers every panorama currently available in the archive, from the reception area to the interiors of individual domes.",
+      cta: "Open the virtual tour",
+      tags: ["360° panoramas", "Domes and spaces", "Dedicated VR page"],
+    },
   },
   pt: {
     tag: "Sobre nós",
@@ -354,6 +376,13 @@ const COPY: Record<
         ],
       },
     ],
+    vrFeature: {
+      title: "Passeio virtual pelas cúpulas",
+      subtitle: "Panorâmicas 360° do interior da Alvernia Planet",
+      body: "Abra uma secção VR dedicada e explore as cúpulas e espaços selecionados do complexo. Lá encontra todas as panorâmicas atualmente disponíveis no arquivo, desde a receção até ao interior das cúpulas.",
+      cta: "Abrir passeio virtual",
+      tags: ["Panorâmicas 360°", "Cúpulas e espaços", "Página VR dedicada"],
+    },
   },
 };
 
@@ -428,6 +457,7 @@ export default function AboutAlverniaPage() {
   const { locale } = useI18n();
   const loc = ((locale as Locale) ?? "pl") as Locale;
   const copy = COPY[loc];
+  const vrHref = getLocalizedPath("/wydarzenia/vr", loc);
   const metricTones = [
     "from-[#4fcfde]/20 via-[#4fcfde]/6 to-transparent",
     "from-[#f77828]/22 via-[#f77828]/6 to-transparent",
@@ -587,6 +617,65 @@ export default function AboutAlverniaPage() {
             >
               {copy.wikipediaCta}
             </PrimaryButton>
+          </div>
+        </Card>
+
+        <Card variant="solid" className="relative overflow-hidden" motion="off">
+          <div
+            className="pointer-events-none absolute -top-20 right-[-3.5rem] h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(79,207,222,0.24)_0%,rgba(79,207,222,0.05)_42%,rgba(79,207,222,0)_72%)]"
+            aria-hidden
+          />
+          <div
+            className="pointer-events-none absolute -bottom-24 left-[-4rem] h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(247,120,40,0.2)_0%,rgba(247,120,40,0.05)_40%,rgba(247,120,40,0)_74%)]"
+            aria-hidden
+          />
+          <div className="relative grid gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-center">
+            <div className="space-y-5 text-center lg:text-left">
+              <p className="ap-type-kicker">{copy.vrFeature.subtitle}</p>
+              <h2 className="ap-type-section-title">{copy.vrFeature.title}</h2>
+              <p className="ap-type-section-body max-w-3xl">{copy.vrFeature.body}</p>
+              <div className="flex flex-wrap justify-center gap-2 lg:justify-start">
+                {copy.vrFeature.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="inline-flex items-center rounded-full border border-white/12 bg-white/[0.04] px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-white/72"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <div className="pt-2">
+                <PrimaryButton href={vrHref} size="lg">
+                  {copy.vrFeature.cta}
+                </PrimaryButton>
+              </div>
+            </div>
+            <div className="rounded-[1.75rem] border border-white/12 bg-white/[0.04] p-4 sm:p-5">
+              <div className="grid gap-3 sm:grid-cols-2">
+                {[
+                  "/Alvernia VR/K03_PIC_2017_10_14_21_57_24_20171014221828.jpg",
+                  "/Alvernia VR/K10_PIC_2017_10_14_23_47_39_20171015114654.jpg",
+                  "/Alvernia VR/K02_Recepcja_PIC_2017_10_15_12_58_45_20171015145007.jpg",
+                  "/Alvernia VR/Laboratorium_PIC_2017_10_15_04_41_47_20171015114041.jpg",
+                ].map((src, index) => (
+                  <div
+                    key={src}
+                    className={`relative overflow-hidden rounded-2xl border border-white/10 bg-black/20 ${
+                      index === 0 ? "sm:col-span-2 aspect-[16/8.5]" : "aspect-[16/10]"
+                    }`}
+                  >
+                    <Image
+                      src={src}
+                      alt={copy.vrFeature.title}
+                      fill
+                      sizes="(min-width: 1024px) 32vw, 100vw"
+                      className="object-cover"
+                    />
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent" />
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </Card>
       </div>

@@ -2,6 +2,7 @@ export type Locale = "pl" | "en" | "pt";
 
 const PL_TO_INTL_COMMON: Record<string, string> = {
   "/wydarzenia": "/events",
+  "/wydarzenia/vr": "/events/vr",
   "/galeria": "/gallery",
   "/jak-dojechac": "/getting-there",
   "/o-alvernia-planet": "/about",
@@ -101,6 +102,7 @@ export function getSitePaths(locale: Locale) {
   return {
     home: getLocalizedPath("/", locale),
     events: getLocalizedPath("/wydarzenia", locale),
+    vrTour: getLocalizedPath("/wydarzenia/vr", locale),
     gallery: getLocalizedPath("/galeria", locale),
     gettingThere: getLocalizedPath("/jak-dojechac", locale),
     booking: getLocalizedPath("/rezerwuj", locale),
