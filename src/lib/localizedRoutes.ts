@@ -1,6 +1,7 @@
 export type Locale = "pl" | "en" | "pt";
 
 const PL_TO_INTL_COMMON: Record<string, string> = {
+  "/aktualnosci": "/news",
   "/wydarzenia": "/events",
   "/wydarzenia/vr": "/events/vr",
   "/galeria": "/gallery",
@@ -28,6 +29,7 @@ const BOOKING_PATH_BY_LOCALE: Record<Locale, string> = {
 
 const BASE_PREFETCH_PATHS = [
   "/",
+  "/aktualnosci",
   "/wydarzenia",
   "/galeria",
   "/jak-dojechac",
@@ -101,6 +103,7 @@ export function getLocalizedPath(path: string, locale: Locale): string {
 export function getSitePaths(locale: Locale) {
   return {
     home: getLocalizedPath("/", locale),
+    news: getLocalizedPath("/aktualnosci", locale),
     events: getLocalizedPath("/wydarzenia", locale),
     vrTour: getLocalizedPath("/wydarzenia/vr", locale),
     gallery: getLocalizedPath("/galeria", locale),

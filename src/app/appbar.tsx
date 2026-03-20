@@ -41,7 +41,7 @@ export function AppBar() {
   const isAttractionsActive = isCurrentSection("/atrakcje");
   const isEventsActive = isCurrentPath("/wydarzenia");
   const isGettingThereActive = isCurrentPath("/jak-dojechac");
-  const isAboutActive = isCurrentPath("/o-alvernia-planet", "/galeria", "/wydarzenia/vr");
+  const isAboutActive = isCurrentPath("/o-alvernia-planet", "/galeria", "/wydarzenia/vr", "/aktualnosci");
   const isContactActive = isCurrentPath("/kontakt");
   const isBookingActive = isCurrentPath("/rezerwuj");
   const isExhibitionActive = isCurrentPath("/atrakcje/wystawa");
@@ -50,6 +50,7 @@ export function AppBar() {
   const isAboutPageActive = isCurrentPath("/o-alvernia-planet");
   const isGalleryActive = isCurrentPath("/galeria");
   const isVrTourActive = isCurrentPath("/wydarzenia/vr");
+  const isNewsActive = isCurrentPath("/aktualnosci");
 
   useEffect(() => setOpen(false), [pathname]);
   useEffect(() => {
@@ -308,6 +309,18 @@ export function AppBar() {
                           {t("nav.virtual_walk")}
                         </Link>
                       </li>
+                      <li>
+                        <Link
+                          href={paths.news}
+                          className={cx(
+                            "ap-nav-dropdown-link block px-4 py-2",
+                            isNewsActive && "is-active",
+                          )}
+                          aria-current={isNewsActive ? "page" : undefined}
+                        >
+                          {t("nav.news")}
+                        </Link>
+                      </li>
                     </ul>
                   </div>
                 </div>
@@ -510,6 +523,18 @@ export function AppBar() {
                       aria-current={isVrTourActive ? "page" : undefined}
                     >
                       • {t("nav.virtual_walk")}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href={paths.news}
+                      className={cx(
+                        "ap-mobile-link block rounded-md px-3 py-2 text-gray-200",
+                        isNewsActive && "is-active",
+                      )}
+                      aria-current={isNewsActive ? "page" : undefined}
+                    >
+                      • {t("nav.news")}
                     </Link>
                   </li>
                 </ul>

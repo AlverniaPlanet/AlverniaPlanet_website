@@ -145,7 +145,7 @@ const COPY: Record<
       },
     ],
     vrFeature: {
-      title: "Wirtualny spacer po kopułach",
+      title: "Wirtualny spacer",
       subtitle: "Panoramy 360° z wnętrza Alvernia Planet",
       body: "Przejdź do osobnej zakładki z widokami VR i rozejrzyj się po kopułach oraz wybranych przestrzeniach kompleksu. Znajdziesz tam wszystkie panoramy dostępne w archiwum, od recepcji po wnętrza poszczególnych kopuł.",
       cta: "Otwórz wirtualny spacer",
@@ -261,7 +261,7 @@ const COPY: Record<
       },
     ],
     vrFeature: {
-      title: "Virtual dome tour",
+      title: "Virtual tour",
       subtitle: "360° panoramas from inside Alvernia Planet",
       body: "Open a dedicated VR section and look around the domes and selected spaces of the complex. It gathers every panorama currently available in the archive, from the reception area to the interiors of individual domes.",
       cta: "Open the virtual tour",
@@ -377,7 +377,7 @@ const COPY: Record<
       },
     ],
     vrFeature: {
-      title: "Passeio virtual pelas cúpulas",
+      title: "Passeio virtual",
       subtitle: "Panorâmicas 360° do interior da Alvernia Planet",
       body: "Abra uma secção VR dedicada e explore as cúpulas e espaços selecionados do complexo. Lá encontra todas as panorâmicas atualmente disponíveis no arquivo, desde a receção até ao interior das cúpulas.",
       cta: "Abrir passeio virtual",

@@ -16,15 +16,10 @@
       "static/chunks/main-app.js",
       "static/chunks/app/page.js"
     ],
-    "/wydarzenia/page": [
+    "/aktualnosci/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/wydarzenia/page.js"
-    ],
-    "/wydarzenia/vr/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/wydarzenia/vr/page.js"
+      "static/chunks/app/aktualnosci/page.js"
     ]
   }
 }
