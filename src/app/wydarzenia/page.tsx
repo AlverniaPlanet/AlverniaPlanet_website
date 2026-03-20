@@ -284,7 +284,7 @@ const SECTION_UI: Record<
     domesCardLabel: "Wynajem",
     domeImageAltSuffix: "podgląd obiektu",
     domesMapLabel: "Mapa techniczna kopuł",
-    domesMapHint: "Najedź albo kliknij kopułę na planie, a pod mapą pokażą się jej szczegóły techniczne.",
+    domesMapHint: "Kliknij kopułę na planie, aby poniżej zobaczyć jej szczegóły techniczne.",
     domesMapAlt: "Techniczna mapa kopuł Alvernia Planet",
     domesMapSelectLabel: "Wybierz kopułę",
     salesTeamLabel: "Zespół sprzedaży",
@@ -299,7 +299,7 @@ const SECTION_UI: Record<
     domesCardLabel: "For rent",
     domeImageAltSuffix: "venue preview",
     domesMapLabel: "Technical dome map",
-    domesMapHint: "Hover over or click a dome on the plan to view its technical details below the map.",
+    domesMapHint: "Click a dome on the plan to view its technical details below.",
     domesMapAlt: "Technical map of the Alvernia Planet domes",
     domesMapSelectLabel: "Select dome",
     salesTeamLabel: "Sales team",
@@ -314,7 +314,7 @@ const SECTION_UI: Record<
     domesCardLabel: "Para aluguer",
     domeImageAltSuffix: "pré-visualização do espaço",
     domesMapLabel: "Mapa técnica das cúpulas",
-    domesMapHint: "Passe o cursor ou clique numa cúpula no plano para ver os detalhes técnicos abaixo do mapa.",
+    domesMapHint: "Clique numa cúpula no plano para ver abaixo os detalhes técnicos.",
     domesMapAlt: "Mapa técnica das cúpulas da Alvernia Planet",
     domesMapSelectLabel: "Selecionar cúpula",
     salesTeamLabel: "Equipa comercial",
@@ -1131,8 +1131,8 @@ function DomeMapExperience({
                 <button
                   key={spot.id}
                   type="button"
-                  className={`group absolute aspect-square -translate-x-1/2 -translate-y-1/2 rounded-full transition duration-300 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-[#7ef6ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#070b16] ${
-                    isActive ? "z-20" : "z-10 hover:z-20"
+                  className={`group absolute aspect-square -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-full transition duration-200 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-[#7ef6ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#070b16] ${
+                    isActive ? "z-20 scale-[1.04]" : "z-10"
                   }`}
                   style={{
                     left: `${spot.x}%`,
@@ -1141,17 +1141,15 @@ function DomeMapExperience({
                   }}
                   aria-label={`${sectionUi.domesMapSelectLabel}: ${spot.label}`}
                   aria-pressed={isActive}
-                  onMouseEnter={() => activateDome(spot.dome)}
-                  onFocus={() => activateDome(spot.dome)}
                   onClick={() => activateDome(spot.dome)}
                 >
                   <span
                     className={`absolute inset-0 rounded-full transition duration-300 ${
                       isActive
-                        ? "border-[4px] border-[#7ef6ff] bg-[#79f1ff]/20 shadow-[0_0_0_2px_rgba(8,16,30,0.38),0_0_0_10px_rgba(126,246,255,0.18),0_0_34px_rgba(126,246,255,0.42),inset_0_0_38px_rgba(126,246,255,0.14)]"
+                        ? "border-[6px] border-[#7ef6ff] bg-[#79f1ff]/28 shadow-[0_0_0_2px_rgba(8,16,30,0.38),0_0_0_14px_rgba(126,246,255,0.24),0_0_46px_rgba(126,246,255,0.54),inset_0_0_44px_rgba(126,246,255,0.2)]"
                         : SHOW_ALL_DOME_AREAS
-                        ? "border-[3px] border-[#ffe869] bg-[#ffe869]/16 shadow-[0_0_0_2px_rgba(7,12,24,0.28),0_0_0_8px_rgba(255,232,105,0.14),inset_0_0_24px_rgba(255,232,105,0.1)]"
-                        : "border border-white/6 bg-transparent group-hover:border-[#7ef6ff]/58 group-hover:bg-[#79f1ff]/7 group-hover:shadow-[0_0_0_6px_rgba(126,246,255,0.05)]"
+                        ? "border-[5px] border-[#ffe869] bg-[#ffe869]/28 shadow-[0_0_0_2px_rgba(7,12,24,0.34),0_0_0_12px_rgba(255,232,105,0.18),0_0_34px_rgba(255,232,105,0.28),inset_0_0_34px_rgba(255,232,105,0.14)]"
+                        : "border-[3px] border-white/18 bg-transparent"
                     }`}
                   />
                 </button>

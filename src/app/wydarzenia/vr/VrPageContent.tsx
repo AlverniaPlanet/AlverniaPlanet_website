@@ -21,6 +21,7 @@ function isVrDomeKey(value: string | null): value is VrDomeKey {
 }
 
 export default function VrPageContent() {
+  const DEFAULT_YAW = 50;
   const { locale } = useI18n();
   const loc = ((locale as Locale) ?? "pl") as Locale;
   const ui = VR_UI[loc];
@@ -30,13 +31,14 @@ export default function VrPageContent() {
   const initialDome: VrDomeKey = isVrDomeKey(requestedDome) ? requestedDome : "k1";
   const [activeDome, setActiveDome] = useState<VrDomeKey>(initialDome);
   const [sceneIndex, setSceneIndex] = useState(0);
-  const [yaw, setYaw] = useState(DOME_VR_SCENES_BY_KEY[initialDome][0]?.initialYaw ?? 50);
+  const [yaw, setYaw] = useState(DEFAULT_YAW);
   const [isDragging, setIsDragging] = useState(false);
+  const [viewportSize, setViewportSize] = useState({ width: 1600, height: 900 });
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const dragRef = useRef<{ pointerId: number | null; startX: number; startYaw: number }>({
     pointerId: null,
     startX: 0,
-    startYaw: 50,
+    startYaw: DEFAULT_YAW,
   });
 
   const scenes = useMemo(() => DOME_VR_SCENES_BY_KEY[activeDome] ?? [], [activeDome]);
@@ -55,7 +57,7 @@ export default function VrPageContent() {
 
   useEffect(() => {
     setSceneIndex(0);
-    setYaw(DOME_VR_SCENES_BY_KEY[activeDome][0]?.initialYaw ?? 50);
+    setYaw(DEFAULT_YAW);
   }, [activeDome]);
 
   useEffect(() => {
@@ -69,8 +71,29 @@ export default function VrPageContent() {
   }, [activeDome, pageBaseHref, router, searchParams]);
 
   useEffect(() => {
-    setYaw(activeScene?.initialYaw ?? 50);
+    setYaw(DEFAULT_YAW);
   }, [activeScene]);
+
+  useEffect(() => {
+    const element = viewportRef.current;
+    if (!element || typeof ResizeObserver === "undefined") {
+      return;
+    }
+
+    const updateSize = () => {
+      const rect = element.getBoundingClientRect();
+      if (rect.width > 0 && rect.height > 0) {
+        setViewportSize({ width: rect.width, height: rect.height });
+      }
+    };
+
+    updateSize();
+
+    const observer = new ResizeObserver(() => updateSize());
+    observer.observe(element);
+
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -86,13 +109,19 @@ export default function VrPageContent() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [scenes.length]);
 
-  const wrapPercent = (value: number) => {
-    const wrapped = value % 100;
-    return wrapped < 0 ? wrapped + 100 : wrapped;
-  };
+  const clampPercent = (value: number) => Math.min(100, Math.max(0, value));
 
   const previousScene = () => setSceneIndex((current) => (current - 1 + scenes.length) % scenes.length);
   const nextScene = () => setSceneIndex((current) => (current + 1) % scenes.length);
+  const panoramaScale = 1.18;
+  const backgroundWidth = viewportSize.height * 2 * panoramaScale;
+  const backgroundHeight = viewportSize.height * 2 * panoramaScale;
+  const horizontalOverflow = Math.max(0, backgroundWidth - viewportSize.width);
+  const backgroundPositionX =
+    horizontalOverflow > 0
+      ? -(yaw / 100) * horizontalOverflow
+      : (viewportSize.width - backgroundWidth) / 2;
+  const backgroundPositionY = -((viewportSize.height * panoramaScale - viewportSize.height) / 2);
 
   return (
     <main className="relative min-h-screen px-4 py-16 text-white sm:py-20">
@@ -173,7 +202,7 @@ export default function VrPageContent() {
 
                         const deltaX = event.clientX - dragRef.current.startX;
                         const deltaYaw = (deltaX / rect.width) * 100;
-                        setYaw(wrapPercent(dragRef.current.startYaw - deltaYaw));
+                        setYaw(clampPercent(dragRef.current.startYaw - deltaYaw));
                       }}
                       onPointerUp={(event) => {
                         if (dragRef.current.pointerId === event.pointerId) {
@@ -199,9 +228,9 @@ export default function VrPageContent() {
                         className="absolute inset-0"
                         style={{
                           backgroundImage: `url("${encodeURI(activeScene.src)}")`,
-                          backgroundRepeat: "repeat-x",
-                          backgroundSize: "auto 200%",
-                          backgroundPosition: `${yaw}% 0%`,
+                          backgroundRepeat: "no-repeat",
+                          backgroundSize: `${backgroundWidth}px ${backgroundHeight}px`,
+                          backgroundPosition: `${backgroundPositionX}px ${backgroundPositionY}px`,
                           backgroundColor: "#02040c",
                         }}
                       />
