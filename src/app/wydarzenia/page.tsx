@@ -22,7 +22,7 @@ const FORMAT_SHOWCASE_IMAGES = [
 ];
 const FORMAT_SHOWCASE_WAVE_DELAYS_MS = [1000, 1000, 1000, 3000] as const;
 const FORMAT_SHOWCASE_FADE_MS = 2400;
-type DomeKey = "k3" | "k4" | "k7" | "k10k12";
+type DomeKey = "k3" | "k4" | "k7" | "k10" | "k12";
 type DomeMapHotspot = {
   id: string;
   dome: DomeKey;
@@ -36,15 +36,16 @@ const DOME_IMAGE_BY_KEY: Record<DomeKey, string> = {
   k3: "/wydarzenia/dome-k3-thumb.webp",
   k4: "/wydarzenia/dome-k4-thumb.jpg",
   k7: "/wydarzenia/dome-k7-thumb.webp",
-  k10k12: "/wydarzenia/dome-k10k12-thumb.webp",
+  k10: "/wydarzenia/dome-k10k12-thumb.webp",
+  k12: "/wydarzenia/dome-k10k12-thumb.webp",
 };
 
 const DOME_MAP_HOTSPOTS: DomeMapHotspot[] = [
   { id: "k3", dome: "k3", label: "K3", x: 59.1, y: 18.8, size: 15.1 },
   { id: "k4", dome: "k4", label: "K4", x: 78.0, y: 27.6, size: 15.1 },
   { id: "k7", dome: "k7", label: "K7", x: 52.0, y: 50.68, size: 8.8 },
-  { id: "k10", dome: "k10k12", label: "K10", x: 73.5, y: 48.3, size: 7.5 },
-  { id: "k12", dome: "k10k12", label: "K12", x: 69.8, y: 60.5, size: 7.5 },
+  { id: "k10", dome: "k10", label: "K10", x: 73.5, y: 48.3, size: 7.5 },
+  { id: "k12", dome: "k12", label: "K12", x: 69.8, y: 60.5, size: 7.5 },
 ];
 
 const SHOW_ALL_DOME_AREAS = true;
@@ -53,7 +54,8 @@ const EVENT_DOME_TO_VR_KEY: Record<DomeKey, VrDomeKey> = {
   k3: "k3",
   k4: "k4",
   k7: "k7",
-  k10k12: "k10",
+  k10: "k10",
+  k12: "k12",
 };
 
 const COPY: Record<
@@ -389,7 +391,8 @@ const DOMES: Record<
     k3: DomeContent;
     k4: DomeContent;
     k7: DomeContent;
-    k10k12: DomeContent;
+    k10: DomeContent;
+    k12: DomeContent;
   }
 > = {
   pl: {
@@ -427,8 +430,12 @@ const DOMES: Record<
         "76 foteli",
       ],
     },
-    k10k12: {
-      title: "Kopuły K10 i K12",
+    k10: {
+      title: "Kopuła K10",
+      bullets: ["Kopuły dwupoziomowe", "Powierzchnia 600 m²"],
+    },
+    k12: {
+      title: "Kopuła K12",
       bullets: ["Kopuły dwupoziomowe", "Powierzchnia 600 m²"],
     },
   },
@@ -467,8 +474,12 @@ const DOMES: Record<
         "76 seats",
       ],
     },
-    k10k12: {
-      title: "Domes K10 and K12",
+    k10: {
+      title: "Dome K10",
+      bullets: ["Two-level domes", "Floor area 600 m²"],
+    },
+    k12: {
+      title: "Dome K12",
       bullets: ["Two-level domes", "Floor area 600 m²"],
     },
   },
@@ -507,8 +518,12 @@ const DOMES: Record<
         "76 lugares",
       ],
     },
-    k10k12: {
-      title: "Cúpulas K10 e K12",
+    k10: {
+      title: "Cúpula K10",
+      bullets: ["Cúpulas de dois níveis", "Área 600 m²"],
+    },
+    k12: {
+      title: "Cúpula K12",
       bullets: ["Cúpulas de dois níveis", "Área 600 m²"],
     },
   },

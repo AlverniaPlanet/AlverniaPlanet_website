@@ -144,24 +144,25 @@ type VrMapHotspot = {
   label: string;
   x: number;
   y: number;
+  size: number;
 };
 
 const VR_MAP_HOTSPOTS: VrMapHotspot[] = [
-  { id: "k3", vrKey: "k3", label: "K3", x: 59.5, y: 19.8 },
-  { id: "k4", vrKey: "k4", label: "K4", x: 78.2, y: 28.6 },
-  { id: "k1", vrKey: "k1", label: "K1", x: 56.9, y: 41.0 },
-  { id: "k11", vrKey: "k11", label: "K11", x: 66.6, y: 42.6 },
-  { id: "k8", vrKey: "k8", label: "K8", x: 43.8, y: 46.7 },
-  { id: "k13", vrKey: "k13", label: "K13", x: 38.2, y: 35.8 },
-  { id: "k14", vrKey: "laboratorium", label: "K14", x: 37.0, y: 42.3 },
-  { id: "k7", vrKey: "k7", label: "K7", x: 52.2, y: 52.0 },
-  { id: "k10", vrKey: "k10", label: "K10", x: 73.5, y: 49.0 },
-  { id: "k2", vrKey: "k2-recepcja", label: "K2", x: 62.4, y: 56.6 },
-  { id: "k12", vrKey: "k12", label: "K12", x: 70.0, y: 61.9 },
-  { id: "k9", vrKey: "k9", label: "K9", x: 47.0, y: 66.8 },
-  { id: "k5", vrKey: "k5", label: "K5", x: 40.4, y: 65.0 },
-  { id: "k6", vrKey: "k6", label: "K6", x: 42.8, y: 71.1 },
-  { id: "k15", vrKey: "silos", label: "K15", x: 15.6, y: 56.4 },
+  { id: "k3", vrKey: "k3", label: "K3", x: 59.1, y: 18.8, size: 98 },
+  { id: "k4", vrKey: "k4", label: "K4", x: 78.1, y: 27.8, size: 98 },
+  { id: "k1", vrKey: "k1", label: "K1", x: 55.56, y: 38.8, size: 57 },
+  { id: "k11", vrKey: "k11", label: "K11", x: 65.2, y: 41.4, size: 46 },
+  { id: "k8", vrKey: "k8", label: "K8", x: 43.1, y: 45.8, size: 57 },
+  { id: "k13", vrKey: "k13", label: "K13", x: 39.2, y: 33.8, size: 26 },
+  { id: "k14", vrKey: "laboratorium", label: "K14", x: 37.2, y: 41.1, size: 30 },
+  { id: "k7", vrKey: "k7", label: "K7", x: 52.05, y: 50.8, size: 57 },
+  { id: "k10", vrKey: "k10", label: "K10", x: 73.6, y: 48.4, size: 46 },
+  { id: "k2", vrKey: "k2-recepcja", label: "K2", x: 61.1, y: 55.6, size: 48 },
+  { id: "k12", vrKey: "k12", label: "K12", x: 69.89, y: 60.3, size: 45 },
+  { id: "k9", vrKey: "k9", label: "K9", x: 48.3, y: 62.8, size: 57 },
+  { id: "k5", vrKey: "k5", label: "K5", x: 40.4, y: 63.2, size: 26 },
+  { id: "k6", vrKey: "k6", label: "K6", x: 42.8, y: 70.0, size: 26 },
+  { id: "k15", vrKey: "silos", label: "K15", x: 15.0, y: 56.4, size: 40 },
 ];
 
 const VR_SELECTION_UI: Record<
@@ -419,6 +420,8 @@ function PanoramaViewer({
   });
 
   const resetView = () => setCamera(getDefaultCamera(scene));
+  const isControlTarget = (target: EventTarget | null) =>
+    target instanceof HTMLElement && Boolean(target.closest("[data-panorama-control]"));
 
   useEffect(() => {
     const element = viewportRef.current;
@@ -609,6 +612,24 @@ function PanoramaViewer({
       fov: clamp(current.fov + delta, MIN_FOV_DEGREES, MAX_FOV_DEGREES),
     }));
 
+  useEffect(() => {
+    const element = viewportRef.current;
+    if (!element) {
+      return;
+    }
+
+    const handleWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      setCamera((current) => ({
+        ...current,
+        fov: clamp(current.fov + event.deltaY * 0.03, MIN_FOV_DEGREES, MAX_FOV_DEGREES),
+      }));
+    };
+
+    element.addEventListener("wheel", handleWheel, { passive: false });
+    return () => element.removeEventListener("wheel", handleWheel);
+  }, []);
+
   return (
     <div className="relative overflow-hidden rounded-[1.8rem] border border-white/12 bg-[#040611] shadow-[0_32px_90px_rgba(0,0,0,0.45)]">
       <div
@@ -616,6 +637,10 @@ function PanoramaViewer({
         className={`relative aspect-[16/10] overflow-hidden sm:aspect-[16/9] ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
         tabIndex={0}
         onPointerDown={(event) => {
+          if (isControlTarget(event.target)) {
+            return;
+          }
+
           if (event.pointerType === "mouse" && event.button !== 0) {
             return;
           }
@@ -663,10 +688,6 @@ function PanoramaViewer({
         onPointerCancel={() => {
           dragRef.current.pointerId = null;
           setIsDragging(false);
-        }}
-        onWheel={(event) => {
-          event.preventDefault();
-          adjustZoom(event.deltaY * 0.03);
         }}
         onKeyDown={(event) => {
           if (event.key === "ArrowLeft") {
@@ -746,6 +767,7 @@ function PanoramaViewer({
           <div className="flex flex-wrap justify-end gap-2">
             <button
               type="button"
+              data-panorama-control
               aria-label={ui.zoomOutLabel}
               onClick={() => adjustZoom(8)}
               className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/12 bg-black/42 text-xl font-semibold text-white/86 transition duration-300 hover:border-[#7ef6ff]/52 hover:text-white"
@@ -754,6 +776,7 @@ function PanoramaViewer({
             </button>
             <button
               type="button"
+              data-panorama-control
               aria-label={ui.zoomInLabel}
               onClick={() => adjustZoom(-8)}
               className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/12 bg-black/42 text-xl font-semibold text-white/86 transition duration-300 hover:border-[#7ef6ff]/52 hover:text-white"
@@ -762,6 +785,7 @@ function PanoramaViewer({
             </button>
             <button
               type="button"
+              data-panorama-control
               onClick={resetView}
               className="rounded-full border border-white/12 bg-black/42 px-4 py-2 text-sm font-medium text-white/82 transition duration-300 hover:border-[#7ef6ff]/52 hover:text-white"
             >
@@ -774,6 +798,7 @@ function PanoramaViewer({
           <>
             <button
               type="button"
+              data-panorama-control
               aria-label={ui.previousLabel}
               onClick={onPrevious}
               className="absolute left-4 top-1/2 inline-flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/12 bg-black/42 text-2xl text-white/88 transition duration-300 hover:border-[#7ef6ff]/52 hover:text-white"
@@ -782,6 +807,7 @@ function PanoramaViewer({
             </button>
             <button
               type="button"
+              data-panorama-control
               aria-label={ui.nextLabel}
               onClick={onNext}
               className="absolute right-4 top-1/2 inline-flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/12 bg-black/42 text-2xl text-white/88 transition duration-300 hover:border-[#7ef6ff]/52 hover:text-white"
@@ -1054,29 +1080,30 @@ export default function VrPageContent() {
                               <button
                                 key={spot.id}
                                 type="button"
-                                className={`group absolute h-8 w-8 -translate-x-1/2 -translate-y-1/2 rounded-full transition duration-200 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-[#7ef6ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#070b16] ${
-                                  isActive ? "z-20 scale-[1.06]" : "z-10"
+                                className={`group absolute aspect-square -translate-x-1/2 -translate-y-1/2 rounded-full transition duration-200 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-[#7ef6ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#070b16] ${
+                                  isActive ? "z-20 scale-[1.08]" : "z-10"
                                 }`}
                                 style={{
                                   left: `${spot.x}%`,
                                   top: `${spot.y}%`,
+                                  width: `${spot.size}px`,
                                 }}
                                 aria-label={`${selectionUi.mapSelectLabel}: ${spot.label} · ${VR_DOME_TITLES[loc][spot.vrKey]}`}
                                 aria-pressed={isActive}
                                 onClick={() => activateDome(spot.vrKey)}
                               >
                                 <span
-                                  className={`absolute inset-0 rounded-full border transition duration-300 ${
+                                  className={`absolute inset-[-6px] rounded-full transition duration-300 ${
                                     isActive
-                                      ? "border-[#7ef6ff]/72 bg-[#7ef6ff]/18 shadow-[0_0_0_1px_rgba(8,16,30,0.45),0_0_16px_rgba(126,246,255,0.35)]"
-                                      : "border-white/30 bg-black/26 group-hover:border-[#ffe869]/72 group-hover:bg-[#ffe869]/16"
+                                      ? "bg-[#7ef6ff]/22 blur-md"
+                                      : "bg-[#ffe869]/18 blur-sm group-hover:bg-[#ffe869]/26"
                                   }`}
                                 />
                                 <span
-                                  className={`absolute left-1/2 top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full transition duration-300 ${
+                                  className={`absolute inset-0 rounded-full transition duration-300 ${
                                     isActive
-                                      ? "bg-[#7ef6ff] shadow-[0_0_10px_rgba(126,246,255,0.8)]"
-                                      : "bg-[#ffe869] shadow-[0_0_10px_rgba(255,232,105,0.5)]"
+                                      ? "border-[3px] border-[#9cf8ff] bg-[#7ef6ff]/26 shadow-[0_0_0_2px_rgba(8,16,30,0.55),0_0_0_10px_rgba(126,246,255,0.18),0_0_24px_rgba(126,246,255,0.58),inset_0_0_16px_rgba(126,246,255,0.22)]"
+                                      : "border-[2px] border-[#ffe869]/90 bg-[#ffe869]/18 shadow-[0_0_0_1px_rgba(8,16,30,0.55),0_0_18px_rgba(255,232,105,0.34),inset_0_0_12px_rgba(255,232,105,0.15)] group-hover:border-[#fff4a3] group-hover:bg-[#ffe869]/24 group-hover:shadow-[0_0_0_1px_rgba(8,16,30,0.55),0_0_24px_rgba(255,232,105,0.46),inset_0_0_16px_rgba(255,232,105,0.22)]"
                                   }`}
                                 />
                                 <span
