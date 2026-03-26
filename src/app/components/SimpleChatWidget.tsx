@@ -85,7 +85,7 @@ const CHAT_COPY: Record<
       hours:
         "Aktualne godziny i dostępne wejścia najlepiej sprawdzisz w kalendarzu rezerwacji.",
       prices:
-        "Na stronie głównej: bilet indywidualny to 69 zł/os., a dla grup szkolnych min. 30 osób: 2 070 zł/grupa.",
+        "Na stronie głównej: bilet indywidualny to 69 zł/os., a dla grup szkolnych 30-50 osób: 2 070-3 450 zł/grupa.",
       directions: "Szczegółowy dojazd i mapa są na podstronie „Jak dojechać”.",
       contact:
         "Kontakt: +48 12 344 40 00, rezerwacje@alverniaplanet.com. Możesz też wysłać formularz na stronie kontaktu.",
@@ -119,7 +119,7 @@ const CHAT_COPY: Record<
     answers: {
       hours: "The current opening slots are best checked in the booking calendar.",
       prices:
-        "On the website: individual ticket is 69 PLN/person, school groups (min. 30): 2,070 PLN/group.",
+        "On the website: individual ticket is 69 PLN/person, school groups (30-50 people): 2,070-3,450 PLN/group.",
       directions: "Detailed directions and map are available on the “Getting there” page.",
       contact:
         "Contact: +48 12 344 40 00, rezerwacje@alverniaplanet.com. You can also use the contact form.",
@@ -153,7 +153,7 @@ const CHAT_COPY: Record<
       hours:
         "Os horários e vagas disponíveis são melhor consultados no calendário de reservas.",
       prices:
-        "No site: bilhete individual 69 PLN/pessoa; grupos escolares (mín. 30): 2.070 PLN/grupo.",
+        "No site: bilhete individual 69 PLN/pessoa; grupos escolares (30-50 pessoas): 2 070-3 450 PLN/grupo.",
       directions: "As indicações e o mapa estão na página “Como chegar”.",
       contact:
         "Contacto: +48 12 344 40 00, rezerwacje@alverniaplanet.com. Também podes usar o formulário de contacto.",

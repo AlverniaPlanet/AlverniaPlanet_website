@@ -32,12 +32,8 @@ const COPY: Record<
     heroSoon: string;
     heroTag: string;
     heroTitle: string;
-    heroLead: string;
+    heroLeadLines: string[];
     videoFallback: string;
-    soonBadge: string;
-    soonBody: string;
-    soonCta: string;
-    soonCtaHref: string;
     featuresTitle: string;
     features: Feature[];
     galleryTitle: string;
@@ -50,41 +46,39 @@ const COPY: Record<
   }
 > = {
   pl: {
-    heroSoon: "Otwarcie już w kwietniu",
+    heroSoon: "Bilety już dostępne!",
     heroTag: "Atrakcje",
     heroTitle: "Kino 360°",
-    heroLead:
-      "Pełne zanurzenie w sferycznym obrazie i dźwięku — seanse, pokazy edukacyjne i prezentacje specjalne.",
+    heroLeadLines: [
+      "Pierwszy seans już 18 kwietnia.",
+      "Kup bilety już teraz na „One Step Beyond: A Journey to Mars”.",
+    ],
     videoFallback: "Twój browser nie wspiera elementu video.",
-    soonBadge: "Otwarcie już w kwietniu",
-    soonBody: "Pierwsze seanse i pokazy w Kinie 360° startują już w kwietniu.",
-    soonCta: "Zobacz bilety",
-    soonCtaHref: "#kino360-tickets",
-    featuresTitle: "Co czeka w kinie 360°",
+    featuresTitle: "Pierwszy seans: One Step Beyond",
     features: [
       {
-        title: "Pełna kopuła projekcyjna",
-        body: "Obraz otacza widza w 360° — brak martwych punktów, idealne do filmów immersyjnych i mappingów.",
+        title: "Format fulldome 360°",
+        body: "Film został przygotowany z myślą o kopułach i otacza widza obrazem, który wypełnia całe pole widzenia.",
       },
       {
-        title: "Dźwięk przestrzenny",
-        body: "Wielokanałowy system audio podkreśla ruch w kadrze i prowadzi narrację dookoła publiczności.",
+        title: "Podróż na Marsa",
+        body: "To krótka, immersyjna opowieść o przyszłości misji kosmicznych i drodze, która prowadzi dalej niż Księżyc.",
       },
       {
-        title: "Komfort widowni",
-        body: "Układ miejsc dopasujemy do charakteru seansu: prezentacje, pokazy edukacyjne lub pokaz brandowany.",
+        title: "Narracja Richarda Armitage’a",
+        body: "Znany, filmowy głos prowadzi widza przez kolejne etapy wyprawy i buduje skalę całej opowieści.",
       },
       {
-        title: "Elastyczna treść",
-        body: "Emitujemy filmy fulldome, wizualizacje naukowe, spektakle multimedialne oraz materiały customowe.",
+        title: "Perspektywa Ziggy’ego",
+        body: "Historię oglądamy także oczami maskotki astronauty, co nadaje kosmicznej technologii bardziej ludzki wymiar.",
       },
       {
-        title: "Obsługa techniczna",
-        body: "Zespół operatorów pomaga w przygotowaniu plików, testach i realizacji na żywo.",
+        title: "Mars, obraz i dźwięk",
+        body: "Surowa estetyka Marsa, klaustrofobiczna podróż i ścieżka dźwiękowa składają się na mocne, pełne zanurzenie.",
       },
       {
-        title: "Element programu eventu",
-        body: "Kino 360° łatwo łączymy z konferencją, galą lub częścią networkingową w innych kopułach.",
+        title: "Seans na otwarcie",
+        body: "„One Step Beyond: A Journey to Mars” otwiera repertuar Kina 360° jako pierwszy pokaz dostępny od 18 kwietnia.",
       },
     ],
     galleryTitle: "Zobacz przestrzeń",
@@ -135,41 +129,39 @@ const COPY: Record<
     ],
   },
   en: {
-    heroSoon: "Opening in April",
+    heroSoon: "Tickets available now",
     heroTag: "Attractions",
     heroTitle: "360° cinema",
-    heroLead:
-      "Total immersion in spherical image and sound—screenings, educational shows, and special presentations.",
+    heroLeadLines: [
+      "The first screening starts on April 18.",
+      "Get your tickets now for “One Step Beyond: A Journey to Mars”.",
+    ],
     videoFallback: "Your browser does not support the video element.",
-    soonBadge: "Opening in April",
-    soonBody: "The first screenings and public shows in the 360° Cinema start in April.",
-    soonCta: "See tickets",
-    soonCtaHref: "#kino360-tickets",
-    featuresTitle: "What awaits in the 360° cinema",
+    featuresTitle: "First screening: One Step Beyond",
     features: [
       {
-        title: "Full dome projection",
-        body: "The image surrounds the audience in 360°—no blind spots, perfect for immersive films and mapping.",
+        title: "Fulldome 360° format",
+        body: "The film was created for dome venues and surrounds the audience with an image that fills the entire field of view.",
       },
       {
-        title: "Spatial sound",
-        body: "A multichannel audio system highlights movement on screen and carries the story around the audience.",
+        title: "Journey to Mars",
+        body: "It is a short immersive story about the future of space missions and the route that leads beyond the Moon.",
       },
       {
-        title: "Audience comfort",
-        body: "We adapt the seating layout to the session: presentations, educational shows, or branded screenings.",
+        title: "Narrated by Richard Armitage",
+        body: "A familiar cinematic voice guides viewers through the next stages of the voyage and gives the story scale.",
       },
       {
-        title: "Flexible content",
-        body: "We run fulldome films, scientific visualizations, multimedia shows, and custom materials.",
+        title: "Ziggy's perspective",
+        body: "Part of the story is seen through the astronaut mascot, giving the space technology a more human dimension.",
       },
       {
-        title: "Technical support",
-        body: "Our operator team assists with file preparation, tests, and live operation.",
+        title: "Mars, image, and sound",
+        body: "The raw visuals of Mars, the confined journey, and the soundtrack combine into a strong immersive experience.",
       },
       {
-        title: "Part of an event program",
-        body: "The 360° cinema can be paired with a conference, gala, or networking zone in other domes.",
+        title: "Opening screening",
+        body: "“One Step Beyond: A Journey to Mars” opens the 360° Cinema program as the first show available from April 18.",
       },
     ],
     galleryTitle: "See the venue",
@@ -220,41 +212,39 @@ const COPY: Record<
     ],
   },
   pt: {
-    heroSoon: "Abertura já em abril",
+    heroSoon: "Bilhetes já disponíveis!",
     heroTag: "Atrações",
     heroTitle: "Cinema 360°",
-    heroLead:
-      "Imersão total em imagem e som esféricos — sessões, ações educativas e apresentações especiais.",
+    heroLeadLines: [
+      "A primeira sessão é já a 18 de abril.",
+      "Compra já os teus bilhetes para “One Step Beyond: A Journey to Mars”.",
+    ],
     videoFallback: "O seu navegador não suporta o elemento de vídeo.",
-    soonBadge: "Abertura já em abril",
-    soonBody: "As primeiras sessões e apresentações no Cinema 360° arrancam já em abril.",
-    soonCta: "Ver bilhetes",
-    soonCtaHref: "#kino360-tickets",
-    featuresTitle: "O que o espera no cinema 360°",
+    featuresTitle: "Primeira sessão: One Step Beyond",
     features: [
       {
-        title: "Cúpula de projeção total",
-        body: "A imagem envolve o público a 360° — sem pontos mortos, ideal para filmes imersivos e mapping.",
+        title: "Formato fulldome 360°",
+        body: "O filme foi criado para cúpulas e envolve o público com uma imagem que ocupa todo o campo de visão.",
       },
       {
-        title: "Som espacial",
-        body: "Um sistema áudio multicanal realça o movimento em cena e conduz a narrativa ao redor do público.",
+        title: "Viagem até Marte",
+        body: "É uma história curta e imersiva sobre o futuro das missões espaciais e o caminho que vai além da Lua.",
       },
       {
-        title: "Conforto da plateia",
-        body: "Adaptamos a disposição de lugares ao formato: apresentações, sessões educativas ou projeções de marca.",
+        title: "Narração de Richard Armitage",
+        body: "Uma voz cinematográfica conhecida conduz o público pelas várias etapas da viagem e amplia a escala da narrativa.",
       },
       {
-        title: "Conteúdo flexível",
-        body: "Exibimos filmes fulldome, visualizações científicas, espetáculos multimédia e materiais personalizados.",
+        title: "Perspetiva de Ziggy",
+        body: "Parte da história é vista pelos olhos da mascote astronauta, dando uma dimensão mais humana à tecnologia espacial.",
       },
       {
-        title: "Apoio técnico",
-        body: "A nossa equipa de operadores ajuda na preparação dos ficheiros, testes e operação ao vivo.",
+        title: "Marte, imagem e som",
+        body: "A estética crua de Marte, a viagem confinada e a banda sonora criam uma experiência de forte imersão.",
       },
       {
-        title: "Parte do programa do evento",
-        body: "O cinema 360° integra-se facilmente com conferências, galas ou zonas de networking noutras cúpulas.",
+        title: "Sessão de abertura",
+        body: "“One Step Beyond: A Journey to Mars” inaugura a programação do Cinema 360° como primeira sessão disponível a partir de 18 de abril.",
       },
     ],
     galleryTitle: "Ver o espaço",
@@ -318,8 +308,8 @@ export default function Kino360Content() {
           <div className="relative overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
             <div className="relative aspect-[4/5] sm:aspect-[16/9] bg-[#071020]">
               <AdaptiveVideo
-                mp4Src="/kino360/Kino360.mp4"
-                webmSrc="/kino360/Kino360.webm"
+                mp4Src="/kino360/one_step_beyond.mp4"
+                webmSrc="/kino360/one_step_beyond.webm"
                 poster="/kino360/Kino360_poster.webp"
                 className="absolute inset-0 h-full w-full object-cover"
                 sizes="(min-width: 1200px) 72rem, 100vw"
@@ -342,7 +332,11 @@ export default function Kino360Content() {
                     {copy.heroTitle}
                   </h1>
                   <p className="ap-type-hero-subtitle force-overlay-dim max-w-3xl mx-auto">
-                    {copy.heroLead}
+                    {copy.heroLeadLines.map((line) => (
+                      <span key={line} className="block">
+                        {line}
+                      </span>
+                    ))}
                   </p>
                 </div>
               </div>
@@ -353,28 +347,6 @@ export default function Kino360Content() {
 
       <section className="px-4 pb-16 sm:pb-20">
         <div className="ap-shell ap-page-stack">
-          <ScrollMotionItem strength="soft" delay={30} className="ap-deferred-section" float={false}>
-            <Card variant="solid" className="bg-white/5 ring-1 ring-white/10" motion="off">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex items-center gap-3">
-                  <span className="inline-flex items-center rounded-full bg-cyan-500/20 px-3 py-1 text-[12px] font-semibold uppercase tracking-[0.08em] text-cyan-100 ring-1 ring-cyan-300/25">
-                    {copy.soonBadge}
-                  </span>
-                  <p className="ap-type-section-body text-white/85">
-                    {copy.soonBody}
-                  </p>
-                </div>
-                <PrimaryButton
-                  href={copy.soonCtaHref}
-                  size="md"
-                  className="w-full sm:w-auto bg-transparent text-white ring-1 ring-cyan-300/40 shadow-none hover:bg-white/10 hover:text-white"
-                >
-                  {copy.soonCta}
-                </PrimaryButton>
-              </div>
-            </Card>
-          </ScrollMotionItem>
-
           <ScrollMotionItem strength="strong" delay={110} className="ap-deferred-section">
             <Card className="space-y-6" motion="off">
               <TourLineAccentTitle variant="cool">{copy.featuresTitle}</TourLineAccentTitle>

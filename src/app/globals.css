@@ -2111,13 +2111,25 @@ p {
   position: relative;
   isolation: isolate;
   color: #ffffff;
-  border: 1px solid rgba(79, 207, 222, 0.62);
-  background: linear-gradient(145deg, rgba(16, 23, 45, 0.9), rgba(21, 29, 56, 0.9));
+  border: 1px solid var(--hero-film-alert-border);
+  background: var(--hero-film-alert-background);
   box-shadow:
     0 14px 34px -24px rgba(0, 0, 0, 0.9),
-    0 0 0 rgba(79, 207, 222, 0);
+    0 0 0 var(--hero-film-alert-shadow);
   transition: transform 220ms ease, border-color 220ms ease, filter 220ms ease;
   animation: heroFilmAlertPulse 3.2s ease-in-out infinite;
+}
+
+.hero-film-alert--cool {
+  --hero-film-alert-border: rgba(79, 207, 222, 0.62);
+  --hero-film-alert-background: linear-gradient(145deg, rgba(16, 23, 45, 0.9), rgba(21, 29, 56, 0.9));
+  --hero-film-alert-shadow: rgba(79, 207, 222, 0);
+}
+
+.hero-film-alert--hot {
+  --hero-film-alert-border: rgba(255, 95, 118, 0.68);
+  --hero-film-alert-background: linear-gradient(145deg, rgba(63, 18, 32, 0.92), rgba(41, 14, 28, 0.92));
+  --hero-film-alert-shadow: rgba(255, 95, 118, 0);
 }
 
 .hero-film-alert::after {
@@ -2126,52 +2138,108 @@ p {
   inset: 0;
   border-radius: inherit;
   pointer-events: none;
-  border: 1px solid rgba(79, 207, 222, 0.32);
+  border: 1px solid var(--hero-film-alert-ring);
   opacity: 0;
   transform: scale(0.96);
   animation: heroFilmAlertRing 3.2s ease-out 0.4s infinite;
 }
 
+.hero-film-alert--cool::after {
+  --hero-film-alert-ring: rgba(79, 207, 222, 0.32);
+}
+
+.hero-film-alert--hot::after {
+  --hero-film-alert-ring: rgba(255, 95, 118, 0.34);
+}
+
 .hero-film-alert:hover {
   transform: translateY(-1px);
-  border-color: rgba(79, 207, 222, 0.86);
+  border-color: var(--hero-film-alert-hover-border);
   filter: brightness(1.04);
+}
+
+.hero-film-alert--cool:hover {
+  --hero-film-alert-hover-border: rgba(79, 207, 222, 0.86);
+}
+
+.hero-film-alert--hot:hover {
+  --hero-film-alert-hover-border: rgba(255, 126, 145, 0.92);
 }
 
 .hero-film-alert-copy {
   color: rgba(255, 255, 255, 0.94);
 }
 
-.hero-film-alert-cta {
+.hero-film-alert--cool .hero-film-alert-cta {
   color: #a5e6f0;
 }
 
+.hero-film-alert--hot .hero-film-alert-cta {
+  color: #ffc1cb;
+}
+
 .hero-film-alert-dot {
-  box-shadow: 0 0 10px rgba(79, 207, 222, 0.66);
   animation: heroFilmAlertDot 1.1s steps(1, end) infinite;
 }
 
+.hero-film-alert-dot--cool {
+  background: #4fcfde;
+  box-shadow: 0 0 10px rgba(79, 207, 222, 0.66);
+}
+
+.hero-film-alert-dot--hot {
+  background: #ff5f76;
+  box-shadow: 0 0 10px rgba(255, 95, 118, 0.72);
+}
+
 .theme-light .hero-film-alert {
+  box-shadow: 0 12px 28px rgba(67, 135, 149, 0.2);
+}
+
+.theme-light .hero-film-alert--cool {
   color: #13323d;
   border-color: rgba(108, 197, 211, 0.78);
   background: linear-gradient(145deg, rgba(252, 255, 255, 0.96), rgba(228, 246, 251, 0.96));
   box-shadow: 0 12px 28px rgba(67, 135, 149, 0.2);
 }
 
-.theme-light .hero-film-alert::after {
+.theme-light .hero-film-alert--hot {
+  color: #5f1d2e;
+  border-color: rgba(241, 103, 126, 0.74);
+  background: linear-gradient(145deg, rgba(255, 248, 249, 0.97), rgba(255, 232, 237, 0.97));
+  box-shadow: 0 12px 28px rgba(168, 62, 86, 0.18);
+}
+
+.theme-light .hero-film-alert--cool::after {
   border-color: rgba(108, 197, 211, 0.56);
 }
 
-.theme-light .hero-film-alert-copy {
+.theme-light .hero-film-alert--hot::after {
+  border-color: rgba(241, 103, 126, 0.42);
+}
+
+.theme-light .hero-film-alert--cool .hero-film-alert-copy {
   color: rgba(19, 50, 61, 0.92);
 }
 
-.theme-light .hero-film-alert-cta {
+.theme-light .hero-film-alert--hot .hero-film-alert-copy {
+  color: rgba(95, 29, 46, 0.94);
+}
+
+.theme-light .hero-film-alert--cool .hero-film-alert-cta {
   color: #0f7588;
 }
 
-.theme-light .hero-film-alert-dot {
+.theme-light .hero-film-alert--hot .hero-film-alert-cta {
+  color: #cf3658;
+}
+
+.theme-light .hero-film-alert-dot--cool {
   box-shadow: 0 0 12px rgba(108, 197, 211, 0.62);
+}
+
+.theme-light .hero-film-alert-dot--hot {
+  box-shadow: 0 0 12px rgba(241, 103, 126, 0.56);
 }
 
 .ap-page-intro-stagger {
@@ -2370,12 +2438,12 @@ p {
   100% {
     box-shadow:
       0 14px 34px -24px rgba(0, 0, 0, 0.9),
-      0 0 0 rgba(79, 207, 222, 0);
+      0 0 0 rgba(255, 95, 118, 0);
   }
   50% {
     box-shadow:
       0 18px 42px -24px rgba(0, 0, 0, 0.92),
-      0 0 28px rgba(79, 207, 222, 0.2);
+      0 0 28px rgba(255, 95, 118, 0.22);
   }
 }
 

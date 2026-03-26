@@ -64,11 +64,12 @@ type PromoTile = {
 
 type HomeCopy = {
   heroTitle: string;
-  heroPromo: {
+  heroPromos: Array<{
     message: string;
     cta: string;
     href: string;
-  };
+    tone: "cool" | "hot";
+  }>;
   attractions: {
     title: string;
     intro: string;
@@ -83,11 +84,20 @@ type HomeCopy = {
 const HOME_COPY: Record<Locale, HomeCopy> = {
   pl: {
     heroTitle: "Witamy w Alvernia Planet",
-    heroPromo: {
-      message: "Nowe otwarcie ścieżki edukacyjnej",
-      cta: "Zobacz i kup bilet",
-      href: "/atrakcje/sciezka-filmowa",
-    },
+    heroPromos: [
+      {
+        message: "Nowe otwarcie ścieżki edukacyjnej",
+        cta: "Zobacz i kup bilet",
+        href: "/atrakcje/sciezka-filmowa",
+        tone: "cool",
+      },
+      {
+        message: "Pierwszy seans Kina 360 już 18 kwietnia",
+        cta: "Zobacz Kino 360",
+        href: "/atrakcje/kino-360",
+        tone: "hot",
+      },
+    ],
     attractions: {
       title: "Atrakcje",
       intro: "Wejdź do świata kopuł i zacznij od naszych trzech flagowych doświadczeń.",
@@ -143,8 +153,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
           title: "Bilet grupowy (szkolny)",
           subtitle: "30-50 osób w grupie",
           details: ["Dla szkół i grup zorganizowanych", "Płatność za całą grupę"],
-          priceLabel: "Cena za min. 30 osób",
-          price: "2 070 zł/grupa",
+          priceLabel: "Cena za grupę 30-50 osób",
+          price: "2 070-3 450 zł/grupa",
           bookingServiceName: FILM_PATH_BOOKING_SERVICES.group,
           bookingQuantity: 30,
         },
@@ -223,11 +233,20 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
   },
   en: {
     heroTitle: "Welcome to Alvernia Planet",
-    heroPromo: {
-      message: "New opening of the educational path",
-      cta: "See and buy tickets",
-      href: "/atrakcje/sciezka-filmowa",
-    },
+    heroPromos: [
+      {
+        message: "New opening of the educational path",
+        cta: "See and buy tickets",
+        href: "/atrakcje/sciezka-filmowa",
+        tone: "cool",
+      },
+      {
+        message: "First 360° Cinema screening starts on April 18",
+        cta: "See 360° Cinema",
+        href: "/atrakcje/kino-360",
+        tone: "hot",
+      },
+    ],
     attractions: {
       title: "Attractions",
       intro: "Start with our signature experiences inside the domes.",
@@ -282,8 +301,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
           title: "Group ticket (schools)",
           subtitle: "30-50 people in a group",
           details: ["For schools and organized groups", "Pay for the whole group"],
-          priceLabel: "Price for min. 30 people",
-          price: "2,070 PLN/group",
+          priceLabel: "Price for groups of 30-50 people",
+          price: "2,070-3,450 PLN/group",
           bookingServiceName: FILM_PATH_BOOKING_SERVICES.group,
           bookingQuantity: 30,
         },
@@ -362,11 +381,20 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
   },
   pt: {
     heroTitle: "Bem-vindo à Alvernia Planet",
-    heroPromo: {
-      message: "Nova abertura do percurso educativo",
-      cta: "Ver e comprar bilhete",
-      href: "/atrakcje/sciezka-filmowa",
-    },
+    heroPromos: [
+      {
+        message: "Nova abertura do percurso educativo",
+        cta: "Ver e comprar bilhete",
+        href: "/atrakcje/sciezka-filmowa",
+        tone: "cool",
+      },
+      {
+        message: "A primeira sessão do Cinema 360 é já a 18 de abril",
+        cta: "Ver Cinema 360",
+        href: "/atrakcje/kino-360",
+        tone: "hot",
+      },
+    ],
     attractions: {
       title: "Atrações",
       intro: "Entre no mundo das cúpulas e comece pelas nossas três experiências emblemáticas.",
@@ -422,8 +450,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
           title: "Bilhete de grupo (escolas)",
           subtitle: "30-50 pessoas no grupo",
           details: ["Para escolas e grupos organizados", "Pagamento pelo grupo inteiro"],
-          priceLabel: "Preço mín. 30 pessoas",
-          price: "2 070 PLN/grupo",
+          priceLabel: "Preço para grupos de 30-50 pessoas",
+          price: "2 070-3 450 PLN/grupo",
           bookingServiceName: FILM_PATH_BOOKING_SERVICES.group,
           bookingQuantity: 30,
         },
@@ -576,7 +604,7 @@ export default function Page() {
     <main className="relative min-h-screen px-4 py-10 sm:py-14 lg:py-12 text-white">
       <HeroSection
         heroTitle={copy.heroTitle}
-        heroPromo={copy.heroPromo}
+        heroPromos={copy.heroPromos}
         heroVideoFallback={heroVideoFallback}
         introReady={introReady}
         heroWelcomeVisible={heroWelcomeVisible}
@@ -597,13 +625,13 @@ export default function Page() {
 
 const HeroSection = memo(function HeroSection({
   heroTitle,
-  heroPromo,
+  heroPromos,
   heroVideoFallback,
   introReady,
   heroWelcomeVisible,
 }: {
   heroTitle: string;
-  heroPromo: HomeCopy["heroPromo"];
+  heroPromos: HomeCopy["heroPromos"];
   heroVideoFallback: string;
   introReady: boolean;
   heroWelcomeVisible: boolean;
@@ -621,30 +649,35 @@ const HeroSection = memo(function HeroSection({
         <div className="relative overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
           <div className="relative aspect-[16/9] bg-black">
             <div className="pointer-events-none absolute inset-x-0 top-7 z-20 flex justify-center px-4 sm:top-8 lg:top-9">
-              <Link
-                href={heroPromo.href}
-                className={`hero-film-alert pointer-events-auto inline-flex max-w-full items-center gap-2 rounded-full px-3 py-2 text-[11px] sm:gap-2.5 sm:px-4 sm:py-2.5 sm:text-sm transition-[opacity,transform,filter] ${
-                  introReady
-                    ? "hero-film-alert-intro opacity-100 translate-y-0 scale-100"
-                    : "opacity-0 -translate-y-8 scale-[0.88] blur-sm pointer-events-none"
-                }`}
-                style={{
-                  transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
-                  transitionDelay: introReady ? `${HERO_PROMO_DELAY_MS}ms` : "0ms",
-                  transitionDuration: `${HERO_PROMO_FADE_DURATION_MS}ms`,
-                }}
-              >
-                <span
-                  className="hero-film-alert-dot mt-0.5 h-2.5 w-2.5 shrink-0 rounded-full bg-[#4fcfde] sm:h-3 sm:w-3"
-                  aria-hidden="true"
-                />
-                <span className="hero-film-alert-copy leading-tight font-medium">
-                  <span>{heroPromo.message}</span>
-                  <span className="hero-film-alert-cta ml-2 whitespace-nowrap font-semibold sm:ml-3">
-                    {heroPromo.cta} →
-                  </span>
-                </span>
-              </Link>
+              <div className="flex w-full max-w-[44rem] flex-col items-center gap-2 sm:max-w-[48rem] sm:gap-2.5 lg:max-w-[52rem]">
+                {heroPromos.map((heroPromo, index) => (
+                  <Link
+                    key={`${heroPromo.href}-${heroPromo.message}`}
+                    href={heroPromo.href}
+                    className={`hero-film-alert ${heroPromo.tone === "cool" ? "hero-film-alert--cool" : "hero-film-alert--hot"} pointer-events-auto inline-flex max-w-full items-center justify-center gap-2 rounded-full px-3 py-2 text-[11px] sm:gap-2.5 sm:px-4 sm:py-2.5 sm:text-sm transition-[opacity,transform,filter] ${
+                      introReady
+                        ? "hero-film-alert-intro opacity-100 translate-y-0 scale-100"
+                        : "opacity-0 -translate-y-8 scale-[0.88] blur-sm pointer-events-none"
+                    }`}
+                    style={{
+                      transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
+                      transitionDelay: introReady ? `${HERO_PROMO_DELAY_MS + index * 120}ms` : "0ms",
+                      transitionDuration: `${HERO_PROMO_FADE_DURATION_MS}ms`,
+                    }}
+                    >
+                    <span
+                      className={`hero-film-alert-dot ${heroPromo.tone === "cool" ? "hero-film-alert-dot--cool" : "hero-film-alert-dot--hot"} mt-0.5 h-2.5 w-2.5 shrink-0 rounded-full sm:h-3 sm:w-3`}
+                      aria-hidden="true"
+                    />
+                    <span className="hero-film-alert-copy leading-tight font-medium">
+                      <span>{heroPromo.message}</span>
+                      <span className="hero-film-alert-cta ml-2 whitespace-nowrap font-semibold sm:ml-3">
+                        {heroPromo.cta} →
+                      </span>
+                    </span>
+                  </Link>
+                ))}
+              </div>
             </div>
             <div
               className={`pointer-events-none absolute inset-0 z-[6] bg-black transition-opacity ${

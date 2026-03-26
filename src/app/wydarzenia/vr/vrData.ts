@@ -299,6 +299,14 @@ export const VR_UI: Record<
     nextLabel: string;
     emptyLabel: string;
     catalogLabel: string;
+    spacesLabel: string;
+    resetView: string;
+    zoomInLabel: string;
+    zoomOutLabel: string;
+    viewerUnavailableLabel: string;
+    dragLabel: string;
+    zoomLabel: string;
+    panoramaLabel: string;
   }
 > = {
   pl: {
@@ -310,12 +318,20 @@ export const VR_UI: Record<
     pageTitle: "Wirtualny spacer",
     pageIntro: "Przytrzymaj i przeciągnij obraz, aby rozglądać się po wnętrzu. Na tej stronie znajdziesz wszystkie panoramy dostępne w archiwum VR Alvernia Planet.",
     backToEvents: "Powrót do wydarzeń",
-    hint: "Przytrzymaj i przeciągnij, aby rozglądać się na boki.",
+    hint: "Przeciągnij, aby się rozglądać. Użyj scrolla lub przycisków, aby przybliżyć widok.",
     scenesLabel: "Dostępne panoramy",
     previousLabel: "Poprzednia panorama",
     nextLabel: "Następna panorama",
     emptyLabel: "Brak panoram dla tej kopuły.",
     catalogLabel: "Wszystkie przestrzenie VR",
+    spacesLabel: "Przestrzenie",
+    resetView: "Resetuj widok",
+    zoomInLabel: "Przybliż",
+    zoomOutLabel: "Oddal",
+    viewerUnavailableLabel: "Nie udało się uruchomić panoramy 360°.",
+    dragLabel: "Przesuń",
+    zoomLabel: "Zoom",
+    panoramaLabel: "Panorama 360°",
   },
   en: {
     label: "360° tours",
@@ -326,12 +342,20 @@ export const VR_UI: Record<
     pageTitle: "Virtual tour",
     pageIntro: "Click and drag the image to look around the interior. This page gathers every panorama currently available in the Alvernia Planet VR archive.",
     backToEvents: "Back to events",
-    hint: "Click and drag to look around.",
+    hint: "Click and drag to look around. Use the mouse wheel or buttons to zoom.",
     scenesLabel: "Available panoramas",
     previousLabel: "Previous panorama",
     nextLabel: "Next panorama",
     emptyLabel: "No panoramas available for this dome.",
     catalogLabel: "All VR spaces",
+    spacesLabel: "Spaces",
+    resetView: "Reset view",
+    zoomInLabel: "Zoom in",
+    zoomOutLabel: "Zoom out",
+    viewerUnavailableLabel: "The 360° panorama could not be started.",
+    dragLabel: "Drag",
+    zoomLabel: "Zoom",
+    panoramaLabel: "360° panorama",
   },
   pt: {
     label: "Visitas 360°",
@@ -342,11 +366,19 @@ export const VR_UI: Record<
     pageTitle: "Passeio virtual",
     pageIntro: "Clique e arraste a imagem para explorar o interior. Esta página reúne todas as panorâmicas atualmente disponíveis no arquivo VR da Alvernia Planet.",
     backToEvents: "Voltar aos eventos",
-    hint: "Clique e arraste para explorar.",
+    hint: "Clique e arraste para explorar. Use a roda do rato ou os botões para aproximar.",
     scenesLabel: "Panorâmicas disponíveis",
     previousLabel: "Panorâmica anterior",
     nextLabel: "Panorâmica seguinte",
     emptyLabel: "Não existem panorâmicas para esta cúpula.",
     catalogLabel: "Todos os espaços VR",
+    spacesLabel: "Espaços",
+    resetView: "Repor vista",
+    zoomInLabel: "Aproximar",
+    zoomOutLabel: "Afastar",
+    viewerUnavailableLabel: "Não foi possível abrir a panorâmica 360°.",
+    dragLabel: "Arrastar",
+    zoomLabel: "Zoom",
+    panoramaLabel: "Panorâmica 360°",
   },
 };

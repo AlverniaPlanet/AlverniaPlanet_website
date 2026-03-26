@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import clsx from "clsx";
+import { useEffect, useRef, useState } from "react";
 import { mountBookeroInstance, unmountBookeroInstance } from "@/app/components/bookeroRuntime";
 
 type Props = {
@@ -21,6 +22,9 @@ const PRESELECT_POLL_INTERVAL_MS = 250;
 const PRESELECT_MAX_ATTEMPTS = 160;
 const PRESELECT_STABLE_ATTEMPTS = 12;
 const PRESELECT_MAX_RUNTIME_MS = 20000;
+const EMBED_READY_POLL_INTERVAL_MS = 250;
+const EMBED_LOADING_SLOW_MS = 4500;
+const EMBED_LOADING_ERROR_MS = 14000;
 
 type BookingFieldKind = "category" | "service" | "quantity";
 
@@ -503,6 +507,97 @@ function getBookeroSearchRoot(container: HTMLDivElement | null, type: string) {
   return container ?? document;
 }
 
+function hasRenderedBookeroContent(container: HTMLDivElement | null, type: string) {
+  const root = getBookeroSearchRoot(container, type);
+  if (!(root instanceof HTMLElement || root instanceof HTMLDivElement || root instanceof Document)) {
+    return false;
+  }
+
+  const contentMarkers = [
+    ".bookero-plugin-form",
+    ".bookero-plugin-form-wrapper",
+    ".services-section",
+    ".submit-section",
+    ".calendar-days-list-cell",
+    ".week-days-hour",
+    ".multiselect",
+    ".field",
+    "form",
+    "input",
+    "select",
+    "textarea",
+  ];
+
+  const hasMarker = contentMarkers.some((selector) => {
+    if (root instanceof Document) {
+      return !!root.querySelector(selector);
+    }
+
+    return !!root.querySelector(selector);
+  });
+
+  if (hasMarker) {
+    return true;
+  }
+
+  if (root instanceof Document) {
+    return false;
+  }
+
+  return root.childElementCount > 0 && (root.textContent ?? "").trim().length > 40;
+}
+
+function getBookeroStatusCopy(lang: string, status: "loading" | "slow" | "error") {
+  const locale = lang === "en" ? "en" : lang === "pt" ? "pt" : "pl";
+
+  const copy = {
+    pl: {
+      loading: {
+        title: "Ładowanie rezerwacji...",
+        description: "Pobieramy kalendarz i dostępne terminy.",
+      },
+      slow: {
+        title: "Jeszcze ładujemy...",
+        description: "To może potrwać chwilę przy wolniejszym połączeniu.",
+      },
+      error: {
+        title: "Ładowanie trwa dłużej niż zwykle",
+        description: "Jeśli formularz się nie pojawi, odśwież stronę i spróbuj ponownie.",
+      },
+    },
+    en: {
+      loading: {
+        title: "Loading booking...",
+        description: "Fetching the calendar and available slots.",
+      },
+      slow: {
+        title: "Still loading...",
+        description: "This can take a moment on a slower connection.",
+      },
+      error: {
+        title: "Loading is taking longer than usual",
+        description: "If the form does not appear, refresh the page and try again.",
+      },
+    },
+    pt: {
+      loading: {
+        title: "A carregar reserva...",
+        description: "Estamos a obter o calendário e os horários disponíveis.",
+      },
+      slow: {
+        title: "Ainda a carregar...",
+        description: "Isto pode demorar um pouco numa ligação mais lenta.",
+      },
+      error: {
+        title: "O carregamento está a demorar mais do que o normal",
+        description: "Se o formulário não aparecer, atualiza a página e tenta novamente.",
+      },
+    },
+  } as const;
+
+  return copy[locale][status];
+}
+
 export default function BookeroEmbed({
   pluginId,
   containerId = "bookero",
@@ -517,6 +612,7 @@ export default function BookeroEmbed({
   preselectQuantity,
 }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const [embedStatus, setEmbedStatus] = useState<"loading" | "slow" | "error" | "ready">("loading");
 
   const cleanupStaleInlineMounts = () => {
     const currentContainer = containerRef.current;
@@ -549,6 +645,37 @@ export default function BookeroEmbed({
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    let cancelled = false;
+
+    setEmbedStatus("loading");
+
+    const syncReadyState = () => {
+      if (cancelled) {
+        return;
+      }
+
+      if (hasRenderedBookeroContent(containerRef.current, type)) {
+        setEmbedStatus("ready");
+        return true;
+      }
+
+      return false;
+    };
+
+    const loadingSlowTimeout = window.setTimeout(() => {
+      setEmbedStatus((current) => (current === "loading" ? "slow" : current));
+    }, EMBED_LOADING_SLOW_MS);
+    const loadingErrorTimeout = window.setTimeout(() => {
+      setEmbedStatus((current) => (current === "ready" ? current : "error"));
+    }, EMBED_LOADING_ERROR_MS);
+    const readinessInterval = window.setInterval(() => {
+      syncReadyState();
+    }, EMBED_READY_POLL_INTERVAL_MS);
+    const observer = new MutationObserver(() => {
+      if (syncReadyState()) {
+        observer.disconnect();
+      }
+    });
 
     // Ensure a single valid mount point before each Bookero init.
     if (containerRef.current) {
@@ -558,6 +685,11 @@ export default function BookeroEmbed({
     if (containerRef.current) {
       containerRef.current.innerHTML = "";
     }
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
 
     void mountBookeroInstance(
       {
@@ -570,9 +702,22 @@ export default function BookeroEmbed({
       },
       pluginCss,
       { persist: type === "sticky" },
-    );
+    )
+      .then(() => {
+        syncReadyState();
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setEmbedStatus("error");
+        }
+      });
 
     return () => {
+      cancelled = true;
+      window.clearTimeout(loadingSlowTimeout);
+      window.clearTimeout(loadingErrorTimeout);
+      window.clearInterval(readinessInterval);
+      observer.disconnect();
       unmountBookeroInstance({ container: containerId, type });
       if (containerRef.current) {
         containerRef.current.innerHTML = "";
@@ -742,11 +887,41 @@ export default function BookeroEmbed({
     };
   }, [preselectCategory, preselectQuantity, preselectService, type]);
 
+  const isLoading = embedStatus !== "ready";
+  const statusCopy = getBookeroStatusCopy(lang, embedStatus === "ready" ? "loading" : embedStatus);
+
   return (
-    <div
-      ref={containerRef}
-      id={containerId}
-      className={className ?? "w-full min-h-[640px] rounded-2xl bg-white/5 ring-1 ring-white/10"}
-    />
+    <div className="relative overflow-hidden" aria-busy={isLoading}>
+      <div
+        ref={containerRef}
+        id={containerId}
+        className={className ?? "w-full min-h-[640px] rounded-2xl bg-white/5 ring-1 ring-white/10"}
+      />
+
+      {isLoading ? (
+        <div
+          className={clsx(
+            "pointer-events-none absolute inset-0 z-10 flex items-center justify-center transition-opacity duration-300",
+            embedStatus === "error" ? "bg-white/92" : "bg-white/84 backdrop-blur-[2px]",
+          )}
+          aria-live="polite"
+        >
+          <div className="flex max-w-sm flex-col items-center gap-4 px-6 text-center text-slate-900">
+            <div
+              className={clsx(
+                "h-3 w-3 rounded-full bg-slate-900/75",
+                embedStatus === "error" ? "opacity-70" : "animate-pulse",
+              )}
+            />
+            <div className="space-y-1.5">
+              <p className="text-base font-semibold tracking-[0.18em] uppercase text-slate-900/92">
+                {statusCopy.title}
+              </p>
+              <p className="text-sm leading-relaxed text-slate-700">{statusCopy.description}</p>
+            </div>
+          </div>
+        </div>
+      ) : null}
+    </div>
   );
 }
