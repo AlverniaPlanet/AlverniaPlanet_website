@@ -174,9 +174,9 @@ const BUS_ROUTES: Record<Locale, BusRoute[]> = {
   pl: [
     {
       origin: "Krzeszowice Dworzec Komunikacyjny",
-      heading: "M-Bus Matysik: Krzeszowice → Alwernia",
-      from: "Krzeszowice – Dworzec Komunikacyjny (przez Rudno)",
-      stop: "Rudno (na trasie) / Alwernia – Szkoła",
+      heading: "M-Bus Matysik: Krzeszowice → Rudno",
+      from: "Krzeszowice – Dworzec Komunikacyjny",
+      stop: "Rudno",
       schedule:
         "Aktualny rozkład na stronie przewoźnika M-Bus Matysik.",
       scheduleUrl: "https://www.matysikserwis.pl/m-bus/",
@@ -187,7 +187,7 @@ const BUS_ROUTES: Record<Locale, BusRoute[]> = {
       from: "Krzeszowice – Dworzec Komunikacyjny",
       stop: "Zalas – Centrum",
       schedule:
-        "Aktualny rozkład na stronie Gminy Alwernia.",
+        "Aktualny rozkład na stronie Gminy Alwernia. Linia nie kursuje w weekendy.",
       scheduleUrl:
         "https://www.alwernia.pl/mieszkaniec/kominukacja-w-gminie-alwernia/rozklady-jazdy-do-krzeszowic.html",
     },
@@ -195,9 +195,9 @@ const BUS_ROUTES: Record<Locale, BusRoute[]> = {
   en: [
     {
       origin: "Krzeszowice Dworzec Komunikacyjny",
-      heading: "M-Bus Matysik: Krzeszowice → Alwernia",
-      from: "Krzeszowice – bus station (via Rudno)",
-      stop: "Rudno (on route) / Alwernia – School",
+      heading: "M-Bus Matysik: Krzeszowice → Rudno",
+      from: "Krzeszowice – bus station",
+      stop: "Rudno",
       schedule:
         "Current timetable on the M-Bus Matysik carrier website.",
       scheduleUrl: "https://www.matysikserwis.pl/m-bus/",
@@ -208,7 +208,7 @@ const BUS_ROUTES: Record<Locale, BusRoute[]> = {
       from: "Krzeszowice – Dworzec Komunikacyjny (bus station)",
       stop: "Zalas – Centrum",
       schedule:
-        "Current timetable on the Municipality of Alwernia website.",
+        "Current timetable on the Municipality of Alwernia website. This route does not operate on weekends.",
       scheduleUrl:
         "https://www.alwernia.pl/mieszkaniec/kominukacja-w-gminie-alwernia/rozklady-jazdy-do-krzeszowic.html",
     },
@@ -216,9 +216,9 @@ const BUS_ROUTES: Record<Locale, BusRoute[]> = {
   pt: [
     {
       origin: "Krzeszowice Dworzec Komunikacyjny",
-      heading: "M-Bus Matysik: Krzeszowice → Alwernia",
-      from: "Krzeszowice – terminal de autocarros (via Rudno)",
-      stop: "Rudno (no trajeto) / Alwernia – Escola",
+      heading: "M-Bus Matysik: Krzeszowice → Rudno",
+      from: "Krzeszowice – terminal de autocarros",
+      stop: "Rudno",
       schedule:
         "Horário atualizado no site do operador M-Bus Matysik.",
       scheduleUrl: "https://www.matysikserwis.pl/m-bus/",
@@ -229,7 +229,7 @@ const BUS_ROUTES: Record<Locale, BusRoute[]> = {
       from: "Krzeszowice – Dworzec Komunikacyjny (terminal de autocarros)",
       stop: "Zalas – Centrum",
       schedule:
-        "Horário atualizado no site da Câmara de Alwernia.",
+        "Horário atualizado no site da Câmara de Alwernia. Esta linha não circula aos fins de semana.",
       scheduleUrl:
         "https://www.alwernia.pl/mieszkaniec/kominukacja-w-gminie-alwernia/rozklady-jazdy-do-krzeszowic.html",
     },

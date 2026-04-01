@@ -400,7 +400,7 @@ const DOMES: Record<
       title: "Kopuła K3",
       bullets: [
         "Powierzchnia 2 000 m²",
-        "Wysokość 16 m",
+        "Wysokość 15 m",
         "Przyłącza elektryczne do 1 MW",
         "Klimatyzowane garderoby z prysznicami",
         "Klimatyzacja",
@@ -412,7 +412,7 @@ const DOMES: Record<
       title: "Kopuła K4",
       bullets: [
         "Powierzchnia 2 000 m²",
-        "Wysokość 16 m",
+        "Wysokość 15 m",
         "Przyłącza elektryczne do 1 MW",
         "Stanowiska do charakteryzacji",
         "Klimatyzacja",
@@ -444,7 +444,7 @@ const DOMES: Record<
       title: "Dome K3",
       bullets: [
         "Floor area 2,000 m²",
-        "Height 16 m",
+        "Height 15 m",
         "Electrical connections up to 1 MW",
         "Air-conditioned dressing rooms with showers",
         "Air conditioning",
@@ -456,7 +456,7 @@ const DOMES: Record<
       title: "Dome K4",
       bullets: [
         "Floor area 2,000 m²",
-        "Height 16 m",
+        "Height 15 m",
         "Electrical connections up to 1 MW",
         "Make-up stations",
         "Air conditioning",
@@ -488,7 +488,7 @@ const DOMES: Record<
       title: "Cúpula K3",
       bullets: [
         "Área 2 000 m²",
-        "Altura 16 m",
+        "Altura 15 m",
         "Ligações elétricas até 1 MW",
         "Camarins climatizados com chuveiros",
         "Ar condicionado",
@@ -500,7 +500,7 @@ const DOMES: Record<
       title: "Cúpula K4",
       bullets: [
         "Área 2 000 m²",
-        "Altura 16 m",
+        "Altura 15 m",
         "Ligações elétricas até 1 MW",
         "Postos de maquilhagem",
         "Ar condicionado",

@@ -738,29 +738,31 @@ function PanoramaViewer({
         <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/60 via-black/22 to-transparent" />
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/68 via-black/18 to-transparent" />
 
-        <div className="absolute inset-x-4 top-4 flex flex-wrap items-start justify-between gap-3">
-          <div className="max-w-[min(100%,23rem)] rounded-2xl bg-black/38 px-4 py-3 ring-1 ring-white/10 backdrop-blur-md">
-            <p className="text-[0.68rem] font-medium uppercase tracking-[0.28em] text-[#7ef6ff]/78">
+        <div className="absolute inset-x-4 top-4 hidden flex-wrap items-start justify-between gap-3 sm:flex">
+          <div className="min-w-0 flex-1 bg-transparent px-0 py-0 sm:max-w-[min(100%,23rem)] sm:rounded-2xl sm:bg-black/38 sm:px-4 sm:py-3 sm:ring-1 sm:ring-white/10 sm:backdrop-blur-md">
+            <p className="text-[0.62rem] font-medium uppercase tracking-[0.24em] text-[#7ef6ff]/78 sm:text-[0.68rem] sm:tracking-[0.28em]">
               360°
             </p>
-            <h3 className="mt-2 text-lg font-semibold text-white sm:text-xl">{spaceTitle}</h3>
-            <p className="mt-1 text-sm text-white/66">
+            <h3 className="mt-1 truncate text-base font-semibold leading-tight text-white sm:mt-2 sm:text-lg lg:text-xl">
+              {spaceTitle}
+            </h3>
+            <p className="mt-0.5 truncate text-xs text-white/66 sm:mt-1 sm:text-sm">
               {scene.title} · {sceneIndex + 1}/{sceneCount}
             </p>
           </div>
 
-          <div className="flex flex-wrap justify-end gap-2">
-            <span className="rounded-full bg-black/36 px-3 py-2 text-[0.68rem] font-medium uppercase tracking-[0.22em] text-white/72 ring-1 ring-white/10 backdrop-blur-md">
+          <div className="flex shrink-0 flex-wrap justify-end gap-1.5 sm:gap-2">
+            <span className="rounded-full bg-black/36 px-2.5 py-1.5 text-[0.6rem] font-medium uppercase tracking-[0.18em] text-white/72 ring-1 ring-white/10 backdrop-blur-md sm:px-3 sm:py-2 sm:text-[0.68rem] sm:tracking-[0.22em]">
               {ui.dragLabel}
             </span>
-            <span className="rounded-full bg-black/36 px-3 py-2 text-[0.68rem] font-medium uppercase tracking-[0.22em] text-white/72 ring-1 ring-white/10 backdrop-blur-md">
+            <span className="rounded-full bg-black/36 px-2.5 py-1.5 text-[0.6rem] font-medium uppercase tracking-[0.18em] text-white/72 ring-1 ring-white/10 backdrop-blur-md sm:px-3 sm:py-2 sm:text-[0.68rem] sm:tracking-[0.22em]">
               {ui.zoomLabel}
             </span>
           </div>
         </div>
 
         <div className="absolute inset-x-4 bottom-4 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-          <div className="max-w-[min(100%,30rem)] rounded-2xl bg-black/38 px-4 py-3 ring-1 ring-white/10 backdrop-blur-md">
+          <div className="hidden max-w-[min(100%,30rem)] rounded-2xl bg-black/38 px-4 py-3 ring-1 ring-white/10 backdrop-blur-md sm:block">
             <p className="text-sm leading-relaxed text-white/72">{ui.hint}</p>
           </div>
 
@@ -1060,7 +1062,7 @@ export default function VrPageContent() {
                           <h3 className="mt-2 text-lg font-semibold text-white">{selectionUi.mapTitle}</h3>
                         </div>
 
-                        <div className="relative aspect-[1676/1276] overflow-hidden rounded-[1.75rem] border border-white/12 bg-[#070b16]/90 shadow-[0_30px_80px_rgba(2,6,18,0.46)]">
+                        <div className="relative aspect-[1676/1276] overflow-hidden rounded-[1.75rem] border border-white/12 bg-[#070b16]/90 shadow-[0_30px_80px_rgba(2,6,18,0.46)] [--vr-map-hotspot-scale:0.62] sm:[--vr-map-hotspot-scale:1]">
                           <NextImage
                             src="/wydarzenia/mapka.webp"
                             alt={selectionUi.mapAlt}
@@ -1086,14 +1088,14 @@ export default function VrPageContent() {
                                 style={{
                                   left: `${spot.x}%`,
                                   top: `${spot.y}%`,
-                                  width: `${spot.size}px`,
+                                  width: `calc(${spot.size}px * var(--vr-map-hotspot-scale))`,
                                 }}
                                 aria-label={`${selectionUi.mapSelectLabel}: ${spot.label} · ${VR_DOME_TITLES[loc][spot.vrKey]}`}
                                 aria-pressed={isActive}
                                 onClick={() => activateDome(spot.vrKey)}
                               >
                                 <span
-                                  className={`absolute inset-[-6px] rounded-full transition duration-300 ${
+                                  className={`absolute inset-[-4px] rounded-full transition duration-300 sm:inset-[-6px] ${
                                     isActive
                                       ? "bg-[#7ef6ff]/22 blur-md"
                                       : "bg-[#ffe869]/18 blur-sm group-hover:bg-[#ffe869]/26"

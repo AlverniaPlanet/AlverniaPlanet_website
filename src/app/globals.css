@@ -2110,6 +2110,7 @@ p {
 .hero-film-alert {
   position: relative;
   isolation: isolate;
+  cursor: pointer;
   color: #ffffff;
   border: 1px solid var(--hero-film-alert-border);
   background: var(--hero-film-alert-background);
@@ -2156,6 +2157,14 @@ p {
   transform: translateY(-1px);
   border-color: var(--hero-film-alert-hover-border);
   filter: brightness(1.04);
+}
+
+.hero-film-alert--active {
+  border-color: rgba(255, 158, 176, 0.92);
+  box-shadow:
+    0 18px 42px -24px rgba(0, 0, 0, 0.92),
+    0 0 30px rgba(255, 95, 118, 0.26);
+  filter: brightness(1.06);
 }
 
 .hero-film-alert--cool:hover {
@@ -2242,6 +2251,78 @@ p {
   box-shadow: 0 0 12px rgba(241, 103, 126, 0.56);
 }
 
+.hero-cinema-preview {
+  opacity: 0;
+  will-change: clip-path, opacity, filter;
+  transition:
+    clip-path 980ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 980ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 980ms cubic-bezier(0.22, 1, 0.36, 1);
+  filter: saturate(1.02) brightness(0.96);
+}
+
+.hero-cinema-preview::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0) 26%);
+  opacity: 0.72;
+  transition:
+    opacity 880ms ease,
+    transform 980ms cubic-bezier(0.22, 1, 0.36, 1);
+  transform: scale(0.14);
+}
+
+.hero-cinema-preview--active {
+  opacity: 1;
+  filter: saturate(1.04) brightness(1);
+}
+
+.hero-cinema-preview--active::after {
+  opacity: 0;
+  transform: scale(5.8);
+}
+
+.hero-preview-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  min-height: 3.2rem;
+  padding: 0.82rem 1.18rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background:
+    linear-gradient(145deg, rgba(18, 25, 47, 0.94), rgba(14, 20, 38, 0.94)),
+    radial-gradient(circle at 18% 18%, rgba(79, 207, 222, 0.1), transparent 42%);
+  color: #ffffff;
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  box-shadow:
+    0 18px 34px rgba(0, 0, 0, 0.28),
+    0 0 24px rgba(79, 207, 222, 0.08);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.hero-preview-cta:hover,
+.hero-preview-cta:focus-visible {
+  transform: translate3d(0, -1px, 0);
+  filter: brightness(1.04);
+}
+
+.theme-light .hero-preview-cta {
+  border-color: rgba(108, 197, 211, 0.24);
+  background:
+    linear-gradient(145deg, rgba(253, 255, 255, 0.96), rgba(238, 250, 253, 0.94)),
+    radial-gradient(circle at 18% 18%, rgba(79, 207, 222, 0.08), transparent 42%);
+  color: #13323d;
+  box-shadow:
+    0 14px 28px rgba(67, 135, 149, 0.14),
+    0 0 16px rgba(79, 207, 222, 0.08);
+}
+
 .ap-page-intro-stagger {
   animation: pageIntroMain 860ms cubic-bezier(0.22, 1, 0.36, 1) 40ms both;
 }
@@ -2299,9 +2380,38 @@ p {
 .tour-info-card {
   position: relative;
   isolation: isolate;
+  overflow: hidden;
   will-change: transform, box-shadow;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04)),
+    linear-gradient(145deg, rgba(14, 22, 42, 0.88), rgba(15, 18, 38, 0.92));
+  box-shadow:
+    0 18px 36px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition:
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 320ms ease,
+    background 320ms ease;
   animation: tourInfoCardFloat 8.8s ease-in-out infinite;
   animation-delay: var(--tour-delay, 0s);
+}
+
+.tour-info-card::before {
+  content: "";
+  position: absolute;
+  left: -3.5rem;
+  bottom: -4.5rem;
+  width: 13rem;
+  height: 13rem;
+  border-radius: 9999px;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(79, 207, 222, 0.24) 0%, rgba(79, 207, 222, 0.08) 44%, rgba(79, 207, 222, 0) 74%);
+  opacity: 0.72;
+  transform: translate3d(0, 0, 0) scale(1);
+  transition:
+    transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 420ms ease;
 }
 
 .tour-info-card::after {
@@ -2316,8 +2426,137 @@ p {
   animation-delay: var(--tour-delay, 0s);
 }
 
+.tour-info-card:hover,
+.tour-info-card:focus-within {
+  transform: translate3d(0, -10px, 0) scale(1.01);
+  box-shadow:
+    0 28px 54px rgba(0, 0, 0, 0.28),
+    0 0 30px rgba(79, 207, 222, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.tour-info-card:hover::before,
+.tour-info-card:focus-within::before {
+  opacity: 0.96;
+  transform: translate3d(16px, -18px, 0) scale(1.08);
+}
+
 .theme-light .tour-info-card::after {
   border-color: rgba(79, 207, 222, 0.42);
+}
+
+.theme-light .tour-info-card::before {
+  background: radial-gradient(circle, rgba(79, 207, 222, 0.18) 0%, rgba(79, 207, 222, 0.08) 42%, rgba(79, 207, 222, 0) 74%);
+}
+
+.theme-light .tour-info-card:hover,
+.theme-light .tour-info-card:focus-within {
+  box-shadow:
+    0 18px 36px rgba(67, 135, 149, 0.18),
+    0 0 22px rgba(79, 207, 222, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.kino360-feature-card,
+.kino360-feature-hero {
+  position: relative;
+  isolation: isolate;
+  will-change: transform, box-shadow;
+  transition:
+    transform 360ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 360ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 280ms ease,
+    background 280ms ease;
+}
+
+.kino360-feature-card::before,
+.kino360-feature-hero::before {
+  content: "";
+  position: absolute;
+  inset: auto auto -5.5rem -4rem;
+  width: 14rem;
+  height: 14rem;
+  border-radius: 9999px;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(126, 246, 255, 0.22) 0%, rgba(126, 246, 255, 0.08) 40%, rgba(126, 246, 255, 0) 74%);
+  opacity: 0.7;
+  transform: scale(1);
+  transition:
+    transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 320ms ease;
+}
+
+.kino360-feature-card::after,
+.kino360-feature-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  border: 1px solid rgba(126, 246, 255, 0.12);
+  opacity: 0.42;
+  transition:
+    opacity 280ms ease,
+    border-color 280ms ease,
+    transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.kino360-feature-card:hover,
+.kino360-feature-card:focus-within {
+  transform: translate3d(0, -12px, 0) scale(1.028);
+  border-color: rgba(126, 246, 255, 0.3);
+  box-shadow:
+    0 30px 60px rgba(0, 0, 0, 0.26),
+    0 0 32px rgba(126, 246, 255, 0.1);
+}
+
+.kino360-feature-card:hover::before,
+.kino360-feature-card:focus-within::before {
+  opacity: 1;
+  transform: translate3d(18px, -14px, 0) scale(1.14);
+}
+
+.kino360-feature-card:hover::after,
+.kino360-feature-card:focus-within::after {
+  opacity: 0.82;
+  border-color: rgba(126, 246, 255, 0.26);
+  transform: scale(1.01);
+}
+
+.kino360-feature-hero:hover,
+.kino360-feature-hero:focus-within {
+  transform: translate3d(0, -10px, 0) scale(1.018);
+  border-color: rgba(126, 246, 255, 0.34);
+  box-shadow:
+    0 34px 76px rgba(0, 0, 0, 0.3),
+    0 0 40px rgba(126, 246, 255, 0.12);
+}
+
+.kino360-feature-hero:hover::before,
+.kino360-feature-hero:focus-within::before {
+  opacity: 1;
+  transform: translate3d(22px, -18px, 0) scale(1.16);
+}
+
+.kino360-feature-hero:hover::after,
+.kino360-feature-hero:focus-within::after {
+  opacity: 0.9;
+  border-color: rgba(126, 246, 255, 0.28);
+  transform: scale(1.006);
+}
+
+.theme-light .kino360-feature-card::before,
+.theme-light .kino360-feature-hero::before {
+  background: radial-gradient(circle, rgba(79, 207, 222, 0.18) 0%, rgba(79, 207, 222, 0.08) 40%, rgba(79, 207, 222, 0) 74%);
+}
+
+.theme-light .kino360-feature-card:hover,
+.theme-light .kino360-feature-card:focus-within,
+.theme-light .kino360-feature-hero:hover,
+.theme-light .kino360-feature-hero:focus-within {
+  box-shadow:
+    0 18px 36px rgba(67, 135, 149, 0.18),
+    0 0 24px rgba(79, 207, 222, 0.1);
 }
 
 @keyframes ticket-sheen {
@@ -2529,8 +2768,26 @@ p {
     animation: none !important;
   }
 
+  .hero-cinema-preview,
+  .hero-cinema-preview::after {
+    transition: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
   .tour-info-card,
+  .tour-info-card::before,
   .tour-info-card::after {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .kino360-feature-card,
+  .kino360-feature-card::before,
+  .kino360-feature-card::after,
+  .kino360-feature-hero,
+  .kino360-feature-hero::before,
+  .kino360-feature-hero::after {
     animation: none !important;
     transform: none !important;
   }
@@ -2552,8 +2809,16 @@ p {
   .hero-film-alert,
   .hero-film-alert::after,
   .hero-film-alert-dot,
+  .hero-preview-cta,
   .tour-info-card,
-  .tour-info-card::after {
+  .tour-info-card::before,
+  .tour-info-card::after,
+  .kino360-feature-card,
+  .kino360-feature-card::before,
+  .kino360-feature-card::after,
+  .kino360-feature-hero,
+  .kino360-feature-hero::before,
+  .kino360-feature-hero::after {
     animation: none !important;
   }
 
@@ -2561,6 +2826,12 @@ p {
   .ticket-faq-mobile-backdrop {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
+  }
+
+  .hero-preview-cta {
+    min-height: 2.85rem;
+    padding: 0.72rem 1rem;
+    font-size: 0.84rem;
   }
 
   .events-page .events-dome-card,

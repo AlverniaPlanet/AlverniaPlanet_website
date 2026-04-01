@@ -62,14 +62,17 @@ type PromoTile = {
   imageAlt: string;
 };
 
+type HeroPromo = {
+  message: string;
+  cta: string;
+  href: string;
+  tone: "cool" | "hot";
+  previewMedia?: "cinema360";
+};
+
 type HomeCopy = {
   heroTitle: string;
-  heroPromos: Array<{
-    message: string;
-    cta: string;
-    href: string;
-    tone: "cool" | "hot";
-  }>;
+  heroPromos: HeroPromo[];
   attractions: {
     title: string;
     intro: string;
@@ -96,6 +99,7 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         cta: "Zobacz Kino 360",
         href: "/atrakcje/kino-360",
         tone: "hot",
+        previewMedia: "cinema360",
       },
     ],
     attractions: {
@@ -245,6 +249,7 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         cta: "See 360° Cinema",
         href: "/atrakcje/kino-360",
         tone: "hot",
+        previewMedia: "cinema360",
       },
     ],
     attractions: {
@@ -393,6 +398,7 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         cta: "Ver Cinema 360",
         href: "/atrakcje/kino-360",
         tone: "hot",
+        previewMedia: "cinema360",
       },
     ],
     attractions: {
@@ -534,6 +540,7 @@ const HERO_WELCOME_AUTO_HIDE_MS = 2500;
 const HERO_WELCOME_FADE_DURATION_MS = 1200;
 const HERO_PROMO_DELAY_MS = 2000;
 const HERO_PROMO_FADE_DURATION_MS = 700;
+const HERO_PREVIEW_REVEAL_DURATION_MS = 980;
 const EVENTS_PROMO_ROTATION_MS = 5200;
 const EVENTS_PROMO_FADE_MS = 2400;
 
@@ -636,6 +643,28 @@ const HeroSection = memo(function HeroSection({
   introReady: boolean;
   heroWelcomeVisible: boolean;
 }) {
+  const [activeHeroPromoIndex, setActiveHeroPromoIndex] = useState<number | null>(null);
+  const activeHeroPromo = activeHeroPromoIndex !== null ? heroPromos[activeHeroPromoIndex] : null;
+  const cinemaPreviewActive = activeHeroPromo?.previewMedia === "cinema360";
+
+  useEffect(() => {
+    setActiveHeroPromoIndex(null);
+  }, [heroTitle]);
+
+  const activateHeroPromo = (index: number) => {
+    if (index === activeHeroPromoIndex && typeof window !== "undefined") {
+      setActiveHeroPromoIndex(null);
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => {
+          setActiveHeroPromoIndex(index);
+        });
+      });
+      return;
+    }
+
+    setActiveHeroPromoIndex(index);
+  };
+
   return (
     <section
       className={`relative z-10 transition-[opacity,transform] duration-[1300ms] will-change-[opacity,transform] ${
@@ -651,10 +680,14 @@ const HeroSection = memo(function HeroSection({
             <div className="pointer-events-none absolute inset-x-0 top-7 z-20 flex justify-center px-4 sm:top-8 lg:top-9">
               <div className="flex w-full max-w-[44rem] flex-col items-center gap-2 sm:max-w-[48rem] sm:gap-2.5 lg:max-w-[52rem]">
                 {heroPromos.map((heroPromo, index) => (
-                  <Link
+                  <button
                     key={`${heroPromo.href}-${heroPromo.message}`}
-                    href={heroPromo.href}
-                    className={`hero-film-alert ${heroPromo.tone === "cool" ? "hero-film-alert--cool" : "hero-film-alert--hot"} pointer-events-auto inline-flex max-w-full items-center justify-center gap-2 rounded-full px-3 py-2 text-[11px] sm:gap-2.5 sm:px-4 sm:py-2.5 sm:text-sm transition-[opacity,transform,filter] ${
+                    type="button"
+                    onClick={() => activateHeroPromo(index)}
+                    aria-pressed={activeHeroPromoIndex === index}
+                    className={`hero-film-alert ${heroPromo.tone === "cool" ? "hero-film-alert--cool" : "hero-film-alert--hot"} ${
+                      activeHeroPromoIndex === index ? "hero-film-alert--active" : ""
+                    } pointer-events-auto inline-flex max-w-full items-center justify-center gap-2 rounded-full px-3 py-2 text-[11px] sm:gap-2.5 sm:px-4 sm:py-2.5 sm:text-sm transition-[opacity,transform,filter] ${
                       introReady
                         ? "hero-film-alert-intro opacity-100 translate-y-0 scale-100"
                         : "opacity-0 -translate-y-8 scale-[0.88] blur-sm pointer-events-none"
@@ -664,18 +697,15 @@ const HeroSection = memo(function HeroSection({
                       transitionDelay: introReady ? `${HERO_PROMO_DELAY_MS + index * 120}ms` : "0ms",
                       transitionDuration: `${HERO_PROMO_FADE_DURATION_MS}ms`,
                     }}
-                    >
+                  >
                     <span
                       className={`hero-film-alert-dot ${heroPromo.tone === "cool" ? "hero-film-alert-dot--cool" : "hero-film-alert-dot--hot"} mt-0.5 h-2.5 w-2.5 shrink-0 rounded-full sm:h-3 sm:w-3`}
                       aria-hidden="true"
                     />
                     <span className="hero-film-alert-copy leading-tight font-medium">
-                      <span>{heroPromo.message}</span>
-                      <span className="hero-film-alert-cta ml-2 whitespace-nowrap font-semibold sm:ml-3">
-                        {heroPromo.cta} →
-                      </span>
+                      {heroPromo.message}
                     </span>
-                  </Link>
+                  </button>
                 ))}
               </div>
             </div>
@@ -716,6 +746,47 @@ const HeroSection = memo(function HeroSection({
               rootMargin="320px 0px"
               preferPosterOnLowPower
             />
+            <div
+              className={`hero-cinema-preview pointer-events-none absolute inset-0 z-[2] ${
+                cinemaPreviewActive ? "hero-cinema-preview--active" : ""
+              }`}
+              style={{
+                clipPath: cinemaPreviewActive ? "circle(150% at 50% 50%)" : "circle(0% at 50% 50%)",
+                transitionDuration: `${HERO_PREVIEW_REVEAL_DURATION_MS}ms`,
+                transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
+              }}
+              aria-hidden="true"
+            >
+              <AdaptiveVideo
+                mp4Src="/kino360/one_step_beyond.mp4"
+                webmSrc="/kino360/one_step_beyond.webm"
+                poster="/kino360/Kino360_poster.webp"
+                className="absolute inset-0 h-full w-full object-cover pointer-events-none"
+                sizes="(min-width: 1200px) 72rem, 100vw"
+                fallbackText={heroVideoFallback}
+                rootMargin="320px 0px"
+                preferPosterOnLowPower
+              />
+              <div className="absolute inset-0 bg-gradient-to-br from-[#140811]/18 via-transparent to-[#ff5f76]/12" />
+            </div>
+            {activeHeroPromo ? (
+              <div className="pointer-events-none absolute inset-x-0 bottom-4 z-20 flex justify-end px-4 sm:bottom-5 sm:px-5 lg:bottom-6 lg:px-6">
+                <Link
+                  href={activeHeroPromo.href}
+                  className={`hero-preview-cta pointer-events-auto transition-[opacity,transform,filter] ${
+                    activeHeroPromoIndex !== null
+                      ? "opacity-100 translate-y-0 scale-100"
+                      : "opacity-0 translate-y-3 scale-[0.92] blur-sm pointer-events-none"
+                  }`}
+                  style={{
+                    transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
+                    transitionDuration: `${HERO_PROMO_FADE_DURATION_MS + 140}ms`,
+                  }}
+                >
+                  {activeHeroPromo.cta} →
+                </Link>
+              </div>
+            ) : null}
           </div>
         </div>
       </div>
