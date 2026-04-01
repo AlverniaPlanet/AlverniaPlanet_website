@@ -113,7 +113,7 @@
         "transform": "lodash/{{member}}"
       }
     },
-    "outputFileTracingRoot": "/Users/a1234/Desktop/Alvernia/strona/V11/AlverniaPlanet_website",
+    "outputFileTracingRoot": "/Users/szymonczermak/Desktop/AlverniaPlanet/AlverniaPlanet_website",
     "experimental": {
       "useSkewCookie": false,
       "cacheLife": {
@@ -172,7 +172,7 @@
       "middlewarePrefetch": "flexible",
       "optimisticClientCache": true,
       "manualClientBasePath": false,
-      "cpus": 11,
+      "cpus": 7,
       "memoryBasedWorkersCount": false,
       "imgOptConcurrency": null,
       "imgOptTimeoutInSeconds": 7,
@@ -302,10 +302,10 @@
     "bundlePagesRouterDependencies": false,
     "configFileName": "next.config.mjs",
     "turbopack": {
-      "root": "/Users/a1234/Desktop/Alvernia/strona/V11/AlverniaPlanet_website"
+      "root": "/Users/szymonczermak/Desktop/AlverniaPlanet/AlverniaPlanet_website"
     }
   },
-  "appDir": "/Users/a1234/Desktop/Alvernia/strona/V11/AlverniaPlanet_website",
+  "appDir": "/Users/szymonczermak/Desktop/AlverniaPlanet/AlverniaPlanet_website",
   "relativeAppDir": "",
   "files": [
     ".next/routes-manifest.json",
