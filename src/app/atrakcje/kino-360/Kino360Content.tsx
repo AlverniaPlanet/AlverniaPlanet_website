@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import AdaptiveVideo from "@/app/components/AdaptiveVideo";
 import Card from "@/app/components/Card";
 import TourLineAccentTitle from "@/app/components/TourLineAccentTitle";
@@ -23,6 +23,12 @@ type HeroMoment = {
 type Feature = { badge: string; title: string; body: string };
 type GalleryItem = { title: string; body: string; image: string };
 type FeatureStat = { value: string; label: string };
+type CountdownUnitLabels = {
+  days: string;
+  hours: string;
+  minutes: string;
+  seconds: string;
+};
 type TicketOption = {
   badge: string;
   title: string;
@@ -32,16 +38,38 @@ type TicketOption = {
   bookingServiceName: string;
 };
 
-const HERO_MOMENT_ROTATION_MS = 8200;
-const HERO_MOMENT_SWAP_DELAY_MS = 520;
+const COUNTDOWN_TARGET_ISO = "2026-04-18T00:00:00+02:00";
+const COUNTDOWN_TARGET_MS = Date.parse(COUNTDOWN_TARGET_ISO);
+
+function formatCountdownValue(value: number) {
+  return String(Math.max(0, value)).padStart(2, "0");
+}
+
+function getCountdownParts(now = Date.now()) {
+  const remainingMs = Math.max(0, COUNTDOWN_TARGET_MS - now);
+  const totalSeconds = Math.floor(remainingMs / 1000);
+  const days = Math.floor(totalSeconds / 86_400);
+  const hours = Math.floor((totalSeconds % 86_400) / 3_600);
+  const minutes = Math.floor((totalSeconds % 3_600) / 60);
+  const seconds = totalSeconds % 60;
+
+  return {
+    days: formatCountdownValue(days),
+    hours: formatCountdownValue(hours),
+    minutes: formatCountdownValue(minutes),
+    seconds: formatCountdownValue(seconds),
+  };
+}
 
 const COPY: Record<
   Locale,
   {
-    heroMoments: HeroMoment[];
+    heroMoment: HeroMoment;
     heroTag: string;
     heroTitle: string;
     videoFallback: string;
+    countdownLabel: string;
+    countdownUnits: CountdownUnitLabels;
     featuresTitle: string;
     featuresIntro: string;
     featureStats: FeatureStat[];
@@ -56,32 +84,23 @@ const COPY: Record<
   }
 > = {
   pl: {
-    heroMoments: [
-      {
-        title: "Bilety już dostępne!",
-        lines: [
-          "Pierwszy seans już 18 kwietnia.",
-          "Kup bilety już teraz na „One Step Beyond: A Journey to Mars”.",
-        ],
-      },
-      {
-        title: "Nowy wymiar seansu",
-        lines: [
-          "Zobacz projekcję, która wypełnia całą kopułę i otacza widza z każdej strony.",
-          "Kino 360° łączy skalę przestrzeni, obraz i dźwięk w jedno immersyjne doświadczenie.",
-        ],
-      },
-      {
-        title: "Największe kino 360° w Europie",
-        lines: [
-          "Pełnokopułowy obraz i dźwięk zaprojektowane dla pełnej immersji.",
-          "Seans otacza widza w całości i działa w skali, której nie da się pomylić z klasycznym kinem.",
-        ],
-      },
-    ],
+    heroMoment: {
+      title: "Bilety już dostępne!",
+      lines: [
+        "Pierwszy seans już 18 kwietnia.",
+        "Kup bilety już teraz na „One Step Beyond: A Journey to Mars”.",
+      ],
+    },
     heroTag: "Atrakcje",
     heroTitle: "Kino 360°",
     videoFallback: "Twój browser nie wspiera elementu video.",
+    countdownLabel: "Pierwszy seans 18.04.2026",
+    countdownUnits: {
+      days: "dni",
+      hours: "godzin",
+      minutes: "minut",
+      seconds: "sekund",
+    },
     featuresTitle: "Pierwszy seans: One Step Beyond",
     featuresIntro:
       "Premierowy pokaz otwiera Kino 360° formatem, który ma działać skalą, przestrzenią i pełnym zanurzeniem, a nie zwykłym ekranem w sali.",
@@ -175,32 +194,23 @@ const COPY: Record<
     ],
   },
   en: {
-    heroMoments: [
-      {
-        title: "Tickets available now",
-        lines: [
-          "The first screening starts on April 18.",
-          "Get your tickets now for “One Step Beyond: A Journey to Mars”.",
-        ],
-      },
-      {
-        title: "A new dimension of cinema",
-        lines: [
-          "See what a screening feels like when the dome fills your entire field of view.",
-          "360° Cinema brings scale, image, and sound together in one immersive experience.",
-        ],
-      },
-      {
-        title: "The largest 360° cinema in Europe",
-        lines: [
-          "A full-dome image and sound system designed for total immersion.",
-          "The show surrounds the audience completely and feels nothing like a conventional cinema room.",
-        ],
-      },
-    ],
+    heroMoment: {
+      title: "Tickets available now",
+      lines: [
+        "The first screening starts on April 18.",
+        "Get your tickets now for “One Step Beyond: A Journey to Mars”.",
+      ],
+    },
     heroTag: "Attractions",
     heroTitle: "360° cinema",
     videoFallback: "Your browser does not support the video element.",
+    countdownLabel: "First screening 18.04.2026",
+    countdownUnits: {
+      days: "days",
+      hours: "hours",
+      minutes: "minutes",
+      seconds: "seconds",
+    },
     featuresTitle: "First screening: One Step Beyond",
     featuresIntro:
       "The opening show launches the 360° cinema with a format built around scale, immersion, and a full-dome image rather than a standard auditorium screen.",
@@ -294,32 +304,23 @@ const COPY: Record<
     ],
   },
   pt: {
-    heroMoments: [
-      {
-        title: "Bilhetes já disponíveis!",
-        lines: [
-          "A primeira sessão é já a 18 de abril.",
-          "Compra já os teus bilhetes para “One Step Beyond: A Journey to Mars”.",
-        ],
-      },
-      {
-        title: "Uma nova dimensão de cinema",
-        lines: [
-          "Descobre uma projeção que ocupa toda a cúpula e envolve o público por completo.",
-          "O Cinema 360° junta escala, imagem e som numa experiência verdadeiramente imersiva.",
-        ],
-      },
-      {
-        title: "O maior cinema 360° da Europa",
-        lines: [
-          "Imagem e som fulldome desenhados para uma imersão total.",
-          "A sessão envolve o público por completo e tem uma escala impossível de confundir com uma sala tradicional.",
-        ],
-      },
-    ],
+    heroMoment: {
+      title: "Bilhetes já disponíveis!",
+      lines: [
+        "A primeira sessão é já a 18 de abril.",
+        "Compra já os teus bilhetes para “One Step Beyond: A Journey to Mars”.",
+      ],
+    },
     heroTag: "Atrações",
     heroTitle: "Cinema 360°",
     videoFallback: "O seu navegador não suporta o elemento de vídeo.",
+    countdownLabel: "Primeira sessão 18.04.2026",
+    countdownUnits: {
+      days: "dias",
+      hours: "horas",
+      minutes: "minutos",
+      seconds: "segundos",
+    },
     featuresTitle: "Primeira sessão: One Step Beyond",
     featuresIntro:
       "A sessão de estreia lança o Cinema 360° com um formato feito para impressionar pela escala, pela imersão e pela imagem fulldome em toda a cúpula.",
@@ -418,64 +419,35 @@ export default function Kino360Content() {
   const { locale } = useI18n();
   const loc: Locale = (locale as Locale) ?? "pl";
   const copy = COPY[loc];
-  const [activeHeroMoment, setActiveHeroMoment] = useState(0);
-  const [heroMomentVisible, setHeroMomentVisible] = useState(true);
-  const heroMomentTimeoutRef = useRef<number | null>(null);
-  const activeHero = copy.heroMoments[activeHeroMoment] ?? copy.heroMoments[0];
+  const [countdown, setCountdown] = useState(() => ({
+    days: "00",
+    hours: "00",
+    minutes: "00",
+    seconds: "00",
+  }));
+  const activeHero = copy.heroMoment;
   const spotlightFeature = copy.features[copy.features.length - 1];
   const regularFeatures = copy.features.slice(0, -1);
 
   useEffect(() => {
-    setActiveHeroMoment(0);
-    setHeroMomentVisible(true);
-    if (heroMomentTimeoutRef.current !== null) {
-      window.clearTimeout(heroMomentTimeoutRef.current);
-      heroMomentTimeoutRef.current = null;
-    }
-  }, [loc]);
+    const syncCountdown = () => {
+      setCountdown(getCountdownParts());
+    };
 
-  useEffect(() => {
-    if (copy.heroMoments.length <= 1) {
-      return;
-    }
-
-    const intervalId = window.setInterval(() => {
-      setHeroMomentVisible(false);
-      if (heroMomentTimeoutRef.current !== null) {
-        window.clearTimeout(heroMomentTimeoutRef.current);
-      }
-      heroMomentTimeoutRef.current = window.setTimeout(() => {
-        setActiveHeroMoment((current) => (current + 1) % copy.heroMoments.length);
-        setHeroMomentVisible(true);
-        heroMomentTimeoutRef.current = null;
-      }, HERO_MOMENT_SWAP_DELAY_MS);
-    }, HERO_MOMENT_ROTATION_MS);
+    syncCountdown();
+    const intervalId = window.setInterval(syncCountdown, 1000);
 
     return () => {
       window.clearInterval(intervalId);
-      if (heroMomentTimeoutRef.current !== null) {
-        window.clearTimeout(heroMomentTimeoutRef.current);
-        heroMomentTimeoutRef.current = null;
-      }
     };
-  }, [copy.heroMoments.length]);
+  }, []);
 
-  const activateHeroMoment = (index: number) => {
-    if (index === activeHeroMoment) {
-      return;
-    }
-
-    setHeroMomentVisible(false);
-    if (heroMomentTimeoutRef.current !== null) {
-      window.clearTimeout(heroMomentTimeoutRef.current);
-    }
-
-    heroMomentTimeoutRef.current = window.setTimeout(() => {
-      setActiveHeroMoment(index);
-      setHeroMomentVisible(true);
-      heroMomentTimeoutRef.current = null;
-    }, HERO_MOMENT_SWAP_DELAY_MS - 80);
-  };
+  const countdownItems = [
+    { value: countdown.days, label: copy.countdownUnits.days },
+    { value: countdown.hours, label: copy.countdownUnits.hours },
+    { value: countdown.minutes, label: copy.countdownUnits.minutes },
+    { value: countdown.seconds, label: copy.countdownUnits.seconds },
+  ];
 
   return (
     <main className="kino360-page relative z-10 min-h-screen">
@@ -500,30 +472,17 @@ export default function Kino360Content() {
                 <div className="space-y-4 ap-page-intro-stagger">
                   <div className="relative mx-auto flex min-h-[7rem] max-w-5xl items-center justify-center sm:min-h-[9rem]">
                     <div
-                      className={`pointer-events-none absolute left-1/2 top-1/2 h-28 w-[min(90vw,42rem)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(126,246,255,0.22)_0%,rgba(126,246,255,0.08)_42%,rgba(126,246,255,0)_74%)] transition-[opacity,transform,filter] duration-[980ms] ${
-                        heroMomentVisible
-                          ? "opacity-80 scale-100 blur-2xl"
-                          : "opacity-0 scale-[1.28] blur-[40px]"
-                      }`}
-                      style={{ transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)" }}
+                      className="pointer-events-none absolute left-1/2 top-1/2 h-28 w-[min(90vw,42rem)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(126,246,255,0.22)_0%,rgba(126,246,255,0.08)_42%,rgba(126,246,255,0)_74%)] opacity-80 blur-2xl"
                       aria-hidden="true"
                     />
                     <div
-                      className={`relative max-w-5xl rounded-[1.9rem] border border-white/10 bg-[linear-gradient(180deg,rgba(8,17,33,0.52)_0%,rgba(8,17,33,0.18)_100%)] px-5 py-4 shadow-[0_26px_70px_rgba(0,0,0,0.3)] backdrop-blur-[6px] transition-[opacity,transform,filter,border-color,box-shadow] duration-[980ms] sm:px-7 sm:py-5 ${
-                        heroMomentVisible
-                          ? "opacity-100 translate-y-0 scale-100 blur-0"
-                          : "opacity-0 -translate-y-6 scale-[1.16] blur-[18px] border-white/0 shadow-none"
-                      }`}
-                      style={{ transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)" }}
+                      className="relative max-w-5xl rounded-[1.9rem] border border-white/10 bg-[linear-gradient(180deg,rgba(8,17,33,0.52)_0%,rgba(8,17,33,0.18)_100%)] px-5 py-4 shadow-[0_26px_70px_rgba(0,0,0,0.3)] backdrop-blur-[6px] sm:px-7 sm:py-5"
                     >
                       <p className="text-balance text-[clamp(2rem,6.2vw,5rem)] font-black leading-[0.92] tracking-[-0.065em] text-white drop-shadow-[0_10px_34px_rgba(0,0,0,0.55)]">
                         {activeHero.title}
                       </p>
                       <div
-                        className={`mx-auto mt-4 h-[3px] w-24 rounded-full bg-[linear-gradient(90deg,rgba(126,246,255,0),rgba(126,246,255,0.95),rgba(126,246,255,0))] transition-[opacity,transform] duration-[980ms] ${
-                          heroMomentVisible ? "opacity-100 scale-100" : "opacity-0 scale-[1.45]"
-                        }`}
-                        style={{ transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)" }}
+                        className="mx-auto mt-4 h-[3px] w-24 rounded-full bg-[linear-gradient(90deg,rgba(126,246,255,0),rgba(126,246,255,0.95),rgba(126,246,255,0))]"
                         aria-hidden="true"
                       />
                     </div>
@@ -534,14 +493,7 @@ export default function Kino360Content() {
                   <h1 className="ap-type-hero-title force-overlay text-[clamp(3.2rem,8vw,5.9rem)] font-black tracking-[-0.06em] drop-shadow-[0_0_24px_rgba(0,0,0,0.55)]">
                     {copy.heroTitle}
                   </h1>
-                  <div
-                    className={`mx-auto min-h-[6.2rem] max-w-3xl transition-[opacity,transform,filter] duration-[980ms] ${
-                      heroMomentVisible
-                        ? "opacity-100 translate-y-0 scale-100"
-                        : "opacity-0 translate-y-5 scale-[0.88] blur-[14px]"
-                    }`}
-                    style={{ transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)" }}
-                  >
+                  <div className="mx-auto min-h-[6.2rem] max-w-3xl">
                     <p className="ap-type-hero-subtitle force-overlay-dim mx-auto max-w-3xl text-[clamp(1.08rem,0.96rem+0.85vw,1.72rem)] font-medium leading-[1.45] text-white/86">
                       {activeHero.lines.map((line) => (
                         <span key={line} className="block">
@@ -549,24 +501,6 @@ export default function Kino360Content() {
                         </span>
                       ))}
                     </p>
-                  </div>
-                  <div className="flex items-center justify-center gap-2">
-                    {copy.heroMoments.map((moment, index) => (
-                      <button
-                        key={moment.title}
-                        type="button"
-                        onClick={() => activateHeroMoment(index)}
-                        aria-label={moment.title}
-                        aria-pressed={activeHeroMoment === index}
-                        className={`h-2.5 rounded-full transition-all duration-300 ${
-                          activeHeroMoment === index
-                            ? "w-10 bg-[#7ef6ff] shadow-[0_0_18px_rgba(126,246,255,0.45)]"
-                            : "w-2.5 bg-white/28 hover:bg-white/50"
-                        }`}
-                      >
-                        <span className="sr-only">{moment.title}</span>
-                      </button>
-                    ))}
                   </div>
                 </div>
               </div>
@@ -577,6 +511,37 @@ export default function Kino360Content() {
 
       <section className="px-4 pb-16 sm:pb-20">
         <div className="ap-shell ap-page-stack">
+          <ScrollMotionItem strength="soft" delay={60} className="ap-deferred-section">
+            <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(10,20,42,0.84)_0%,rgba(6,10,22,0.96)_100%)] px-4 py-6 shadow-[0_24px_64px_rgba(0,0,0,0.28)] sm:px-7 sm:py-8">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(126,246,255,0.14),transparent_36%),radial-gradient(circle_at_bottom_right,rgba(255,93,93,0.16),transparent_34%)]" />
+              <div className="relative">
+                <div className="flex justify-center">
+                  <div className="inline-flex rounded-[1rem] bg-[linear-gradient(135deg,#ff6a3d_0%,#ff4d62_100%)] px-5 py-2 text-center text-[0.78rem] font-black uppercase tracking-[0.14em] text-white shadow-[0_14px_32px_rgba(255,98,77,0.38)] sm:px-7">
+                    {copy.countdownLabel}
+                  </div>
+                </div>
+                <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
+                  {countdownItems.map((item) => (
+                    <div
+                      key={item.label}
+                      className="rounded-[1.35rem] border border-white/12 bg-white/7 px-3 py-4 text-center backdrop-blur-sm shadow-[0_14px_34px_rgba(0,0,0,0.18)] sm:px-4 sm:py-5"
+                    >
+                      <p
+                        className="text-[clamp(2rem,6vw,3.25rem)] font-black leading-none tracking-[-0.06em] text-white"
+                        suppressHydrationWarning
+                      >
+                        {item.value}
+                      </p>
+                      <p className="mt-2 text-[0.72rem] font-medium uppercase tracking-[0.22em] text-white/58 sm:text-xs">
+                        {item.label}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </ScrollMotionItem>
+
           <ScrollMotionItem strength="strong" delay={110} className="ap-deferred-section">
             <Card className="space-y-6" motion="off">
               <TourLineAccentTitle variant="cool">{copy.featuresTitle}</TourLineAccentTitle>
