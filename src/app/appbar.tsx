@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
-import { Press_Start_2P } from "next/font/google";
 import { usePathname } from "next/navigation";
 import { useI18n } from "@/app/i18n-provider";
 import LangSwitcher from "@/app/components/LangSwitcher";
@@ -19,12 +18,6 @@ import {
 function cx(...classes: Array<string | false | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
-
-const pixelFont = Press_Start_2P({
-  subsets: ["latin"],
-  weight: "400",
-  display: "swap",
-});
 
 export function AppBar() {
   const [open, setOpen] = useState(false);
@@ -225,9 +218,7 @@ export function AppBar() {
                 aria-current={isRunmageddonActive ? "page" : undefined}
                 suppressHydrationWarning
               >
-                <span className={cx(pixelFont.className, "inline-block translate-y-[1px] text-[0.56rem] leading-none tracking-[0.06em]")}>
-                  {t("nav.runmageddon")}
-                </span>
+                {t("nav.runmageddon")}
               </Link>
             </nav>
           </div>
@@ -516,9 +507,7 @@ export function AppBar() {
                   aria-current={isRunmageddonActive ? "page" : undefined}
                   suppressHydrationWarning
                 >
-                  <span className={cx(pixelFont.className, "inline-block translate-y-[1px] text-[0.56rem] leading-none tracking-[0.06em]")}>
-                    {t("nav.runmageddon")}
-                  </span>
+                  {t("nav.runmageddon")}
                 </Link>
               </li>
               <li className="ml-3">

@@ -152,7 +152,7 @@ const COPY: Record<
     bingoCta: "Bingo",
     bingoDescription:
       "Interaktywna gra terenowa podczas Runmageddonu. Wykonujesz zadania, zapisujesz odpowiedzi, dodajesz zdjęcia i śledzisz postęp bezpośrednio na planszy Bingo.",
-    gameCta: "Gra runmageddon",
+    gameCta: "Gra RUNMAGEDDON",
     gameDescription:
       "Prosta gra zręcznościowa. 10 najlepszych wyników do końca niedzieli, 12 kwietnia 2026, wygrywa kody rabatowe na wszystkie atrakcje Alvernia Planet. Po zakończeniu akcji rozdamy kody.",
     gameLaunchRibbon: "OD 07.04.2026",
@@ -208,7 +208,7 @@ const COPY: Record<
     bingoCta: "Bingo",
     bingoDescription:
       "Interactive field game during Runmageddon. Complete tasks, save answers, add photos, and track your progress directly on the Bingo board.",
-    gameCta: "Runmageddon game",
+    gameCta: "RUNMAGEDDON",
     gameDescription:
       "Simple arcade skill game. The top 10 scores submitted by Sunday win discount codes for all Alvernia Planet attractions. Codes will be distributed after the campaign ends.",
     gameLaunchRibbon: "FROM 07.04.2026",
@@ -266,7 +266,7 @@ const COPY: Record<
     bingoCta: "Bingo",
     bingoDescription:
       "Jogo de campo interativo durante o Runmageddon. Complete tarefas, guarde respostas, adicione fotos e acompanhe o progresso diretamente no cartão Bingo.",
-    gameCta: "Jogo Runmageddon",
+    gameCta: "RUNMAGEDDON",
     gameDescription:
       "Jogo simples de destreza. Os 10 melhores resultados até domingo ganham códigos de desconto para todas as atrações da Alvernia Planet. Os códigos serão entregues após o fim da ação.",
     gameLaunchRibbon: "DESDE 07.04.2026",
@@ -448,48 +448,15 @@ export default function RunmageddonContent() {
           >
             {copy.tag}
           </p>
-          <div
-            className={cx(
-              "relative mx-auto w-full max-w-[34rem] overflow-hidden rounded-[0.55rem] border-2 px-6 py-8",
-              isLight
-                ? "border-[#d4e4ef] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(245,250,255,0.95))] shadow-[0_0_0_2px_rgba(255,255,255,0.95),10px_10px_0_rgba(182,214,233,0.52)]"
-                : "border-[#6d5927] bg-[#2a2436] shadow-[0_0_0_2px_rgba(12,10,22,0.9),8px_8px_0_rgba(7,6,16,0.52)]",
-            )}
-          >
-            <div
-              className={cx(
-                "absolute inset-0 [background-size:14px_14px]",
-                isLight
-                  ? "opacity-[0.12] [background-image:linear-gradient(rgba(15,23,42,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(15,23,42,0.08)_1px,transparent_1px)]"
-                  : "opacity-[0.16] [background-image:linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px)]",
-              )}
+          <div className="mx-auto w-full max-w-[20rem] px-2">
+            <Image
+              src="/Runmageddon/rmg_zolty.webp"
+              alt="Runmageddon"
+              width={1200}
+              height={400}
+              priority
+              className="mx-auto h-auto w-full object-contain"
             />
-            <div
-              className={cx(
-                "absolute inset-0",
-                isLight
-                  ? "bg-[radial-gradient(circle_at_top,rgba(83,222,238,0.22),transparent_48%),radial-gradient(circle_at_bottom,rgba(242,203,71,0.16),transparent_38%)]"
-                  : "bg-[radial-gradient(circle_at_top,rgba(242,203,71,0.24),transparent_45%),linear-gradient(180deg,rgba(255,255,255,0.04),transparent_45%)]",
-              )}
-            />
-            <div
-              className={cx(
-                "absolute inset-x-0 bottom-0 h-[4px]",
-                isLight
-                  ? "bg-[linear-gradient(90deg,rgba(83,222,238,0.1),rgba(83,222,238,0.95),rgba(242,203,71,0.88),rgba(242,203,71,0.1))]"
-                  : "bg-[linear-gradient(90deg,rgba(242,203,71,0.15),rgba(242,203,71,0.95),rgba(242,203,71,0.15))]",
-              )}
-            />
-            <div className="relative">
-              <Image
-                src="/Runmageddon/rmg_zolty.webp"
-                alt="Runmageddon"
-                width={1200}
-                height={400}
-                priority
-                className="mx-auto h-auto w-full max-w-[20rem] object-contain"
-              />
-            </div>
           </div>
           <h1
             className={cx(
