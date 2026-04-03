@@ -71,6 +71,7 @@ const FOOTER_COPY: Record<
         links: [
           { label: "Wydarzenia", href: "/wydarzenia" },
           { label: "Jak dojechać", href: "/jak-dojechac" },
+          { label: "Runmageddon", href: "/runmageddon" },
           { label: "Bilety i rezerwacje", href: "/rezerwuj" },
         ],
       },
@@ -122,6 +123,7 @@ const FOOTER_COPY: Record<
         links: [
           { label: "Events", href: "/wydarzenia" },
           { label: "Getting here", href: "/jak-dojechac" },
+          { label: "Runmageddon", href: "/runmageddon" },
           { label: "Tickets & bookings", href: "/rezerwuj" },
         ],
       },
@@ -173,6 +175,7 @@ const FOOTER_COPY: Record<
         links: [
           { label: "Eventos", href: "/wydarzenia" },
           { label: "Como chegar", href: "/jak-dojechac" },
+          { label: "Runmageddon", href: "/runmageddon" },
           { label: "Bilhetes e reservas", href: "/rezerwuj" },
         ],
       },

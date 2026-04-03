@@ -9,6 +9,7 @@ const LABEL_MAP: Record<string, string> = {
   // PL
   "wydarzenia": "Wydarzenia",
   "jak dojechać": "Jak dojechać",
+  "runmageddon": "Runmageddon",
   "bilety": "Bilety",
   "bilety i rezerwacje": "Bilety i rezerwacje",
   "aktualności": "Aktualności",

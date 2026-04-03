@@ -475,9 +475,7 @@ export default function Kino360Content() {
                       className="pointer-events-none absolute left-1/2 top-1/2 h-28 w-[min(90vw,42rem)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(126,246,255,0.22)_0%,rgba(126,246,255,0.08)_42%,rgba(126,246,255,0)_74%)] opacity-80 blur-2xl"
                       aria-hidden="true"
                     />
-                    <div
-                      className="relative max-w-5xl rounded-[1.9rem] border border-white/10 bg-[linear-gradient(180deg,rgba(8,17,33,0.52)_0%,rgba(8,17,33,0.18)_100%)] px-5 py-4 shadow-[0_26px_70px_rgba(0,0,0,0.3)] backdrop-blur-[6px] sm:px-7 sm:py-5"
-                    >
+                    <div className="relative max-w-5xl px-4 sm:px-6">
                       <p className="text-balance text-[clamp(2rem,6.2vw,5rem)] font-black leading-[0.92] tracking-[-0.065em] text-white drop-shadow-[0_10px_34px_rgba(0,0,0,0.55)]">
                         {activeHero.title}
                       </p>

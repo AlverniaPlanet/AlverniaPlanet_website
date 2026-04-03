@@ -33,6 +33,7 @@ const BASE_PREFETCH_PATHS = [
   "/wydarzenia",
   "/galeria",
   "/jak-dojechac",
+  "/runmageddon",
   "/kontakt",
   "/rezerwuj",
 ] as const;
@@ -108,6 +109,7 @@ export function getSitePaths(locale: Locale) {
     vrTour: getLocalizedPath("/wydarzenia/vr", locale),
     gallery: getLocalizedPath("/galeria", locale),
     gettingThere: getLocalizedPath("/jak-dojechac", locale),
+    runmageddon: getLocalizedPath("/runmageddon", locale),
     booking: getLocalizedPath("/rezerwuj", locale),
     about: getLocalizedPath("/o-alvernia-planet", locale),
     contact: getLocalizedPath("/kontakt", locale),

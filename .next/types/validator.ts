@@ -180,6 +180,15 @@ type LayoutConfig<Route extends LayoutRoutes = LayoutRoutes> = {
   type __Unused = __Check
 }
 
+// Validate ../../src/app/en/runmageddon/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/en/runmageddon">> = Specific
+  const handler = {} as typeof import("../../src/app/en/runmageddon/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../src/app/galeria/page.tsx
 {
   type __IsExpected<Specific extends AppPageConfig<"/galeria">> = Specific
@@ -333,10 +342,28 @@ type LayoutConfig<Route extends LayoutRoutes = LayoutRoutes> = {
   type __Unused = __Check
 }
 
+// Validate ../../src/app/pt/runmageddon/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/pt/runmageddon">> = Specific
+  const handler = {} as typeof import("../../src/app/pt/runmageddon/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../src/app/rezerwuj/page.tsx
 {
   type __IsExpected<Specific extends AppPageConfig<"/rezerwuj">> = Specific
   const handler = {} as typeof import("../../src/app/rezerwuj/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/runmageddon/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/runmageddon">> = Specific
+  const handler = {} as typeof import("../../src/app/runmageddon/page.js")
   type __Check = __IsExpected<typeof handler>
   // @ts-ignore
   type __Unused = __Check

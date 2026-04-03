@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
+import { Press_Start_2P } from "next/font/google";
 import { usePathname } from "next/navigation";
 import { useI18n } from "@/app/i18n-provider";
 import LangSwitcher from "@/app/components/LangSwitcher";
@@ -18,6 +19,12 @@ import {
 function cx(...classes: Array<string | false | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
+
+const pixelFont = Press_Start_2P({
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+});
 
 export function AppBar() {
   const [open, setOpen] = useState(false);
@@ -41,6 +48,7 @@ export function AppBar() {
   const isAttractionsActive = isCurrentSection("/atrakcje");
   const isEventsActive = isCurrentPath("/wydarzenia");
   const isGettingThereActive = isCurrentPath("/jak-dojechac");
+  const isRunmageddonActive = isCurrentPath("/runmageddon");
   const isAboutActive = isCurrentPath("/o-alvernia-planet", "/galeria", "/wydarzenia/vr", "/aktualnosci");
   const isContactActive = isCurrentPath("/kontakt");
   const isBookingActive = isCurrentPath("/rezerwuj");
@@ -209,6 +217,17 @@ export function AppBar() {
                 suppressHydrationWarning
               >
                 {t("nav.getting_there")}
+              </Link>
+              <span className="ap-nav-separator text-white/40">|</span>
+              <Link
+                href={paths.runmageddon}
+                className={cx("ap-nav-link ap-nav-link-runmageddon", isRunmageddonActive && "is-active")}
+                aria-current={isRunmageddonActive ? "page" : undefined}
+                suppressHydrationWarning
+              >
+                <span className={cx(pixelFont.className, "inline-block translate-y-[1px] text-[0.56rem] leading-none tracking-[0.06em]")}>
+                  {t("nav.runmageddon")}
+                </span>
               </Link>
             </nav>
           </div>
@@ -485,6 +504,21 @@ export function AppBar() {
                   suppressHydrationWarning
                 >
                   {t("nav.getting_there")}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href={paths.runmageddon}
+                  className={cx(
+                    "ap-mobile-link ap-mobile-link-runmageddon block rounded-md px-3 py-2 text-gray-200",
+                    isRunmageddonActive && "is-active",
+                  )}
+                  aria-current={isRunmageddonActive ? "page" : undefined}
+                  suppressHydrationWarning
+                >
+                  <span className={cx(pixelFont.className, "inline-block translate-y-[1px] text-[0.56rem] leading-none tracking-[0.06em]")}>
+                    {t("nav.runmageddon")}
+                  </span>
                 </Link>
               </li>
               <li className="ml-3">

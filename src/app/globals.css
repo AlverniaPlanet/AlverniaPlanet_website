@@ -274,6 +274,13 @@ p {
   transform: scaleX(1);
 }
 
+.ap-nav-link.ap-nav-link-runmageddon,
+.ap-nav-link.ap-nav-link-runmageddon:hover,
+.ap-nav-link.ap-nav-link-runmageddon:focus-visible,
+.ap-nav-link.ap-nav-link-runmageddon.is-active {
+  color: #f2cb47;
+}
+
 .ap-nav-link-button {
   background: transparent;
 }
@@ -391,6 +398,13 @@ p {
   background: rgba(79, 207, 222, 0.14);
   color: #ffffff;
   box-shadow: inset 0 0 0 1px rgba(79, 207, 222, 0.24);
+}
+
+.ap-mobile-link.ap-mobile-link-runmageddon,
+.ap-mobile-link.ap-mobile-link-runmageddon:hover,
+.ap-mobile-link.ap-mobile-link-runmageddon:focus-visible,
+.ap-mobile-link.ap-mobile-link-runmageddon.is-active {
+  color: #f2cb47;
 }
 
 .ap-primary-button {
@@ -620,6 +634,13 @@ p {
   box-shadow: inset 0 0 0 1px rgba(67, 135, 149, 0.18);
 }
 
+.theme-light .ap-nav-link.ap-nav-link-runmageddon,
+.theme-light .ap-nav-link.ap-nav-link-runmageddon:hover,
+.theme-light .ap-nav-link.ap-nav-link-runmageddon:focus-visible,
+.theme-light .ap-nav-link.ap-nav-link-runmageddon.is-active {
+  color: #c39200;
+}
+
 .theme-light .ap-nav-dropdown-panel {
   box-shadow:
     0 22px 44px rgba(67, 135, 149, 0.16),
@@ -653,6 +674,13 @@ p {
   background: rgba(108, 197, 211, 0.16);
   color: var(--ap-text);
   box-shadow: inset 0 0 0 1px rgba(67, 135, 149, 0.16);
+}
+
+.theme-light .ap-mobile-link.ap-mobile-link-runmageddon,
+.theme-light .ap-mobile-link.ap-mobile-link-runmageddon:hover,
+.theme-light .ap-mobile-link.ap-mobile-link-runmageddon:focus-visible,
+.theme-light .ap-mobile-link.ap-mobile-link-runmageddon.is-active {
+  color: #c39200;
 }
 
 .force-overlay {
@@ -3168,4 +3196,147 @@ body :is(#bookero, #bookero-plugin[data-mode="standard"], #bookero-plugin[data-m
   border-color: rgba(70, 220, 231, 0.65) !important;
   color: #171730 !important;
   -webkit-text-fill-color: #171730 !important;
+}
+
+.runmageddon-pixel-enter {
+  opacity: 0;
+  transform: translate3d(0, 16px, 0);
+  animation: runmageddon-pixel-enter 420ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: var(--pixel-enter-delay, 0ms);
+}
+
+.runmageddon-pixel-runner-track {
+  position: relative;
+  height: 100%;
+}
+
+.runmageddon-pixel-runner {
+  position: absolute;
+  top: 2px;
+  left: -56px;
+  width: 36px;
+  height: 32px;
+  --runner-light: #ffffff;
+  --runner-main: #f2cb47;
+  --runner-accent: #53deee;
+  --runner-start-left: -56px;
+  --runner-end-left: calc(100% + 56px);
+  --runner-drift-y: 0px;
+  --runner-scale-x: 1;
+  --runner-frame-1:
+    8px 0 var(--runner-light),
+    12px 0 var(--runner-light),
+    4px 4px var(--runner-light),
+    8px 4px var(--runner-light),
+    12px 4px var(--runner-light),
+    16px 4px var(--runner-light),
+    8px 8px var(--runner-light),
+    12px 8px var(--runner-main),
+    8px 12px var(--runner-main),
+    12px 12px var(--runner-main),
+    16px 12px var(--runner-accent),
+    4px 16px var(--runner-accent),
+    8px 16px var(--runner-main),
+    12px 16px var(--runner-main),
+    16px 16px var(--runner-accent),
+    20px 16px var(--runner-accent),
+    8px 20px var(--runner-main),
+    12px 20px var(--runner-main),
+    4px 24px var(--runner-light),
+    8px 24px var(--runner-main),
+    16px 24px var(--runner-main),
+    20px 24px var(--runner-accent),
+    0 28px var(--runner-light),
+    4px 28px var(--runner-accent),
+    20px 28px var(--runner-light);
+  --runner-frame-2:
+    8px 0 var(--runner-light),
+    12px 0 var(--runner-light),
+    4px 4px var(--runner-light),
+    8px 4px var(--runner-light),
+    12px 4px var(--runner-light),
+    16px 4px var(--runner-light),
+    8px 8px var(--runner-light),
+    12px 8px var(--runner-main),
+    8px 12px var(--runner-main),
+    12px 12px var(--runner-main),
+    16px 12px var(--runner-accent),
+    4px 16px var(--runner-accent),
+    8px 16px var(--runner-main),
+    12px 16px var(--runner-main),
+    16px 16px var(--runner-accent),
+    20px 16px var(--runner-accent),
+    12px 20px var(--runner-main),
+    16px 20px var(--runner-main),
+    0 24px var(--runner-light),
+    4px 24px var(--runner-accent),
+    8px 24px var(--runner-main),
+    16px 24px var(--runner-main),
+    20px 24px var(--runner-accent),
+    16px 28px var(--runner-light),
+    20px 28px var(--runner-accent),
+    24px 28px var(--runner-light);
+  animation: runmageddon-runner-move 16s linear infinite;
+  transform: translate3d(0, 0, 0) scaleX(var(--runner-scale-x));
+  will-change: left, transform;
+}
+
+.runmageddon-pixel-runner::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 4px;
+  box-shadow: var(--runner-frame-1);
+  animation: runmageddon-runner-frame 260ms steps(1, end) infinite;
+}
+
+@keyframes runmageddon-pixel-enter {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes runmageddon-runner-move {
+  0% {
+    left: var(--runner-start-left);
+    transform: translate3d(0, 0, 0) scaleX(var(--runner-scale-x));
+  }
+  50% {
+    transform: translate3d(0, var(--runner-drift-y), 0) scaleX(var(--runner-scale-x));
+  }
+  100% {
+    left: var(--runner-end-left);
+    transform: translate3d(0, 0, 0) scaleX(var(--runner-scale-x));
+  }
+}
+
+@keyframes runmageddon-runner-frame {
+  0%,
+  49.999% {
+    box-shadow: var(--runner-frame-1);
+  }
+  50%,
+  100% {
+    box-shadow: var(--runner-frame-2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .runmageddon-pixel-enter {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .runmageddon-pixel-runner,
+  .runmageddon-pixel-runner::before {
+    animation: none !important;
+  }
 }

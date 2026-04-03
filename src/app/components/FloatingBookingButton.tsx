@@ -12,7 +12,14 @@ const STICKY_CONTAINER_ID = "bookero-sticky-plugin";
 const STICKY_BUTTON_LABEL = "Bilety";
 const STICKY_LABEL_RETRY_DELAYS = [120, 360, 900, 1800] as const;
 
-const HIDDEN_PATHS = new Set(["/rezerwuj", "/en/reserve", "/pt/reservar"]);
+const HIDDEN_PATHS = new Set([
+  "/rezerwuj",
+  "/en/reserve",
+  "/pt/reservar",
+  "/runmageddon",
+  "/en/runmageddon",
+  "/pt/runmageddon",
+]);
 const STICKY_LABEL_MATCH = /rezerw|book|reserv|ticket|bilhet|bilet/i;
 
 type Locale = "pl" | "en" | "pt";
