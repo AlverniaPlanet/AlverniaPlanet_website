@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type CSSProperties } from "react";
+import { useEffect, useId, useState, type CSSProperties } from "react";
 import AdaptiveVideo from "@/app/components/AdaptiveVideo";
 import Card from "@/app/components/Card";
 import TourLineAccentTitle from "@/app/components/TourLineAccentTitle";
@@ -29,6 +29,16 @@ type CountdownUnitLabels = {
   minutes: string;
   seconds: string;
 };
+type TicketEligibilityItem = {
+  label: string;
+  body: string;
+};
+type TicketEligibilityInfo = {
+  triggerLabel: string;
+  title: string;
+  intro: string;
+  items: TicketEligibilityItem[];
+};
 type TicketOption = {
   badge: string;
   title: string;
@@ -36,6 +46,7 @@ type TicketOption = {
   details: string[];
   price: string;
   bookingServiceName: string;
+  eligibilityInfo?: TicketEligibilityInfo;
 };
 
 const COUNTDOWN_TARGET_ISO = "2026-04-18T00:00:00+02:00";
@@ -59,6 +70,88 @@ function getCountdownParts(now = Date.now()) {
     minutes: formatCountdownValue(minutes),
     seconds: formatCountdownValue(seconds),
   };
+}
+
+function cx(...classes: Array<string | false | undefined>) {
+  return classes.filter(Boolean).join(" ");
+}
+
+function TicketEligibilityPanel({
+  info,
+  isOpen,
+  onToggle,
+}: {
+  info: TicketEligibilityInfo;
+  isOpen: boolean;
+  onToggle: () => void;
+}) {
+  const panelId = useId();
+
+  return (
+    <div className="group/reduced-ticket mt-5">
+      <button
+        type="button"
+        aria-expanded={isOpen}
+        aria-controls={panelId}
+        className="flex w-full items-center justify-center gap-2 rounded-full border border-[color:var(--ap-border)] bg-[color:var(--ap-surface)] px-4 py-2 text-center text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-[color:var(--ap-accent)] transition hover:border-[color:var(--ap-accent)] hover:bg-[color:var(--ap-surface-strong)] hover:text-[color:var(--ap-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ap-accent)]"
+        onClick={onToggle}
+      >
+        <span className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-current text-[0.72rem] leading-none">
+          i
+        </span>
+        <span className="min-w-0">{info.triggerLabel}</span>
+      </button>
+
+      <div
+        id={panelId}
+        className={cx(
+          "grid transition-[grid-template-rows,opacity,margin-top] duration-300 ease-out",
+          isOpen ? "mt-3 grid-rows-[1fr] opacity-100" : "mt-0 grid-rows-[0fr] opacity-0",
+          "md:group-hover/reduced-ticket:mt-3 md:group-hover/reduced-ticket:grid-rows-[1fr] md:group-hover/reduced-ticket:opacity-100",
+          "md:group-focus-within/reduced-ticket:mt-3 md:group-focus-within/reduced-ticket:grid-rows-[1fr] md:group-focus-within/reduced-ticket:opacity-100",
+        )}
+      >
+        <div className="min-h-0 overflow-hidden">
+          <div className="rounded-[1.25rem] border border-[color:var(--ap-border)] bg-[color:var(--ap-surface-contrast)] px-4 py-4 text-left shadow-[0_18px_40px_rgba(0,0,0,0.18)] sm:px-5">
+            <div className="flex items-start gap-3">
+              <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[color:var(--ap-accent-soft)] text-[color:var(--ap-accent-contrast)]">
+                <svg viewBox="0 0 20 20" className="h-4 w-4" aria-hidden>
+                  <path
+                    d="M10 5.25a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2Zm-1 4.1h1.35v5.4H9z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </span>
+              <div className="min-w-0">
+                <h4 className="text-base font-semibold leading-tight text-[color:var(--ap-text-strong)]">
+                  {info.title}
+                </h4>
+                <p className="mt-1 text-sm leading-relaxed text-[color:var(--ap-text-dim)]">
+                  {info.intro}
+                </p>
+              </div>
+            </div>
+
+            <ul className="mt-4 space-y-3">
+              {info.items.map((item) => (
+                <li key={item.label} className="flex gap-3">
+                  <span className="mt-2 inline-flex h-2 w-2 shrink-0 rounded-full bg-[color:var(--ap-accent)] shadow-[0_0_10px_rgba(79,207,222,0.4)]" />
+                  <div>
+                    <p className="text-sm font-semibold leading-snug text-[color:var(--ap-text)]">
+                      {item.label}
+                    </p>
+                    <p className="mt-1 text-sm leading-relaxed text-[color:var(--ap-text-dim)]">
+                      {item.body}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 const COPY: Record<
@@ -190,6 +283,29 @@ const COPY: Record<
         details: ["Cena ulgowa za osobę"],
         price: "39 zł",
         bookingServiceName: CINEMA_360_BOOKING_SERVICES.reduced,
+        eligibilityInfo: {
+          triggerLabel: "Wymagania biletów ulgowych",
+          title: "Komu przysługuje bilet ulgowy?",
+          intro: "Przy wejściu wymagany jest dokument potwierdzający uprawnienie do ulgi.",
+          items: [
+            {
+              label: "Dzieci i młodzież szkolna",
+              body: "Dzieci od 3. roku życia i młodzież szkolna do 19. roku życia po okazaniu legitymacji szkolnej.",
+            },
+            {
+              label: "Studenci i doktoranci",
+              body: "Do ukończenia 26. roku życia po okazaniu ważnej legitymacji studenckiej lub doktoranckiej.",
+            },
+            {
+              label: "Emeryci i renciści",
+              body: "Po okazaniu legitymacji ze zdjęciem lub, jeśli legitymacja nie ma zdjęcia, wraz z dokumentem tożsamości.",
+            },
+            {
+              label: "Osoby z niepełnosprawnością",
+              body: "Po okazaniu orzeczenia o niepełnosprawności oraz dokumentu ze zdjęciem lub legitymacji osoby niepełnosprawnej. Ulga obejmuje także opiekuna.",
+            },
+          ],
+        },
       },
     ],
   },
@@ -300,6 +416,29 @@ const COPY: Record<
         details: ["Reduced price per person"],
         price: "39 PLN",
         bookingServiceName: CINEMA_360_BOOKING_SERVICES.reduced,
+        eligibilityInfo: {
+          triggerLabel: "Reduced ticket requirements",
+          title: "Who can use a reduced ticket?",
+          intro: "A valid document confirming the discount eligibility is required at entry.",
+          items: [
+            {
+              label: "Children and school students",
+              body: "Children from age 3 and school students up to age 19 with a valid school ID.",
+            },
+            {
+              label: "University students and doctoral students",
+              body: "Up to age 26 with a valid student or doctoral ID.",
+            },
+            {
+              label: "Retirees and pensioners",
+              body: "With a photo ID card or, if the card has no photo, together with an identity document.",
+            },
+            {
+              label: "People with disabilities",
+              body: "With a disability certificate and a photo ID, or with a disability ID card. The discount also applies to one caregiver.",
+            },
+          ],
+        },
       },
     ],
   },
@@ -410,6 +549,29 @@ const COPY: Record<
         details: ["Preço reduzido por pessoa"],
         price: "39 PLN",
         bookingServiceName: CINEMA_360_BOOKING_SERVICES.reduced,
+        eligibilityInfo: {
+          triggerLabel: "Requisitos do bilhete reduzido",
+          title: "Quem pode usar o bilhete reduzido?",
+          intro: "À entrada é necessário apresentar um documento válido que confirme o direito ao desconto.",
+          items: [
+            {
+              label: "Crianças e estudantes",
+              body: "Crianças a partir dos 3 anos e estudantes até aos 19 anos mediante apresentação de cartão escolar.",
+            },
+            {
+              label: "Estudantes universitários e doutorandos",
+              body: "Até aos 26 anos mediante apresentação de cartão de estudante ou de doutorando válido.",
+            },
+            {
+              label: "Reformados e pensionistas",
+              body: "Mediante apresentação de cartão com fotografia ou, se o cartão não tiver fotografia, juntamente com documento de identificação.",
+            },
+            {
+              label: "Pessoas com deficiência",
+              body: "Mediante apresentação de comprovativo de deficiência e documento com fotografia, ou cartão de pessoa com deficiência. O desconto também inclui um acompanhante.",
+            },
+          ],
+        },
       },
     ],
   },
@@ -419,6 +581,9 @@ export default function Kino360Content() {
   const { locale } = useI18n();
   const loc: Locale = (locale as Locale) ?? "pl";
   const copy = COPY[loc];
+  const [openEligibilityTicket, setOpenEligibilityTicket] = useState<string | null>(null);
+  const reducedEligibilityTriggerLabel =
+    copy.ticketsOptions.find((ticket) => ticket.eligibilityInfo)?.eligibilityInfo?.triggerLabel;
   const [countdown, setCountdown] = useState(() => ({
     days: "00",
     hours: "00",
@@ -634,11 +799,11 @@ export default function Kino360Content() {
               motion="off"
             >
               <p className="ap-type-section-body text-center max-w-3xl mx-auto">{copy.ticketsIntro}</p>
-              <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-x-6 gap-y-10">
+              <div className="mt-8 grid grid-cols-1 items-start gap-x-6 gap-y-10 lg:grid-cols-2">
                 {copy.ticketsOptions.map((option) => (
                   <div
                     key={option.title}
-                    className="ticket-card ap-tile group flex h-full flex-col rounded-3xl text-white/90"
+                    className="ticket-card ap-tile group flex self-start flex-col rounded-3xl text-white/90"
                   >
                     <div className="ticket-card-top">
                       <span className="ticket-card-badge">{option.badge}</span>
@@ -659,7 +824,27 @@ export default function Kino360Content() {
                           </li>
                         ))}
                       </ul>
-                      <div className="ticket-price-block mt-auto pt-7">
+                      {option.eligibilityInfo ? (
+                        <TicketEligibilityPanel
+                          info={option.eligibilityInfo}
+                          isOpen={openEligibilityTicket === option.bookingServiceName}
+                          onToggle={() =>
+                            setOpenEligibilityTicket((current) =>
+                              current === option.bookingServiceName ? null : option.bookingServiceName,
+                            )
+                          }
+                        />
+                      ) : reducedEligibilityTriggerLabel ? (
+                        <div className="mt-5" aria-hidden="true">
+                          <div className="flex w-full items-center justify-center gap-2 rounded-full border border-transparent px-4 py-2 text-center text-[0.72rem] font-semibold uppercase tracking-[0.14em] opacity-0">
+                            <span className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-transparent text-[0.72rem] leading-none">
+                              i
+                            </span>
+                            <span className="min-w-0">{reducedEligibilityTriggerLabel}</span>
+                          </div>
+                        </div>
+                      ) : null}
+                      <div className="ticket-price-block mt-8 pt-7">
                         <p className="ticket-price-label text-[0.7rem] uppercase tracking-[0.25em] text-white/60">
                           {copy.ticketsPriceLabel}
                         </p>
