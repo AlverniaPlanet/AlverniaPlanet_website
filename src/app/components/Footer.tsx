@@ -3,13 +3,41 @@
 import { memo } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useI18n } from "@/app/i18n-provider";
 import { useTheme } from "@/app/theme-provider";
 import { trackEvent } from "@/lib/analytics";
 import { getLocalizedPath, type Locale } from "@/lib/localizedRoutes";
 type LinkItem = { label: string; href: string };
 type Section = { title: string; links: LinkItem[] };
-type PolicyLink = { label: string; href: string };
+type PolicyLink = { label: string; href: string; highlight?: boolean };
+
+const RUNMAGEDDON_FOOTER_POLICIES: Record<Locale, PolicyLink[]> = {
+  pl: [
+    { label: "Regulamin gry Runmageddon", href: "/legal/runmageddon-game-regulamin.pdf", highlight: true },
+    {
+      label: "Polityka prywatności gry Runmageddon",
+      href: "/legal/runmageddon-game-polityka-prywatnosci.pdf",
+      highlight: true,
+    },
+  ],
+  en: [
+    { label: "Runmageddon game rules", href: "/legal/runmageddon-game-regulamin.pdf", highlight: true },
+    {
+      label: "Runmageddon game privacy policy",
+      href: "/legal/runmageddon-game-polityka-prywatnosci.pdf",
+      highlight: true,
+    },
+  ],
+  pt: [
+    { label: "Regulamento do jogo Runmageddon", href: "/legal/runmageddon-game-regulamin.pdf", highlight: true },
+    {
+      label: "Política de privacidade do jogo Runmageddon",
+      href: "/legal/runmageddon-game-polityka-prywatnosci.pdf",
+      highlight: true,
+    },
+  ],
+};
 
 const FOOTER_COPY: Record<
   Locale,
@@ -243,10 +271,20 @@ function MessengerIcon({ className }: { className?: string }) {
 const Footer = memo(function Footer() {
   const { locale } = useI18n();
   const { theme } = useTheme();
+  const pathname = usePathname();
   const loc: Locale = (locale as Locale) ?? "pl";
   const copy = FOOTER_COPY[loc];
   const rights = copy.rights.replace("{year}", String(new Date().getFullYear()));
   const isLight = theme === "light";
+  const normalizedPathname =
+    pathname && pathname !== "/" ? pathname.replace(/\/+$/, "").toLowerCase() : pathname ?? "/";
+  const isRunmageddonRoute =
+    normalizedPathname === "/runmageddon" ||
+    normalizedPathname === "/en/runmageddon" ||
+    normalizedPathname === "/pt/runmageddon";
+  const policyLinks = isRunmageddonRoute
+    ? [...copy.policies, ...RUNMAGEDDON_FOOTER_POLICIES[loc]]
+    : copy.policies;
   const logoSrc = isLight ? "/Loga/Logo_pozytyw.svg" : "/Loga/Logo_negatyw.svg";
   const ctaSurface = isLight
     ? "bg-[color:var(--ap-surface-contrast)] ring-1 ring-[color:var(--ap-border)] shadow-[var(--ap-card-shadow)] text-[color:var(--ap-text)]"
@@ -289,11 +327,17 @@ const Footer = memo(function Footer() {
       <div className="relative max-w-7xl mx-auto px-4 py-12 sm:py-14">
         {/* Polityki / regulaminy */}
         <div className="mb-6 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-white/70">
-          {copy.policies.map((item, idx) => (
+          {policyLinks.map((item, idx) => (
             <span key={item.href} className="flex items-center gap-3">
               <Link
                 href={item.href}
-                className="underline underline-offset-4 decoration-white/30 text-white/80 transition hover:decoration-white hover:text-white"
+                className={
+                  item.highlight
+                    ? isLight
+                      ? "underline underline-offset-4 decoration-[#f2cb47]/60 text-[#8a5b00] transition hover:decoration-[#f2cb47] hover:text-[#5b4308]"
+                      : "underline underline-offset-4 decoration-[#f2cb47]/55 text-[#f2cb47] transition hover:decoration-[#f2cb47] hover:text-[#ffe27a]"
+                    : "underline underline-offset-4 decoration-white/30 text-white/80 transition hover:decoration-white hover:text-white"
+                }
                 target="_blank"
                 rel="noopener noreferrer"
                 suppressHydrationWarning
@@ -301,7 +345,7 @@ const Footer = memo(function Footer() {
               >
                 {item.label}
               </Link>
-              {idx < copy.policies.length - 1 ? (
+              {idx < policyLinks.length - 1 ? (
                 <span className="text-white/30" aria-hidden="true">
                   •
                 </span>

@@ -322,7 +322,104 @@ export default function RunmageddonContent() {
   const loc: Locale = (locale as Locale) ?? "pl";
   const copy = COPY[loc];
   const isLight = theme === "light";
-  const isGameLocked = true;
+  const isGameLocked = false;
+  const gameCardClasses = cx(
+    "group relative flex min-h-[11.5rem] w-full flex-col items-center justify-start overflow-hidden rounded-[0.45rem] border-2 px-5 py-4 text-center transition duration-200",
+    isGameLocked
+      ? isLight
+        ? "border-[#d85c5c] bg-[linear-gradient(180deg,#fff1f1_0%,#ffc9c9_100%)] shadow-[0_0_0_2px_rgba(255,238,238,0.92),6px_6px_0_rgba(224,124,124,0.54)]"
+        : "border-[#a93c4d] bg-[#d44f63] shadow-[0_0_0_2px_rgba(64,10,18,0.68),6px_6px_0_rgba(47,8,17,0.48)]"
+      : isLight
+        ? "border-[#e8d594] bg-[linear-gradient(180deg,#fff9d9_0%,#ffe89b_100%)] shadow-[0_0_0_2px_rgba(255,252,232,0.94),6px_6px_0_rgba(232,213,148,0.58)] hover:-translate-y-0.5 hover:border-[#f2cb47] hover:bg-[linear-gradient(180deg,#fffbe6_0%,#ffe38a_100%)]"
+        : "border-[#b99214] bg-[#f2cb47] shadow-[0_0_0_2px_rgba(63,44,8,0.72),6px_6px_0_rgba(9,13,22,0.48)] hover:-translate-y-0.5 hover:bg-[#ffd45f]",
+  );
+  const gameCardContent = (
+    <>
+      <span
+        className={cx(
+          pixelFont.className,
+          "absolute right-[-3.4rem] top-4 z-10 w-[12rem] rotate-45 border-y px-2 py-1 text-center text-[0.42rem] uppercase tracking-[0.16em]",
+          isGameLocked
+            ? isLight
+              ? "border-[#d66c6c] bg-[#ef4444] text-white"
+              : "border-[#f08a94] bg-[#ef4444] text-white"
+            : isLight
+              ? "border-[#e8d594] bg-[#fff1bf] text-[#7a5208]"
+              : "border-[#f2cb47] bg-[#f2cb47] text-[#21180a]",
+        )}
+      >
+        {copy.gameLaunchRibbon}
+      </span>
+      <span
+        className={cx(
+          "absolute inset-x-0 top-0 h-[3px]",
+          isGameLocked
+            ? "bg-[#ef4444]"
+            : isLight
+              ? "bg-[#f2cb47]/55"
+              : "bg-white/35",
+        )}
+      />
+      <span
+        className={cx(
+          pixelFont.className,
+          "text-[0.46rem] uppercase tracking-[0.12em]",
+          isGameLocked
+            ? isLight
+              ? "text-[#9f1239]"
+              : "text-[#fff3f3]"
+            : isLight
+              ? "text-[#8a5b00]/78"
+              : "text-[#0b3441]/78",
+        )}
+      >
+        {isGameLocked ? copy.gameLockedState : isLight ? "Arcade" : "Mini Game"}
+      </span>
+      <span
+        className={cx(
+          "mt-3 text-3xl font-black leading-none tracking-[-0.05em] sm:text-[2.35rem]",
+          isGameLocked
+            ? isLight
+              ? "text-[#7f1d1d]"
+              : "text-white"
+            : isLight
+              ? "text-[#3b2a04]"
+              : "text-[#082432]",
+        )}
+      >
+        {copy.gameCta}
+      </span>
+      <span
+        className={cx(
+          "mt-3 text-sm leading-relaxed sm:text-[0.95rem]",
+          isGameLocked
+            ? isLight
+              ? "text-[#7f1d1d]"
+              : "text-white/88"
+            : isLight
+              ? "text-[#5b4308]"
+              : "text-[#082432]/84",
+        )}
+      >
+        {copy.gameDescription}
+      </span>
+      <span
+        className={cx(
+          pixelFont.className,
+          "mt-4 inline-flex rounded-[0.35rem] border px-3 py-2 text-[0.46rem] uppercase tracking-[0.12em]",
+          isGameLocked
+            ? isLight
+              ? "border-[#fca5a5] bg-[#fee2e2] text-[#b91c1c]"
+              : "border-white/25 bg-white/12 text-white"
+            : isLight
+              ? "border-[#f3d77b] bg-white/55 text-[#8a5b00]"
+              : "border-white/15 bg-white/10 text-white/90",
+        )}
+      >
+        {copy.gameLaunchNote}
+      </span>
+    </>
+  );
 
   return (
     <main
@@ -594,100 +691,20 @@ export default function RunmageddonContent() {
                     {copy.bingoDescription}
                   </span>
                 </a>
-                <div
-                  aria-disabled="true"
-                  className={cx(
-                    "relative flex min-h-[11.5rem] w-full flex-col items-center justify-start overflow-hidden rounded-[0.45rem] border-2 px-5 py-4 text-center",
-                    isGameLocked &&
-                      (isLight
-                        ? "border-[#d85c5c] bg-[linear-gradient(180deg,#fff1f1_0%,#ffc9c9_100%)] shadow-[0_0_0_2px_rgba(255,238,238,0.92),6px_6px_0_rgba(224,124,124,0.54)]"
-                        : "border-[#a93c4d] bg-[#d44f63] shadow-[0_0_0_2px_rgba(64,10,18,0.68),6px_6px_0_rgba(47,8,17,0.48)]"),
-                  )}
-                >
-                  <span
-                    className={cx(
-                      pixelFont.className,
-                      "absolute right-[-3.4rem] top-4 z-10 w-[12rem] rotate-45 border-y px-2 py-1 text-center text-[0.42rem] uppercase tracking-[0.16em]",
-                      isGameLocked
-                        ? isLight
-                          ? "border-[#d66c6c] bg-[#ef4444] text-white"
-                          : "border-[#f08a94] bg-[#ef4444] text-white"
-                        : isLight
-                          ? "border-[#e8d594] bg-[#fff1bf] text-[#7a5208]"
-                          : "border-[#f2cb47] bg-[#f2cb47] text-[#21180a]",
-                    )}
+                {isGameLocked ? (
+                  <div aria-disabled="true" className={gameCardClasses}>
+                    {gameCardContent}
+                  </div>
+                ) : (
+                  <a
+                    href={RUNMAGEDDON_GAME_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={gameCardClasses}
                   >
-                    {copy.gameLaunchRibbon}
-                  </span>
-                  <span
-                    className={cx(
-                      "absolute inset-x-0 top-0 h-[3px]",
-                      isGameLocked
-                        ? "bg-[#ef4444]"
-                        : isLight
-                          ? "bg-[#f2cb47]/55"
-                          : "bg-white/35",
-                    )}
-                  />
-                  <span
-                    className={cx(
-                      pixelFont.className,
-                      "text-[0.46rem] uppercase tracking-[0.12em]",
-                      isGameLocked
-                        ? isLight
-                          ? "text-[#9f1239]"
-                          : "text-[#fff3f3]"
-                        : isLight
-                          ? "text-[#8a5b00]/78"
-                          : "text-[#0b3441]/78",
-                    )}
-                  >
-                    {isGameLocked ? copy.gameLockedState : isLight ? "Arcade" : "Mini Game"}
-                  </span>
-                  <span
-                    className={cx(
-                      "mt-3 text-3xl font-black leading-none tracking-[-0.05em] sm:text-[2.35rem]",
-                      isGameLocked
-                        ? isLight
-                          ? "text-[#7f1d1d]"
-                          : "text-white"
-                        : isLight
-                          ? "text-[#3b2a04]"
-                          : "text-[#082432]",
-                    )}
-                  >
-                    {copy.gameCta}
-                  </span>
-                  <span
-                    className={cx(
-                      "mt-3 text-sm leading-relaxed sm:text-[0.95rem]",
-                      isGameLocked
-                        ? isLight
-                          ? "text-[#7f1d1d]"
-                          : "text-white/88"
-                        : isLight
-                          ? "text-[#5b4308]"
-                          : "text-[#082432]/84",
-                    )}
-                  >
-                    {copy.gameDescription}
-                  </span>
-                  <span
-                    className={cx(
-                      pixelFont.className,
-                      "mt-4 inline-flex rounded-[0.35rem] border px-3 py-2 text-[0.46rem] uppercase tracking-[0.12em]",
-                      isGameLocked
-                        ? isLight
-                          ? "border-[#fca5a5] bg-[#fee2e2] text-[#b91c1c]"
-                          : "border-white/25 bg-white/12 text-white"
-                        : isLight
-                          ? "border-[#f3d77b] bg-white/55 text-[#8a5b00]"
-                          : "border-white/15 bg-white/10 text-white/90",
-                    )}
-                  >
-                    {copy.gameLaunchNote}
-                  </span>
-                </div>
+                    {gameCardContent}
+                  </a>
+                )}
               </div>
             </div>
           </div>
@@ -875,6 +892,7 @@ export default function RunmageddonContent() {
                 {copy.registrationCta}
               </a>
             </div>
+
           </section>
         </ScrollMotionItem>
       </div>
