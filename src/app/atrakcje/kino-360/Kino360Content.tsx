@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useState, type CSSProperties } from "react";
+import { useEffect, useId, useRef, useState, type CSSProperties } from "react";
 import AdaptiveVideo from "@/app/components/AdaptiveVideo";
 import Card from "@/app/components/Card";
 import TourLineAccentTitle from "@/app/components/TourLineAccentTitle";
@@ -76,43 +76,90 @@ function cx(...classes: Array<string | false | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
-function TicketEligibilityPanel({
+function TicketEligibilityPopover({
+  detail,
   info,
   isOpen,
   onToggle,
+  onClose,
 }: {
+  detail: string;
   info: TicketEligibilityInfo;
   isOpen: boolean;
   onToggle: () => void;
+  onClose: () => void;
 }) {
   const panelId = useId();
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!containerRef.current?.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, onClose]);
 
   return (
-    <div className="group/reduced-ticket mt-5">
+    <div ref={containerRef} className="w-full max-w-sm">
       <button
         type="button"
         aria-expanded={isOpen}
         aria-controls={panelId}
-        className="flex w-full items-center justify-center gap-2 rounded-full border border-[color:var(--ap-border)] bg-[color:var(--ap-surface)] px-4 py-2 text-center text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-[color:var(--ap-accent)] transition hover:border-[color:var(--ap-accent)] hover:bg-[color:var(--ap-surface-strong)] hover:text-[color:var(--ap-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ap-accent)]"
+        aria-label={`${detail}. ${info.triggerLabel}`}
+        className={cx(
+          "ticket-list-panel flex w-full items-center gap-3 text-left text-white/78 transition duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ap-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ap-bg)]",
+          isOpen &&
+            "border-[color:var(--ap-accent)] bg-[color:var(--ap-surface-strong)] shadow-[0_0_0_1px_rgba(79,207,222,0.15),0_18px_34px_rgba(0,0,0,0.2)]",
+        )}
         onClick={onToggle}
       >
-        <span className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-current text-[0.72rem] leading-none">
+        <span className="ticket-detail-dot h-1.5 w-1.5 shrink-0 rounded-full bg-[#4fcfde]" />
+        <span className="min-w-0 flex-1 text-sm font-medium leading-relaxed text-current">
+          {detail}
+        </span>
+        <span
+          className={cx(
+            "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/14 bg-white/8 text-[0.9rem] font-semibold leading-none text-white/82 transition-transform duration-200 ease-out",
+            isOpen && "scale-105 border-[color:var(--ap-accent)] text-[color:var(--ap-accent)]",
+          )}
+          aria-hidden="true"
+        >
           i
         </span>
-        <span className="min-w-0">{info.triggerLabel}</span>
       </button>
 
       <div
         id={panelId}
         className={cx(
-          "grid transition-[grid-template-rows,opacity,margin-top] duration-300 ease-out",
+          "grid transition-[grid-template-rows,opacity,margin-top] duration-200 ease-out",
           isOpen ? "mt-3 grid-rows-[1fr] opacity-100" : "mt-0 grid-rows-[0fr] opacity-0",
-          "md:group-hover/reduced-ticket:mt-3 md:group-hover/reduced-ticket:grid-rows-[1fr] md:group-hover/reduced-ticket:opacity-100",
-          "md:group-focus-within/reduced-ticket:mt-3 md:group-focus-within/reduced-ticket:grid-rows-[1fr] md:group-focus-within/reduced-ticket:opacity-100",
         )}
       >
         <div className="min-h-0 overflow-hidden">
-          <div className="rounded-[1.25rem] border border-[color:var(--ap-border)] bg-[color:var(--ap-surface-contrast)] px-4 py-4 text-left shadow-[0_18px_40px_rgba(0,0,0,0.18)] sm:px-5">
+          <div className="relative mx-auto w-full rounded-[1.4rem] border border-[color:var(--ap-border)] bg-[color:var(--ap-surface-contrast)] px-4 py-4 text-left shadow-[0_22px_48px_rgba(0,0,0,0.2)] sm:max-w-[22rem] sm:px-5">
+            <span
+              className="absolute left-1/2 top-0 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rotate-45 border-l border-t border-[color:var(--ap-border)] bg-[color:var(--ap-surface-contrast)]"
+              aria-hidden="true"
+            />
             <div className="flex items-start gap-3">
               <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[color:var(--ap-accent-soft)] text-[color:var(--ap-accent-contrast)]">
                 <svg viewBox="0 0 20 20" className="h-4 w-4" aria-hidden>
@@ -123,7 +170,10 @@ function TicketEligibilityPanel({
                 </svg>
               </span>
               <div className="min-w-0">
-                <h4 className="text-base font-semibold leading-tight text-[color:var(--ap-text-strong)]">
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-[color:var(--ap-accent)]">
+                  {info.triggerLabel}
+                </p>
+                <h4 className="mt-2 text-base font-semibold leading-tight text-[color:var(--ap-text-strong)]">
                   {info.title}
                 </h4>
                 <p className="mt-1 text-sm leading-relaxed text-[color:var(--ap-text-dim)]">
@@ -161,6 +211,7 @@ const COPY: Record<
     heroTag: string;
     heroTitle: string;
     videoFallback: string;
+    spotlightTitleLines: string[];
     countdownLabel: string;
     countdownUnits: CountdownUnitLabels;
     featuresTitle: string;
@@ -187,6 +238,7 @@ const COPY: Record<
     heroTag: "Atrakcje",
     heroTitle: "Kino 360°",
     videoFallback: "Twój browser nie wspiera elementu video.",
+    spotlightTitleLines: ["Największe kino 360°", "w Europie"],
     countdownLabel: "Pierwszy seans 18.04.2026",
     countdownUnits: {
       days: "dni",
@@ -320,6 +372,7 @@ const COPY: Record<
     heroTag: "Attractions",
     heroTitle: "360° cinema",
     videoFallback: "Your browser does not support the video element.",
+    spotlightTitleLines: ["The largest 360° cinema", "in Europe"],
     countdownLabel: "First screening 18.04.2026",
     countdownUnits: {
       days: "days",
@@ -453,6 +506,7 @@ const COPY: Record<
     heroTag: "Atrações",
     heroTitle: "Cinema 360°",
     videoFallback: "O seu navegador não suporta o elemento de vídeo.",
+    spotlightTitleLines: ["O maior cinema 360°", "da Europa"],
     countdownLabel: "Primeira sessão 18.04.2026",
     countdownUnits: {
       days: "dias",
@@ -582,8 +636,6 @@ export default function Kino360Content() {
   const loc: Locale = (locale as Locale) ?? "pl";
   const copy = COPY[loc];
   const [openEligibilityTicket, setOpenEligibilityTicket] = useState<string | null>(null);
-  const reducedEligibilityTriggerLabel =
-    copy.ticketsOptions.find((ticket) => ticket.eligibilityInfo)?.eligibilityInfo?.triggerLabel;
   const [countdown, setCountdown] = useState(() => ({
     days: "00",
     hours: "00",
@@ -678,6 +730,18 @@ export default function Kino360Content() {
             <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(10,20,42,0.84)_0%,rgba(6,10,22,0.96)_100%)] px-4 py-6 shadow-[0_24px_64px_rgba(0,0,0,0.28)] sm:px-7 sm:py-8">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(126,246,255,0.14),transparent_36%),radial-gradient(circle_at_bottom_right,rgba(255,93,93,0.16),transparent_34%)]" />
               <div className="relative">
+                <div className="mx-auto mb-6 w-full max-w-6xl text-center sm:mb-7">
+                  <h2 className="mx-auto w-full max-w-[24ch] text-balance text-[clamp(2rem,5vw,4rem)] font-black leading-[0.96] tracking-[-0.05em] text-white sm:max-w-[26ch]">
+                    {copy.spotlightTitleLines.map((line) => (
+                      <span key={line} className="block sm:whitespace-nowrap">
+                        {line}
+                      </span>
+                    ))}
+                  </h2>
+                  <p className="mx-auto mt-4 max-w-3xl text-[clamp(1rem,1.2vw,1.24rem)] leading-[1.7] text-white/72">
+                    {spotlightFeature.body}
+                  </p>
+                </div>
                 <div className="flex justify-center">
                   <div className="inline-flex rounded-[1rem] bg-[linear-gradient(135deg,#ff6a3d_0%,#ff4d62_100%)] px-5 py-2 text-center text-[0.78rem] font-black uppercase tracking-[0.14em] text-white shadow-[0_14px_32px_rgba(255,98,77,0.38)] sm:px-7">
                     {copy.countdownLabel}
@@ -706,9 +770,11 @@ export default function Kino360Content() {
           </ScrollMotionItem>
 
           <ScrollMotionItem strength="strong" delay={110} className="ap-deferred-section">
-            <Card className="space-y-6" motion="off">
-              <TourLineAccentTitle variant="cool">{copy.featuresTitle}</TourLineAccentTitle>
-              <div className="grid gap-8 xl:grid-cols-[minmax(22rem,0.88fr)_minmax(0,1.12fr)] xl:items-start xl:gap-10 2xl:grid-cols-[minmax(24rem,0.82fr)_minmax(0,1.18fr)]">
+            <Card className="space-y-5 sm:space-y-6" motion="off" dense>
+              <TourLineAccentTitle className="-mt-1 sm:-mt-2" variant="cool">
+                {copy.featuresTitle}
+              </TourLineAccentTitle>
+              <div className="grid gap-7 xl:grid-cols-[minmax(20rem,0.84fr)_minmax(0,1.16fr)] xl:items-start xl:gap-8 2xl:grid-cols-[minmax(22rem,0.78fr)_minmax(0,1.22fr)]">
                 <div className="space-y-5 lg:space-y-6 xl:sticky xl:top-20">
                   <div className="space-y-4 text-center sm:text-left">
                     <p className="text-[0.72rem] font-medium uppercase tracking-[0.28em] text-[#7ef6ff]/76">
@@ -735,43 +801,29 @@ export default function Kino360Content() {
                       </div>
                     ))}
                   </div>
-
-                  <article className="kino360-feature-hero group relative overflow-hidden rounded-[2rem] border border-[#7ef6ff]/18 bg-[linear-gradient(180deg,rgba(126,246,255,0.12)_0%,rgba(255,255,255,0.04)_100%)] px-5 py-6 shadow-[0_24px_70px_rgba(0,0,0,0.28)] sm:px-6">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(126,246,255,0.18),transparent_34%),radial-gradient(circle_at_bottom_left,rgba(77,134,255,0.18),transparent_40%)]" />
-                    <div className="relative space-y-3">
-                      <div className="space-y-3">
-                        <h4 className="max-w-[12ch] text-pretty text-[clamp(1.9rem,4.4vw,2.8rem)] font-semibold leading-[1.02] tracking-[-0.04em] text-white">
-                          {spotlightFeature.title}
-                        </h4>
-                        <p className="max-w-xl text-base leading-relaxed text-white/72 sm:text-lg">
-                          {spotlightFeature.body}
-                        </p>
-                      </div>
-                    </div>
-                  </article>
                 </div>
 
-                <div className="grid gap-4 md:grid-cols-2 xl:auto-rows-fr">
+                <div className="grid gap-3 md:grid-cols-2 xl:auto-rows-fr">
                   {regularFeatures.map((item, index) => (
                     <article
                       key={item.title}
-                      className="kino360-feature-card group relative overflow-hidden rounded-[1.9rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05)_0%,rgba(255,255,255,0.025)_100%)] px-5 py-5 shadow-[0_18px_44px_rgba(0,0,0,0.18)] transition-all duration-300 ease-out sm:px-6 sm:py-6"
+                      className="kino360-feature-card ap-interactive-surface group relative overflow-hidden rounded-[1.6rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05)_0%,rgba(255,255,255,0.025)_100%)] px-3.5 py-3.5 shadow-[0_18px_44px_rgba(0,0,0,0.18)] transition-all duration-300 ease-out sm:px-4 sm:py-4"
                       style={{ "--tour-delay": `${(index % 6) * 0.18}s` } as CSSProperties}
                     >
                       <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(126,246,255,0.12),transparent_34%)] opacity-70 transition-opacity duration-300 group-hover:opacity-100" />
-                      <div className="relative space-y-4">
+                      <div className="relative space-y-3">
                         <div className="flex items-center justify-between gap-3">
-                          <span className="inline-flex rounded-full border border-cyan-400/25 bg-cyan-500/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-cyan-100">
+                          <span className="inline-flex rounded-full border border-cyan-400/25 bg-cyan-500/15 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.16em] text-cyan-100">
                             {item.badge}
                           </span>
-                          <span className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-white/28">
+                          <span className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-white/28">
                             {String(index + 1).padStart(2, "0")}
                           </span>
                         </div>
-                        <h4 className="max-w-[12ch] text-pretty text-[clamp(1.5rem,2.2vw,2rem)] font-semibold leading-[1.08] tracking-[-0.03em] text-white">
+                        <h4 className="max-w-[11ch] text-pretty text-[clamp(1.18rem,1.7vw,1.6rem)] font-semibold leading-[1.06] tracking-[-0.03em] text-white">
                           {item.title}
                         </h4>
-                        <p className="text-base leading-relaxed text-white/70">
+                        <p className="text-[0.88rem] leading-[1.55] text-white/70 sm:text-[0.92rem]">
                           {item.body}
                         </p>
                       </div>
@@ -816,34 +868,34 @@ export default function Kino360Content() {
                         {option.subtitle}
                       </p>
                       <div className="ticket-card-divider mt-6" />
-                      <ul className="ticket-list-panel mt-5 mb-8 space-y-3 text-sm text-white/75 text-left mx-auto max-w-sm">
-                        {option.details.map((detail) => (
-                          <li key={detail} className="ticket-detail flex gap-3">
-                            <span className="ticket-detail-dot mt-2 h-1.5 w-1.5 rounded-full bg-[#4fcfde] shrink-0" />
-                            <span>{detail}</span>
-                          </li>
-                        ))}
-                      </ul>
-                      {option.eligibilityInfo ? (
-                        <TicketEligibilityPanel
-                          info={option.eligibilityInfo}
-                          isOpen={openEligibilityTicket === option.bookingServiceName}
-                          onToggle={() =>
-                            setOpenEligibilityTicket((current) =>
-                              current === option.bookingServiceName ? null : option.bookingServiceName,
-                            )
-                          }
-                        />
-                      ) : reducedEligibilityTriggerLabel ? (
-                        <div className="mt-5" aria-hidden="true">
-                          <div className="flex w-full items-center justify-center gap-2 rounded-full border border-transparent px-4 py-2 text-center text-[0.72rem] font-semibold uppercase tracking-[0.14em] opacity-0">
-                            <span className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-transparent text-[0.72rem] leading-none">
-                              i
-                            </span>
-                            <span className="min-w-0">{reducedEligibilityTriggerLabel}</span>
-                          </div>
-                        </div>
-                      ) : null}
+                      <div className="mt-5 mb-8 flex flex-col items-center gap-3">
+                        {option.details.map((detail, detailIndex) =>
+                          detailIndex === 0 && option.eligibilityInfo ? (
+                            <TicketEligibilityPopover
+                              key={detail}
+                              detail={detail}
+                              info={option.eligibilityInfo}
+                              isOpen={openEligibilityTicket === option.bookingServiceName}
+                              onToggle={() =>
+                                setOpenEligibilityTicket((current) =>
+                                  current === option.bookingServiceName ? null : option.bookingServiceName,
+                                )
+                              }
+                              onClose={() => setOpenEligibilityTicket(null)}
+                            />
+                          ) : (
+                            <div
+                              key={detail}
+                              className="ticket-list-panel w-full max-w-sm text-sm text-white/75"
+                            >
+                              <div className="ticket-detail flex gap-3">
+                                <span className="ticket-detail-dot mt-2 h-1.5 w-1.5 rounded-full bg-[#4fcfde] shrink-0" />
+                                <span>{detail}</span>
+                              </div>
+                            </div>
+                          ),
+                        )}
+                      </div>
                       <div className="ticket-price-block mt-8 pt-7">
                         <p className="ticket-price-label text-[0.7rem] uppercase tracking-[0.25em] text-white/60">
                           {copy.ticketsPriceLabel}
