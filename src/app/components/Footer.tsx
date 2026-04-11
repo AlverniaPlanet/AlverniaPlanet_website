@@ -12,12 +12,33 @@ type LinkItem = { label: string; href: string };
 type Section = { title: string; links: LinkItem[] };
 type PolicyLink = { label: string; href: string; highlight?: boolean };
 
+const RUNMAGEDDON_SOCIAL_POLICY_LINKS = {
+  rodo: "/legal/RUNMAGEDDON/klauzula_rodo_social_runmageddon%20+%20JS.docx.pdf",
+  contest: "/legal/RUNMAGEDDON/regulamin_konkurs_social_runmageddon%20+%20JS.docx.pdf",
+  stories: "/legal/RUNMAGEDDON/regulamin_stories_obcy_runmageddon%20+%20JS.docx.pdf",
+} as const;
+
 const RUNMAGEDDON_FOOTER_POLICIES: Record<Locale, PolicyLink[]> = {
   pl: [
     { label: "Regulamin gry Runmageddon", href: "/legal/runmageddon-game-regulamin.pdf", highlight: true },
     {
       label: "Polityka prywatności gry Runmageddon",
       href: "/legal/runmageddon-game-polityka-prywatnosci.pdf",
+      highlight: true,
+    },
+    {
+      label: "Regulamin konkursu social Runmageddon",
+      href: RUNMAGEDDON_SOCIAL_POLICY_LINKS.contest,
+      highlight: true,
+    },
+    {
+      label: "Klauzula RODO social Runmageddon",
+      href: RUNMAGEDDON_SOCIAL_POLICY_LINKS.rodo,
+      highlight: true,
+    },
+    {
+      label: "Regulamin stories Obcy Runmageddon",
+      href: RUNMAGEDDON_SOCIAL_POLICY_LINKS.stories,
       highlight: true,
     },
   ],
@@ -28,12 +49,42 @@ const RUNMAGEDDON_FOOTER_POLICIES: Record<Locale, PolicyLink[]> = {
       href: "/legal/runmageddon-game-polityka-prywatnosci.pdf",
       highlight: true,
     },
+    {
+      label: "Runmageddon social contest rules",
+      href: RUNMAGEDDON_SOCIAL_POLICY_LINKS.contest,
+      highlight: true,
+    },
+    {
+      label: "Runmageddon social GDPR clause",
+      href: RUNMAGEDDON_SOCIAL_POLICY_LINKS.rodo,
+      highlight: true,
+    },
+    {
+      label: 'Runmageddon "Alien" stories rules',
+      href: RUNMAGEDDON_SOCIAL_POLICY_LINKS.stories,
+      highlight: true,
+    },
   ],
   pt: [
     { label: "Regulamento do jogo Runmageddon", href: "/legal/runmageddon-game-regulamin.pdf", highlight: true },
     {
       label: "Política de privacidade do jogo Runmageddon",
       href: "/legal/runmageddon-game-polityka-prywatnosci.pdf",
+      highlight: true,
+    },
+    {
+      label: "Regulamento do concurso social Runmageddon",
+      href: RUNMAGEDDON_SOCIAL_POLICY_LINKS.contest,
+      highlight: true,
+    },
+    {
+      label: "Cláusula GDPR social Runmageddon",
+      href: RUNMAGEDDON_SOCIAL_POLICY_LINKS.rodo,
+      highlight: true,
+    },
+    {
+      label: 'Regulamento dos stories "Alien" Runmageddon',
+      href: RUNMAGEDDON_SOCIAL_POLICY_LINKS.stories,
       highlight: true,
     },
   ],
