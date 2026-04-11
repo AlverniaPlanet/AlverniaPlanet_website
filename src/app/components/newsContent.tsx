@@ -36,10 +36,10 @@ export const NEWS_COPY: Record<Locale, NewsSection> = {
       },
       {
         badge: "Już w kwietniu",
-        title: "Otwieramy największe kino 360° w Europie",
+        title: "Otwieramy największe Kino Sferyczne 3D 360° w Europie",
         description:
-          "W kwietniu otwieramy widowiskowe Kino 360°, które stanie się jednym z najmocniejszych punktów całego kompleksu. Szykujemy doświadczenie zaprojektowane na pełne zanurzenie w obrazie, dźwięku i przestrzeni kopuły.",
-        cta: "Poznaj Kino 360°",
+          "W kwietniu otwieramy widowiskowe Kino Sferyczne 3D 360°, które stanie się jednym z najmocniejszych punktów całego kompleksu. Szykujemy doświadczenie zaprojektowane na pełne zanurzenie w obrazie, dźwięku i przestrzeni kopuły.",
+        cta: "Poznaj Kino Sferyczne 3D 360°",
         href: "/atrakcje/kino-360",
       },
       {
@@ -67,10 +67,10 @@ export const NEWS_COPY: Record<Locale, NewsSection> = {
       },
       {
         badge: "Opening in April",
-        title: "We are opening the largest 360° cinema in Europe",
+        title: "We are opening the largest spherical 3D 360° cinema in Europe",
         description:
-          "In April, we are launching a spectacular 360° cinema set to become one of the boldest features of the entire complex. It is being designed as a fully immersive experience built around image, sound, and the scale of the dome itself.",
-        cta: "Discover the 360° cinema",
+          "In April, we are launching the spectacular Spherical 3D 360° Cinema, set to become one of the boldest features of the entire complex. It is being designed as a fully immersive experience built around image, sound, and the scale of the dome itself.",
+        cta: "Discover the Spherical 3D 360° Cinema",
         href: "/atrakcje/kino-360",
       },
       {
@@ -98,10 +98,10 @@ export const NEWS_COPY: Record<Locale, NewsSection> = {
       },
       {
         badge: "Abre em abril",
-        title: "Vamos abrir o maior cinema 360° da Europa",
+        title: "Vamos abrir o maior Cinema Esférico 3D 360° da Europa",
         description:
-          "Em abril abrimos um impressionante Cinema 360°, pensado para se tornar um dos pontos mais marcantes de todo o complexo. A experiência foi concebida para envolver o visitante em imagem, som e escala de forma total.",
-        cta: "Descobrir o Cinema 360°",
+          "Em abril abrimos o impressionante Cinema Esférico 3D 360°, pensado para se tornar um dos pontos mais marcantes de todo o complexo. A experiência foi concebida para envolver o visitante em imagem, som e escala de forma total.",
+        cta: "Descobrir o Cinema Esférico 3D 360°",
         href: "/atrakcje/kino-360",
       },
       {

@@ -1,4 +1,4 @@
-// File: /Users/szymonczermak/Desktop/AlverniaPlanet/AlverniaPlanet_website/src/app/en/runmageddon/page.tsx
+// File: /Users/a1234/Desktop/Alvernia/strona/V11/AlverniaPlanet_website/src/app/en/runmageddon/page.tsx
 import * as entry from '../../../../../src/app/en/runmageddon/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

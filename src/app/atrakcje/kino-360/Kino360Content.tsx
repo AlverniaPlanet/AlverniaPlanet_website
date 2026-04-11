@@ -236,9 +236,9 @@ const COPY: Record<
       ],
     },
     heroTag: "Atrakcje",
-    heroTitle: "Kino 360°",
+    heroTitle: "Kino Sferyczne 3D 360°",
     videoFallback: "Twój browser nie wspiera elementu video.",
-    spotlightTitleLines: ["Największe kino 360°", "w Europie"],
+    spotlightTitleLines: ["Największe Kino Sferyczne 3D 360°", "w Europie"],
     countdownLabel: "Pierwszy seans 18.04.2026",
     countdownUnits: {
       days: "dni",
@@ -248,7 +248,7 @@ const COPY: Record<
     },
     featuresTitle: "Pierwszy seans: One Step Beyond",
     featuresIntro:
-      "Premierowy pokaz otwiera Kino 360° formatem, który ma działać skalą, przestrzenią i pełnym zanurzeniem, a nie zwykłym ekranem w sali.",
+      "Premierowy pokaz otwiera Kino Sferyczne 3D 360° formatem, który ma działać skalą, przestrzenią i pełnym zanurzeniem, a nie zwykłym ekranem w sali.",
     featureStats: [
       { value: "15 m", label: "wysokość kopuły" },
       { value: "2 000 m²", label: "powierzchnia kopuły" },
@@ -283,12 +283,12 @@ const COPY: Record<
       {
         badge: "Premiera",
         title: "Seans na otwarcie",
-        body: "„One Step Beyond: A Journey to Mars” otwiera repertuar Kina 360° jako pierwszy pokaz dostępny od 18 kwietnia.",
+        body: "„One Step Beyond: A Journey to Mars” otwiera repertuar Kina Sferycznego 3D 360° jako pierwszy pokaz dostępny od 18 kwietnia.",
       },
       {
         badge: "Doświadczenie",
-        title: "Największe kino 360° w Europie",
-        body: "Kino 360° to największe kino tego typu w Europie i skaluje pokaz do poziomu, którego nie da się osiągnąć w tradycyjnej sali.",
+        title: "Największe Kino Sferyczne 3D 360° w Europie",
+        body: "Kino Sferyczne 3D 360° to największe kino tego typu w Europie i skaluje pokaz do poziomu, którego nie da się osiągnąć w tradycyjnej sali.",
       },
     ],
     galleryTitle: "Zobacz przestrzeń",
@@ -314,7 +314,7 @@ const COPY: Record<
         image: "/galeria/Ogolne/webp/1.webp",
       },
     ],
-    ticketsTitle: "Bilety do Kina 360°",
+    ticketsTitle: "Bilety do Kina Sferycznego 3D 360°",
     ticketsIntro:
       "Wybierz wariant biletu. Po kliknięciu formularz otworzy od razu dokładnie ten bilet.",
     ticketsPriceLabel: "Cena za osobę",
@@ -323,7 +323,7 @@ const COPY: Record<
       {
         badge: "Normalny",
         title: "Bilet normalny",
-        subtitle: "Seans w Kinie 360°",
+        subtitle: "Seans w Kinie Sferycznym 3D 360°",
         details: ["Cena regularna za osobę"],
         price: "49 zł",
         bookingServiceName: CINEMA_360_BOOKING_SERVICES.normal,
@@ -331,7 +331,7 @@ const COPY: Record<
       {
         badge: "Ulgowy",
         title: "Bilet ulgowy",
-        subtitle: "Seans w Kinie 360°",
+        subtitle: "Seans w Kinie Sferycznym 3D 360°",
         details: ["Cena ulgowa za osobę"],
         price: "39 zł",
         bookingServiceName: CINEMA_360_BOOKING_SERVICES.reduced,
@@ -370,9 +370,9 @@ const COPY: Record<
       ],
     },
     heroTag: "Attractions",
-    heroTitle: "360° cinema",
+    heroTitle: "Spherical 3D 360° Cinema",
     videoFallback: "Your browser does not support the video element.",
-    spotlightTitleLines: ["The largest 360° cinema", "in Europe"],
+    spotlightTitleLines: ["The largest spherical 3D 360° cinema", "in Europe"],
     countdownLabel: "First screening 18.04.2026",
     countdownUnits: {
       days: "days",
@@ -382,7 +382,7 @@ const COPY: Record<
     },
     featuresTitle: "First screening: One Step Beyond",
     featuresIntro:
-      "The opening show launches the 360° cinema with a format built around scale, immersion, and a full-dome image rather than a standard auditorium screen.",
+      "The opening show launches the Spherical 3D 360° Cinema with a format built around scale, immersion, and a full-dome image rather than a standard auditorium screen.",
     featureStats: [
       { value: "15 m", label: "dome height" },
       { value: "2,000 m²", label: "dome floor area" },
@@ -417,12 +417,12 @@ const COPY: Record<
       {
         badge: "Opening",
         title: "Opening screening",
-        body: "“One Step Beyond: A Journey to Mars” opens the 360° Cinema program as the first show available from April 18.",
+        body: "“One Step Beyond: A Journey to Mars” opens the Spherical 3D 360° Cinema program as the first show available from April 18.",
       },
       {
         badge: "Experience",
-        title: "The largest 360° cinema in Europe",
-        body: "The 360° cinema is the largest venue of its kind in Europe, giving the show a scale impossible to match in a standard auditorium.",
+        title: "The largest spherical 3D 360° cinema in Europe",
+        body: "The Spherical 3D 360° Cinema is the largest venue of its kind in Europe, giving the show a scale impossible to match in a standard auditorium.",
       },
     ],
     galleryTitle: "See the venue",
@@ -448,7 +448,7 @@ const COPY: Record<
         image: "/galeria/Ogolne/webp/1.webp",
       },
     ],
-    ticketsTitle: "360° cinema tickets",
+    ticketsTitle: "Spherical 3D 360° Cinema tickets",
     ticketsIntro:
       "Choose a ticket type. After clicking, the booking form will open with that exact ticket selected.",
     ticketsPriceLabel: "Price per person",
@@ -457,7 +457,7 @@ const COPY: Record<
       {
         badge: "Standard",
         title: "Standard ticket",
-        subtitle: "360° cinema screening",
+        subtitle: "Spherical 3D 360° Cinema screening",
         details: ["Regular price per person"],
         price: "49 PLN",
         bookingServiceName: CINEMA_360_BOOKING_SERVICES.normal,
@@ -465,7 +465,7 @@ const COPY: Record<
       {
         badge: "Reduced",
         title: "Reduced ticket",
-        subtitle: "360° cinema screening",
+        subtitle: "Spherical 3D 360° Cinema screening",
         details: ["Reduced price per person"],
         price: "39 PLN",
         bookingServiceName: CINEMA_360_BOOKING_SERVICES.reduced,
@@ -504,9 +504,9 @@ const COPY: Record<
       ],
     },
     heroTag: "Atrações",
-    heroTitle: "Cinema 360°",
+    heroTitle: "Cinema Esférico 3D 360°",
     videoFallback: "O seu navegador não suporta o elemento de vídeo.",
-    spotlightTitleLines: ["O maior cinema 360°", "da Europa"],
+    spotlightTitleLines: ["O maior Cinema Esférico 3D 360°", "da Europa"],
     countdownLabel: "Primeira sessão 18.04.2026",
     countdownUnits: {
       days: "dias",
@@ -516,7 +516,7 @@ const COPY: Record<
     },
     featuresTitle: "Primeira sessão: One Step Beyond",
     featuresIntro:
-      "A sessão de estreia lança o Cinema 360° com um formato feito para impressionar pela escala, pela imersão e pela imagem fulldome em toda a cúpula.",
+      "A sessão de estreia lança o Cinema Esférico 3D 360° com um formato feito para impressionar pela escala, pela imersão e pela imagem fulldome em toda a cúpula.",
     featureStats: [
       { value: "15 m", label: "altura da cúpula" },
       { value: "2 000 m²", label: "área da cúpula" },
@@ -551,12 +551,12 @@ const COPY: Record<
       {
         badge: "Estreia",
         title: "Sessão de abertura",
-        body: "“One Step Beyond: A Journey to Mars” inaugura a programação do Cinema 360° como primeira sessão disponível a partir de 18 de abril.",
+        body: "“One Step Beyond: A Journey to Mars” inaugura a programação do Cinema Esférico 3D 360° como primeira sessão disponível a partir de 18 de abril.",
       },
       {
         badge: "Experiência",
-        title: "O maior cinema 360° da Europa",
-        body: "O Cinema 360° é o maior espaço deste tipo na Europa, dando à experiência uma escala impossível de reproduzir numa sala tradicional.",
+        title: "O maior Cinema Esférico 3D 360° da Europa",
+        body: "O Cinema Esférico 3D 360° é o maior espaço deste tipo na Europa, dando à experiência uma escala impossível de reproduzir numa sala tradicional.",
       },
     ],
     galleryTitle: "Ver o espaço",
@@ -582,7 +582,7 @@ const COPY: Record<
         image: "/galeria/Ogolne/webp/1.webp",
       },
     ],
-    ticketsTitle: "Bilhetes para o Cinema 360°",
+    ticketsTitle: "Bilhetes para o Cinema Esférico 3D 360°",
     ticketsIntro:
       "Escolha o tipo de bilhete. Após o clique, o formulário abre com esse bilhete já selecionado.",
     ticketsPriceLabel: "Preço por pessoa",
@@ -591,7 +591,7 @@ const COPY: Record<
       {
         badge: "Normal",
         title: "Bilhete normal",
-        subtitle: "Sessão no Cinema 360°",
+        subtitle: "Sessão no Cinema Esférico 3D 360°",
         details: ["Preço normal por pessoa"],
         price: "49 PLN",
         bookingServiceName: CINEMA_360_BOOKING_SERVICES.normal,
@@ -599,7 +599,7 @@ const COPY: Record<
       {
         badge: "Reduzido",
         title: "Bilhete reduzido",
-        subtitle: "Sessão no Cinema 360°",
+        subtitle: "Sessão no Cinema Esférico 3D 360°",
         details: ["Preço reduzido por pessoa"],
         price: "39 PLN",
         bookingServiceName: CINEMA_360_BOOKING_SERVICES.reduced,

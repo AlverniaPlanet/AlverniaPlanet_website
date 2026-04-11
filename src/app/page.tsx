@@ -95,8 +95,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         tone: "cool",
       },
       {
-        message: "Pierwszy seans Kina 360 już 18 kwietnia",
-        cta: "Zobacz Kino 360",
+        message: "Pierwszy seans Kina Sferycznego 3D 360° już 18 kwietnia",
+        cta: "Zobacz Kino Sferyczne 3D 360°",
         href: "/atrakcje/kino-360",
         tone: "hot",
         previewMedia: "cinema360",
@@ -107,10 +107,10 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       intro: "Wejdź do świata kopuł i zacznij od naszych trzech flagowych doświadczeń.",
       items: [
         {
-          title: "Kino 360°",
+          title: "Kino Sferyczne 3D 360°",
           description:
             "Immersyjne projekcje sferyczne w jednej z najbardziej zaawansowanych kopuł w Europie.",
-          cta: "Zobacz kino 360°",
+          cta: "Zobacz Kino Sferyczne 3D 360°",
           href: "/atrakcje/kino-360",
           image: "/galeria/Ogolne/webp/4.webp",
           imageAlt: "Wnętrze kopuły z ekranem 360°",
@@ -245,8 +245,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         tone: "cool",
       },
       {
-        message: "First 360° Cinema screening starts on April 18",
-        cta: "See 360° Cinema",
+        message: "The first Spherical 3D 360° Cinema screening starts on April 18",
+        cta: "See the Spherical 3D 360° Cinema",
         href: "/atrakcje/kino-360",
         tone: "hot",
         previewMedia: "cinema360",
@@ -257,9 +257,9 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       intro: "Start with our signature experiences inside the domes.",
       items: [
         {
-          title: "360° Cinema",
+          title: "Spherical 3D 360° Cinema",
           description: "Immersive dome screenings with the picture all around you.",
-          cta: "See the 360° cinema",
+          cta: "See the Spherical 3D 360° Cinema",
           href: "/atrakcje/kino-360",
           image: "/galeria/Ogolne/webp/4.webp",
           imageAlt: "Dome interior prepared for 360° projection",
@@ -394,8 +394,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         tone: "cool",
       },
       {
-        message: "A primeira sessão do Cinema 360 é já a 18 de abril",
-        cta: "Ver Cinema 360",
+        message: "A primeira sessão do Cinema Esférico 3D 360° é já a 18 de abril",
+        cta: "Ver o Cinema Esférico 3D 360°",
         href: "/atrakcje/kino-360",
         tone: "hot",
         previewMedia: "cinema360",
@@ -406,10 +406,10 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       intro: "Entre no mundo das cúpulas e comece pelas nossas três experiências emblemáticas.",
       items: [
         {
-          title: "Cinema 360°",
+          title: "Cinema Esférico 3D 360°",
           description:
             "Projeções imersivas em cúpula com imagem a 360° numa das estruturas mais avançadas da Europa.",
-          cta: "Ver o cinema 360°",
+          cta: "Ver o Cinema Esférico 3D 360°",
           href: "/atrakcje/kino-360",
           image: "/galeria/Ogolne/webp/4.webp",
           imageAlt: "Interior da cúpula preparado para projeção 360°",

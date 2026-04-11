@@ -92,7 +92,7 @@ const CHAT_COPY: Record<
       events:
         "Informacje o wynajmie przestrzeni i eventach znajdziesz na podstronie „Wydarzenia”.",
       attractions:
-        "Najważniejsze atrakcje to: Kino 360°, Ścieżka filmowa i Wystawa tematyczna.",
+        "Najważniejsze atrakcje to: Kino Sferyczne 3D 360°, Ścieżka filmowa i Wystawa tematyczna.",
       gallery: "Pełna galeria zdjęć jest dostępna na osobnej podstronie „Galeria”.",
       booking: "Rezerwację najwygodniej zrobić bezpośrednio przez system Bookero.",
     },
@@ -125,7 +125,7 @@ const CHAT_COPY: Record<
         "Contact: +48 12 344 40 00, rezerwacje@alverniaplanet.com. You can also use the contact form.",
       events: "Venue rental and event details are on the “Events” page.",
       attractions:
-        "Main attractions: 360° Cinema, Film Path and Themed Exhibition.",
+        "Main attractions: Spherical 3D 360° Cinema, Film Path and Themed Exhibition.",
       gallery: "The full photo gallery is available on the separate “Gallery” page.",
       booking: "The easiest way to book is via Bookero.",
     },
@@ -160,7 +160,7 @@ const CHAT_COPY: Record<
       events:
         "Informações sobre aluguer de espaço e eventos estão na página “Eventos”.",
       attractions:
-        "Atrações principais: Cinema 360°, Percurso cinematográfico e Exposição temática.",
+        "Atrações principais: Cinema Esférico 3D 360°, Percurso cinematográfico e Exposição temática.",
       gallery: "A galeria completa está disponível na página “Galeria”.",
       booking: "A forma mais rápida de reservar é pelo Bookero.",
     },
@@ -173,7 +173,7 @@ const INTENT_KEYWORDS: Record<Intent, string[]> = {
   directions: ["dojazd", "jak dojechac", "mapa", "directions", "getting there", "como chegar"],
   contact: ["kontakt", "telefon", "email", "contact", "phone", "mail", "whatsapp", "messenger", "contacto"],
   events: ["wydarzen", "event", "wynajem", "konferenc", "gala", "eventos"],
-  attractions: ["atrakc", "kino 360", "sciezka", "wystaw", "attraction", "cinema", "film path", "atracoes"],
+  attractions: ["atrakc", "kino 360", "kino sferyczne", "sferyczne 3d", "sciezka", "wystaw", "attraction", "cinema", "spherical 3d", "film path", "atracoes", "cinema esferico"],
   gallery: ["galeria", "gallery", "zdjec", "photos", "fotos"],
   booking: ["rezerw", "book", "bookero", "kup", "bilet", "reservation", "reserva"],
 };
