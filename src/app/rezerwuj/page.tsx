@@ -29,14 +29,14 @@ const COPY: Record<
   },
   en: {
     tag: "Booking",
-    title: "Book your cinematic adventure",
+    title: "Book your visit",
     subtitle: "Pick a date and secure your slot online.",
     intro:
       "Use the Bookero form below with the full calendar view. You can complete the reservation immediately.",
   },
   pt: {
     tag: "Reserva",
-    title: "Reserva a tua aventura cinematográfica",
+    title: "Reserva a tua visita",
     subtitle: "Escolhe a data e garante o teu lugar online.",
     intro:
       "Abaixo tens o formulário Bookero com calendário completo. Podes finalizar a reserva imediatamente.",

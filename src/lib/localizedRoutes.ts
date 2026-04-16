@@ -10,7 +10,7 @@ const PL_TO_INTL_COMMON: Record<string, string> = {
   "/kontakt": "/contact",
   "/atrakcje/wystawa": "/attractions/exhibition",
   "/atrakcje/sciezka-filmowa": "/attractions/film-path",
-  "/atrakcje/kino-360": "/attractions/cinema-360",
+  "/atrakcje/k360": "/attractions/k360",
 };
 
 const INTL_TO_PL_COMMON: Record<string, string> = Object.entries(PL_TO_INTL_COMMON).reduce(
@@ -73,6 +73,9 @@ export function mapToPolishRoute(path: string): string {
   if (normalized.startsWith("/legal/")) return normalized;
 
   const withoutPrefix = stripLocalePrefix(normalized);
+  if (withoutPrefix === "/atrakcje/kino-360") {
+    return "/atrakcje/k360";
+  }
   if (withoutPrefix === "/reserve" || withoutPrefix === "/reservar") {
     return "/rezerwuj";
   }
@@ -116,7 +119,7 @@ export function getSitePaths(locale: Locale) {
     attractions: {
       exhibition: getLocalizedPath("/atrakcje/wystawa", locale),
       filmPath: getLocalizedPath("/atrakcje/sciezka-filmowa", locale),
-      cinema: getLocalizedPath("/atrakcje/kino-360", locale),
+      k360: getLocalizedPath("/atrakcje/k360", locale),
     },
   };
 }

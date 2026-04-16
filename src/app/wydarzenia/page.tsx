@@ -159,7 +159,7 @@ const VIDEO_SHOWCASE: Record<
     items: [
       {
         title: "Koncert w kopule",
-        body: "Atmosfera live w sferycznej scenie.",
+        body: "Atmosfera live na scenie w kopule.",
         src: "https://www.youtube.com/watch?v=jt6zh-vaFNc&t=12s",
         poster: "https://i.ytimg.com/vi/jt6zh-vaFNc/hqdefault.jpg",
         embed: true,
@@ -185,7 +185,7 @@ const VIDEO_SHOWCASE: Record<
     items: [
       {
         title: "Concert in the dome",
-        body: "Live atmosphere on a spherical stage.",
+        body: "Live atmosphere on a dome stage.",
         src: "https://www.youtube.com/watch?v=jt6zh-vaFNc&t=12s",
         poster: "https://i.ytimg.com/vi/jt6zh-vaFNc/hqdefault.jpg",
         embed: true,
@@ -211,7 +211,7 @@ const VIDEO_SHOWCASE: Record<
     items: [
       {
         title: "Concerto na cúpula",
-        body: "Atmosfera ao vivo num palco esférico.",
+        body: "Atmosfera ao vivo num palco na cúpula.",
         src: "https://www.youtube.com/watch?v=jt6zh-vaFNc&t=12s",
         poster: "https://i.ytimg.com/vi/jt6zh-vaFNc/hqdefault.jpg",
         embed: true,
@@ -424,7 +424,7 @@ const DOMES: Record<
     k7: {
       title: "Kopuła K7",
       bullets: [
-        "Ekran 10.2 × 4.2 m",
+        "Powierzchnia projekcyjna 10.2 × 4.2 m",
         "Projektor 4K",
         "Certyfikat Dolby Premier",
         "76 foteli",
@@ -468,7 +468,7 @@ const DOMES: Record<
     k7: {
       title: "Dome K7",
       bullets: [
-        "Screen 10.2 × 4.2 m",
+        "Projection surface 10.2 × 4.2 m",
         "4K projector",
         "Dolby Premier certificate",
         "76 seats",
@@ -512,7 +512,7 @@ const DOMES: Record<
     k7: {
       title: "Cúpula K7",
       bullets: [
-        "Ecrã 10,2 × 4,2 m",
+        "Superfície de projeção 10,2 × 4,2 m",
         "Projetor 4K",
         "Certificado Dolby Premier",
         "76 lugares",

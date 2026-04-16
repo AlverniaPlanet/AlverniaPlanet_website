@@ -67,7 +67,7 @@ type HeroPromo = {
   cta: string;
   href: string;
   tone: "cool" | "hot";
-  previewMedia?: "cinema360";
+  previewMedia?: "k360";
 };
 
 type HomeCopy = {
@@ -95,11 +95,11 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         tone: "cool",
       },
       {
-        message: "Pierwszy seans Kina Sferycznego 3D 360° już 18 kwietnia",
-        cta: "Zobacz Kino Sferyczne 3D 360°",
-        href: "/atrakcje/kino-360",
+        message: "Pierwsza projekcja K360° już 18 kwietnia",
+        cta: "Zobacz K360°",
+        href: "/atrakcje/k360",
         tone: "hot",
-        previewMedia: "cinema360",
+        previewMedia: "k360",
       },
     ],
     attractions: {
@@ -107,13 +107,13 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       intro: "Wejdź do świata kopuł i zacznij od naszych trzech flagowych doświadczeń.",
       items: [
         {
-          title: "Kino Sferyczne 3D 360°",
+          title: "K360°",
           description:
-            "Immersyjne projekcje sferyczne w jednej z najbardziej zaawansowanych kopuł w Europie.",
-          cta: "Zobacz Kino Sferyczne 3D 360°",
-          href: "/atrakcje/kino-360",
+            "Immersyjna projekcja fulldome w jednej z najbardziej zaawansowanych kopuł w Europie.",
+          cta: "Zobacz K360°",
+          href: "/atrakcje/k360",
           image: "/galeria/Ogolne/webp/4.webp",
-          imageAlt: "Wnętrze kopuły z ekranem 360°",
+          imageAlt: "Wnętrze kopuły przygotowane do projekcji 360°",
         },
         {
           title: "Ścieżka filmowa",
@@ -245,11 +245,11 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         tone: "cool",
       },
       {
-        message: "The first Spherical 3D 360° Cinema screening starts on April 18",
-        cta: "See the Spherical 3D 360° Cinema",
-        href: "/atrakcje/kino-360",
+        message: "The first K360° projection starts on April 18",
+        cta: "See K360°",
+        href: "/atrakcje/k360",
         tone: "hot",
-        previewMedia: "cinema360",
+        previewMedia: "k360",
       },
     ],
     attractions: {
@@ -257,10 +257,10 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       intro: "Start with our signature experiences inside the domes.",
       items: [
         {
-          title: "Spherical 3D 360° Cinema",
-          description: "Immersive dome screenings with the picture all around you.",
-          cta: "See the Spherical 3D 360° Cinema",
-          href: "/atrakcje/kino-360",
+          title: "K360°",
+          description: "Immersive dome projection with the image all around you.",
+          cta: "See K360°",
+          href: "/atrakcje/k360",
           image: "/galeria/Ogolne/webp/4.webp",
           imageAlt: "Dome interior prepared for 360° projection",
         },
@@ -394,11 +394,11 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         tone: "cool",
       },
       {
-        message: "A primeira sessão do Cinema Esférico 3D 360° é já a 18 de abril",
-        cta: "Ver o Cinema Esférico 3D 360°",
-        href: "/atrakcje/kino-360",
+        message: "A primeira projeção do K360° é já a 18 de abril",
+        cta: "Ver o K360°",
+        href: "/atrakcje/k360",
         tone: "hot",
-        previewMedia: "cinema360",
+        previewMedia: "k360",
       },
     ],
     attractions: {
@@ -406,27 +406,27 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       intro: "Entre no mundo das cúpulas e comece pelas nossas três experiências emblemáticas.",
       items: [
         {
-          title: "Cinema Esférico 3D 360°",
+          title: "K360°",
           description:
             "Projeções imersivas em cúpula com imagem a 360° numa das estruturas mais avançadas da Europa.",
-          cta: "Ver o Cinema Esférico 3D 360°",
-          href: "/atrakcje/kino-360",
+          cta: "Ver o K360°",
+          href: "/atrakcje/k360",
           image: "/galeria/Ogolne/webp/4.webp",
           imageAlt: "Interior da cúpula preparado para projeção 360°",
         },
         {
-          title: "Percurso cinematográfico",
+          title: "Percurso de filmagem",
           description:
             "Uma visita aos bastidores com cenários, adereços e tecnologia usada nas produções.",
           cta: "Conheça o percurso",
           href: "/atrakcje/sciezka-filmowa",
           image: "/galeria/Sciezka_filmowa/webp/4.webp",
-          imageAlt: "Elementos de cenário no percurso cinematográfico",
+          imageAlt: "Elementos de cenário no percurso de filmagem",
         },
         {
           title: "Exposições temáticas",
           description:
-            "Exposição inspirada no mundo do cinema e da ciência, ideal para famílias e grupos.",
+            "Exposição inspirada no mundo da imagem, do som e da ciência, ideal para famílias e grupos.",
           cta: "Descobrir a exposição",
           href: "/atrakcje/wystawa",
           image: "/galeria/Wystawa/HarryPotter_TheExhibition/webp/1.webp",
@@ -489,7 +489,7 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         {
           question: "Quanto tempo dura a visita?",
           answer:
-            "A visita ao percurso cinematográfico com a parte educativa dura cerca de 2 a 2,5 horas.",
+            "A visita ao percurso de filmagem com a parte educativa dura cerca de 2 a 2,5 horas.",
         },
         {
           question: "Quanto custa a visita?",
@@ -504,7 +504,7 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         {
           question: "Têm workshops disponíveis?",
           answer:
-            "A visita standard inclui uma visita guiada e uma parte educativa sobre produção cinematográfica. Workshops separados não são atualmente realizados no formato standard da visita.",
+            "A visita standard inclui uma visita guiada e uma parte educativa sobre produção audiovisual. Workshops separados não são atualmente realizados no formato standard da visita.",
         },
         {
           question: "É possível entrar sem reservar bilhetes antecipadamente?",
@@ -524,7 +524,7 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         {
           question: "Que produção foi realizada aqui mais recentemente?",
           answer:
-            "Na Alvernia Planet foram realizadas muitas produções de cinema, séries e publicidade, incluindo Akademia Pana Kleksa, 99 Gra o wszystko e muitos outros projetos internacionais.",
+            "Na Alvernia Planet foram realizadas muitas produções audiovisuais, séries e publicidade, incluindo Akademia Pana Kleksa, 99 Gra o wszystko e muitos outros projetos internacionais.",
         },
         {
           question: "Vamos entrar num set de filmagem ativo?",
@@ -645,25 +645,11 @@ const HeroSection = memo(function HeroSection({
 }) {
   const [activeHeroPromoIndex, setActiveHeroPromoIndex] = useState<number | null>(null);
   const activeHeroPromo = activeHeroPromoIndex !== null ? heroPromos[activeHeroPromoIndex] : null;
-  const cinemaPreviewActive = activeHeroPromo?.previewMedia === "cinema360";
+  const k360PreviewActive = activeHeroPromo?.previewMedia === "k360";
 
   useEffect(() => {
     setActiveHeroPromoIndex(null);
   }, [heroTitle]);
-
-  const activateHeroPromo = (index: number) => {
-    if (index === activeHeroPromoIndex && typeof window !== "undefined") {
-      setActiveHeroPromoIndex(null);
-      window.requestAnimationFrame(() => {
-        window.requestAnimationFrame(() => {
-          setActiveHeroPromoIndex(index);
-        });
-      });
-      return;
-    }
-
-    setActiveHeroPromoIndex(index);
-  };
 
   return (
     <section
@@ -680,11 +666,12 @@ const HeroSection = memo(function HeroSection({
             <div className="pointer-events-none absolute inset-x-0 top-7 z-20 flex justify-center px-4 sm:top-8 lg:top-9">
               <div className="flex w-full max-w-[44rem] flex-col items-center gap-2 sm:max-w-[48rem] sm:gap-2.5 lg:max-w-[52rem]">
                 {heroPromos.map((heroPromo, index) => (
-                  <button
+                  <Link
                     key={`${heroPromo.href}-${heroPromo.message}`}
-                    type="button"
-                    onClick={() => activateHeroPromo(index)}
-                    aria-pressed={activeHeroPromoIndex === index}
+                    href={heroPromo.href}
+                    onMouseEnter={() => setActiveHeroPromoIndex(index)}
+                    onFocus={() => setActiveHeroPromoIndex(index)}
+                    aria-label={`${heroPromo.message}. ${heroPromo.cta}`}
                     className={`hero-film-alert ${heroPromo.tone === "cool" ? "hero-film-alert--cool" : "hero-film-alert--hot"} ${
                       activeHeroPromoIndex === index ? "hero-film-alert--active" : ""
                     } pointer-events-auto inline-flex max-w-full items-center justify-center gap-2 rounded-full px-3 py-2 text-[11px] sm:gap-2.5 sm:px-4 sm:py-2.5 sm:text-sm transition-[opacity,transform,filter] ${
@@ -705,7 +692,7 @@ const HeroSection = memo(function HeroSection({
                     <span className="hero-film-alert-copy leading-tight font-medium">
                       {heroPromo.message}
                     </span>
-                  </button>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -747,20 +734,20 @@ const HeroSection = memo(function HeroSection({
               preferPosterOnLowPower
             />
             <div
-              className={`hero-cinema-preview pointer-events-none absolute inset-0 z-[2] ${
-                cinemaPreviewActive ? "hero-cinema-preview--active" : ""
+              className={`hero-k360-preview pointer-events-none absolute inset-0 z-[2] ${
+                k360PreviewActive ? "hero-k360-preview--active" : ""
               }`}
               style={{
-                clipPath: cinemaPreviewActive ? "circle(150% at 50% 50%)" : "circle(0% at 50% 50%)",
+                clipPath: k360PreviewActive ? "circle(150% at 50% 50%)" : "circle(0% at 50% 50%)",
                 transitionDuration: `${HERO_PREVIEW_REVEAL_DURATION_MS}ms`,
                 transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
               }}
               aria-hidden="true"
             >
               <AdaptiveVideo
-                mp4Src="/kino360/one_step_beyond.mp4"
-                webmSrc="/kino360/one_step_beyond.webm"
-                poster="/kino360/Kino360_poster.webp"
+                mp4Src="/k360/one_step_beyond.mp4"
+                webmSrc="/k360/one_step_beyond.webm"
+                poster="/k360/K360_poster.webp"
                 className="absolute inset-0 h-full w-full object-cover pointer-events-none"
                 sizes="(min-width: 1200px) 72rem, 100vw"
                 fallbackText={heroVideoFallback}

@@ -36,11 +36,11 @@ export const NEWS_COPY: Record<Locale, NewsSection> = {
       },
       {
         badge: "Już w kwietniu",
-        title: "Otwieramy największe Kino Sferyczne 3D 360° w Europie",
+        title: "Otwieramy K360°, największą przestrzeń fulldome w Europie",
         description:
-          "W kwietniu otwieramy widowiskowe Kino Sferyczne 3D 360°, które stanie się jednym z najmocniejszych punktów całego kompleksu. Szykujemy doświadczenie zaprojektowane na pełne zanurzenie w obrazie, dźwięku i przestrzeni kopuły.",
-        cta: "Poznaj Kino Sferyczne 3D 360°",
-        href: "/atrakcje/kino-360",
+          "W kwietniu otwieramy widowiskowe K360°, które stanie się jednym z najmocniejszych punktów całego kompleksu. Szykujemy doświadczenie zaprojektowane na pełne zanurzenie w obrazie, dźwięku i przestrzeni kopuły.",
+        cta: "Poznaj K360°",
+        href: "/atrakcje/k360",
       },
       {
         badge: "Media",
@@ -67,17 +67,17 @@ export const NEWS_COPY: Record<Locale, NewsSection> = {
       },
       {
         badge: "Opening in April",
-        title: "We are opening the largest spherical 3D 360° cinema in Europe",
+        title: "We are opening K360°, the largest fulldome space in Europe",
         description:
-          "In April, we are launching the spectacular Spherical 3D 360° Cinema, set to become one of the boldest features of the entire complex. It is being designed as a fully immersive experience built around image, sound, and the scale of the dome itself.",
-        cta: "Discover the Spherical 3D 360° Cinema",
-        href: "/atrakcje/kino-360",
+          "In April, we are launching K360°, set to become one of the boldest features of the entire complex. It is being designed as a fully immersive experience built around image, sound, and the scale of the dome itself.",
+        cta: "Discover K360°",
+        href: "/atrakcje/k360",
       },
       {
         badge: "Media",
         title: "An article has been published about us",
         description:
-          "Alvernia Planet has been featured in an article presenting the venue as a futuristic destination where architecture, education, and cinematic ambition come together in one place.",
+          "Alvernia Planet has been featured in an article presenting the venue as a futuristic destination where architecture, education, and bold visual storytelling come together in one place.",
         cta: "Read the article",
         href: "https://www.klubpodroznikow.com/alvernia-planet-futurystyczna-atrakcja-turystyczna-jak-z-kosmosu/",
         external: true,
@@ -92,23 +92,23 @@ export const NEWS_COPY: Record<Locale, NewsSection> = {
         badge: "Desde janeiro",
         title: "Estamos a melhorar os percursos educativos",
         description:
-          "Desde janeiro, estamos a aperfeiçoar os percursos educativos para reforçar a ligação entre cinema, ciência e narrativa contemporânea. O objetivo é oferecer uma visita mais envolvente, mais fluida e ainda mais memorável para famílias e grupos.",
+          "Desde janeiro, estamos a aperfeiçoar os percursos educativos para reforçar a ligação entre audiovisual, ciência e narrativa contemporânea. O objetivo é oferecer uma visita mais envolvente, mais fluida e ainda mais memorável para famílias e grupos.",
         cta: "Ver o percurso educativo",
         href: "/atrakcje/sciezka-filmowa",
       },
       {
         badge: "Abre em abril",
-        title: "Vamos abrir o maior Cinema Esférico 3D 360° da Europa",
+        title: "Vamos abrir o K360°, o maior espaço fulldome da Europa",
         description:
-          "Em abril abrimos o impressionante Cinema Esférico 3D 360°, pensado para se tornar um dos pontos mais marcantes de todo o complexo. A experiência foi concebida para envolver o visitante em imagem, som e escala de forma total.",
-        cta: "Descobrir o Cinema Esférico 3D 360°",
-        href: "/atrakcje/kino-360",
+          "Em abril abrimos o impressionante K360°, pensado para se tornar um dos pontos mais marcantes de todo o complexo. A experiência foi concebida para envolver o visitante em imagem, som e escala de forma total.",
+        cta: "Descobrir o K360°",
+        href: "/atrakcje/k360",
       },
       {
         badge: "Media",
         title: "Foi publicado um artigo sobre nós",
         description:
-          "A Alvernia Planet foi apresentada num artigo como uma atração futurista onde arquitetura, educação e universo cinematográfico se encontram num só lugar.",
+          "A Alvernia Planet foi apresentada num artigo como uma atração futurista onde arquitetura, educação e narrativa audiovisual se encontram num só lugar.",
         cta: "Ler o artigo",
         href: "https://www.klubpodroznikow.com/alvernia-planet-futurystyczna-atrakcja-turystyczna-jak-z-kosmosu/",
         external: true,

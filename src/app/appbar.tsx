@@ -47,7 +47,7 @@ export function AppBar() {
   const isBookingActive = isCurrentPath("/rezerwuj");
   const isExhibitionActive = isCurrentPath("/atrakcje/wystawa");
   const isFilmPathActive = isCurrentPath("/atrakcje/sciezka-filmowa");
-  const isCinemaActive = isCurrentPath("/atrakcje/kino-360");
+  const isK360Active = isCurrentPath("/atrakcje/k360");
   const isAboutPageActive = isCurrentPath("/o-alvernia-planet");
   const isGalleryActive = isCurrentPath("/galeria");
   const isVrTourActive = isCurrentPath("/wydarzenia/vr");
@@ -179,14 +179,14 @@ export function AppBar() {
                       </li>
                       <li>
                         <Link
-                          href={paths.attractions.cinema}
+                          href={paths.attractions.k360}
                           className={cx(
                             "ap-nav-dropdown-link block px-4 py-2",
-                            isCinemaActive && "is-active",
+                            isK360Active && "is-active",
                           )}
-                          aria-current={isCinemaActive ? "page" : undefined}
+                          aria-current={isK360Active ? "page" : undefined}
                         >
-                          {t("menu.attractions.cinema")}
+                          {t("menu.attractions.k360")}
                         </Link>
                       </li>
                     </ul>
@@ -458,14 +458,14 @@ export function AppBar() {
                   </li>
                   <li>
                     <Link
-                      href={paths.attractions.cinema}
+                      href={paths.attractions.k360}
                       className={cx(
                         "ap-mobile-link block rounded-md px-3 py-2 text-gray-200",
-                        isCinemaActive && "is-active",
+                        isK360Active && "is-active",
                       )}
-                      aria-current={isCinemaActive ? "page" : undefined}
+                      aria-current={isK360Active ? "page" : undefined}
                     >
-                      • {t("menu.attractions.cinema")}
+                      • {t("menu.attractions.k360")}
                     </Link>
                   </li>
                 </ul>

@@ -12,6 +12,7 @@ const RUNMAGEDDON_BINGO_URL = "https://alverniaplanet.com/runnmageddon-bingo/";
 const RUNMAGEDDON_GAME_URL = "https://alverniaplanet.com/runnmageddon-game/";
 const RUNMAGEDDON_REGISTRATION_URL =
   "https://www.runmageddon.pl/wydarzenia/runmageddon-krakow-alvernia-planet-11-04-2026";
+const RUNMAGEDDON_EVENT_END_AT = Date.parse("2026-04-12T23:59:59+02:00");
 
 const pixelFont = Press_Start_2P({
   subsets: ["latin"],
@@ -119,21 +120,33 @@ const COPY: Record<
     title: string;
     heroDescription?: string[];
     highlights: string[];
+    endedHighlight: string;
+    archiveTitle: string;
+    archiveBody: string;
     activitiesTitle: string;
     activitiesDescription: string;
+    activitiesArchivedDescription: string;
     bingoCta: string;
     bingoDescription: string;
+    bingoEndedState: string;
+    bingoEndedDescription: string;
+    bingoEndedNote: string;
     gameCta: string;
     gameDescription: string;
     gameLaunchRibbon: string;
     gameLaunchNote: string;
     gameLockedState: string;
+    gameEndedDescription: string;
+    gameEndedRibbon: string;
+    gameEndedNote: string;
+    gameEndedState: string;
     verifiedLabel: string;
     introTitle: string;
     introBody?: string;
     cards: RunmageddonCard[];
     note: string;
     registrationCta: string;
+    registrationEndedCta: string;
   }
 > = {
   pl: {
@@ -146,18 +159,33 @@ const COPY: Record<
       "Nojlepiej kaj? Na naszej trasie, wiadomo.",
     ],
     highlights: ["09-12.04.2026", "KRAKÓW ALVERNIA PLANET", "Oficjalne zapisy online"],
+    endedHighlight: "EDYCJA ZAKOŃCZONA",
+    archiveTitle: "Runmageddon 2026 w Alvernia Planet już się zakończył",
+    archiveBody:
+      "Weekend wydarzenia, gra i Bingo były aktywne do niedzieli, 12 kwietnia 2026. Zapisy i aktywności specjalne są już zamknięte.",
     activitiesTitle: "Interaktywne aktywności",
     activitiesDescription:
       "Dwie aktywności na czas wydarzenia: jedna w pełni online, druga realizowana w Alvernia Planet.",
+    activitiesArchivedDescription:
+      "Aktywności miały charakter czasowy i zakończyły się razem z wydarzeniem 12.04.2026.",
     bingoCta: "Bingo",
     bingoDescription:
       "Interaktywna gra terenowa podczas Runmageddonu. Wykonujesz zadania, zapisujesz odpowiedzi, dodajesz zdjęcia i śledzisz postęp bezpośrednio na planszy Bingo.",
+    bingoEndedState: "Bingo zakończone",
+    bingoEndedDescription:
+      "Gra terenowa była dostępna wyłącznie podczas weekendu Runmageddon w Alvernia Planet i została już zamknięta.",
+    bingoEndedNote: "Aktywność była aktywna do 12.04.2026.",
     gameCta: "Gra RUNMAGEDDON",
     gameDescription:
       "Prosta gra zręcznościowa. 10 najlepszych wyników do końca niedzieli, 12 kwietnia 2026, wygrywa kody rabatowe na wszystkie atrakcje Alvernia Planet. Po zakończeniu akcji rozdamy kody.",
     gameLaunchRibbon: "OD 07.04.2026",
     gameLaunchNote: "Start od wtorku, 7 kwietnia 2026.",
     gameLockedState: "Gra jeszcze niedostępna",
+    gameEndedDescription:
+      "Gra zręcznościowa została zakończona. Wyniki były zbierane do końca niedzieli, 12 kwietnia 2026.",
+    gameEndedRibbon: "ZAKOŃCZONE",
+    gameEndedNote: "Nagrody rozdamy do niedzieli, 19.04.2026.",
+    gameEndedState: "Gra zakończona",
     verifiedLabel: "Aktywności",
     introTitle: "Harmonogram wydarzenia",
     cards: [
@@ -197,23 +225,39 @@ const COPY: Record<
     ],
     note: "Szczegóły wydarzenia i formularze zapisów prowadzą do oficjalnej strony Runmageddon.",
     registrationCta: "Zapisz się już teraz!",
+    registrationEndedCta: "Zapisy zamknięte",
   },
   en: {
     tag: "Limited-Time Event",
     title: "Runmageddon Kraków Alvernia Planet",
     highlights: ["09-12.04.2026", "KRAKÓW ALVERNIA PLANET", "Official online registration"],
+    endedHighlight: "EVENT ENDED",
+    archiveTitle: "Runmageddon 2026 at Alvernia Planet has ended",
+    archiveBody:
+      "The event weekend, the arcade game, and Bingo were active until Sunday, April 12, 2026. Registration and special activities are now closed.",
     activitiesTitle: "Interactive activities",
     activitiesDescription:
       "Two quick online activities for the event weekend: a field Bingo challenge and a simple prize-based arcade game.",
+    activitiesArchivedDescription:
+      "These activities were time-limited and closed together with the event on April 12, 2026.",
     bingoCta: "Bingo",
     bingoDescription:
       "Interactive field game during Runmageddon. Complete tasks, save answers, add photos, and track your progress directly on the Bingo board.",
+    bingoEndedState: "Bingo closed",
+    bingoEndedDescription:
+      "The field Bingo challenge was available only during the Runmageddon weekend at Alvernia Planet and is now closed.",
+    bingoEndedNote: "This activity was available until April 12, 2026.",
     gameCta: "RUNMAGEDDON",
     gameDescription:
       "Simple arcade skill game. The top 10 scores submitted by Sunday win discount codes for all Alvernia Planet attractions. Codes will be distributed after the campaign ends.",
     gameLaunchRibbon: "FROM 07.04.2026",
     gameLaunchNote: "Available from Tuesday, April 7, 2026.",
     gameLockedState: "Game not available yet",
+    gameEndedDescription:
+      "The arcade game campaign has ended. Scores were collected until the end of Sunday, April 12, 2026.",
+    gameEndedRibbon: "ENDED",
+    gameEndedNote: "Rewards will be distributed by Sunday, April 19, 2026.",
+    gameEndedState: "Game ended",
     verifiedLabel: "Activities",
     introTitle: "Event schedule",
     introBody:
@@ -255,23 +299,39 @@ const COPY: Record<
     ],
     note: "Event details and registration are linked to the official Runmageddon page.",
     registrationCta: "Register now!",
+    registrationEndedCta: "Registration closed",
   },
   pt: {
     tag: "Evento por tempo limitado",
     title: "Runmageddon Kraków Alvernia Planet",
     highlights: ["09-12.04.2026", "KRAKÓW ALVERNIA PLANET", "Inscrições oficiais online"],
+    endedHighlight: "EVENTO ENCERRADO",
+    archiveTitle: "O Runmageddon 2026 na Alvernia Planet já terminou",
+    archiveBody:
+      "O fim de semana do evento, o jogo arcade e o Bingo estiveram ativos até domingo, 12 de abril de 2026. As inscrições e atividades especiais já estão encerradas.",
     activitiesTitle: "Atividades interativas",
     activitiesDescription:
       "Duas atividades online rápidas para o fim de semana do evento: Bingo de campo e um mini jogo arcade com prémios.",
+    activitiesArchivedDescription:
+      "Estas atividades eram temporárias e terminaram juntamente com o evento em 12 de abril de 2026.",
     bingoCta: "Bingo",
     bingoDescription:
       "Jogo de campo interativo durante o Runmageddon. Complete tarefas, guarde respostas, adicione fotos e acompanhe o progresso diretamente no cartão Bingo.",
+    bingoEndedState: "Bingo encerrado",
+    bingoEndedDescription:
+      "O Bingo de campo esteve disponível apenas durante o fim de semana Runmageddon na Alvernia Planet e já foi encerrado.",
+    bingoEndedNote: "A atividade esteve disponível até 12 de abril de 2026.",
     gameCta: "RUNMAGEDDON",
     gameDescription:
       "Jogo simples de destreza. Os 10 melhores resultados até domingo ganham códigos de desconto para todas as atrações da Alvernia Planet. Os códigos serão entregues após o fim da ação.",
     gameLaunchRibbon: "DESDE 07.04.2026",
     gameLaunchNote: "Disponível a partir de terça-feira, 7 de abril de 2026.",
     gameLockedState: "Jogo ainda indisponível",
+    gameEndedDescription:
+      "A campanha do jogo arcade terminou. As pontuações foram recolhidas até ao fim de domingo, 12 de abril de 2026.",
+    gameEndedRibbon: "ENCERRADO",
+    gameEndedNote: "Os prémios serão atribuídos até domingo, 19 de abril de 2026.",
+    gameEndedState: "Jogo encerrado",
     verifiedLabel: "Atividades",
     introTitle: "Horário do evento",
     introBody:
@@ -313,6 +373,7 @@ const COPY: Record<
     ],
     note: "Os detalhes do evento e as inscrições estão ligados à página oficial do Runmageddon.",
     registrationCta: "Inscreve-te já!",
+    registrationEndedCta: "Inscrições encerradas",
   },
 };
 
@@ -322,7 +383,89 @@ export default function RunmageddonContent() {
   const loc: Locale = (locale as Locale) ?? "pl";
   const copy = COPY[loc];
   const isLight = theme === "light";
-  const isGameLocked = false;
+  const hasEventEnded = Date.now() > RUNMAGEDDON_EVENT_END_AT;
+  const isGameLocked = hasEventEnded;
+  const highlights = hasEventEnded
+    ? [copy.highlights[0], copy.highlights[1], copy.endedHighlight]
+    : copy.highlights;
+  const activitiesDescription = hasEventEnded
+    ? copy.activitiesArchivedDescription
+    : copy.activitiesDescription;
+  const bingoDescription = hasEventEnded ? copy.bingoEndedDescription : copy.bingoDescription;
+  const gameDescription = hasEventEnded ? copy.gameEndedDescription : copy.gameDescription;
+  const gameRibbon = hasEventEnded ? copy.gameEndedRibbon : copy.gameLaunchRibbon;
+  const gameStatusLabel = hasEventEnded ? copy.gameEndedState : copy.gameLockedState;
+  const gameNote = hasEventEnded ? copy.gameEndedNote : copy.gameLaunchNote;
+  const bingoCardClasses = cx(
+    "group relative flex min-h-[11.5rem] flex-col items-center justify-start rounded-[0.45rem] border-2 px-5 py-4 text-center transition duration-200",
+    hasEventEnded
+      ? isLight
+        ? "cursor-not-allowed border-[#cbd5e1] bg-[linear-gradient(180deg,#f8fafc_0%,#e2e8f0_100%)] shadow-[0_0_0_2px_rgba(255,255,255,0.92),6px_6px_0_rgba(203,213,225,0.62)]"
+        : "cursor-not-allowed border-[#45657e] bg-[#32465a] shadow-[0_0_0_2px_rgba(5,28,38,0.84),6px_6px_0_rgba(9,13,22,0.5)]"
+      : isLight
+        ? "border-[#86d9e5] bg-[linear-gradient(180deg,#f2feff_0%,#d8f8ff_100%)] shadow-[0_0_0_2px_rgba(255,255,255,0.9),6px_6px_0_rgba(156,222,232,0.62)] hover:-translate-y-0.5 hover:border-[#53deee] hover:bg-[linear-gradient(180deg,#f8ffff_0%,#caf6ff_100%)]"
+        : "border-[#2d7c92] bg-[#48d4ee] shadow-[0_0_0_2px_rgba(5,28,38,0.84),6px_6px_0_rgba(9,13,22,0.5)] hover:-translate-y-0.5 hover:bg-[#68e6f4]",
+  );
+  const bingoCardContent = (
+    <>
+      <span
+        className={cx(
+          "absolute inset-x-0 top-0 h-[3px]",
+          hasEventEnded ? (isLight ? "bg-slate-300" : "bg-white/20") : isLight ? "bg-[#53deee]/55" : "bg-white/35",
+        )}
+      />
+      <span
+        className={cx(
+          pixelFont.className,
+          "text-[0.46rem] uppercase tracking-[0.12em]",
+          hasEventEnded
+            ? isLight
+              ? "text-slate-600"
+              : "text-white/70"
+            : isLight
+              ? "text-[#155e75]/78"
+              : "text-[#0b3441]/78",
+        )}
+      >
+        {hasEventEnded ? copy.bingoEndedState : isLight ? "Online" : "Mini Game"}
+      </span>
+      <span
+        className={cx(
+          "mt-3 text-3xl font-black leading-none tracking-[-0.05em] sm:text-[2.35rem]",
+          hasEventEnded ? (isLight ? "text-slate-800" : "text-white") : isLight ? "text-[#0f2f3c]" : "text-[#082432]",
+        )}
+      >
+        {copy.bingoCta}
+      </span>
+      <span
+        className={cx(
+          "mt-3 text-sm leading-relaxed sm:text-[0.95rem]",
+          hasEventEnded
+            ? isLight
+              ? "text-slate-600"
+              : "text-white/78"
+            : isLight
+              ? "text-[#164e63]"
+              : "text-[#082432]/84",
+        )}
+      >
+        {bingoDescription}
+      </span>
+      {hasEventEnded ? (
+        <span
+          className={cx(
+            pixelFont.className,
+            "mt-4 inline-flex rounded-[0.35rem] border px-3 py-2 text-[0.46rem] uppercase tracking-[0.12em]",
+            isLight
+              ? "border-slate-300 bg-white/70 text-slate-600"
+              : "border-white/15 bg-white/10 text-white/75",
+          )}
+        >
+          {copy.bingoEndedNote}
+        </span>
+      ) : null}
+    </>
+  );
   const gameCardClasses = cx(
     "group relative flex min-h-[11.5rem] w-full flex-col items-center justify-start overflow-hidden rounded-[0.45rem] border-2 px-5 py-4 text-center transition duration-200",
     isGameLocked
@@ -348,7 +491,7 @@ export default function RunmageddonContent() {
               : "border-[#f2cb47] bg-[#f2cb47] text-[#21180a]",
         )}
       >
-        {copy.gameLaunchRibbon}
+        {gameRibbon}
       </span>
       <span
         className={cx(
@@ -373,7 +516,7 @@ export default function RunmageddonContent() {
               : "text-[#0b3441]/78",
         )}
       >
-        {isGameLocked ? copy.gameLockedState : isLight ? "Arcade" : "Mini Game"}
+        {isGameLocked ? gameStatusLabel : isLight ? "Arcade" : "Mini Game"}
       </span>
       <span
         className={cx(
@@ -401,7 +544,7 @@ export default function RunmageddonContent() {
               : "text-[#082432]/84",
         )}
       >
-        {copy.gameDescription}
+        {gameDescription}
       </span>
       <span
         className={cx(
@@ -416,7 +559,7 @@ export default function RunmageddonContent() {
               : "border-white/15 bg-white/10 text-white/90",
         )}
       >
-        {copy.gameLaunchNote}
+        {gameNote}
       </span>
     </>
   );
@@ -576,7 +719,7 @@ export default function RunmageddonContent() {
             </div>
           ) : null}
           <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-center gap-2.5">
-            {copy.highlights.map((item) => (
+            {highlights.map((item) => (
               <span
                 key={item}
                 className={cx(
@@ -591,6 +734,54 @@ export default function RunmageddonContent() {
               </span>
             ))}
           </div>
+          {hasEventEnded ? (
+            <div className="relative mx-auto w-full max-w-5xl px-1 pt-2">
+              <div
+                className={cx(
+                  "relative overflow-hidden rounded-[0.7rem] border-2 px-5 py-5 text-center sm:px-6",
+                  isLight
+                    ? "border-[#d4e4ef] bg-white/95 shadow-[0_0_0_2px_rgba(255,255,255,0.95),10px_10px_0_rgba(196,221,236,0.58)]"
+                    : "border-[#6b5724] bg-[#1c172a]/94 shadow-[0_0_0_2px_rgba(10,9,18,0.9),10px_10px_0_rgba(8,7,16,0.42)]",
+                )}
+              >
+                <div
+                  className={cx(
+                    "absolute inset-0 [background-size:16px_16px]",
+                    isLight
+                      ? "opacity-[0.08] [background-image:linear-gradient(rgba(15,23,42,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(15,23,42,0.08)_1px,transparent_1px)]"
+                      : "opacity-[0.09] [background-image:linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)]",
+                  )}
+                />
+                <span
+                  className={cx(
+                    pixelFont.className,
+                    "relative inline-flex rounded-[0.35rem] border-2 px-4 py-2 text-[0.52rem] uppercase tracking-[0.18em]",
+                    isLight
+                      ? "border-[#f5c36b] bg-[#fff7dd] text-[#8a5b00]"
+                      : "border-[#f2cb47] bg-[#2a2435] text-[#f2cb47]",
+                  )}
+                >
+                  {copy.endedHighlight}
+                </span>
+                <h2
+                  className={cx(
+                    "relative mt-4 text-2xl font-black tracking-[-0.03em] sm:text-3xl",
+                    isLight ? "text-[#102033]" : "text-white",
+                  )}
+                >
+                  {copy.archiveTitle}
+                </h2>
+                <p
+                  className={cx(
+                    "relative mx-auto mt-3 max-w-3xl text-sm leading-relaxed sm:text-base",
+                    isLight ? "text-slate-600" : "text-white/76",
+                  )}
+                >
+                  {copy.archiveBody}
+                </p>
+              </div>
+            </div>
+          ) : null}
           <div className="relative mx-auto w-full max-w-6xl px-1 pt-2">
             <div
               className={cx(
@@ -644,53 +835,24 @@ export default function RunmageddonContent() {
                     isLight ? "text-slate-600" : "text-white/72",
                   )}
                 >
-                  {copy.activitiesDescription}
+                  {activitiesDescription}
                 </p>
               </div>
               <div className="relative mx-auto grid w-full max-w-5xl gap-4 pt-8 md:grid-cols-2">
-                <a
-                  href={RUNMAGEDDON_BINGO_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={cx(
-                    "group relative flex min-h-[11.5rem] flex-col items-center justify-start rounded-[0.45rem] border-2 px-5 py-4 text-center transition duration-200 hover:-translate-y-0.5",
-                    isLight
-                      ? "border-[#86d9e5] bg-[linear-gradient(180deg,#f2feff_0%,#d8f8ff_100%)] shadow-[0_0_0_2px_rgba(255,255,255,0.9),6px_6px_0_rgba(156,222,232,0.62)] hover:border-[#53deee] hover:bg-[linear-gradient(180deg,#f8ffff_0%,#caf6ff_100%)]"
-                      : "border-[#2d7c92] bg-[#48d4ee] shadow-[0_0_0_2px_rgba(5,28,38,0.84),6px_6px_0_rgba(9,13,22,0.5)] hover:bg-[#68e6f4]",
-                  )}
-                >
-                  <span
-                    className={cx(
-                      "absolute inset-x-0 top-0 h-[3px]",
-                      isLight ? "bg-[#53deee]/55" : "bg-white/35",
-                    )}
-                  />
-                  <span
-                    className={cx(
-                      pixelFont.className,
-                      "text-[0.46rem] uppercase tracking-[0.12em]",
-                      isLight ? "text-[#155e75]/78" : "text-[#0b3441]/78",
-                    )}
+                {hasEventEnded ? (
+                  <div aria-disabled="true" className={bingoCardClasses}>
+                    {bingoCardContent}
+                  </div>
+                ) : (
+                  <a
+                    href={RUNMAGEDDON_BINGO_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={bingoCardClasses}
                   >
-                    {isLight ? "Online" : "Mini Game"}
-                  </span>
-                  <span
-                    className={cx(
-                      "mt-3 text-3xl font-black leading-none tracking-[-0.05em] sm:text-[2.35rem]",
-                      isLight ? "text-[#0f2f3c]" : "text-[#082432]",
-                    )}
-                  >
-                    {copy.bingoCta}
-                  </span>
-                  <span
-                    className={cx(
-                      "mt-3 text-sm leading-relaxed sm:text-[0.95rem]",
-                      isLight ? "text-[#164e63]" : "text-[#082432]/84",
-                    )}
-                  >
-                    {copy.bingoDescription}
-                  </span>
-                </a>
+                    {bingoCardContent}
+                  </a>
+                )}
                 {isGameLocked ? (
                   <div aria-disabled="true" className={gameCardClasses}>
                     {gameCardContent}
@@ -876,21 +1038,48 @@ export default function RunmageddonContent() {
               ))}
             </div>
 
-            <div className="relative mt-5 flex justify-center">
-              <a
-                href={RUNMAGEDDON_REGISTRATION_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={cx(
-                  pixelFont.className,
-                  "inline-flex items-center justify-center rounded-[0.45rem] border-2 px-5 py-3 text-[0.58rem] uppercase tracking-[0.16em] transition duration-200 hover:-translate-y-0.5",
-                  isLight
-                    ? "border-[#cfe0eb] bg-[linear-gradient(180deg,#ffffff_0%,#eefaff_100%)] text-[#102033] shadow-[0_0_0_2px_rgba(255,255,255,0.95),6px_6px_0_rgba(196,221,236,0.56)] hover:border-[#53deee] hover:bg-[linear-gradient(180deg,#ffffff_0%,#def8ff_100%)]"
-                    : "border-[#6b5724] bg-[#2a2435] text-[#f2cb47] shadow-[0_0_0_2px_rgba(10,9,18,0.9),6px_6px_0_rgba(8,7,16,0.42)] hover:bg-[#342c48]",
+            <div className="relative mt-5 space-y-4">
+              {!hasEventEnded ? (
+                <p
+                  className={cx(
+                    "text-center text-sm leading-relaxed",
+                    isLight ? "text-slate-600" : "text-white/68",
+                  )}
+                >
+                  {copy.note}
+                </p>
+              ) : null}
+              <div className="flex justify-center">
+                {hasEventEnded ? (
+                  <div
+                    aria-disabled="true"
+                    className={cx(
+                      pixelFont.className,
+                      "inline-flex items-center justify-center rounded-[0.45rem] border-2 px-5 py-3 text-[0.58rem] uppercase tracking-[0.16em]",
+                      isLight
+                        ? "border-slate-300 bg-slate-100 text-slate-500 shadow-[0_0_0_2px_rgba(255,255,255,0.95),6px_6px_0_rgba(203,213,225,0.56)]"
+                        : "border-white/15 bg-white/10 text-white/65 shadow-[0_0_0_2px_rgba(10,9,18,0.9),6px_6px_0_rgba(8,7,16,0.42)]",
+                    )}
+                  >
+                    {copy.registrationEndedCta}
+                  </div>
+                ) : (
+                  <a
+                    href={RUNMAGEDDON_REGISTRATION_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={cx(
+                      pixelFont.className,
+                      "inline-flex items-center justify-center rounded-[0.45rem] border-2 px-5 py-3 text-[0.58rem] uppercase tracking-[0.16em] transition duration-200 hover:-translate-y-0.5",
+                      isLight
+                        ? "border-[#cfe0eb] bg-[linear-gradient(180deg,#ffffff_0%,#eefaff_100%)] text-[#102033] shadow-[0_0_0_2px_rgba(255,255,255,0.95),6px_6px_0_rgba(196,221,236,0.56)] hover:border-[#53deee] hover:bg-[linear-gradient(180deg,#ffffff_0%,#def8ff_100%)]"
+                        : "border-[#6b5724] bg-[#2a2435] text-[#f2cb47] shadow-[0_0_0_2px_rgba(10,9,18,0.9),6px_6px_0_rgba(8,7,16,0.42)] hover:bg-[#342c48]",
+                    )}
+                  >
+                    {copy.registrationCta}
+                  </a>
                 )}
-              >
-                {copy.registrationCta}
-              </a>
+              </div>
             </div>
 
           </section>

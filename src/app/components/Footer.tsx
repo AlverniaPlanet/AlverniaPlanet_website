@@ -141,7 +141,7 @@ const FOOTER_COPY: Record<
         links: [
           { label: "Wystawa tematyczna", href: "/atrakcje/wystawa" },
           { label: "Ścieżka filmowa", href: "/atrakcje/sciezka-filmowa" },
-          { label: "Kino Sferyczne 3D 360°", href: "/atrakcje/kino-360" },
+          { label: "K360°", href: "/atrakcje/k360" },
           { label: "Galeria", href: "/galeria" },
         ],
       },
@@ -193,7 +193,7 @@ const FOOTER_COPY: Record<
         links: [
           { label: "Themed exhibition", href: "/atrakcje/wystawa" },
           { label: "Film path", href: "/atrakcje/sciezka-filmowa" },
-          { label: "Spherical 3D 360° Cinema", href: "/atrakcje/kino-360" },
+          { label: "K360°", href: "/atrakcje/k360" },
           { label: "Gallery", href: "/galeria" },
         ],
       },
@@ -244,8 +244,8 @@ const FOOTER_COPY: Record<
         title: "Atrações",
         links: [
           { label: "Exposição temática", href: "/atrakcje/wystawa" },
-          { label: "Percurso cinematográfico", href: "/atrakcje/sciezka-filmowa" },
-          { label: "Cinema Esférico 3D 360°", href: "/atrakcje/kino-360" },
+          { label: "Percurso de filmagem", href: "/atrakcje/sciezka-filmowa" },
+          { label: "K360°", href: "/atrakcje/k360" },
           { label: "Galeria", href: "/galeria" },
         ],
       },

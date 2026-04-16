@@ -1,11 +1,19 @@
 import type { Metadata } from "next";
-import Kino360Content from "./Kino360Content";
+import LegacyK360RedirectContent from "./LegacyK360RedirectContent";
+
+const TARGET_PATH = "/atrakcje/k360";
 
 export const metadata: Metadata = {
-  title: "Kino Sferyczne 3D 360° — Alvernia Planet",
-  description: "Immersyjne Kino Sferyczne 3D 360° w kopułach Alvernia Planet.",
+  title: "K360° — Alvernia Planet",
+  alternates: {
+    canonical: TARGET_PATH,
+  },
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
-export default function Kino360Page() {
-  return <Kino360Content />;
+export default function LegacyK360PageRedirect() {
+  return <LegacyK360RedirectContent targetPath={TARGET_PATH} />;
 }

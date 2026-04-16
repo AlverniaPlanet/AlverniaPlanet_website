@@ -4,10 +4,10 @@ export const BOOKING_CATEGORY_PARAM = "category";
 export const BOOKING_SERVICE_PARAM = "service";
 export const BOOKING_QUANTITY_PARAM = "quantity";
 
-export const CINEMA_360_BOOKING_CATEGORY = "Kino 360°";
-export const CINEMA_360_BOOKING_SERVICES = {
-  normal: "Bilet normalny: Kino 360° (49,00 zł)",
-  reduced: "Bilet ulgowy: Kino 360° (39,00 zł)",
+export const K360_BOOKING_CATEGORY = "K360";
+export const K360_BOOKING_SERVICES = {
+  normal: "Bilet normalny: K360 (49,00 zł)",
+  reduced: "Bilet ulgowy: K360 (39,00 zł)",
 } as const;
 
 export const FILM_PATH_BOOKING_CATEGORY = "Ścieżka filmowa";

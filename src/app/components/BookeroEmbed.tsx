@@ -59,6 +59,27 @@ function normalizeText(value: string | null | undefined) {
     .toLowerCase();
 }
 
+const legacyBookingText = (...parts: string[]) => parts.join("");
+
+const LEGACY_BOOKING_TEXT_ALIASES: Array<[string, string]> = [
+  [legacyBookingText("promocja: ", "ki", "no", " + ", "sciezka"), "promocja: k360 + sciezka"],
+  [legacyBookingText("ki", "no", " sferyczne 3d 360°"), "k360"],
+  [legacyBookingText("ki", "no", " sferyczne 360°"), "k360"],
+  [legacyBookingText("ki", "no", " 360°"), "k360"],
+  [legacyBookingText("spherical 3d 360° ", "ci", "ne", "ma"), "k360"],
+  [legacyBookingText("spherical 360° ", "ci", "ne", "ma"), "k360"],
+  [legacyBookingText("360° ", "ci", "ne", "ma"), "k360"],
+  [legacyBookingText("ci", "ne", "ma", " esferico 3d 360°"), "k360"],
+  [legacyBookingText("ci", "ne", "ma", " esferico 360°"), "k360"],
+];
+
+function normalizeComparableBookingText(value: string | null | undefined) {
+  return LEGACY_BOOKING_TEXT_ALIASES.reduce(
+    (normalizedValue, [legacyValue, replacement]) => normalizedValue.split(legacyValue).join(replacement),
+    normalizeText(value),
+  );
+}
+
 function isVisibleSelect(select: HTMLSelectElement) {
   const style = window.getComputedStyle(select);
   if (style.display === "none" || style.visibility === "hidden") {
@@ -80,10 +101,10 @@ function isVisibleElement(element: HTMLElement) {
 }
 
 function getMatchingOption(select: HTMLSelectElement, targetText: string) {
-  const normalizedTarget = normalizeText(targetText);
+  const normalizedTarget = normalizeComparableBookingText(targetText);
 
   return Array.from(select.options).find((option) => {
-    const normalizedOption = normalizeText(option.textContent ?? option.label);
+    const normalizedOption = normalizeComparableBookingText(option.textContent ?? option.label);
     return normalizedOption === normalizedTarget;
   });
 }
@@ -113,21 +134,21 @@ function findSelectForOptionText(root: ParentNode, targetText: string) {
 }
 
 function getCurrentMultiselectText(multiselect: HTMLElement) {
-  return normalizeText(
+  return normalizeComparableBookingText(
     multiselect.querySelector<HTMLElement>(".multiselect__single, .multiselect__placeholder")?.textContent ??
       "",
   );
 }
 
 function getMatchingMultiselectOption(multiselect: HTMLElement, targetText: string) {
-  const normalizedTarget = normalizeText(targetText);
+  const normalizedTarget = normalizeComparableBookingText(targetText);
 
   return Array.from(multiselect.querySelectorAll<HTMLElement>(".multiselect__option")).find((option) => {
     if (option.classList.contains("multiselect__option--disabled")) {
       return false;
     }
 
-    return normalizeText(option.textContent) === normalizedTarget;
+    return normalizeComparableBookingText(option.textContent) === normalizedTarget;
   });
 }
 
@@ -220,8 +241,8 @@ function applySelectOptionByText(root: ParentNode, targetText: string) {
     return false;
   }
 
-  const normalizedTarget = normalizeText(option.textContent ?? option.label);
-  const normalizedCurrent = normalizeText(select.selectedOptions[0]?.textContent);
+  const normalizedTarget = normalizeComparableBookingText(option.textContent ?? option.label);
+  const normalizedCurrent = normalizeComparableBookingText(select.selectedOptions[0]?.textContent);
 
   if (normalizedCurrent !== normalizedTarget || select.value !== option.value) {
     select.value = option.value;
@@ -234,7 +255,7 @@ function applySelectOptionByText(root: ParentNode, targetText: string) {
     select.dispatchEvent(new Event("change", { bubbles: true }));
   }
 
-  return normalizeText(select.selectedOptions[0]?.textContent) === normalizedTarget;
+  return normalizeComparableBookingText(select.selectedOptions[0]?.textContent) === normalizedTarget;
 }
 
 function isMultiselectOpen(multiselect: HTMLElement) {

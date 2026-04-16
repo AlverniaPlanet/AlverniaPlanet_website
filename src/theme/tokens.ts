@@ -1,5 +1,5 @@
 // src/theme/tokens.ts
-export type Category = "kino360" | "sciezka" | "ogolne";
+export type Category = "k360" | "sciezka" | "ogolne";
 
 /** Kolory marki (jedno źródło prawdy) */
 export const COLORS = {
@@ -10,7 +10,7 @@ export const COLORS = {
 
   // kategorie
   cat: {
-    kino: "#0284C7",      // ciemniejszy niebieski
+    k360: "#0284C7",      // ciemniejszy niebieski
     sciezka: "#7C3AED",   // fiolet
     ogolne: "#6B7280",    // szary
   },
@@ -27,7 +27,7 @@ export const pillBase =
 
 /** Klasy pigułek dla kategorii (gotowiec) */
 export const CATEGORY_PILL: Record<Category, string> = {
-  kino360:  cx(pillBase, "shadow-[0_0_16px_rgba(2,132,199,.35)]",  "bg-[color:var(--ap-cat-kino,#0284C7)]"),
+  k360:     cx(pillBase, "shadow-[0_0_16px_rgba(2,132,199,.35)]",  "bg-[color:var(--ap-cat-k360,#0284C7)]"),
   sciezka:  cx(pillBase, "shadow-[0_0_16px_rgba(124,58,237,.35)]", "bg-[color:var(--ap-cat-sciezka,#7C3AED)]"),
   ogolne:   cx(pillBase, "shadow-[0_0_12px_rgba(107,114,128,.25)]","bg-[color:var(--ap-cat-ogolne,#6B7280)]"),
 };

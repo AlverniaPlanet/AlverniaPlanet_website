@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import RunmageddonContent from "./RunmageddonContent";
 
 export const metadata: Metadata = {
-  title: "Runmageddon Kraków Alvernia Planet 09-12.04.2026 — Alvernia Planet",
+  title: "Runmageddon Kraków Alvernia Planet 09-12.04.2026 zakończony — Alvernia Planet",
   description:
-    "Runmageddon Kraków Alvernia Planet już 09-12 kwietnia 2026. Sprawdź oficjalny link wydarzenia i zapisy.",
+    "Archiwum wydarzenia Runmageddon Kraków Alvernia Planet z 09-12 kwietnia 2026. Zapisy i aktywności specjalne są zamknięte.",
 };
 
 export default function RunmageddonPage() {

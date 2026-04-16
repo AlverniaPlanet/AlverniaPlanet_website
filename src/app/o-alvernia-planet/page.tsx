@@ -273,7 +273,7 @@ const COPY: Record<
     heroTitle: "Sobre a Alvernia Planet",
     heroSubtitle: "Um complexo único de cúpulas e um centro de eventos.",
     intro:
-      "A Alvernia Planet combina cinema, tecnologia e educação. As nossas cúpulas recebem eventos, produções e atrações imersivas para visitantes.",
+      "A Alvernia Planet combina audiovisual, tecnologia e educação. As nossas cúpulas recebem eventos, produções e atrações imersivas para visitantes.",
     wikipediaLabel: "Wikipedia",
     wikipediaTitle: "Alvernia Planet na Wikipedia polaca",
     wikipediaLead:
@@ -358,10 +358,10 @@ const COPY: Record<
       },
       {
         tag: "Educação",
-        title: "Educação e cinema",
+        title: "Educação e audiovisual",
         summary: "Percurso educativo próprio desde 2023.",
         points: [
-          "Como o cinema é feito e a cenografia",
+          "Como nascem produções e cenografia",
           "Ilusão de imagem e som, narrativa audiovisual",
         ],
       },

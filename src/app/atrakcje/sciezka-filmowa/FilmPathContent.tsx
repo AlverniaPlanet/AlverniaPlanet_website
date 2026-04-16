@@ -52,7 +52,7 @@ type GalleryItem = {
 
 const OPENING_PHOTO_SOURCES = {
   entrance: "/galeria/Sciezka_filmowa_v2/webp/wejscie_korytarz_k9.webp",
-  silent: "/galeria/Sciezka_filmowa_v2/webp/kino_nieme.webp",
+  silent: "/galeria/Sciezka_filmowa_v2/webp/era_niema.webp",
   interactive: "/galeria/Sciezka_filmowa_v2/webp/K9_quizy.webp",
 } as const;
 
@@ -70,7 +70,6 @@ const COPY: Record<
     stats: IntroStat[];
     routeEyebrow: string;
     routeTitle: string;
-    routeStatusLabel: string;
     route: TourStep[];
     galleryTitle: string;
     galleryIntro: string;
@@ -102,8 +101,8 @@ const COPY: Record<
       },
       {
         src: OPENING_PHOTO_SOURCES.silent,
-        alt: "Stanowisko poświęcone początkom kina na ścieżce edukacyjnej.",
-        label: "Epoki kina",
+        alt: "Stanowisko poświęcone początkom projekcji na ścieżce edukacyjnej.",
+        label: "Ery projekcji",
       },
       {
         src: OPENING_PHOTO_SOURCES.interactive,
@@ -112,21 +111,20 @@ const COPY: Record<
       },
     ],
     stats: [
-      { value: "8 etapów", label: "od historii kina po finał interaktywny" },
+      { value: "8 etapów", label: "od historii projekcji po finał interaktywny" },
       { value: "2-2,5 h", label: "zwiedzania z przewodnikiem" },
     ],
     routeEyebrow: "Animowana trasa",
     routeTitle: "Przewiń przez kolejne etapy zwiedzania.",
-    routeStatusLabel: "Przejdź wycieczkę razem z nami!",
     route: [
       {
         number: "01",
         title: "Korytarz Historii",
-        summary: "Przejście przez epoki kina: nieme, analogowe i cyfrowe.",
+        summary: "Przejście przez ery projekcji: niemą, analogową i cyfrową.",
         highlights: [
-          "czym było kino nieme?",
-          "jak działało kino analogowe?",
-          "czym jest kino cyfrowe?",
+          "czym była era niema?",
+          "jak działała projekcja analogowa?",
+          "czym jest projekcja cyfrowa?",
           "co będzie dalej?",
         ],
       },
@@ -219,19 +217,19 @@ const COPY: Record<
         image: "/galeria/Sciezka_filmowa_v2/webp/wejscie_korytarz_k9.webp",
       },
       {
-        title: "Kino nieme",
-        body: "Stanowisko poświęcone początkom kina i pierwszym obrazom filmowym.",
-        image: "/galeria/Sciezka_filmowa_v2/webp/kino_nieme.webp",
+        title: "Era niema",
+        body: "Stanowisko poświęcone początkom projekcji i pierwszym ruchomym obrazom.",
+        image: "/galeria/Sciezka_filmowa_v2/webp/era_niema.webp",
       },
       {
-        title: "Kino analogowe",
-        body: "Materiały i eksponaty pokazujące erę analogowej techniki filmowej.",
-        image: "/galeria/Sciezka_filmowa_v2/webp/kino_analogowe_1.webp",
+        title: "Era analogowa",
+        body: "Materiały i eksponaty pokazujące erę analogowej rejestracji i projekcji.",
+        image: "/galeria/Sciezka_filmowa_v2/webp/era_analogowa_1.webp",
       },
       {
-        title: "Kino cyfrowe",
+        title: "Era cyfrowa",
         body: "Nowoczesne rozwiązania i narzędzia używane w produkcji obrazu.",
-        image: "/galeria/Sciezka_filmowa_v2/webp/kino_cyfrowe_1.webp",
+        image: "/galeria/Sciezka_filmowa_v2/webp/era_cyfrowa_1.webp",
       },
       {
         title: "Ozdoby i detale",
@@ -278,13 +276,13 @@ const COPY: Record<
   en: {
     heroTag: "Attractions",
     heroTitle: "Film path",
-    heroLead: "Walk the tour that reveals how cinematic worlds are created.",
+    heroLead: "Walk the tour that reveals how film worlds are built.",
     planEyebrow: "Educational path",
     planTitle: "Step into the world of film, stage by stage.",
     planBody:
-      "The refreshed educational path has been expanded with new attractions and now leads through cinema history, Alvernia Planet spaces, and the key stages of film production. It is one cohesive route that combines learning, set design, sound, and an interactive finale.",
+      "The refreshed educational path has been expanded with new attractions and now leads through moving-image history, Alvernia Planet spaces, and the key stages of film production. It is one cohesive route that combines learning, set design, sound, and an interactive finale.",
     planCaption:
-      "From the route entrance and cinema eras to on-set work and the interactive ending.",
+      "From the route entrance and projection eras to on-set work and the interactive ending.",
     planPhotos: [
       {
         src: OPENING_PHOTO_SOURCES.entrance,
@@ -293,8 +291,8 @@ const COPY: Record<
       },
       {
         src: OPENING_PHOTO_SOURCES.silent,
-        alt: "Cinema history station on the educational path.",
-        label: "Cinema eras",
+        alt: "Projection history station on the educational path.",
+        label: "Projection eras",
       },
       {
         src: OPENING_PHOTO_SOURCES.interactive,
@@ -308,16 +306,15 @@ const COPY: Record<
     ],
     routeEyebrow: "Animated route",
     routeTitle: "Scroll through the full visit step by step.",
-    routeStatusLabel: "Take the tour with us!",
     route: [
       {
         number: "01",
         title: "History Corridor",
-        summary: "A walk through silent, analog, and digital cinema eras.",
+        summary: "A walk through silent, analog, and digital projection eras.",
         highlights: [
-          "what was silent cinema?",
-          "how did analog cinema work?",
-          "what is digital cinema?",
+          "what was silent film?",
+          "how did analog projection work?",
+          "what is digital projection?",
           "what comes next?",
         ],
       },
@@ -339,7 +336,7 @@ const COPY: Record<
         highlights: [
           "who makes up the film crew?",
           "what does the director do?",
-          "what does the cinematographer do?",
+          "what does the director of photography do?",
           "how does the crew work together?",
         ],
       },
@@ -410,19 +407,19 @@ const COPY: Record<
         image: "/galeria/Sciezka_filmowa_v2/webp/wejscie_korytarz_k9.webp",
       },
       {
-        title: "Silent cinema",
+        title: "Silent era",
         body: "A station focused on the earliest era of film and moving image.",
-        image: "/galeria/Sciezka_filmowa_v2/webp/kino_nieme.webp",
+        image: "/galeria/Sciezka_filmowa_v2/webp/era_niema.webp",
       },
       {
-        title: "Analog cinema",
-        body: "Displays and materials showing the age of analog film technology.",
-        image: "/galeria/Sciezka_filmowa_v2/webp/kino_analogowe_1.webp",
+        title: "Analog era",
+        body: "Displays and materials showing the age of analog projection and recording.",
+        image: "/galeria/Sciezka_filmowa_v2/webp/era_analogowa_1.webp",
       },
       {
-        title: "Digital cinema",
+        title: "Digital era",
         body: "Modern tools and techniques used in contemporary image production.",
-        image: "/galeria/Sciezka_filmowa_v2/webp/kino_cyfrowe_1.webp",
+        image: "/galeria/Sciezka_filmowa_v2/webp/era_cyfrowa_1.webp",
       },
       {
         title: "Set details",
@@ -468,14 +465,14 @@ const COPY: Record<
   },
   pt: {
     heroTag: "Atrações",
-    heroTitle: "Percurso cinematográfico",
-    heroLead: "Percorra a visita que revela como se criam mundos cinematográficos.",
+    heroTitle: "Percurso de filmagem",
+    heroLead: "Percorra a visita que revela como nascem mundos em imagem e som.",
     planEyebrow: "Percurso educativo",
-    planTitle: "Entra no mundo do cinema etapa a etapa.",
+    planTitle: "Entra no universo das produções etapa a etapa.",
     planBody:
-      "O percurso educativo renovado foi enriquecido com novas atrações e conduz pela história do cinema, pelos espaços da Alvernia Planet e pelas etapas centrais do trabalho em set. É uma rota coesa que junta aprendizagem, cenografia, som e um final interativo.",
+      "O percurso educativo renovado foi enriquecido com novas atrações e conduz pela história da projeção, pelos espaços da Alvernia Planet e pelas etapas centrais do trabalho em set. É uma rota coesa que junta aprendizagem, cenografia, som e um final interativo.",
     planCaption:
-      "Da entrada no percurso e das eras do cinema até ao trabalho em set e ao final interativo.",
+      "Da entrada no percurso e das eras de projeção até ao trabalho em set e ao final interativo.",
     planPhotos: [
       {
         src: OPENING_PHOTO_SOURCES.entrance,
@@ -484,8 +481,8 @@ const COPY: Record<
       },
       {
         src: OPENING_PHOTO_SOURCES.silent,
-        alt: "Zona dedicada à história do cinema no percurso educativo.",
-        label: "Eras do cinema",
+        alt: "Zona dedicada à história da projeção no percurso educativo.",
+        label: "Eras da projeção",
       },
       {
         src: OPENING_PHOTO_SOURCES.interactive,
@@ -494,21 +491,20 @@ const COPY: Record<
       },
     ],
     stats: [
-      { value: "8 etapas", label: "da história do cinema ao final interativo" },
+      { value: "8 etapas", label: "da história da projeção ao final interativo" },
       { value: "2-2,5 h", label: "visita guiada" },
     ],
     routeEyebrow: "Rota animada",
     routeTitle: "Percorra a visita etapa por etapa durante o scroll.",
-    routeStatusLabel: "Percorre a visita connosco!",
     route: [
       {
         number: "01",
         title: "Corredor da História",
-        summary: "Uma passagem pelas eras do cinema: mudo, analógico e digital.",
+        summary: "Uma passagem pelas eras da projeção: muda, analógica e digital.",
         highlights: [
-          "o que era o cinema mudo?",
-          "como funcionava o cinema analógico?",
-          "o que é o cinema digital?",
+          "o que era a era muda?",
+          "como funcionava a projeção analógica?",
+          "o que é a projeção digital?",
           "o que vem a seguir?",
         ],
       },
@@ -525,7 +521,7 @@ const COPY: Record<
       },
       {
         number: "03",
-        title: "Profissões do cinema",
+        title: "Profissões de set",
         summary: "Quem faz o quê num set de filmagem.",
         highlights: [
           "quem faz parte da equipa?",
@@ -570,9 +566,9 @@ const COPY: Record<
       {
         number: "07",
         title: "Pós-produção de som",
-        summary: "De onde vêm os sons do cinema e como mudam a cena.",
+        summary: "De onde vêm os sons da produção e como mudam a cena.",
         highlights: [
-          "de onde vem o som no cinema?",
+          "de onde vem o som numa cena?",
           "como se trabalham os diálogos?",
           "como nascem os efeitos?",
           "o que acontece no estúdio?",
@@ -586,7 +582,7 @@ const COPY: Record<
           "quizzes",
           "escrita do próprio guião com IA",
           "fotomatón",
-          "loja com gadgets de cinema",
+          "loja com gadgets de bastidores",
           "portas dimensionais",
           "conversa com a mascote do espaço",
         ],
@@ -601,23 +597,23 @@ const COPY: Record<
         image: "/galeria/Sciezka_filmowa_v2/webp/wejscie_korytarz_k9.webp",
       },
       {
-        title: "Cinema mudo",
-        body: "Uma zona dedicada às origens do cinema e aos primeiros filmes.",
-        image: "/galeria/Sciezka_filmowa_v2/webp/kino_nieme.webp",
+        title: "Era muda",
+        body: "Uma zona dedicada às origens da projeção e aos primeiros filmes.",
+        image: "/galeria/Sciezka_filmowa_v2/webp/era_niema.webp",
       },
       {
-        title: "Cinema analógico",
-        body: "Exposição de materiais e referências da era analógica do cinema.",
-        image: "/galeria/Sciezka_filmowa_v2/webp/kino_analogowe_1.webp",
+        title: "Era analógica",
+        body: "Exposição de materiais e referências da era analógica da projeção.",
+        image: "/galeria/Sciezka_filmowa_v2/webp/era_analogowa_1.webp",
       },
       {
-        title: "Cinema digital",
+        title: "Era digital",
         body: "Ferramentas e soluções ligadas à produção visual contemporânea.",
-        image: "/galeria/Sciezka_filmowa_v2/webp/kino_cyfrowe_1.webp",
+        image: "/galeria/Sciezka_filmowa_v2/webp/era_cyfrowa_1.webp",
       },
       {
         title: "Detalhes de cenário",
-        body: "Elementos visuais e decorativos que constroem o ambiente cinematográfico.",
+        body: "Elementos visuais e decorativos que constroem o ambiente visual.",
         image: "/galeria/Sciezka_filmowa_v2/webp/K10_ozdoby.webp",
       },
       {
@@ -997,10 +993,7 @@ export default function FilmPathContent() {
               </div>
 
               <div className="rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(126,246,255,0.08)_0%,rgba(255,255,255,0.03)_100%)] px-4 py-5 shadow-[0_22px_56px_rgba(0,0,0,0.26)] sm:px-5 sm:py-6 lg:px-6 xl:px-5 xl:py-5 2xl:px-6 2xl:py-6">
-                <p className="max-w-full text-[0.76rem] font-medium leading-relaxed tracking-[0.06em] text-[#7ef6ff]/82 sm:text-[0.82rem]">
-                  {t.routeStatusLabel}
-                </p>
-                <div className="mt-4 grid gap-3 md:grid-cols-[auto_minmax(0,1fr)] md:items-end xl:grid-cols-1 2xl:grid-cols-[auto_minmax(0,1fr)]">
+                <div className="grid gap-3 md:grid-cols-[auto_minmax(0,1fr)] md:items-end xl:grid-cols-1 2xl:grid-cols-[auto_minmax(0,1fr)]">
                   <p className="text-[clamp(2.95rem,13vw,4.15rem)] font-semibold leading-none text-white">
                     {activeStep.number}
                   </p>

@@ -38,9 +38,9 @@ const routes = [
   "/atrakcje/sciezka-filmowa",
   "/en/attractions/film-path",
   "/pt/attractions/film-path",
-  "/atrakcje/kino-360",
-  "/en/attractions/cinema-360",
-  "/pt/attractions/cinema-360",
+  "/atrakcje/k360",
+  "/en/attractions/k360",
+  "/pt/attractions/k360",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
