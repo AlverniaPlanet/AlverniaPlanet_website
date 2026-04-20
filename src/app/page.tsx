@@ -14,6 +14,7 @@ import TicketFaqWidget, { type TicketFaqCopy } from "@/app/components/TicketFaqW
 import { waitForImagesReady } from "@/app/components/waitForImagesReady";
 import {
   buildBookingPath,
+  COMBINED_PROMO_BOOKING_CATEGORY,
   FILM_PATH_BOOKING_CATEGORY,
   FILM_PATH_BOOKING_SERVICES,
 } from "@/lib/booking";
@@ -40,6 +41,18 @@ type TicketOption = {
   bookingQuantity?: number;
 };
 
+type PromoTicketOption = {
+  badge: string;
+  title: string;
+  subtitle: string;
+  details: string[];
+  priceLabel: string;
+  price: string;
+  savings: string;
+  savingsBadge: string;
+  button: string;
+};
+
 type TicketSection = {
   title: string;
   intro: string;
@@ -49,6 +62,7 @@ type TicketSection = {
   price: string;
   cta: string;
   ctaHref: string;
+  promoTicket: PromoTicketOption;
   options: TicketOption[];
 };
 
@@ -89,14 +103,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
     heroTitle: "Witamy w Alvernia Planet",
     heroPromos: [
       {
-        message: "Nowe otwarcie ścieżki edukacyjnej",
-        cta: "Zobacz i kup bilet",
-        href: "/atrakcje/sciezka-filmowa",
-        tone: "cool",
-      },
-      {
-        message: "Pierwsza projekcja K360° już 18 kwietnia",
-        cta: "Zobacz K360°",
+        message: "Przeżyj projekcję K360",
+        cta: "Zobacz K360",
         href: "/atrakcje/k360",
         tone: "hot",
         previewMedia: "k360",
@@ -107,10 +115,10 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       intro: "Wejdź do świata kopuł i zacznij od naszych trzech flagowych doświadczeń.",
       items: [
         {
-          title: "K360°",
+          title: "K360",
           description:
             "Immersyjna projekcja fulldome w jednej z najbardziej zaawansowanych kopuł w Europie.",
-          cta: "Zobacz K360°",
+          cta: "Zobacz K360",
           href: "/atrakcje/k360",
           image: "/galeria/Ogolne/webp/4.webp",
           imageAlt: "Wnętrze kopuły przygotowane do projekcji 360°",
@@ -137,20 +145,42 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
     },
     tickets: {
       title: "Bilety na ścieżkę edukacyjną",
-      intro: "Cena jest taka sama dla obu opcji: 69 zł za osobę. Wybierz wariant rezerwacji.",
+      intro:
+        "Bilet normalny kosztuje 79 zł za osobę, a bilet ulgowy 69 zł za osobę. Dla grup szkolnych ceny pozostają bez zmian.",
       headerCta: "Wybierz wariant rezerwacji",
       headerCtaSub: "Dla rodzin, grup i szkół - jeden krok do rezerwacji.",
       priceLabel: "Cena za osobę",
-      price: "69 zł/os.",
+      price: "79 zł/os. lub 69 zł/os.",
       cta: "Kup bilet",
       ctaHref: "/rezerwuj",
+      promoTicket: {
+        badge: "Pakiet",
+        title: "Ścieżka + K360",
+        subtitle:
+          "Jeden duży pakiet promocyjny, który łączy zwiedzanie Ścieżki filmowej z projekcją K360.",
+        details: ["Około 3 godzin doświadczeń łącznie"],
+        priceLabel: "Cena promocyjna",
+        price: "119,00 zł",
+        savings: "Oszczędzasz 9,00 zł",
+        savingsBadge: "7% taniej",
+        button: "Wybierz pakiet",
+      },
       options: [
         {
-          badge: "Indywidualne",
-          title: "Bilet indywidualny",
+          badge: "Normalny",
+          title: "Bilet normalny",
           subtitle: "1-10 osób na jednym bilecie",
-          details: ["Dla osób indywidualnych i rodzin", "Płatność za osoby"],
+          details: ["Dla osób indywidualnych i rodzin", "Cena regularna za osobę"],
+          price: "79 zł/os.",
           bookingServiceName: FILM_PATH_BOOKING_SERVICES.normal,
+        },
+        {
+          badge: "Ulgowy",
+          title: "Bilet ulgowy",
+          subtitle: "1-10 osób na jednym bilecie",
+          details: ["Dla osób indywidualnych i rodzin", "Cena ulgowa za osobę"],
+          price: "69 zł/os.",
+          bookingServiceName: FILM_PATH_BOOKING_SERVICES.reduced,
         },
         {
           badge: "Grupowe",
@@ -195,7 +225,7 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         {
           question: "Ile kosztuje zwiedzanie?",
           answer:
-            "Cena biletu indywidualnego wynosi 69 zł za osobę. W cenie jest zwiedzanie przestrzeni Alvernia Planet z przewodnikiem oraz część edukacyjna.",
+            "Bilet normalny kosztuje 79 zł za osobę, a bilet ulgowy 69 zł za osobę. W cenie jest zwiedzanie przestrzeni Alvernia Planet z przewodnikiem oraz część edukacyjna.",
         },
         {
           question: "Czy jest strefa gastro?",
@@ -239,14 +269,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
     heroTitle: "Welcome to Alvernia Planet",
     heroPromos: [
       {
-        message: "New opening of the educational path",
-        cta: "See and buy tickets",
-        href: "/atrakcje/sciezka-filmowa",
-        tone: "cool",
-      },
-      {
-        message: "The first K360° projection starts on April 18",
-        cta: "See K360°",
+        message: "Experience the K360 projection",
+        cta: "See K360",
         href: "/atrakcje/k360",
         tone: "hot",
         previewMedia: "k360",
@@ -257,9 +281,9 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       intro: "Start with our signature experiences inside the domes.",
       items: [
         {
-          title: "K360°",
+          title: "K360",
           description: "Immersive dome projection with the image all around you.",
-          cta: "See K360°",
+          cta: "See K360",
           href: "/atrakcje/k360",
           image: "/galeria/Ogolne/webp/4.webp",
           imageAlt: "Dome interior prepared for 360° projection",
@@ -286,20 +310,42 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
     },
     tickets: {
       title: "Educational path tickets",
-      intro: "Same price for both options: 69 PLN per person. Choose the booking type.",
+      intro:
+        "The standard ticket costs 79 PLN per person and the reduced ticket costs 69 PLN per person. Group pricing stays the same.",
       headerCta: "Choose booking option",
       headerCtaSub: "For families, groups, and schools - one step to booking.",
       priceLabel: "Price per person",
-      price: "69 PLN/person",
+      price: "79 PLN/person or 69 PLN/person",
       cta: "Buy tickets",
       ctaHref: "/en/reserve",
+      promoTicket: {
+        badge: "Package",
+        title: "Film Path + K360",
+        subtitle:
+          "One large promotional package that combines the Film Path visit with a K360 projection.",
+        details: ["Around 3 hours of experiences in total"],
+        priceLabel: "Promo price",
+        price: "119.00 PLN",
+        savings: "You save 9.00 PLN",
+        savingsBadge: "7% off",
+        button: "Choose package",
+      },
       options: [
         {
-          badge: "Individual",
-          title: "Individual ticket",
+          badge: "Standard",
+          title: "Standard ticket",
           subtitle: "1-10 people on one ticket",
-          details: ["For individuals and families", "Pay per person"],
+          details: ["For individuals and families", "Regular price per person"],
+          price: "79 PLN/person",
           bookingServiceName: FILM_PATH_BOOKING_SERVICES.normal,
+        },
+        {
+          badge: "Reduced",
+          title: "Reduced ticket",
+          subtitle: "1-10 people on one ticket",
+          details: ["For individuals and families", "Reduced price per person"],
+          price: "69 PLN/person",
+          bookingServiceName: FILM_PATH_BOOKING_SERVICES.reduced,
         },
         {
           badge: "Group",
@@ -344,7 +390,7 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         {
           question: "How much does the tour cost?",
           answer:
-            "The individual ticket costs 69 PLN per person. The price includes a guided tour of the Alvernia Planet spaces and the educational part.",
+            "The standard ticket costs 79 PLN per person and the reduced ticket costs 69 PLN per person. The price includes a guided tour of the Alvernia Planet spaces and the educational part.",
         },
         {
           question: "Is there a food zone?",
@@ -388,14 +434,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
     heroTitle: "Bem-vindo à Alvernia Planet",
     heroPromos: [
       {
-        message: "Nova abertura do percurso educativo",
-        cta: "Ver e comprar bilhete",
-        href: "/atrakcje/sciezka-filmowa",
-        tone: "cool",
-      },
-      {
-        message: "A primeira projeção do K360° é já a 18 de abril",
-        cta: "Ver o K360°",
+        message: "Vive a projeção K360",
+        cta: "Ver o K360",
         href: "/atrakcje/k360",
         tone: "hot",
         previewMedia: "k360",
@@ -406,10 +446,10 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       intro: "Entre no mundo das cúpulas e comece pelas nossas três experiências emblemáticas.",
       items: [
         {
-          title: "K360°",
+          title: "K360",
           description:
             "Projeções imersivas em cúpula com imagem a 360° numa das estruturas mais avançadas da Europa.",
-          cta: "Ver o K360°",
+          cta: "Ver o K360",
           href: "/atrakcje/k360",
           image: "/galeria/Ogolne/webp/4.webp",
           imageAlt: "Interior da cúpula preparado para projeção 360°",
@@ -436,20 +476,42 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
     },
     tickets: {
       title: "Bilhetes para o percurso educativo",
-      intro: "Preço igual nas duas opções: 69 PLN por pessoa. Escolha o tipo de reserva.",
+      intro:
+        "O bilhete normal custa 79 PLN por pessoa e o bilhete reduzido custa 69 PLN por pessoa. O preço de grupo mantém-se.",
       headerCta: "Escolher opção de reserva",
       headerCtaSub: "Para famílias, grupos e escolas - um passo até à reserva.",
       priceLabel: "Preço por pessoa",
-      price: "69 PLN/pessoa",
+      price: "79 PLN/pessoa ou 69 PLN/pessoa",
       cta: "Comprar bilhetes",
       ctaHref: "/pt/reservar",
+      promoTicket: {
+        badge: "Pacote",
+        title: "Percurso + K360",
+        subtitle:
+          "Um grande pacote promocional que junta a visita ao Percurso de filmagem com a projeção no K360.",
+        details: ["Cerca de 3 horas de experiências no total"],
+        priceLabel: "Preço promocional",
+        price: "119,00 PLN",
+        savings: "Poupa 9,00 PLN",
+        savingsBadge: "7% menos",
+        button: "Escolher pacote",
+      },
       options: [
         {
-          badge: "Individual",
-          title: "Bilhete individual",
+          badge: "Normal",
+          title: "Bilhete normal",
           subtitle: "1-10 pessoas por bilhete",
-          details: ["Para indivíduos e famílias", "Pagamento por pessoa"],
+          details: ["Para indivíduos e famílias", "Preço normal por pessoa"],
+          price: "79 PLN/pessoa",
           bookingServiceName: FILM_PATH_BOOKING_SERVICES.normal,
+        },
+        {
+          badge: "Reduzido",
+          title: "Bilhete reduzido",
+          subtitle: "1-10 pessoas por bilhete",
+          details: ["Para indivíduos e famílias", "Preço reduzido por pessoa"],
+          price: "69 PLN/pessoa",
+          bookingServiceName: FILM_PATH_BOOKING_SERVICES.reduced,
         },
         {
           badge: "Grupo",
@@ -494,7 +556,7 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         {
           question: "Quanto custa a visita?",
           answer:
-            "O bilhete individual custa 69 PLN por pessoa. O preço inclui a visita guiada aos espaços da Alvernia Planet e a parte educativa.",
+            "O bilhete normal custa 79 PLN por pessoa e o bilhete reduzido custa 69 PLN por pessoa. O preço inclui a visita guiada aos espaços da Alvernia Planet e a parte educativa.",
         },
         {
           question: "Existe zona de restauração?",
@@ -908,25 +970,79 @@ const TicketsSection = memo(function TicketsSection({
           <p className="ap-type-cta-title">{tickets.headerCta}</p>
           <p className="mt-2 ap-type-cta-body">{tickets.headerCtaSub}</p>
         </div>
-        <div className="mt-8 grid grid-cols-1 gap-x-6 gap-y-10 lg:grid-cols-2">
-          {tickets.options.map((option) => (
-            <TicketOptionCard
-              key={option.title}
-              option={option}
-              defaultPriceLabel={tickets.priceLabel}
-              defaultPrice={tickets.price}
-              cta={tickets.cta}
-              ctaHref={
-                option.bookingServiceName
-                  ? buildBookingPath(locale, {
-                      category: FILM_PATH_BOOKING_CATEGORY,
-                      service: option.bookingServiceName,
-                      quantity: option.bookingQuantity,
-                    })
-                  : tickets.ctaHref
-              }
-            />
-          ))}
+        <div className="mt-8 space-y-8">
+          <article className="home-ticket-promo relative overflow-hidden rounded-[2rem] border border-[#4fcfde]/35 bg-[linear-gradient(145deg,rgba(39,47,76,0.96)_0%,rgba(26,31,54,0.98)_100%)] px-6 py-6 shadow-[0_18px_44px_rgba(0,0,0,0.28)] sm:px-7 sm:py-7">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(79,207,222,0.18),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(79,207,222,0.08),transparent_32%)]" />
+            <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-8">
+              <div className="space-y-5 text-center lg:text-left">
+                <span className="ticket-card-badge mx-auto lg:mx-0">{tickets.promoTicket.badge}</span>
+                <div className="space-y-3">
+                  <h3 className="text-3xl font-semibold leading-tight tracking-[-0.03em] text-white sm:text-4xl">
+                    {tickets.promoTicket.title}
+                  </h3>
+                  <p className="mx-auto max-w-3xl text-base leading-relaxed text-white/76 sm:text-lg lg:mx-0">
+                    {tickets.promoTicket.subtitle}
+                  </p>
+                </div>
+                <div className="flex flex-wrap justify-center gap-3 lg:justify-start">
+                  {tickets.promoTicket.details.map((detail) => (
+                    <div
+                      key={detail}
+                      className="home-ticket-promo-detail rounded-full border border-white/12 bg-white/[0.05] px-4 py-2 text-sm text-white/72"
+                    >
+                      {detail}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex w-full flex-col items-center gap-4 lg:w-auto lg:items-end">
+                <div className="home-ticket-promo-price w-full max-w-[22rem] rounded-[1.35rem] border border-white/12 bg-white/[0.05] px-4 py-4 text-center shadow-[0_14px_34px_rgba(0,0,0,0.2)] sm:px-5 lg:text-right">
+                  <p className="text-sm text-white/68">{tickets.promoTicket.priceLabel}</p>
+                  <p className="mt-1 text-[1.9rem] font-semibold leading-none tracking-[-0.04em] text-white sm:text-[2.1rem]">
+                    {tickets.promoTicket.price}
+                  </p>
+                  <p className="mt-3 flex flex-wrap items-center justify-center gap-2 text-sm font-semibold text-[#8ff3ff] lg:justify-end">
+                    <span>{tickets.promoTicket.savings}</span>
+                    <span className="rounded-full border border-[#8ff3ff]/25 bg-[#8ff3ff]/12 px-2.5 py-0.5 text-[0.78rem] leading-none text-[#b8f8ff]">
+                      {tickets.promoTicket.savingsBadge}
+                    </span>
+                  </p>
+                </div>
+
+                <PrimaryButton
+                  href={buildBookingPath(locale, {
+                    category: COMBINED_PROMO_BOOKING_CATEGORY,
+                  })}
+                  size="lg"
+                  className="ticket-pill min-w-[13rem] whitespace-nowrap ring-[color:rgba(240,60,100,0.55)]"
+                >
+                  {tickets.promoTicket.button}
+                </PrimaryButton>
+              </div>
+            </div>
+          </article>
+
+          <div className="grid grid-cols-1 gap-x-6 gap-y-10 lg:grid-cols-2 xl:grid-cols-3">
+            {tickets.options.map((option) => (
+              <TicketOptionCard
+                key={option.title}
+                option={option}
+                defaultPriceLabel={tickets.priceLabel}
+                defaultPrice={tickets.price}
+                cta={tickets.cta}
+                ctaHref={
+                  option.bookingServiceName
+                    ? buildBookingPath(locale, {
+                        category: FILM_PATH_BOOKING_CATEGORY,
+                        service: option.bookingServiceName,
+                        quantity: option.bookingQuantity,
+                      })
+                    : tickets.ctaHref
+                }
+              />
+            ))}
+          </div>
         </div>
       </Card>
     </ScrollMotionItem>

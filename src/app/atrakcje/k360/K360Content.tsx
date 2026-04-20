@@ -10,12 +10,12 @@ import ScrollMotionItem from "@/app/components/ScrollMotionItem";
 import { useI18n } from "@/app/i18n-provider";
 import {
   buildBookingPath,
+  COMBINED_PROMO_BOOKING_CATEGORY,
   K360_BOOKING_CATEGORY,
   K360_BOOKING_SERVICES,
 } from "@/lib/booking";
 
 type Locale = "pl" | "en" | "pt";
-const COMBINED_PROMO_BOOKING_CATEGORY = "Promocja: K360 + Ścieżka";
 
 type HeroMoment = {
   title: string;
@@ -24,12 +24,6 @@ type HeroMoment = {
 type Feature = { badge: string; title: string; body: string };
 type GalleryItem = { title: string; body: string; image: string };
 type FeatureStat = { value: string; label: string };
-type CountdownUnitLabels = {
-  days: string;
-  hours: string;
-  minutes: string;
-  seconds: string;
-};
 type TicketEligibilityItem = {
   label: string;
   body: string;
@@ -60,29 +54,6 @@ type PromoTicketOption = {
   savingsPercent: string;
   button: string;
 };
-
-const COUNTDOWN_TARGET_ISO = "2026-04-18T00:00:00+02:00";
-const COUNTDOWN_TARGET_MS = Date.parse(COUNTDOWN_TARGET_ISO);
-
-function formatCountdownValue(value: number) {
-  return String(Math.max(0, value)).padStart(2, "0");
-}
-
-function getCountdownParts(now = Date.now()) {
-  const remainingMs = Math.max(0, COUNTDOWN_TARGET_MS - now);
-  const totalSeconds = Math.floor(remainingMs / 1000);
-  const days = Math.floor(totalSeconds / 86_400);
-  const hours = Math.floor((totalSeconds % 86_400) / 3_600);
-  const minutes = Math.floor((totalSeconds % 3_600) / 60);
-  const seconds = totalSeconds % 60;
-
-  return {
-    days: formatCountdownValue(days),
-    hours: formatCountdownValue(hours),
-    minutes: formatCountdownValue(minutes),
-    seconds: formatCountdownValue(seconds),
-  };
-}
 
 function cx(...classes: Array<string | false | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -223,9 +194,6 @@ const COPY: Record<
     heroTag: string;
     heroTitle: string;
     videoFallback: string;
-    spotlightTitleLines: string[];
-    countdownLabel: string;
-    countdownUnits: CountdownUnitLabels;
     featuresTitle: string;
     featuresIntro: string;
     featureStats: FeatureStat[];
@@ -243,25 +211,14 @@ const COPY: Record<
   pl: {
     heroMoment: {
       title: "Bilety już dostępne!",
-      lines: [
-        "Pierwsza projekcja już 18 kwietnia.",
-        "Kup bilety już teraz na „One Step Beyond: A Journey to Mars”.",
-      ],
+      lines: ["Kup bilety już teraz na „One Step Beyond: A Journey to Mars”."],
     },
     heroTag: "Atrakcje",
-    heroTitle: "K360°",
+    heroTitle: "K360",
     videoFallback: "Twój browser nie wspiera elementu video.",
-    spotlightTitleLines: ["Największa przestrzeń fulldome", "w Europie"],
-    countdownLabel: "Pierwsza projekcja 18.04.2026",
-    countdownUnits: {
-      days: "dni",
-      hours: "godzin",
-      minutes: "minut",
-      seconds: "sekund",
-    },
     featuresTitle: "Pierwsza projekcja: One Step Beyond",
     featuresIntro:
-      "Premierowa projekcja otwiera K360° formatem, który działa skalą, przestrzenią i pełnym zanurzeniem, zamiast klasycznej projekcji salowej.",
+      "Premierowa projekcja otwiera K360 formatem, który działa skalą, przestrzenią i pełnym zanurzeniem, zamiast klasycznej projekcji salowej.",
     featureStats: [
       { value: "15 m", label: "wysokość kopuły" },
       { value: "2 300 m²", label: "powierzchnia kopuły" },
@@ -296,12 +253,12 @@ const COPY: Record<
       {
         badge: "Premiera",
         title: "Projekcja otwarcia",
-        body: "„One Step Beyond: A Journey to Mars” jest pierwszą projekcją K360° dostępną od 18 kwietnia.",
+        body: "„One Step Beyond: A Journey to Mars” otwiera repertuar projekcji K360.",
       },
       {
         badge: "Doświadczenie",
         title: "Największa przestrzeń fulldome w Europie",
-        body: "K360° to największy obiekt tego typu w Europie i skaluje projekcję do poziomu, którego nie da się osiągnąć tradycyjnie.",
+        body: "K360 to największy obiekt tego typu w Europie i skaluje projekcję do poziomu, którego nie da się osiągnąć tradycyjnie.",
       },
     ],
     galleryTitle: "Zobacz przestrzeń",
@@ -329,9 +286,9 @@ const COPY: Record<
     ],
     promoTicket: {
       badge: "Pakiet",
-      title: "Ścieżka + K360°",
+      title: "Ścieżka + K360",
       subtitle:
-        "Jeden duży pakiet promocyjny, który łączy zwiedzanie Ścieżki filmowej z projekcją K360°.",
+        "Jeden duży pakiet promocyjny, który łączy zwiedzanie Ścieżki filmowej z projekcją K360.",
       details: [
         "Około 3 godzin doświadczeń łącznie",
       ],
@@ -341,7 +298,7 @@ const COPY: Record<
       savingsPercent: "7%",
       button: "Wybierz pakiet",
     },
-    ticketsTitle: "Bilety na projekcję K360°",
+    ticketsTitle: "Bilety na projekcję K360",
     ticketsIntro:
       "Najpierw wybierz pakiet albo wariant biletu. Po kliknięciu formularz otworzy od razu właściwą opcję.",
     ticketsPriceLabel: "Cena za osobę",
@@ -350,7 +307,7 @@ const COPY: Record<
       {
         badge: "Normalny",
         title: "Bilet normalny",
-        subtitle: "Projekcja K360°",
+        subtitle: "Projekcja K360",
         details: ["Cena regularna za osobę"],
         price: "49 zł",
         bookingServiceName: K360_BOOKING_SERVICES.normal,
@@ -358,7 +315,7 @@ const COPY: Record<
       {
         badge: "Ulgowy",
         title: "Bilet ulgowy",
-        subtitle: "Projekcja K360°",
+        subtitle: "Projekcja K360",
         details: ["Cena ulgowa za osobę"],
         price: "39 zł",
         bookingServiceName: K360_BOOKING_SERVICES.reduced,
@@ -391,25 +348,14 @@ const COPY: Record<
   en: {
     heroMoment: {
       title: "Tickets available now",
-      lines: [
-        "The first projection starts on April 18.",
-        "Get your tickets now for “One Step Beyond: A Journey to Mars”.",
-      ],
+      lines: ["Get your tickets now for “One Step Beyond: A Journey to Mars”."],
     },
     heroTag: "Attractions",
-    heroTitle: "K360°",
+    heroTitle: "K360",
     videoFallback: "Your browser does not support the video element.",
-    spotlightTitleLines: ["The largest fulldome space", "in Europe"],
-    countdownLabel: "First projection 18.04.2026",
-    countdownUnits: {
-      days: "days",
-      hours: "hours",
-      minutes: "minutes",
-      seconds: "seconds",
-    },
     featuresTitle: "First projection: One Step Beyond",
     featuresIntro:
-      "The opening projection introduces K360° through scale, immersion, and a full-dome image instead of a standard auditorium setup.",
+      "The opening projection introduces K360 through scale, immersion, and a full-dome image instead of a standard auditorium setup.",
     featureStats: [
       { value: "15 m", label: "dome height" },
       { value: "2,300 m²", label: "dome floor area" },
@@ -444,12 +390,12 @@ const COPY: Record<
       {
         badge: "Opening",
         title: "Opening projection",
-        body: "“One Step Beyond: A Journey to Mars” is the first K360° projection available from April 18.",
+        body: "“One Step Beyond: A Journey to Mars” opens the K360 projection lineup.",
       },
       {
         badge: "Experience",
         title: "The largest fulldome space in Europe",
-        body: "K360° is the largest fulldome space in Europe, giving the projection a scale impossible to match in a standard auditorium.",
+        body: "K360 is the largest fulldome space in Europe, giving the projection a scale impossible to match in a standard auditorium.",
       },
     ],
     galleryTitle: "See the venue",
@@ -477,9 +423,9 @@ const COPY: Record<
     ],
     promoTicket: {
       badge: "Package",
-      title: "Film Path + K360°",
+      title: "Film Path + K360",
       subtitle:
-        "One large promotional package that combines the Film Path visit with a K360° projection.",
+        "One large promotional package that combines the Film Path visit with a K360 projection.",
       details: [
         "Around 3 hours of experiences in total",
       ],
@@ -489,7 +435,7 @@ const COPY: Record<
       savingsPercent: "7%",
       button: "Choose package",
     },
-    ticketsTitle: "Tickets for K360° projection",
+    ticketsTitle: "Tickets for K360 projection",
     ticketsIntro:
       "Choose the package or ticket type first. After clicking, the booking form will open with the matching option selected.",
     ticketsPriceLabel: "Price per person",
@@ -498,7 +444,7 @@ const COPY: Record<
       {
         badge: "Standard",
         title: "Standard ticket",
-        subtitle: "K360° projection",
+        subtitle: "K360 projection",
         details: ["Regular price per person"],
         price: "49 PLN",
         bookingServiceName: K360_BOOKING_SERVICES.normal,
@@ -506,7 +452,7 @@ const COPY: Record<
       {
         badge: "Reduced",
         title: "Reduced ticket",
-        subtitle: "K360° projection",
+        subtitle: "K360 projection",
         details: ["Reduced price per person"],
         price: "39 PLN",
         bookingServiceName: K360_BOOKING_SERVICES.reduced,
@@ -539,25 +485,14 @@ const COPY: Record<
   pt: {
     heroMoment: {
       title: "Bilhetes já disponíveis!",
-      lines: [
-        "A primeira projeção é já a 18 de abril.",
-        "Compra já os teus bilhetes para “One Step Beyond: A Journey to Mars”.",
-      ],
+      lines: ["Compra já os teus bilhetes para “One Step Beyond: A Journey to Mars”."],
     },
     heroTag: "Atrações",
-    heroTitle: "K360°",
+    heroTitle: "K360",
     videoFallback: "O seu navegador não suporta o elemento de vídeo.",
-    spotlightTitleLines: ["O maior espaço fulldome", "da Europa"],
-    countdownLabel: "Primeira projeção 18.04.2026",
-    countdownUnits: {
-      days: "dias",
-      hours: "horas",
-      minutes: "minutos",
-      seconds: "segundos",
-    },
     featuresTitle: "Primeira projeção: One Step Beyond",
     featuresIntro:
-      "A projeção de estreia apresenta o K360° com um formato feito para impressionar pela escala, pela imersão e pela imagem fulldome em toda a cúpula.",
+      "A projeção de estreia apresenta o K360 com um formato feito para impressionar pela escala, pela imersão e pela imagem fulldome em toda a cúpula.",
     featureStats: [
       { value: "15 m", label: "altura da cúpula" },
       { value: "2 300 m²", label: "área da cúpula" },
@@ -592,12 +527,12 @@ const COPY: Record<
       {
         badge: "Estreia",
         title: "Projeção de abertura",
-        body: "“One Step Beyond: A Journey to Mars” é a primeira projeção do K360° disponível a partir de 18 de abril.",
+        body: "“One Step Beyond: A Journey to Mars” abre a programação de projeções do K360.",
       },
       {
         badge: "Experiência",
         title: "O maior espaço fulldome da Europa",
-        body: "O K360° é o maior espaço fulldome da Europa, dando à experiência uma escala impossível de reproduzir de forma tradicional.",
+        body: "O K360 é o maior espaço fulldome da Europa, dando à experiência uma escala impossível de reproduzir de forma tradicional.",
       },
     ],
     galleryTitle: "Ver o espaço",
@@ -625,9 +560,9 @@ const COPY: Record<
     ],
     promoTicket: {
       badge: "Pacote",
-      title: "Percurso + K360°",
+      title: "Percurso + K360",
       subtitle:
-        "Um grande pacote promocional que junta a visita aos bastidores com a projeção no K360°.",
+        "Um grande pacote promocional que junta a visita aos bastidores com a projeção no K360.",
       details: [
         "Cerca de 3 horas de experiências no total",
       ],
@@ -637,7 +572,7 @@ const COPY: Record<
       savingsPercent: "7%",
       button: "Escolher pacote",
     },
-    ticketsTitle: "Bilhetes para a projeção K360°",
+    ticketsTitle: "Bilhetes para a projeção K360",
     ticketsIntro:
       "Escolha primeiro o pacote ou o tipo de bilhete. Após o clique, o formulário abre com a opção certa já selecionada.",
     ticketsPriceLabel: "Preço por pessoa",
@@ -646,7 +581,7 @@ const COPY: Record<
       {
         badge: "Normal",
         title: "Bilhete normal",
-        subtitle: "Projeção K360°",
+        subtitle: "Projeção K360",
         details: ["Preço normal por pessoa"],
         price: "49 PLN",
         bookingServiceName: K360_BOOKING_SERVICES.normal,
@@ -654,7 +589,7 @@ const COPY: Record<
       {
         badge: "Reduzido",
         title: "Bilhete reduzido",
-        subtitle: "Projeção K360°",
+        subtitle: "Projeção K360",
         details: ["Preço reduzido por pessoa"],
         price: "39 PLN",
         bookingServiceName: K360_BOOKING_SERVICES.reduced,
@@ -691,42 +626,15 @@ export default function K360Content() {
   const loc: Locale = (locale as Locale) ?? "pl";
   const copy = COPY[loc];
   const [openEligibilityTicket, setOpenEligibilityTicket] = useState<string | null>(null);
-  const [countdown, setCountdown] = useState(() => ({
-    days: "00",
-    hours: "00",
-    minutes: "00",
-    seconds: "00",
-  }));
   const activeHero = copy.heroMoment;
-  const spotlightFeature = copy.features[copy.features.length - 1];
   const regularFeatures = copy.features.slice(0, -1);
-
-  useEffect(() => {
-    const syncCountdown = () => {
-      setCountdown(getCountdownParts());
-    };
-
-    syncCountdown();
-    const intervalId = window.setInterval(syncCountdown, 1000);
-
-    return () => {
-      window.clearInterval(intervalId);
-    };
-  }, []);
-
-  const countdownItems = [
-    { value: countdown.days, label: copy.countdownUnits.days },
-    { value: countdown.hours, label: copy.countdownUnits.hours },
-    { value: countdown.minutes, label: copy.countdownUnits.minutes },
-    { value: countdown.seconds, label: copy.countdownUnits.seconds },
-  ];
 
   return (
     <main className="k360-page relative z-10 min-h-screen">
       <section className="relative z-10 px-4 pt-12 sm:pt-16">
         <div className="ap-shell mb-10 sm:mb-12">
-          <div className="relative overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
-            <div className="relative aspect-[4/5] sm:aspect-[16/9] bg-[#071020]">
+          <div className="k360-hero-shell relative overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
+            <div className="k360-hero-stage relative aspect-[4/5] sm:aspect-[16/9] bg-[#071020]">
               <AdaptiveVideo
                 mp4Src="/k360/one_step_beyond.mp4"
                 webmSrc="/k360/one_step_beyond.webm"
@@ -738,7 +646,7 @@ export default function K360Content() {
                 rootMargin="320px 0px"
                 preferPosterOnLowPower
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-[#071524]/85 via-[#0b2340]/60 to-black/78" />
+              <div className="k360-hero-overlay absolute inset-0 bg-gradient-to-b from-[#071524]/85 via-[#0b2340]/60 to-black/78" />
               <div className="absolute inset-0 opacity-60 mix-blend-soft-light bg-[radial-gradient(circle_at_20%_25%,rgba(76,153,255,0.25),transparent_45%),radial-gradient(circle_at_75%_20%,rgba(24,103,201,0.22),transparent_42%),radial-gradient(circle_at_50%_75%,rgba(7,48,108,0.28),transparent_46%)]" />
               <div className="relative flex h-full items-center justify-center p-5 sm:p-10 text-center force-overlay">
                 <div className="space-y-4 ap-page-intro-stagger">
@@ -748,11 +656,11 @@ export default function K360Content() {
                       aria-hidden="true"
                     />
                     <div className="relative max-w-5xl px-4 sm:px-6">
-                      <p className="text-balance text-[clamp(2rem,6.2vw,5rem)] font-black leading-[0.92] tracking-[-0.065em] text-white drop-shadow-[0_10px_34px_rgba(0,0,0,0.55)]">
+                      <p className="k360-hero-highlight text-balance text-[clamp(2rem,6.2vw,5rem)] font-black leading-[0.92] tracking-[-0.065em] text-white drop-shadow-[0_10px_34px_rgba(0,0,0,0.55)]">
                         {activeHero.title}
                       </p>
                       <div
-                        className="mx-auto mt-4 h-[3px] w-24 rounded-full bg-[linear-gradient(90deg,rgba(126,246,255,0),rgba(126,246,255,0.95),rgba(126,246,255,0))]"
+                        className="k360-hero-divider mx-auto mt-4 h-[3px] w-24 rounded-full bg-[linear-gradient(90deg,rgba(126,246,255,0),rgba(126,246,255,0.95),rgba(126,246,255,0))]"
                         aria-hidden="true"
                       />
                     </div>
@@ -781,49 +689,6 @@ export default function K360Content() {
 
       <section className="px-4 pb-16 sm:pb-20">
         <div className="ap-shell ap-page-stack">
-          <ScrollMotionItem strength="soft" delay={60} className="ap-deferred-section">
-            <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(10,20,42,0.84)_0%,rgba(6,10,22,0.96)_100%)] px-4 py-6 shadow-[0_24px_64px_rgba(0,0,0,0.28)] sm:px-7 sm:py-8">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(126,246,255,0.14),transparent_36%),radial-gradient(circle_at_bottom_right,rgba(255,93,93,0.16),transparent_34%)]" />
-              <div className="relative">
-                <div className="mx-auto mb-6 w-full max-w-6xl text-center sm:mb-7">
-                  <h2 className="mx-auto w-full max-w-[24ch] text-balance text-[clamp(2rem,5vw,4rem)] font-black leading-[0.96] tracking-[-0.05em] text-white sm:max-w-[26ch]">
-                    {copy.spotlightTitleLines.map((line) => (
-                      <span key={line} className="block sm:whitespace-nowrap">
-                        {line}
-                      </span>
-                    ))}
-                  </h2>
-                  <p className="mx-auto mt-4 max-w-3xl text-[clamp(1rem,1.2vw,1.24rem)] leading-[1.7] text-white/72">
-                    {spotlightFeature.body}
-                  </p>
-                </div>
-                <div className="flex justify-center">
-                  <div className="inline-flex rounded-[1rem] bg-[linear-gradient(135deg,#ff6a3d_0%,#ff4d62_100%)] px-5 py-2 text-center text-[0.78rem] font-black uppercase tracking-[0.14em] text-white shadow-[0_14px_32px_rgba(255,98,77,0.38)] sm:px-7">
-                    {copy.countdownLabel}
-                  </div>
-                </div>
-                <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
-                  {countdownItems.map((item) => (
-                    <div
-                      key={item.label}
-                      className="rounded-[1.35rem] border border-white/12 bg-white/7 px-3 py-4 text-center backdrop-blur-sm shadow-[0_14px_34px_rgba(0,0,0,0.18)] sm:px-4 sm:py-5"
-                    >
-                      <p
-                        className="text-[clamp(2rem,6vw,3.25rem)] font-black leading-none tracking-[-0.06em] text-white"
-                        suppressHydrationWarning
-                      >
-                        {item.value}
-                      </p>
-                      <p className="mt-2 text-[0.72rem] font-medium uppercase tracking-[0.22em] text-white/58 sm:text-xs">
-                        {item.label}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </ScrollMotionItem>
-
           <ScrollMotionItem strength="strong" delay={110} className="ap-deferred-section">
             <Card className="space-y-5 sm:space-y-6" motion="off" dense>
               <div className="grid gap-7 xl:grid-cols-[minmax(20rem,0.84fr)_minmax(0,1.16fr)] xl:items-start xl:gap-8 2xl:grid-cols-[minmax(22rem,0.78fr)_minmax(0,1.22fr)]">

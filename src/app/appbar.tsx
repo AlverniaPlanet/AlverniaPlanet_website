@@ -41,7 +41,6 @@ export function AppBar() {
   const isAttractionsActive = isCurrentSection("/atrakcje");
   const isEventsActive = isCurrentPath("/wydarzenia");
   const isGettingThereActive = isCurrentPath("/jak-dojechac");
-  const isRunmageddonActive = isCurrentPath("/runmageddon");
   const isAboutActive = isCurrentPath("/o-alvernia-planet", "/galeria", "/wydarzenia/vr", "/aktualnosci");
   const isContactActive = isCurrentPath("/kontakt");
   const isBookingActive = isCurrentPath("/rezerwuj");
@@ -210,15 +209,6 @@ export function AppBar() {
                 suppressHydrationWarning
               >
                 {t("nav.getting_there")}
-              </Link>
-              <span className="ap-nav-separator text-white/40">|</span>
-              <Link
-                href={paths.runmageddon}
-                className={cx("ap-nav-link ap-nav-link-runmageddon", isRunmageddonActive && "is-active")}
-                aria-current={isRunmageddonActive ? "page" : undefined}
-                suppressHydrationWarning
-              >
-                {t("nav.runmageddon")}
               </Link>
             </nav>
           </div>
@@ -495,19 +485,6 @@ export function AppBar() {
                   suppressHydrationWarning
                 >
                   {t("nav.getting_there")}
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href={paths.runmageddon}
-                  className={cx(
-                    "ap-mobile-link ap-mobile-link-runmageddon block rounded-md px-3 py-2 text-gray-200",
-                    isRunmageddonActive && "is-active",
-                  )}
-                  aria-current={isRunmageddonActive ? "page" : undefined}
-                  suppressHydrationWarning
-                >
-                  {t("nav.runmageddon")}
                 </Link>
               </li>
               <li className="ml-3">

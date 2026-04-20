@@ -76,7 +76,7 @@ const COPY: Record<
       phoneLabel: "Telefon",
       hoursLabel: "Godziny otwarcia",
       hoursLoading: "Pobieramy godziny z Google…",
-      hoursFallback: "Godziny: 8:00 – 16:00",
+      hoursFallback: "Godziny: pon-pt, 8:00 – 16:00",
       emailLabel: "Email",
     },
     booking: {

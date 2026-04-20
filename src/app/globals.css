@@ -274,13 +274,6 @@ p {
   transform: scaleX(1);
 }
 
-.ap-nav-link.ap-nav-link-runmageddon,
-.ap-nav-link.ap-nav-link-runmageddon:hover,
-.ap-nav-link.ap-nav-link-runmageddon:focus-visible,
-.ap-nav-link.ap-nav-link-runmageddon.is-active {
-  color: #f2cb47;
-}
-
 .ap-nav-link-button {
   background: transparent;
 }
@@ -398,13 +391,6 @@ p {
   background: rgba(79, 207, 222, 0.14);
   color: #ffffff;
   box-shadow: inset 0 0 0 1px rgba(79, 207, 222, 0.24);
-}
-
-.ap-mobile-link.ap-mobile-link-runmageddon,
-.ap-mobile-link.ap-mobile-link-runmageddon:hover,
-.ap-mobile-link.ap-mobile-link-runmageddon:focus-visible,
-.ap-mobile-link.ap-mobile-link-runmageddon.is-active {
-  color: #f2cb47;
 }
 
 .ap-primary-button {
@@ -634,13 +620,6 @@ p {
   box-shadow: inset 0 0 0 1px rgba(67, 135, 149, 0.18);
 }
 
-.theme-light .ap-nav-link.ap-nav-link-runmageddon,
-.theme-light .ap-nav-link.ap-nav-link-runmageddon:hover,
-.theme-light .ap-nav-link.ap-nav-link-runmageddon:focus-visible,
-.theme-light .ap-nav-link.ap-nav-link-runmageddon.is-active {
-  color: #c39200;
-}
-
 .theme-light .ap-nav-dropdown-panel {
   box-shadow:
     0 22px 44px rgba(67, 135, 149, 0.16),
@@ -674,13 +653,6 @@ p {
   background: rgba(108, 197, 211, 0.16);
   color: var(--ap-text);
   box-shadow: inset 0 0 0 1px rgba(67, 135, 149, 0.16);
-}
-
-.theme-light .ap-mobile-link.ap-mobile-link-runmageddon,
-.theme-light .ap-mobile-link.ap-mobile-link-runmageddon:hover,
-.theme-light .ap-mobile-link.ap-mobile-link-runmageddon:focus-visible,
-.theme-light .ap-mobile-link.ap-mobile-link-runmageddon.is-active {
-  color: #c39200;
 }
 
 .force-overlay {
@@ -1079,6 +1051,30 @@ p {
     radial-gradient(circle at 14% 18%, rgba(79, 207, 222, 0.2), transparent 44%),
     radial-gradient(circle at 84% 86%, rgba(240, 60, 100, 0.11), transparent 50%);
   opacity: 0.84;
+}
+
+.theme-light .home-ticket-promo {
+  border-color: rgba(79, 207, 222, 0.56) !important;
+  background:
+    radial-gradient(circle at top left, rgba(79, 207, 222, 0.14), transparent 36%),
+    radial-gradient(circle at bottom right, rgba(240, 60, 100, 0.08), transparent 34%),
+    linear-gradient(158deg, #f9feff 0%, #eff8ff 54%, #e7f2fb 100%) !important;
+  box-shadow:
+    0 20px 40px rgba(18, 38, 62, 0.14),
+    0 0 0 1px rgba(79, 207, 222, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92) !important;
+}
+
+.theme-light .home-ticket-promo-detail {
+  color: rgba(19, 38, 61, 0.8) !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  border-color: rgba(114, 148, 173, 0.26) !important;
+}
+
+.theme-light .home-ticket-promo-price {
+  background: linear-gradient(180deg, #ffffff, #edf4fb) !important;
+  border-color: rgba(114, 148, 173, 0.5) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
 }
 
 .theme-light .ticket-card-title {
@@ -1660,16 +1656,49 @@ p {
 
 .theme-light .ticket-faq-fab {
   background:
-    radial-gradient(circle at 36% 30%, rgba(255, 255, 255, 0.72), transparent 44%),
-    linear-gradient(160deg, rgba(18, 31, 48, 0.98), rgba(7, 13, 24, 0.98));
-  border-color: rgba(108, 197, 211, 0.36);
+    radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.96), transparent 42%),
+    linear-gradient(156deg, rgba(252, 254, 255, 0.98), rgba(234, 245, 250, 0.98));
+  border-color: rgba(108, 197, 211, 0.52);
   box-shadow:
     0 18px 34px rgba(18, 38, 62, 0.18),
-    0 0 0 1px rgba(79, 207, 222, 0.18);
+    0 0 0 1px rgba(79, 207, 222, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.94);
 }
 
-.theme-light .ticket-faq-fab-core {
-  background: linear-gradient(145deg, rgba(16, 20, 34, 0.96), rgba(4, 8, 18, 0.98));
+.theme-light .ticket-faq-mobile-fab {
+  background:
+    radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.96), transparent 42%),
+    linear-gradient(156deg, rgba(252, 254, 255, 0.98), rgba(234, 245, 250, 0.98));
+  border-color: rgba(108, 197, 211, 0.52);
+  box-shadow:
+    0 18px 34px rgba(18, 38, 62, 0.18),
+    0 0 0 1px rgba(79, 207, 222, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.94);
+}
+
+.theme-light .ticket-faq-fab:hover,
+.theme-light .ticket-faq-fab:focus-visible,
+.theme-light .ticket-faq-fab.is-open,
+.theme-light .ticket-faq-mobile-fab:hover,
+.theme-light .ticket-faq-mobile-fab:focus-visible,
+.theme-light .ticket-faq-mobile-fab.is-open {
+  border-color: rgba(79, 207, 222, 0.58);
+  box-shadow:
+    0 22px 38px rgba(18, 38, 62, 0.2),
+    0 0 0 1px rgba(79, 207, 222, 0.28),
+    0 0 18px rgba(79, 207, 222, 0.12);
+}
+
+.theme-light .ticket-faq-fab-core,
+.theme-light .ticket-faq-mobile-fab-core {
+  background: linear-gradient(145deg, rgba(15, 22, 38, 0.98), rgba(7, 12, 24, 0.99));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 0 1px rgba(79, 207, 222, 0.12);
+}
+
+.theme-light .ticket-faq-fab-copy-label {
+  color: #10233a;
 }
 
 .theme-light .ticket-faq-launcher-subtitle,

@@ -244,17 +244,26 @@ const COPY: Record<
     ],
     ticketsTitle: "Bilety na ścieżkę edukacyjną",
     ticketsIntro:
-      "Dla osób indywidualnych cena wynosi 69 zł za osobę. Dla grup szkolnych start to 2 070 zł za 30 osób, a każda kolejna osoba kosztuje 69 zł, maksymalnie do 50 uczestników na rezerwację.",
+      "Bilet normalny kosztuje 79 zł za osobę, a bilet ulgowy 69 zł za osobę. Dla grup szkolnych start to 2 070 zł za 30 osób, a każda kolejna osoba kosztuje 69 zł, maksymalnie do 50 uczestników na rezerwację.",
     ticketsPriceLabel: "Cena za osobę",
-    ticketsPrice: "69 zł/os.",
+    ticketsPrice: "79 zł/os. lub 69 zł/os.",
     ticketsButton: "Kup bilet",
     ticketsOptions: [
       {
-        badge: "Indywidualne",
-        title: "Bilet indywidualny",
+        badge: "Normalny",
+        title: "Bilet normalny",
         subtitle: "1-10 osób na jednym bilecie",
-        details: ["Dla osób indywidualnych i rodzin", "Płatność za osoby"],
+        details: ["Dla osób indywidualnych i rodzin", "Cena regularna za osobę"],
+        price: "79 zł/os.",
         bookingServiceName: FILM_PATH_BOOKING_SERVICES.normal,
+      },
+      {
+        badge: "Ulgowy",
+        title: "Bilet ulgowy",
+        subtitle: "1-10 osób na jednym bilecie",
+        details: ["Dla osób indywidualnych i rodzin", "Cena ulgowa za osobę"],
+        price: "69 zł/os.",
+        bookingServiceName: FILM_PATH_BOOKING_SERVICES.reduced,
       },
       {
         badge: "Grupowe",
@@ -434,17 +443,26 @@ const COPY: Record<
     ],
     ticketsTitle: "Educational path tickets",
     ticketsIntro:
-      "For individuals the ticket costs 69 PLN per person. For school groups the starting price is 2,070 PLN for 30 guests, then 69 PLN for each additional guest up to 50 people per booking.",
+      "The standard ticket costs 79 PLN per person and the reduced ticket costs 69 PLN per person. For school groups the starting price is 2,070 PLN for 30 guests, then 69 PLN for each additional guest up to 50 people per booking.",
     ticketsPriceLabel: "Price per person",
-    ticketsPrice: "69 PLN/person",
+    ticketsPrice: "79 PLN/person or 69 PLN/person",
     ticketsButton: "Buy tickets",
     ticketsOptions: [
       {
-        badge: "Individual",
-        title: "Individual ticket",
+        badge: "Standard",
+        title: "Standard ticket",
         subtitle: "1-10 people on one ticket",
-        details: ["For individuals and families", "Pay per person"],
+        details: ["For individuals and families", "Regular price per person"],
+        price: "79 PLN/person",
         bookingServiceName: FILM_PATH_BOOKING_SERVICES.normal,
+      },
+      {
+        badge: "Reduced",
+        title: "Reduced ticket",
+        subtitle: "1-10 people on one ticket",
+        details: ["For individuals and families", "Reduced price per person"],
+        price: "69 PLN/person",
+        bookingServiceName: FILM_PATH_BOOKING_SERVICES.reduced,
       },
       {
         badge: "Group",
@@ -624,17 +642,26 @@ const COPY: Record<
     ],
     ticketsTitle: "Bilhetes para o percurso educativo",
     ticketsIntro:
-      "Para visitantes individuais o preço é 69 PLN por pessoa. Para grupos escolares, o valor começa em 2 070 PLN para 30 pessoas, depois 69 PLN por cada pessoa adicional até 50 participantes por reserva.",
+      "O bilhete normal custa 79 PLN por pessoa e o bilhete reduzido custa 69 PLN por pessoa. Para grupos escolares, o valor começa em 2 070 PLN para 30 pessoas, depois 69 PLN por cada pessoa adicional até 50 participantes por reserva.",
     ticketsPriceLabel: "Preço por pessoa",
-    ticketsPrice: "69 PLN/pessoa",
+    ticketsPrice: "79 PLN/pessoa ou 69 PLN/pessoa",
     ticketsButton: "Comprar bilhete",
     ticketsOptions: [
       {
-        badge: "Individual",
-        title: "Bilhete individual",
+        badge: "Normal",
+        title: "Bilhete normal",
         subtitle: "1-10 pessoas por bilhete",
-        details: ["Para indivíduos e famílias", "Pagamento por pessoa"],
+        details: ["Para indivíduos e famílias", "Preço normal por pessoa"],
+        price: "79 PLN/pessoa",
         bookingServiceName: FILM_PATH_BOOKING_SERVICES.normal,
+      },
+      {
+        badge: "Reduzido",
+        title: "Bilhete reduzido",
+        subtitle: "1-10 pessoas por bilhete",
+        details: ["Para indivíduos e famílias", "Preço reduzido por pessoa"],
+        price: "69 PLN/pessoa",
+        bookingServiceName: FILM_PATH_BOOKING_SERVICES.reduced,
       },
       {
         badge: "Grupo",
@@ -1069,7 +1096,7 @@ export default function FilmPathContent() {
 
           <Card id="film-path-tickets" title={t.ticketsTitle} titleCentered titleDivider dense motion="off">
             <p className="ap-type-section-body mx-auto max-w-3xl text-center">{t.ticketsIntro}</p>
-            <div className="mt-8 grid grid-cols-1 gap-x-6 gap-y-10 lg:grid-cols-2">
+            <div className="mt-8 grid grid-cols-1 gap-x-6 gap-y-10 lg:grid-cols-2 xl:grid-cols-3">
               {t.ticketsOptions.map((option) => (
                 <div
                   key={option.title}

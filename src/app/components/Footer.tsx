@@ -129,7 +129,7 @@ const FOOTER_COPY: Record<
     addressTitle: "Adres",
     addressLines: ["Alvernia Planet", "ul. Ferdynanda Wspaniałego 1", "32-566 Nieporaz, Polska"],
     policies: [
-      { label: "Regulamin", href: "/legal/Regulamin.pdf" },
+      { label: "Regulamin", href: "/legal/regulamin.html" },
       { label: "Regulamin przebywania", href: "/legal/Regulamin-przebywania-na-terenie-alvernia-planet.html" },
       { label: "Polityka prywatności", href: "/legal/polityka-prywatnosci.pdf" },
       { label: "Polityka cookies", href: "/legal/polityka-cookies.pdf" },
@@ -141,7 +141,7 @@ const FOOTER_COPY: Record<
         links: [
           { label: "Wystawa tematyczna", href: "/atrakcje/wystawa" },
           { label: "Ścieżka filmowa", href: "/atrakcje/sciezka-filmowa" },
-          { label: "K360°", href: "/atrakcje/k360" },
+          { label: "K360", href: "/atrakcje/k360" },
           { label: "Galeria", href: "/galeria" },
         ],
       },
@@ -181,7 +181,7 @@ const FOOTER_COPY: Record<
     addressTitle: "Address",
     addressLines: ["Alvernia Planet", "ul. Ferdynanda Wspaniałego 1", "32-566 Nieporaz, Poland"],
     policies: [
-      { label: "Terms & conditions", href: "/legal/Regulamin.pdf" },
+      { label: "Terms & conditions", href: "/legal/regulamin.html" },
       { label: "Stay regulations", href: "/legal/Regulamin-przebywania-na-terenie-alvernia-planet.html" },
       { label: "Privacy policy", href: "/legal/polityka-prywatnosci.pdf" },
       { label: "Cookies policy", href: "/legal/polityka-cookies.pdf" },
@@ -193,7 +193,7 @@ const FOOTER_COPY: Record<
         links: [
           { label: "Themed exhibition", href: "/atrakcje/wystawa" },
           { label: "Film path", href: "/atrakcje/sciezka-filmowa" },
-          { label: "K360°", href: "/atrakcje/k360" },
+          { label: "K360", href: "/atrakcje/k360" },
           { label: "Gallery", href: "/galeria" },
         ],
       },
@@ -233,7 +233,7 @@ const FOOTER_COPY: Record<
     addressTitle: "Morada",
     addressLines: ["Alvernia Planet", "ul. Ferdynanda Wspaniałego 1", "32-566 Nieporaz, Polónia"],
     policies: [
-      { label: "Regulamento", href: "/legal/Regulamin.pdf" },
+      { label: "Regulamento", href: "/legal/regulamin.html" },
       { label: "Regras de permanência", href: "/legal/Regulamin-przebywania-na-terenie-alvernia-planet.html" },
       { label: "Política de privacidade", href: "/legal/polityka-prywatnosci.pdf" },
       { label: "Política de cookies", href: "/legal/polityka-cookies.pdf" },
@@ -245,7 +245,7 @@ const FOOTER_COPY: Record<
         links: [
           { label: "Exposição temática", href: "/atrakcje/wystawa" },
           { label: "Percurso de filmagem", href: "/atrakcje/sciezka-filmowa" },
-          { label: "K360°", href: "/atrakcje/k360" },
+          { label: "K360", href: "/atrakcje/k360" },
           { label: "Galeria", href: "/galeria" },
         ],
       },

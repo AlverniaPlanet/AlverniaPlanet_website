@@ -5,16 +5,55 @@
   <title>Regulamin – Alvernia Planet</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body { font-family: Arial, sans-serif; margin: 24px; line-height: 1.6; color: #0f172a; background: #f7f7fb; }
-    h1 { font-size: 1.6rem; margin-bottom: 0.25rem; }
-    p { margin: 0.5rem 0; }
-    .meta { color: #475569; font-size: 0.95rem; margin-bottom: 1rem; }
+    :root { color-scheme: light; }
+    html, body { height: 100%; margin: 0; }
+    body { font-family: Arial, sans-serif; background: #f7f7fb; color: #0f172a; display: flex; flex-direction: column; }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 16px;
+      border-bottom: 1px solid #d4dbe5;
+      background: #ffffff;
+    }
+    .title { font-size: 0.95rem; font-weight: 700; }
+    .actions a {
+      display: inline-block;
+      text-decoration: none;
+      color: #0f172a;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 0.85rem;
+      background: #f8fafc;
+    }
+    .pdf-frame {
+      flex: 1;
+      width: 100%;
+      border: 0;
+      min-height: 0;
+      background: #e2e8f0;
+    }
   </style>
 </head>
 <body>
-  <h1>Regulamin</h1>
-  <div class="meta">Alvernia Planet &bull; wersja robocza</div>
-  <p>Tu dodaj treść właściwego regulaminu obiektu, sprzedaży biletów i zasad korzystania z usług.</p>
-  <p>Możesz zastąpić ten plik docelowym PDF/HTML z pełnym tekstem prawnym.</p>
+  <div class="topbar">
+    <div class="title">Regulamin</div>
+    <div class="actions">
+      <a href="/legal/Regulamin.pdf" target="_blank" rel="noopener noreferrer">
+        Otwórz PDF
+      </a>
+    </div>
+  </div>
+
+  <iframe
+    class="pdf-frame"
+    src="/legal/Regulamin.pdf#view=FitH"
+    title="Regulamin"
+  >
+    Twoja przeglądarka nie obsługuje podglądu PDF.
+    <a href="/legal/Regulamin.pdf">Pobierz plik PDF</a>.
+  </iframe>
 </body>
 </html>
