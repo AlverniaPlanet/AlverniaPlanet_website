@@ -20,7 +20,7 @@ const DICTS: Record<Locale, Record<string, string>> = {
     "nav.tickets": "Bilety",
     "menu.attractions.exhibition": "Wystawa tematyczna",
     "menu.attractions.film_path": "Ścieżka filmowa",
-    "menu.attractions.k360": "K360",
+    "menu.attractions.k360": "Projekcja K360",
     "nav.events": "Wydarzenia",
   },
   en: {
@@ -38,7 +38,7 @@ const DICTS: Record<Locale, Record<string, string>> = {
     "nav.tickets": "Tickets",
     "menu.attractions.exhibition": "Thematic exhibition",
     "menu.attractions.film_path": "Film trail",
-    "menu.attractions.k360": "K360",
+    "menu.attractions.k360": "K360 projection",
     "nav.events": "Events",
   },
   pt: {
@@ -56,7 +56,7 @@ const DICTS: Record<Locale, Record<string, string>> = {
     "nav.tickets": "Bilhetes",
     "menu.attractions.exhibition": "Exposição temática",
     "menu.attractions.film_path": "Percurso de filmagem",
-    "menu.attractions.k360": "K360",
+    "menu.attractions.k360": "Projeção K360",
     "nav.events": "Eventos",
   },
 };

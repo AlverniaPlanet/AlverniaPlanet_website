@@ -1,4 +1,4 @@
-// File: /Users/szymonczermak/Desktop/AlverniaPlanet/AlverniaPlanet_website/src/app/en/attractions/k360/page.tsx
+// File: /Users/a1234/Desktop/Alvernia/strona/V12/AlverniaPlanet_website/src/app/en/attractions/k360/page.tsx
 import * as entry from '../../../../../../src/app/en/attractions/k360/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

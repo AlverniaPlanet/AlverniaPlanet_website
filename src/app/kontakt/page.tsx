@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import Card from "@/app/components/Card";
 import { PrimaryButton } from "@/app/components/PrimaryButton";
 import ScrollMotionItem from "@/app/components/ScrollMotionItem";
@@ -18,8 +18,6 @@ const MAIL_EVENTS_SECOND = "p.kozolub@gremi.pl";
 const CONTACT_FORM_EMAIL = "rezerwacje@alverniaplanet.com";
 const CONTACT_FORM_ENDPOINT = process.env.NEXT_PUBLIC_CONTACT_FORM_ENDPOINT ?? "";
 const BOOKING_URL = "https://alverniaplanet.bookero.pl";
-const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "";
-const GOOGLE_PLACE_ID = process.env.NEXT_PUBLIC_GOOGLE_PLACE_ID ?? "";
 
 type Locale = "pl" | "en" | "pt";
 
@@ -32,8 +30,13 @@ const COPY: Record<
       description: string;
       phoneLabel: string;
       hoursLabel: string;
-      hoursLoading: string;
-      hoursFallback: string;
+      hotlineHours: string[];
+      venueHoursLabel: string;
+      cinemaLabel: string;
+      cinemaHours: string[];
+      pathLabel: string;
+      pathHours: string[];
+      languageNote: string;
       emailLabel: string;
     };
     booking: {
@@ -74,9 +77,18 @@ const COPY: Record<
       title: "Infolinia",
       description: "Aktualne informacje o godzinach otwarcia, dostępności atrakcji i biletach.",
       phoneLabel: "Telefon",
-      hoursLabel: "Godziny otwarcia",
-      hoursLoading: "Pobieramy godziny z Google…",
-      hoursFallback: "Godziny: pon-pt, 8:00 – 16:00",
+      hoursLabel: "Godziny infolinii",
+      hotlineHours: ["Poniedziałek - piątek: 9:00 - 16:00"],
+      venueHoursLabel: "Godziny atrakcji",
+      cinemaLabel: "Projekcja K360",
+      cinemaHours: [
+        "Poniedziałek - czwartek: 11:00 - 17:00",
+        "Piątek: 11:00 - 18:00",
+        "Sobota - niedziela: 11:00 - 19:30",
+      ],
+      pathLabel: "Ścieżka filmowa",
+      pathHours: ["Poniedziałek - sobota: 8:00 - 17:00", "Niedziela: zamknięte"],
+      languageNote: "Oprowadzanie Ścieżki filmowej oraz projekcje K360 odbywają się w języku polskim.",
       emailLabel: "Email",
     },
     booking: {
@@ -116,9 +128,18 @@ const COPY: Record<
       title: "Info line",
       description: "Current details on opening hours, attraction availability, and tickets.",
       phoneLabel: "Phone",
-      hoursLabel: "Opening hours",
-      hoursLoading: "Loading hours from Google…",
-      hoursFallback: "Hours: 8:00 – 16:00",
+      hoursLabel: "Info line hours",
+      hotlineHours: ["Monday - Friday: 9:00 - 16:00"],
+      venueHoursLabel: "Attraction hours",
+      cinemaLabel: "K360 projection",
+      cinemaHours: [
+        "Monday - Thursday: 11:00 - 17:00",
+        "Friday: 11:00 - 18:00",
+        "Saturday - Sunday: 11:00 - 19:30",
+      ],
+      pathLabel: "Film path",
+      pathHours: ["Monday - Saturday: 8:00 - 17:00", "Sunday: closed"],
+      languageNote: "The Film Path guided tour and K360 projection screenings are available in Polish.",
       emailLabel: "Email",
     },
     booking: {
@@ -158,9 +179,18 @@ const COPY: Record<
       title: "Linha de informação",
       description: "Informações atuais sobre horários, disponibilidade das atrações e bilhetes.",
       phoneLabel: "Telefone",
-      hoursLabel: "Horário de funcionamento",
-      hoursLoading: "A carregar horários do Google…",
-      hoursFallback: "Horário: 8:00 – 16:00",
+      hoursLabel: "Horário da linha de informação",
+      hotlineHours: ["Segunda - sexta: 9:00 - 16:00"],
+      venueHoursLabel: "Horário das atrações",
+      cinemaLabel: "Projeção K360",
+      cinemaHours: [
+        "Segunda - quinta: 11:00 - 17:00",
+        "Sexta: 11:00 - 18:00",
+        "Sábado - domingo: 11:00 - 19:30",
+      ],
+      pathLabel: "Percurso de filmagem",
+      pathHours: ["Segunda - sábado: 8:00 - 17:00", "Domingo: encerrado"],
+      languageNote: "A visita guiada do Percurso de filmagem e as sessões da projeção K360 decorrem em polaco.",
       emailLabel: "Email",
     },
     booking: {
@@ -203,12 +233,6 @@ export default function KontaktPage() {
   const { locale } = useI18n();
   const loc: Locale = (locale as Locale) ?? "pl";
   const copy = COPY[loc];
-  const language = loc === "en" ? "en" : loc === "pt" ? "pt" : "pl";
-  const hasGoogleConfig = Boolean(GOOGLE_MAPS_API_KEY && GOOGLE_PLACE_ID);
-  const [hoursState, setHoursState] = useState<{
-    status: "idle" | "loading" | "ready" | "error";
-    weekdayText: string[];
-  }>({ status: "idle", weekdayText: [] });
   const [formState, setFormState] = useState<"idle" | "sending" | "success" | "error">("idle");
 
   const handleFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -249,58 +273,6 @@ export default function KontaktPage() {
     }
   };
 
-  useEffect(() => {
-    if (!hasGoogleConfig) return;
-    let cancelled = false;
-    setHoursState({ status: "loading", weekdayText: [] });
-
-    loadGoogleMaps(GOOGLE_MAPS_API_KEY, language)
-      .then(() => {
-        if (cancelled) return;
-        const w = window as unknown as {
-          google?: {
-            maps?: {
-              places?: {
-                PlacesService: new (node: HTMLElement) => {
-                  getDetails: (
-                    request: { placeId: string; fields: string[] },
-                    callback: (place: any, status: string) => void
-                  ) => void;
-                };
-                PlacesServiceStatus: { OK: string };
-              };
-            };
-          };
-        };
-        const service = w.google?.maps?.places?.PlacesService;
-        const statusOk = w.google?.maps?.places?.PlacesServiceStatus?.OK;
-        if (!service || !statusOk) {
-          setHoursState({ status: "error", weekdayText: [] });
-          return;
-        }
-        const instance = new service(document.createElement("div"));
-        instance.getDetails(
-          { placeId: GOOGLE_PLACE_ID, fields: ["opening_hours"] },
-          (place, status) => {
-            if (cancelled) return;
-            const weekdayText = place?.opening_hours?.weekday_text ?? [];
-            if (status === statusOk && Array.isArray(weekdayText) && weekdayText.length > 0) {
-              setHoursState({ status: "ready", weekdayText });
-            } else {
-              setHoursState({ status: "error", weekdayText: [] });
-            }
-          }
-        );
-      })
-      .catch(() => {
-        if (!cancelled) setHoursState({ status: "error", weekdayText: [] });
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [hasGoogleConfig, language]);
-
   return (
     <main className="relative z-10 text-white px-4 py-12 sm:py-16 flex-1 flex flex-col min-h-screen ap-page-intro-stagger">
       <div className="flex-1 flex flex-col ap-page-stack">
@@ -335,19 +307,11 @@ export default function KontaktPage() {
                     </div>
                     <div className="space-y-1">
                       <p className="text-xs uppercase tracking-[0.2em] text-white/60">{copy.info.hoursLabel}</p>
-                      {!hasGoogleConfig ? (
-                        <p className="text-sm text-gray-300">{copy.info.hoursFallback}</p>
-                      ) : hoursState.status === "loading" ? (
-                        <p className="text-sm text-gray-300">{copy.info.hoursLoading}</p>
-                      ) : hoursState.status === "ready" ? (
-                        <ul className="space-y-1 text-sm text-gray-100">
-                          {hoursState.weekdayText.map((line) => (
-                            <li key={line}>{line}</li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p className="text-sm text-gray-300">{copy.info.hoursFallback}</p>
-                      )}
+                      <ul className="space-y-1 text-sm text-gray-100">
+                        {copy.info.hotlineHours.map((line) => (
+                          <li key={line}>{line}</li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
                   <div className="w-full space-y-2 rounded-2xl border border-white/10 p-4">
@@ -420,6 +384,44 @@ export default function KontaktPage() {
                 </div>
               </Card>
             </div>
+            </div>
+          </ScrollMotionItem>
+        </section>
+
+        <section className="ap-shell">
+          <ScrollMotionItem strength="soft" delay={90} className="ap-deferred-section" float={false}>
+            <div className="space-y-6">
+              <div className="text-center">
+                <p className="text-sm uppercase tracking-[0.24em] text-[#4fcfde]">{copy.info.venueHoursLabel}</p>
+              </div>
+              <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <Card variant="solid" motion="off" className="h-full flex flex-col gap-4">
+                  <div className="space-y-2">
+                    <h2 className="text-2xl font-semibold text-center">{copy.info.cinemaLabel}</h2>
+                    <div className="h-[1px] w-full bg-white/15" />
+                  </div>
+                  <ul className="space-y-2 text-sm leading-relaxed text-gray-200 text-center">
+                    {copy.info.cinemaHours.map((line) => (
+                      <li key={line}>{line}</li>
+                    ))}
+                  </ul>
+                </Card>
+
+                <Card variant="solid" motion="off" className="h-full flex flex-col gap-4">
+                  <div className="space-y-2">
+                    <h2 className="text-2xl font-semibold text-center">{copy.info.pathLabel}</h2>
+                    <div className="h-[1px] w-full bg-white/15" />
+                  </div>
+                  <ul className="space-y-2 text-sm leading-relaxed text-gray-200 text-center">
+                    {copy.info.pathHours.map((line) => (
+                      <li key={line}>{line}</li>
+                    ))}
+                  </ul>
+                </Card>
+              </div>
+              <Card variant="solid" motion="off" className="border border-[#4fcfde]/30 bg-[#4fcfde]/10">
+                <p className="text-center text-sm leading-relaxed text-gray-100">{copy.info.languageNote}</p>
+              </Card>
             </div>
           </ScrollMotionItem>
         </section>
@@ -530,34 +532,4 @@ function formatPhone(raw: string) {
   }
 
   return raw.trim();
-}
-
-function loadGoogleMaps(apiKey: string, language: string) {
-  if (typeof window === "undefined") {
-    return Promise.reject(new Error("window is not available"));
-  }
-
-  const w = window as unknown as {
-    google?: { maps?: { places?: unknown } };
-    __apGoogleMapsPromise?: Promise<void>;
-  };
-
-  if (w.google?.maps?.places) {
-    return Promise.resolve();
-  }
-
-  if (w.__apGoogleMapsPromise) {
-    return w.__apGoogleMapsPromise;
-  }
-
-  w.__apGoogleMapsPromise = new Promise((resolve, reject) => {
-    const script = document.createElement("script");
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&language=${language}`;
-    script.async = true;
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error("Failed to load Google Maps"));
-    document.head.appendChild(script);
-  });
-
-  return w.__apGoogleMapsPromise;
 }

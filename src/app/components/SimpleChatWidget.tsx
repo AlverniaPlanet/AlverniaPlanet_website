@@ -83,7 +83,7 @@ const CHAT_COPY: Record<
     },
     answers: {
       hours:
-        "Aktualne godziny i dostępne wejścia najlepiej sprawdzisz w kalendarzu rezerwacji.",
+        "Infolinia działa od poniedziałku do piątku w godz. 9:00-16:00. Projekcja K360: pon.-czw. 11:00-17:00, pt. 11:00-18:00, sob.-niedz. 11:00-19:30. Ścieżka filmowa: pon.-sob. 8:00-17:00, niedziela: zamknięte.",
       prices:
         "Na stronie: bilet normalny na ścieżkę edukacyjną to 79 zł/os., ulgowy 69 zł/os., a dla grup szkolnych 30-50 osób: 2 070-3 450 zł/grupa.",
       directions: "Szczegółowy dojazd i mapa są na podstronie „Jak dojechać”.",
@@ -92,7 +92,7 @@ const CHAT_COPY: Record<
       events:
         "Informacje o wynajmie przestrzeni i eventach znajdziesz na podstronie „Wydarzenia”.",
       attractions:
-        "Najważniejsze atrakcje to: K360, Ścieżka filmowa i Wystawa tematyczna.",
+        "Najważniejsze atrakcje to: Projekcja K360, Ścieżka filmowa i Wystawa tematyczna.",
       gallery: "Pełna galeria zdjęć jest dostępna na osobnej podstronie „Galeria”.",
       booking: "Rezerwację najwygodniej zrobić bezpośrednio przez system Bookero.",
     },
@@ -117,7 +117,8 @@ const CHAT_COPY: Record<
       booking: "Booking",
     },
     answers: {
-      hours: "The current opening slots are best checked in the booking calendar.",
+      hours:
+        "The info line is open Monday to Friday from 9:00 to 16:00. K360 projection: Mon-Thu 11:00-17:00, Fri 11:00-18:00, Sat-Sun 11:00-19:30. Film Path: Mon-Sat 8:00-17:00, Sunday closed.",
       prices:
         "On the website: the standard educational path ticket is 79 PLN/person, the reduced ticket is 69 PLN/person, and school groups (30-50 people) cost 2,070-3,450 PLN/group.",
       directions: "Detailed directions and map are available on the “Getting there” page.",
@@ -125,7 +126,7 @@ const CHAT_COPY: Record<
         "Contact: +48 12 344 40 00, rezerwacje@alverniaplanet.com. You can also use the contact form.",
       events: "Venue rental and event details are on the “Events” page.",
       attractions:
-        "Main attractions: K360, Film Path and Themed Exhibition.",
+        "Main attractions: K360 projection, Film Path and Themed Exhibition.",
       gallery: "The full photo gallery is available on the separate “Gallery” page.",
       booking: "The easiest way to book is via Bookero.",
     },
@@ -151,7 +152,7 @@ const CHAT_COPY: Record<
     },
     answers: {
       hours:
-        "Os horários e vagas disponíveis são melhor consultados no calendário de reservas.",
+        "A linha de informação funciona de segunda a sexta das 9:00 às 16:00. Projeção K360: seg.-qui. 11:00-17:00, sex. 11:00-18:00, sáb.-dom. 11:00-19:30. Percurso de filmagem: seg.-sáb. 8:00-17:00, domingo encerrado.",
       prices:
         "No site: o bilhete normal do percurso educativo custa 79 PLN/pessoa, o bilhete reduzido 69 PLN/pessoa, e os grupos escolares (30-50 pessoas) custam 2 070-3 450 PLN/grupo.",
       directions: "As indicações e o mapa estão na página “Como chegar”.",
@@ -160,7 +161,7 @@ const CHAT_COPY: Record<
       events:
         "Informações sobre aluguer de espaço e eventos estão na página “Eventos”.",
       attractions:
-        "Atrações principais: K360, Percurso de filmagem e Exposição temática.",
+        "Atrações principais: Projeção K360, Percurso de filmagem e Exposição temática.",
       gallery: "A galeria completa está disponível na página “Galeria”.",
       booking: "A forma mais rápida de reservar é pelo Bookero.",
     },
@@ -251,7 +252,10 @@ export default function SimpleChatWidget() {
     if (intent === "hours") {
       return {
         text: copy.answers.hours,
-        actions: [{ label: copy.actionLabels.booking, href: BOOKING_URL, external: true }],
+        actions: [
+          { label: copy.actionLabels.contact, href: routes.contact },
+          { label: copy.actionLabels.booking, href: BOOKING_URL, external: true },
+        ],
       };
     }
     if (intent === "prices") {

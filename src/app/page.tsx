@@ -104,7 +104,7 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
     heroPromos: [
       {
         message: "Przeżyj projekcję K360",
-        cta: "Zobacz K360",
+        cta: "Zobacz projekcję K360",
         href: "/atrakcje/k360",
         tone: "hot",
         previewMedia: "k360",
@@ -115,10 +115,10 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       intro: "Wejdź do świata kopuł i zacznij od naszych trzech flagowych doświadczeń.",
       items: [
         {
-          title: "K360",
+          title: "Projekcja K360",
           description:
             "Immersyjna projekcja fulldome w jednej z najbardziej zaawansowanych kopuł w Europie.",
-          cta: "Zobacz K360",
+          cta: "Zobacz projekcję K360",
           href: "/atrakcje/k360",
           image: "/galeria/Ogolne/webp/4.webp",
           imageAlt: "Wnętrze kopuły przygotowane do projekcji 360°",
@@ -155,10 +155,10 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       ctaHref: "/rezerwuj",
       promoTicket: {
         badge: "Pakiet",
-        title: "Ścieżka + K360",
+        title: "Ścieżka + Projekcja K360",
         subtitle:
           "Jeden duży pakiet promocyjny, który łączy zwiedzanie Ścieżki filmowej z projekcją K360.",
-        details: ["Około 3 godzin doświadczeń łącznie"],
+        details: ["Około 3 godzin łącznie ze zwiedzaniem i seansem"],
         priceLabel: "Cena promocyjna",
         price: "119,00 zł",
         savings: "Oszczędzasz 9,00 zł",
@@ -220,7 +220,12 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         {
           question: "Ile trwa zwiedzanie?",
           answer:
-            "Zwiedzanie ścieżki filmowej wraz z częścią edukacyjną trwa około 2-2,5 godziny.",
+            "Sama Ścieżka filmowa trwa około 2,5 godziny. Projekcja K360 trwa około 30 minut, więc pakiet Ścieżka + Projekcja K360 to około 3 godziny łącznie.",
+        },
+        {
+          question: "W jakim języku odbywa się oprowadzanie i seans?",
+          answer:
+            "Oprowadzanie Ścieżki filmowej oraz projekcje K360 odbywają się w języku polskim.",
         },
         {
           question: "Ile kosztuje zwiedzanie?",
@@ -243,9 +248,14 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
             "Nie - obowiązuje wcześniejsza rezerwacja biletów, ponieważ zwiedzanie odbywa się w określonych godzinach i z przewodnikiem.",
         },
         {
-          question: "Czy jesteście otwarci w weekendy?",
+          question: "Jakie są godziny otwarcia?",
           answer:
-            "Tak - aktualnie zwiedzanie odbywa się w wybrane dni weekendowe, głównie w soboty, a w przyszłości planowane są również niedziele, w zależności od harmonogramu.",
+            "Infolinia działa od poniedziałku do piątku w godz. 9:00-16:00. Projekcja K360 jest otwarta od poniedziałku do czwartku 11:00-17:00, w piątki 11:00-18:00, a w soboty i niedziele 11:00-19:30. Ścieżka filmowa działa od poniedziałku do soboty 8:00-17:00, a w niedziele jest zamknięta.",
+        },
+        {
+          question: "Kiedy otrzymam zwrot po anulowaniu rezerwacji?",
+          answer:
+            "W przypadku anulowania rezerwacji zwrot środków wraca do 14 dni roboczych na numer konta podany podczas zakładania rezerwacji.",
         },
         {
           question: "Czy można przyjechać z rodziną lub przyjaciółmi czy tylko grupy?",
@@ -270,7 +280,7 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
     heroPromos: [
       {
         message: "Experience the K360 projection",
-        cta: "See K360",
+        cta: "See K360 projection",
         href: "/atrakcje/k360",
         tone: "hot",
         previewMedia: "k360",
@@ -281,9 +291,9 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       intro: "Start with our signature experiences inside the domes.",
       items: [
         {
-          title: "K360",
+          title: "K360 projection",
           description: "Immersive dome projection with the image all around you.",
-          cta: "See K360",
+          cta: "See K360 projection",
           href: "/atrakcje/k360",
           image: "/galeria/Ogolne/webp/4.webp",
           imageAlt: "Dome interior prepared for 360° projection",
@@ -320,10 +330,10 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       ctaHref: "/en/reserve",
       promoTicket: {
         badge: "Package",
-        title: "Film Path + K360",
+        title: "Film Path + K360 projection",
         subtitle:
           "One large promotional package that combines the Film Path visit with a K360 projection.",
-        details: ["Around 3 hours of experiences in total"],
+        details: ["About 3 hours in total with the visit and screening"],
         priceLabel: "Promo price",
         price: "119.00 PLN",
         savings: "You save 9.00 PLN",
@@ -385,7 +395,12 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         {
           question: "How long does the tour take?",
           answer:
-            "The film path tour including the educational part lasts about 2 to 2.5 hours.",
+            "The Film Path visit itself lasts about 2.5 hours. The K360 projection lasts about 30 minutes, so the Film Path + K360 projection package takes about 3 hours in total.",
+        },
+        {
+          question: "What language are the tour and screening in?",
+          answer:
+            "The Film Path guided tour and K360 projection screenings are available in Polish.",
         },
         {
           question: "How much does the tour cost?",
@@ -408,9 +423,14 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
             "No. Advance ticket booking is required because visits take place at scheduled times and with a guide.",
         },
         {
-          question: "Are you open on weekends?",
+          question: "What are the opening hours?",
           answer:
-            "Yes. Tours currently take place on selected weekend days, mainly Saturdays, and Sundays may also be added in the future depending on the schedule.",
+            "The info line is open Monday to Friday from 9:00 to 16:00. The K360 projection is open Monday to Thursday 11:00-17:00, Friday 11:00-18:00, and Saturday to Sunday 11:00-19:30. The Film Path is open Monday to Saturday 8:00-17:00 and closed on Sunday.",
+        },
+        {
+          question: "When will I receive the refund after cancelling a booking?",
+          answer:
+            "If a booking is cancelled, the refund is returned within 14 business days to the account number provided when the reservation was created.",
         },
         {
           question: "Can I come with family or friends, or is it only for groups?",
@@ -435,7 +455,7 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
     heroPromos: [
       {
         message: "Vive a projeção K360",
-        cta: "Ver o K360",
+        cta: "Ver a projeção K360",
         href: "/atrakcje/k360",
         tone: "hot",
         previewMedia: "k360",
@@ -446,10 +466,10 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       intro: "Entre no mundo das cúpulas e comece pelas nossas três experiências emblemáticas.",
       items: [
         {
-          title: "K360",
+          title: "Projeção K360",
           description:
             "Projeções imersivas em cúpula com imagem a 360° numa das estruturas mais avançadas da Europa.",
-          cta: "Ver o K360",
+          cta: "Ver a projeção K360",
           href: "/atrakcje/k360",
           image: "/galeria/Ogolne/webp/4.webp",
           imageAlt: "Interior da cúpula preparado para projeção 360°",
@@ -486,10 +506,10 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       ctaHref: "/pt/reservar",
       promoTicket: {
         badge: "Pacote",
-        title: "Percurso + K360",
+        title: "Percurso + Projeção K360",
         subtitle:
           "Um grande pacote promocional que junta a visita ao Percurso de filmagem com a projeção no K360.",
-        details: ["Cerca de 3 horas de experiências no total"],
+        details: ["Cerca de 3 horas no total com visita e sessão"],
         priceLabel: "Preço promocional",
         price: "119,00 PLN",
         savings: "Poupa 9,00 PLN",
@@ -551,7 +571,12 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         {
           question: "Quanto tempo dura a visita?",
           answer:
-            "A visita ao percurso de filmagem com a parte educativa dura cerca de 2 a 2,5 horas.",
+            "O Percurso de filmagem por si só dura cerca de 2,5 horas. A projeção K360 dura cerca de 30 minutos, por isso o pacote Percurso + Projeção K360 dura cerca de 3 horas no total.",
+        },
+        {
+          question: "Em que idioma decorrem a visita e a sessão?",
+          answer:
+            "A visita guiada do Percurso de filmagem e as sessões da projeção K360 decorrem em polaco.",
         },
         {
           question: "Quanto custa a visita?",
@@ -574,9 +599,14 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
             "Não. É obrigatória a reserva prévia, porque as visitas decorrem em horários definidos e com guia.",
         },
         {
-          question: "Estão abertos aos fins de semana?",
+          question: "Quais são os horários de funcionamento?",
           answer:
-            "Sim. Atualmente as visitas decorrem em dias selecionados do fim de semana, principalmente aos sábados, e no futuro poderão incluir também domingos, dependendo do calendário.",
+            "A linha de informação funciona de segunda a sexta das 9:00 às 16:00. A projeção K360 abre de segunda a quinta das 11:00 às 17:00, à sexta das 11:00 às 18:00, e ao sábado e domingo das 11:00 às 19:30. O Percurso de filmagem funciona de segunda a sábado das 8:00 às 17:00 e está encerrado ao domingo.",
+        },
+        {
+          question: "Quando recebo o reembolso após cancelar a reserva?",
+          answer:
+            "Em caso de cancelamento da reserva, o reembolso regressa no prazo de até 14 dias úteis para o número de conta indicado durante a criação da reserva.",
         },
         {
           question: "Posso visitar com família ou amigos ou é só para grupos?",

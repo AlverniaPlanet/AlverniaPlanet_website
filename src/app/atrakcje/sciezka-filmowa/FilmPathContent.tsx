@@ -90,7 +90,7 @@ const COPY: Record<
     planEyebrow: "Ścieżka edukacyjna",
     planTitle: "Wejdź do świata filmu, krok po kroku.",
     planBody:
-      "Odświeżona ścieżka edukacyjna została wzbogacona o nowe atrakcje i prowadzi przez historię kina, przestrzenie Alvernia Planet oraz kolejne etapy pracy na planie. To jedna spójna trasa, która łączy wiedzę, scenografię, dźwięk i finał interaktywny.",
+      "Odświeżona ścieżka edukacyjna została wzbogacona o nowe atrakcje i prowadzi przez historię kina, przestrzenie Alvernia Planet oraz kolejne etapy pracy na planie. To jedna spójna trasa, która łączy wiedzę, scenografię, dźwięk i finał interaktywny. Oprowadzanie odbywa się w języku polskim.",
     planCaption:
       "Od wejścia na trasę, przez epoki kina i pracę na planie, aż po interaktywne zadanie na końcu.",
     planPhotos: [
@@ -112,7 +112,8 @@ const COPY: Record<
     ],
     stats: [
       { value: "8 etapów", label: "od historii projekcji po finał interaktywny" },
-      { value: "2-2,5 h", label: "zwiedzania z przewodnikiem" },
+      { value: "2,5 h", label: "oprowadzania z przewodnikiem" },
+      { value: "polski", label: "język oprowadzania" },
     ],
     routeEyebrow: "Animowana trasa",
     routeTitle: "Przewiń przez kolejne etapy zwiedzania.",
@@ -244,7 +245,7 @@ const COPY: Record<
     ],
     ticketsTitle: "Bilety na ścieżkę edukacyjną",
     ticketsIntro:
-      "Bilet normalny kosztuje 79 zł za osobę, a bilet ulgowy 69 zł za osobę. Dla grup szkolnych start to 2 070 zł za 30 osób, a każda kolejna osoba kosztuje 69 zł, maksymalnie do 50 uczestników na rezerwację.",
+      "Bilet normalny kosztuje 79 zł za osobę, a bilet ulgowy 69 zł za osobę. Dla grup szkolnych start to 2 070 zł za 30 osób, a każda kolejna osoba kosztuje 69 zł, maksymalnie do 50 uczestników na rezerwację. Sama Ścieżka filmowa trwa około 2,5 godziny, a w pakiecie z projekcją K360 całość zajmuje około 3 godzin.",
     ticketsPriceLabel: "Cena za osobę",
     ticketsPrice: "79 zł/os. lub 69 zł/os.",
     ticketsButton: "Kup bilet",
@@ -289,7 +290,7 @@ const COPY: Record<
     planEyebrow: "Educational path",
     planTitle: "Step into the world of film, stage by stage.",
     planBody:
-      "The refreshed educational path has been expanded with new attractions and now leads through moving-image history, Alvernia Planet spaces, and the key stages of film production. It is one cohesive route that combines learning, set design, sound, and an interactive finale.",
+      "The refreshed educational path has been expanded with new attractions and now leads through moving-image history, Alvernia Planet spaces, and the key stages of film production. It is one cohesive route that combines learning, set design, sound, and an interactive finale. The guided tour is available in Polish.",
     planCaption:
       "From the route entrance and projection eras to on-set work and the interactive ending.",
     planPhotos: [
@@ -311,7 +312,8 @@ const COPY: Record<
     ],
     stats: [
       { value: "8 stages", label: "from film history to the interactive finale" },
-      { value: "2-2.5 h", label: "guided visit" },
+      { value: "2.5 h", label: "guided visit" },
+      { value: "Polish", label: "tour language" },
     ],
     routeEyebrow: "Animated route",
     routeTitle: "Scroll through the full visit step by step.",
@@ -443,7 +445,7 @@ const COPY: Record<
     ],
     ticketsTitle: "Educational path tickets",
     ticketsIntro:
-      "The standard ticket costs 79 PLN per person and the reduced ticket costs 69 PLN per person. For school groups the starting price is 2,070 PLN for 30 guests, then 69 PLN for each additional guest up to 50 people per booking.",
+      "The standard ticket costs 79 PLN per person and the reduced ticket costs 69 PLN per person. For school groups the starting price is 2,070 PLN for 30 guests, then 69 PLN for each additional guest up to 50 people per booking. The Film Path itself lasts about 2.5 hours, and with the K360 projection package the full visit takes about 3 hours.",
     ticketsPriceLabel: "Price per person",
     ticketsPrice: "79 PLN/person or 69 PLN/person",
     ticketsButton: "Buy tickets",
@@ -488,7 +490,7 @@ const COPY: Record<
     planEyebrow: "Percurso educativo",
     planTitle: "Entra no universo das produções etapa a etapa.",
     planBody:
-      "O percurso educativo renovado foi enriquecido com novas atrações e conduz pela história da projeção, pelos espaços da Alvernia Planet e pelas etapas centrais do trabalho em set. É uma rota coesa que junta aprendizagem, cenografia, som e um final interativo.",
+      "O percurso educativo renovado foi enriquecido com novas atrações e conduz pela história da projeção, pelos espaços da Alvernia Planet e pelas etapas centrais do trabalho em set. É uma rota coesa que junta aprendizagem, cenografia, som e um final interativo. A visita guiada decorre em polaco.",
     planCaption:
       "Da entrada no percurso e das eras de projeção até ao trabalho em set e ao final interativo.",
     planPhotos: [
@@ -510,7 +512,8 @@ const COPY: Record<
     ],
     stats: [
       { value: "8 etapas", label: "da história da projeção ao final interativo" },
-      { value: "2-2,5 h", label: "visita guiada" },
+      { value: "2,5 h", label: "visita guiada" },
+      { value: "polaco", label: "idioma da visita" },
     ],
     routeEyebrow: "Rota animada",
     routeTitle: "Percorra a visita etapa por etapa durante o scroll.",
@@ -642,7 +645,7 @@ const COPY: Record<
     ],
     ticketsTitle: "Bilhetes para o percurso educativo",
     ticketsIntro:
-      "O bilhete normal custa 79 PLN por pessoa e o bilhete reduzido custa 69 PLN por pessoa. Para grupos escolares, o valor começa em 2 070 PLN para 30 pessoas, depois 69 PLN por cada pessoa adicional até 50 participantes por reserva.",
+      "O bilhete normal custa 79 PLN por pessoa e o bilhete reduzido custa 69 PLN por pessoa. Para grupos escolares, o valor começa em 2 070 PLN para 30 pessoas, depois 69 PLN por cada pessoa adicional até 50 participantes por reserva. O Percurso de filmagem por si só dura cerca de 2,5 horas e, no pacote com a projeção K360, a visita completa dura cerca de 3 horas.",
     ticketsPriceLabel: "Preço por pessoa",
     ticketsPrice: "79 PLN/pessoa ou 69 PLN/pessoa",
     ticketsButton: "Comprar bilhete",

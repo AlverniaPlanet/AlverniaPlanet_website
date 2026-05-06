@@ -515,6 +515,83 @@ function applyQuantityValue(root: ParentNode, targetValue: number) {
   return parseNumericValue(hiddenInput.value) === targetValue;
 }
 
+function findElementsByText(root: ParentNode, selector: string, text: string) {
+  const normalizedText = normalizeText(text);
+  return Array.from(root.querySelectorAll<HTMLElement>(selector)).filter((element) =>
+    normalizeText(element.textContent).includes(normalizedText),
+  );
+}
+
+function findPaymentLink(root: ParentNode) {
+  const targetText = normalizeText("zapłać teraz");
+
+  const clickableElements = Array.from(
+    root.querySelectorAll<HTMLElement>(
+      "a[href], button, [role='button'], input[type='submit'], input[type='button']",
+    ),
+  ).filter((element): element is HTMLElement => element instanceof HTMLElement);
+
+  return clickableElements.find((element) => {
+    const content = normalizeText(element.textContent);
+    const href = element instanceof HTMLAnchorElement ? element.href.toLowerCase() : "";
+    return (
+      content.includes(targetText) ||
+      content.includes("zaplac teraz") ||
+      content.includes("platnosci") ||
+      content.includes("platnosc") ||
+      content.includes("p24") ||
+      /platnosci|platnosc|p24|payment|pay/.test(href)
+    );
+  });
+}
+
+function adjustActionButtons(root: ParentNode) {
+  const actionElements = Array.from(root.querySelectorAll<HTMLElement>("button, a, [role='button']")).filter(
+    (element) => {
+      const text = normalizeText(element.textContent);
+      return text.includes("zapłać") || text.includes("zaplac") || text.includes("wróc") || text.includes("wroc");
+    },
+  );
+
+  if (actionElements.length > 1) {
+    const parent = actionElements[0]?.parentElement;
+    if (parent) {
+      parent.style.display = "flex";
+      parent.style.gap = "1rem";
+      parent.style.flexWrap = "wrap";
+      parent.style.alignItems = "center";
+    }
+  }
+
+  const paymentLink = findPaymentLink(root);
+
+  if (!paymentLink) {
+    return;
+  }
+
+  const payButton = actionElements.find((element) => normalizeText(element.textContent).includes("zapłać") || normalizeText(element.textContent).includes("zaplac"));
+  if (!payButton || payButton === paymentLink) {
+    return;
+  }
+
+  if ((payButton as HTMLElement).dataset.bookeroPayFixed === "true") {
+    return;
+  }
+
+  payButton.style.cursor = "pointer";
+  payButton.style.flex = "0 0 auto";
+  payButton.dataset.bookeroPayFixed = "true";
+  payButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    if (paymentLink instanceof HTMLAnchorElement && paymentLink.href) {
+      window.location.assign(paymentLink.href);
+      return;
+    }
+
+    paymentLink.click();
+  });
+}
+
 function getBookeroSearchRoot(container: HTMLDivElement | null, type: string) {
   const modeSelector = type ? `#bookero-plugin[data-mode="${type}"]` : "#bookero-plugin";
   const pluginRoot =
@@ -657,7 +734,7 @@ export default function BookeroEmbed({
 
     leakedSelectors.forEach((selector) => {
       document.querySelectorAll<HTMLElement>(selector).forEach((node) => {
-        if (!node.closest("#bookero-form")) {
+        if (!currentContainer.contains(node) && !node.closest(`#${containerId}`)) {
           node.remove();
         }
       });
@@ -699,9 +776,6 @@ export default function BookeroEmbed({
     });
 
     // Ensure a single valid mount point before each Bookero init.
-    if (containerRef.current) {
-      containerRef.current.id = containerId;
-    }
     cleanupStaleInlineMounts();
     if (containerRef.current) {
       containerRef.current.innerHTML = "";
@@ -746,25 +820,6 @@ export default function BookeroEmbed({
       cleanupStaleInlineMounts();
     };
   }, [pluginId, containerId, type, position, lang, pluginCss]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (type === "sticky") return;
-    if (!containerRef.current) return;
-
-    const observer = new MutationObserver(() => {
-      cleanupStaleInlineMounts();
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-    });
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [containerId, type]);
 
   useEffect(() => {
     if (!forceLightText) return;
@@ -841,6 +896,44 @@ export default function BookeroEmbed({
       observer.disconnect();
     };
   }, [forceLightText, containerId, type, lang]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (embedStatus !== "ready") return;
+
+    const root = getBookeroSearchRoot(containerRef.current, type);
+    if (!(root instanceof HTMLElement || root instanceof HTMLDivElement)) return;
+
+    const applyEmbedFixes = () => {
+      adjustActionButtons(root);
+
+      root.querySelectorAll("iframe").forEach((iframe) => {
+        try {
+          const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+          if (iframeDoc) {
+            adjustActionButtons(iframeDoc);
+          }
+        } catch {
+          // Ignore cross-origin frames.
+        }
+      });
+    };
+
+    const observer = new MutationObserver(() => {
+      applyEmbedFixes();
+    });
+
+    applyEmbedFixes();
+    observer.observe(root, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [containerId, type, embedStatus]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;

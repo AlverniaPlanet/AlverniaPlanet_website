@@ -33,6 +33,12 @@
       "namedRegex": "^/_not\\-found(?:/)?$"
     },
     {
+      "page": "/404",
+      "regex": "^/404(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/404(?:/)?$"
+    },
+    {
       "page": "/aktualnosci",
       "regex": "^/aktualnosci(?:/)?$",
       "routeKeys": {},
@@ -49,6 +55,12 @@
       "regex": "^/atrakcje/kino\\-360(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/atrakcje/kino\\-360(?:/)?$"
+    },
+    {
+      "page": "/atrakcje/mars",
+      "regex": "^/atrakcje/mars(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/atrakcje/mars(?:/)?$"
     },
     {
       "page": "/atrakcje/sciezka-filmowa",

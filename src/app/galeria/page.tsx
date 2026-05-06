@@ -9,15 +9,17 @@ import ScrollMotionItem from "@/app/components/ScrollMotionItem";
 const range = (n: number) => Array.from({ length: n }, (_, i) => i + 1);
 
 // NOTE:
-// Obrazy są w public/galeria/.../webp/*.webp (podfolder webp).
+// Obrazy są w public/galeria/... w podfolderach z formatem pliku.
 // Używamy bezpośredniej nazwy z polskim znakiem, żeby ścieżka odpowiadała strukturze w /public.
 const GENERAL_DIR = `/galeria/Ogolne`;
 const FILM_DIR = `/galeria/Sciezka_filmowa`;
 const EVENTS_DIR = `/galeria/${encodeURIComponent("Wydarzenia")}`;
+const OPENING_GALA_DIR = `/galeria/Gala_otwarcia`;
 const EXHIBITION_DIR = `/galeria/Wystawa/HarryPotter_TheExhibition`;
 const generalImages = range(8).map((n) => `${GENERAL_DIR}/webp/${n}.webp`);
 const filmImages = range(8).map((n) => `${FILM_DIR}/webp/${n}.webp`);
 const eventsImages = range(8).map((n) => `${EVENTS_DIR}/webp/${n}.webp`);
+const openingGalaImages = range(12).map((n) => `${OPENING_GALA_DIR}/jpg/${n}.jpg`);
 const harryPotterImages = range(8).map((n) => `${EXHIBITION_DIR}/webp/${n}.webp`);
 const BLUR_PLACEHOLDER = "data:image/gif;base64,R0lGODlhAQABAAAAACw="; // lekki placeholder dla ładowania
 const MOSAIC_PATTERN = [
@@ -45,6 +47,7 @@ const COPY: Record<Locale, {
     general: string;
     film: string;
     events: string;
+    openingGala: string;
     exhibitions: string;
     hpExhibition: string;
     photoLabel: string;
@@ -62,6 +65,7 @@ const COPY: Record<Locale, {
       general: "Ogólne",
       film: "Ścieżka filmowa",
       events: "Wydarzenia",
+      openingGala: "Gala otwarcia",
       exhibitions: "Wystawy tematyczne",
       hpExhibition: "Harry Potter: The Exhibition 10.04 - 17.08.2025",
       photoLabel: "Zdjęcie",
@@ -79,6 +83,7 @@ const COPY: Record<Locale, {
       general: "General",
       film: "Film path",
       events: "Events",
+      openingGala: "Opening gala",
       exhibitions: "Themed exhibitions",
       hpExhibition: "Harry Potter: The Exhibition Apr 10 - Aug 17, 2025",
       photoLabel: "Photo",
@@ -96,6 +101,7 @@ const COPY: Record<Locale, {
       general: "Geral",
       film: "Percurso de filmagem",
       events: "Eventos",
+      openingGala: "Gala de abertura",
       exhibitions: "Exposições temáticas",
       hpExhibition: "Harry Potter: The Exhibition 10 Abr - 17 Ago 2025",
       photoLabel: "Foto",
@@ -107,7 +113,7 @@ const COPY: Record<Locale, {
   }
 };
 
-const CAPTIONS: Record<Locale, { general: string[]; film: string[]; events: string[]; exhibitions: string[] }> = {
+const CAPTIONS: Record<Locale, { general: string[]; film: string[]; events: string[]; openingGala: string[]; exhibitions: string[] }> = {
   pl: {
     general: [
       "Kopuły z lotu ptaka",
@@ -139,6 +145,7 @@ const CAPTIONS: Record<Locale, { general: string[]; film: string[]; events: stri
       "Strefa atrakcji na scenie",
       "Pokaz w kopule z autoshow",
     ],
+    openingGala: [],
     exhibitions: [
       "Wejście do wystawy",
       "Knight Bus",
@@ -181,6 +188,7 @@ const CAPTIONS: Record<Locale, { general: string[]; film: string[]; events: stri
       "Attraction zone on stage",
       "Show in the dome with car reveal",
     ],
+    openingGala: [],
     exhibitions: [
       "Exhibition entry",
       "Knight Bus",
@@ -223,6 +231,7 @@ const CAPTIONS: Record<Locale, { general: string[]; film: string[]; events: stri
       "Zona de atrações no palco",
       "Show na cúpula com revelação de carro",
     ],
+    openingGala: [],
     exhibitions: [
       "Entrada da exposição",
       "Knight Bus",
@@ -431,6 +440,44 @@ export default function GalleryPage() {
                       loadingText={ui.loadingImage}
                       errorText={ui.imageError}
                       onClick={() => openLightbox(eventsImages, i, caption)}
+                    />
+                  </li>
+                );
+              })}
+            </ul>
+            </Card>
+          </section>
+        </ScrollMotionItem>
+
+        {/* Sekcja: Gala otwarcia */}
+        <ScrollMotionItem strength="strong" delay={240} className="ap-deferred-section">
+          <section aria-labelledby="gallery-opening-gala">
+            <Card variant="solid" motion="off">
+            <div className="mb-4 flex items-center gap-4">
+              <h2
+                id="gallery-opening-gala"
+                className="text-xl sm:text-2xl font-semibold tracking-tight"
+              >
+                {t.sections.openingGala}
+              </h2>
+              <div className="h-px flex-1 bg-white/10" />
+              <span className="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-[12px] font-semibold leading-none text-white/80 ring-1 ring-white/10">
+                {openingGalaImages.length}
+              </span>
+            </div>
+
+            <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-12 md:auto-rows-[132px] lg:auto-rows-[152px]">
+              {openingGalaImages.map((src, i) => {
+                const caption = captions.openingGala[i] ?? `${t.sections.openingGala} • ${t.sections.photoLabel} ${i + 1}`;
+                return (
+                  <li key={src} className={`group ${getMosaicClass(i)}`}>
+                    <GalleryTile
+                      src={src}
+                      alt={caption}
+                      caption={caption}
+                      loadingText={ui.loadingImage}
+                      errorText={ui.imageError}
+                      onClick={() => openLightbox(openingGalaImages, i, caption)}
                     />
                   </li>
                 );

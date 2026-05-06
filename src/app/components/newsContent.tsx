@@ -36,10 +36,10 @@ export const NEWS_COPY: Record<Locale, NewsSection> = {
       },
       {
         badge: "Już w kwietniu",
-        title: "Otwieramy K360, największą przestrzeń fulldome w Europie",
+        title: "Otwieramy Projekcję K360, największą przestrzeń fulldome w Europie",
         description:
-          "W kwietniu otwieramy widowiskowe K360, które stanie się jednym z najmocniejszych punktów całego kompleksu. Szykujemy doświadczenie zaprojektowane na pełne zanurzenie w obrazie, dźwięku i przestrzeni kopuły.",
-        cta: "Poznaj K360",
+          "W kwietniu otwieramy widowiskową Projekcję K360, która stanie się jednym z najmocniejszych punktów całego kompleksu. Szykujemy doświadczenie zaprojektowane na pełne zanurzenie w obrazie, dźwięku i przestrzeni kopuły.",
+        cta: "Poznaj Projekcję K360",
         href: "/atrakcje/k360",
       },
       {
@@ -67,10 +67,10 @@ export const NEWS_COPY: Record<Locale, NewsSection> = {
       },
       {
         badge: "Opening in April",
-        title: "We are opening K360, the largest fulldome space in Europe",
+        title: "We are opening the K360 projection, the largest fulldome space in Europe",
         description:
-          "In April, we are launching K360, set to become one of the boldest features of the entire complex. It is being designed as a fully immersive experience built around image, sound, and the scale of the dome itself.",
-        cta: "Discover K360",
+          "In April, we are launching the K360 projection, set to become one of the boldest features of the entire complex. It is being designed as a fully immersive experience built around image, sound, and the scale of the dome itself.",
+        cta: "Discover the K360 projection",
         href: "/atrakcje/k360",
       },
       {
@@ -98,10 +98,10 @@ export const NEWS_COPY: Record<Locale, NewsSection> = {
       },
       {
         badge: "Abre em abril",
-        title: "Vamos abrir o K360, o maior espaço fulldome da Europa",
+        title: "Vamos abrir a projeção K360, o maior espaço fulldome da Europa",
         description:
-          "Em abril abrimos o impressionante K360, pensado para se tornar um dos pontos mais marcantes de todo o complexo. A experiência foi concebida para envolver o visitante em imagem, som e escala de forma total.",
-        cta: "Descobrir o K360",
+          "Em abril abrimos a impressionante projeção K360, pensada para se tornar um dos pontos mais marcantes de todo o complexo. A experiência foi concebida para envolver o visitante em imagem, som e escala de forma total.",
+        cta: "Descobrir a projeção K360",
         href: "/atrakcje/k360",
       },
       {

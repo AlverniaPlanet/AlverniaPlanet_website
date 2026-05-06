@@ -97,6 +97,17 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+body.mars-route-active .ap-native-booking-fallback,
+body.mars-route-active #bookero-sticky-plugin,
+body.mars-route-active #bookero-plugin[data-mode="sticky"],
+body.mars-route-active .bookero-sticky-plugin {
+  display: none !important;
+}
+
+body.mars-route-active [data-ap-footer] {
+  margin-top: 0 !important;
+}
+
 ::selection {
   background: rgba(79, 207, 222, 0.28);
   color: var(--ap-text-strong);

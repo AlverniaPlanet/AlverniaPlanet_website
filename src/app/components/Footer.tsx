@@ -141,7 +141,7 @@ const FOOTER_COPY: Record<
         links: [
           { label: "Wystawa tematyczna", href: "/atrakcje/wystawa" },
           { label: "Ścieżka filmowa", href: "/atrakcje/sciezka-filmowa" },
-          { label: "K360", href: "/atrakcje/k360" },
+          { label: "Projekcja K360", href: "/atrakcje/k360" },
           { label: "Galeria", href: "/galeria" },
         ],
       },
@@ -193,7 +193,7 @@ const FOOTER_COPY: Record<
         links: [
           { label: "Themed exhibition", href: "/atrakcje/wystawa" },
           { label: "Film path", href: "/atrakcje/sciezka-filmowa" },
-          { label: "K360", href: "/atrakcje/k360" },
+          { label: "K360 projection", href: "/atrakcje/k360" },
           { label: "Gallery", href: "/galeria" },
         ],
       },
@@ -245,7 +245,7 @@ const FOOTER_COPY: Record<
         links: [
           { label: "Exposição temática", href: "/atrakcje/wystawa" },
           { label: "Percurso de filmagem", href: "/atrakcje/sciezka-filmowa" },
-          { label: "K360", href: "/atrakcje/k360" },
+          { label: "Projeção K360", href: "/atrakcje/k360" },
           { label: "Galeria", href: "/galeria" },
         ],
       },

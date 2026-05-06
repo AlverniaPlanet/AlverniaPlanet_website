@@ -214,14 +214,14 @@ const COPY: Record<
       lines: ["Kup bilety już teraz na „One Step Beyond: A Journey to Mars”."],
     },
     heroTag: "Atrakcje",
-    heroTitle: "K360",
+    heroTitle: "Projekcja K360",
     videoFallback: "Twój browser nie wspiera elementu video.",
     featuresTitle: "Pierwsza projekcja: One Step Beyond",
     featuresIntro:
-      "Premierowa projekcja otwiera K360 formatem, który działa skalą, przestrzenią i pełnym zanurzeniem, zamiast klasycznej projekcji salowej.",
+      "Premierowa projekcja otwiera projekcję K360 formatem, który działa skalą, przestrzenią i pełnym zanurzeniem, zamiast klasycznej projekcji salowej. Seans odbywa się w języku polskim i trwa około 30 minut.",
     featureStats: [
       { value: "15 m", label: "wysokość kopuły" },
-      { value: "2 300 m²", label: "powierzchnia kopuły" },
+      { value: "30 min", label: "czas trwania seansu" },
       { value: "48 m", label: "średnica przestrzeni" },
     ],
     features: [
@@ -258,7 +258,7 @@ const COPY: Record<
       {
         badge: "Doświadczenie",
         title: "Największa przestrzeń fulldome w Europie",
-        body: "K360 to największy obiekt tego typu w Europie i skaluje projekcję do poziomu, którego nie da się osiągnąć tradycyjnie.",
+        body: "Projekcja K360 to największy obiekt tego typu w Europie i skaluje projekcję do poziomu, którego nie da się osiągnąć tradycyjnie.",
       },
     ],
     galleryTitle: "Zobacz przestrzeń",
@@ -286,12 +286,10 @@ const COPY: Record<
     ],
     promoTicket: {
       badge: "Pakiet",
-      title: "Ścieżka + K360",
+      title: "Ścieżka + Projekcja K360",
       subtitle:
         "Jeden duży pakiet promocyjny, który łączy zwiedzanie Ścieżki filmowej z projekcją K360.",
-      details: [
-        "Około 3 godzin doświadczeń łącznie",
-      ],
+      details: ["Około 3 godzin łącznie ze zwiedzaniem i seansem"],
       priceLabel: "Cena promocyjna",
       price: "119,00 zł",
       savings: "Oszczędzasz 9,00 zł",
@@ -300,7 +298,7 @@ const COPY: Record<
     },
     ticketsTitle: "Bilety na projekcję K360",
     ticketsIntro:
-      "Najpierw wybierz pakiet albo wariant biletu. Po kliknięciu formularz otworzy od razu właściwą opcję.",
+      "Najpierw wybierz pakiet albo wariant biletu. Po kliknięciu formularz otworzy od razu właściwą opcję. Seans odbywa się w języku polskim i trwa około 30 minut.",
     ticketsPriceLabel: "Cena za osobę",
     ticketsButton: "Kup bilet",
     ticketsOptions: [
@@ -351,14 +349,14 @@ const COPY: Record<
       lines: ["Get your tickets now for “One Step Beyond: A Journey to Mars”."],
     },
     heroTag: "Attractions",
-    heroTitle: "K360",
+    heroTitle: "K360 projection",
     videoFallback: "Your browser does not support the video element.",
     featuresTitle: "First projection: One Step Beyond",
     featuresIntro:
-      "The opening projection introduces K360 through scale, immersion, and a full-dome image instead of a standard auditorium setup.",
+      "The opening projection introduces K360 through scale, immersion, and a full-dome image instead of a standard auditorium setup. The screening is available in Polish and lasts about 30 minutes.",
     featureStats: [
       { value: "15 m", label: "dome height" },
-      { value: "2,300 m²", label: "dome floor area" },
+      { value: "30 min", label: "screening duration" },
       { value: "48 m", label: "space diameter" },
     ],
     features: [
@@ -395,7 +393,7 @@ const COPY: Record<
       {
         badge: "Experience",
         title: "The largest fulldome space in Europe",
-        body: "K360 is the largest fulldome space in Europe, giving the projection a scale impossible to match in a standard auditorium.",
+        body: "The K360 projection is the largest fulldome space in Europe, giving the projection a scale impossible to match in a standard auditorium.",
       },
     ],
     galleryTitle: "See the venue",
@@ -423,12 +421,10 @@ const COPY: Record<
     ],
     promoTicket: {
       badge: "Package",
-      title: "Film Path + K360",
+      title: "Film Path + K360 projection",
       subtitle:
         "One large promotional package that combines the Film Path visit with a K360 projection.",
-      details: [
-        "Around 3 hours of experiences in total",
-      ],
+      details: ["About 3 hours in total with the visit and screening"],
       priceLabel: "Promo price",
       price: "119.00 PLN",
       savings: "You save 9.00 PLN",
@@ -437,7 +433,7 @@ const COPY: Record<
     },
     ticketsTitle: "Tickets for K360 projection",
     ticketsIntro:
-      "Choose the package or ticket type first. After clicking, the booking form will open with the matching option selected.",
+      "Choose the package or ticket type first. After clicking, the booking form will open with the matching option selected. The screening is available in Polish and lasts about 30 minutes.",
     ticketsPriceLabel: "Price per person",
     ticketsButton: "Buy tickets",
     ticketsOptions: [
@@ -488,14 +484,14 @@ const COPY: Record<
       lines: ["Compra já os teus bilhetes para “One Step Beyond: A Journey to Mars”."],
     },
     heroTag: "Atrações",
-    heroTitle: "K360",
+    heroTitle: "Projeção K360",
     videoFallback: "O seu navegador não suporta o elemento de vídeo.",
     featuresTitle: "Primeira projeção: One Step Beyond",
     featuresIntro:
-      "A projeção de estreia apresenta o K360 com um formato feito para impressionar pela escala, pela imersão e pela imagem fulldome em toda a cúpula.",
+      "A projeção de estreia apresenta o K360 com um formato feito para impressionar pela escala, pela imersão e pela imagem fulldome em toda a cúpula. A sessão decorre em polaco e dura cerca de 30 minutos.",
     featureStats: [
       { value: "15 m", label: "altura da cúpula" },
-      { value: "2 300 m²", label: "área da cúpula" },
+      { value: "30 min", label: "duração da sessão" },
       { value: "48 m", label: "diâmetro do espaço" },
     ],
     features: [
@@ -532,7 +528,7 @@ const COPY: Record<
       {
         badge: "Experiência",
         title: "O maior espaço fulldome da Europa",
-        body: "O K360 é o maior espaço fulldome da Europa, dando à experiência uma escala impossível de reproduzir de forma tradicional.",
+        body: "A projeção K360 é o maior espaço fulldome da Europa, dando à experiência uma escala impossível de reproduzir de forma tradicional.",
       },
     ],
     galleryTitle: "Ver o espaço",
@@ -560,12 +556,10 @@ const COPY: Record<
     ],
     promoTicket: {
       badge: "Pacote",
-      title: "Percurso + K360",
+      title: "Percurso + Projeção K360",
       subtitle:
         "Um grande pacote promocional que junta a visita aos bastidores com a projeção no K360.",
-      details: [
-        "Cerca de 3 horas de experiências no total",
-      ],
+      details: ["Cerca de 3 horas no total com visita e sessão"],
       priceLabel: "Preço promocional",
       price: "119,00 PLN",
       savings: "Poupa 9,00 PLN",
@@ -574,7 +568,7 @@ const COPY: Record<
     },
     ticketsTitle: "Bilhetes para a projeção K360",
     ticketsIntro:
-      "Escolha primeiro o pacote ou o tipo de bilhete. Após o clique, o formulário abre com a opção certa já selecionada.",
+      "Escolha primeiro o pacote ou o tipo de bilhete. Após o clique, o formulário abre com a opção certa já selecionada. A sessão decorre em polaco e dura cerca de 30 minutos.",
     ticketsPriceLabel: "Preço por pessoa",
     ticketsButton: "Comprar bilhete",
     ticketsOptions: [
