@@ -855,10 +855,10 @@ function RouteStepCard({
   setRef: (node: HTMLDivElement | null) => void;
 }) {
   const stateClasses = isActive
-    ? "border-[#7ef6ff]/64 bg-[linear-gradient(180deg,rgba(126,246,255,0.12)_0%,rgba(255,255,255,0.05)_100%)] shadow-[0_24px_60px_rgba(0,0,0,0.26)] opacity-100 translate-y-0 xl:translate-x-0"
+    ? "is-active opacity-100 translate-y-0 xl:translate-x-0"
     : isSeen
-      ? "border-white/14 bg-[linear-gradient(180deg,rgba(255,255,255,0.05)_0%,rgba(255,255,255,0.02)_100%)] opacity-100 translate-y-0 xl:translate-x-0"
-      : "border-white/8 bg-white/[0.025] opacity-60 translate-y-4 xl:translate-x-2";
+      ? "opacity-100 translate-y-0 xl:translate-x-0"
+      : "opacity-60 translate-y-4 xl:translate-x-2";
   const dotClasses = isActive
     ? "border-[#7ef6ff] bg-[#7ef6ff] shadow-[0_0_0_6px_rgba(126,246,255,0.12)]"
     : isSeen
@@ -874,7 +874,7 @@ function RouteStepCard({
       <article
         ref={setRef}
         data-step-index={index}
-        className={`relative overflow-hidden rounded-[2rem] border px-5 py-6 transition-all duration-500 ease-out sm:px-6 ${stateClasses}`}
+        className={`ap-tile ap-tile-lg ap-tile-interactive relative overflow-hidden px-5 py-6 transition-all duration-500 ease-out sm:px-6 ${stateClasses}`}
       >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(126,246,255,0.12),transparent_34%)]" />
         <div className="relative">
@@ -893,7 +893,7 @@ function RouteStepCard({
             {step.highlights.map((highlight) => (
               <div
                 key={highlight}
-                className="overflow-hidden rounded-[1.4rem] border border-white/10 bg-white/[0.03] px-3 py-3 text-white/68 sm:px-4"
+                className="ap-tile ap-tile-sm overflow-hidden px-3 py-3 text-white/68 sm:px-4"
               >
                 <span className={`block whitespace-nowrap ${getHighlightTextClasses(formatHighlight(highlight))}`}>
                   {formatHighlight(highlight)}
@@ -919,7 +919,7 @@ export default function FilmPathContent() {
     <main className="relative z-10 min-h-screen">
       <section className="relative z-10 px-4 pt-12 sm:pt-16">
         <div className="ap-shell mb-10 sm:mb-12">
-          <div className="relative overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
+          <div className="ap-tile ap-tile-lg relative overflow-hidden">
             <div className="relative aspect-[16/9] bg-black">
               <AdaptiveVideo
                 mp4Src="/wycieczka/APE_sciezafilmowa.mp4"
@@ -965,7 +965,7 @@ export default function FilmPathContent() {
                 {t.stats.map((stat) => (
                   <div
                     key={stat.value}
-                    className="rounded-[1.7rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.02)_100%)] px-5 py-4 text-center sm:text-left"
+                    className="ap-tile ap-tile-sm px-5 py-4 text-center sm:text-left"
                   >
                     <p className={`whitespace-nowrap font-semibold text-white ${getIntroStatValueClasses(stat.value)}`}>
                       {stat.value}
@@ -976,7 +976,7 @@ export default function FilmPathContent() {
               </div>
             </div>
 
-            <div className="rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05)_0%,rgba(255,255,255,0.02)_100%)] p-3 shadow-[0_24px_70px_rgba(0,0,0,0.35)] sm:p-4">
+            <div className="ap-tile ap-tile-lg p-3 sm:p-4">
               <div className="grid gap-3 sm:grid-cols-[minmax(0,1.12fr)_minmax(0,0.88fr)] sm:grid-rows-2 sm:gap-4">
                 {t.planPhotos.map((photo, index) => {
                   const isPrimary = index === 0;
@@ -984,7 +984,7 @@ export default function FilmPathContent() {
                   return (
                     <figure
                       key={photo.src}
-                      className={`group relative overflow-hidden rounded-[1.6rem] border border-white/10 bg-[#050811] shadow-[0_18px_40px_rgba(0,0,0,0.28)] ${
+                      className={`ap-tile ap-tile-sm group relative overflow-hidden bg-[#050811] ${
                         isPrimary ? "min-h-[18rem] sm:row-span-2 sm:min-h-[27rem]" : "min-h-[10rem]"
                       }`}
                     >
@@ -1022,7 +1022,7 @@ export default function FilmPathContent() {
                 </h3>
               </div>
 
-              <div className="rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(126,246,255,0.08)_0%,rgba(255,255,255,0.03)_100%)] px-4 py-5 shadow-[0_22px_56px_rgba(0,0,0,0.26)] sm:px-5 sm:py-6 lg:px-6 xl:px-5 xl:py-5 2xl:px-6 2xl:py-6">
+              <div className="ap-tile ap-tile-lg ap-tile-accent px-4 py-5 sm:px-5 sm:py-6 lg:px-6 xl:px-5 xl:py-5 2xl:px-6 2xl:py-6">
                 <div className="grid gap-3 md:grid-cols-[auto_minmax(0,1fr)] md:items-end xl:grid-cols-1 2xl:grid-cols-[auto_minmax(0,1fr)]">
                   <p className="text-[clamp(2.95rem,13vw,4.15rem)] font-semibold leading-none text-white">
                     {activeStep.number}
@@ -1050,12 +1050,8 @@ export default function FilmPathContent() {
                     return (
                       <div
                         key={step.number}
-                        className={`flex h-full min-h-[5.6rem] flex-col overflow-hidden rounded-[1rem] border px-2.5 py-2.5 text-left transition-all duration-300 sm:min-h-[5.9rem] sm:px-3 ${
-                          isActive
-                            ? "border-[#7ef6ff]/64 bg-[#7ef6ff]/12"
-                            : isSeen
-                              ? "border-white/12 bg-white/[0.03] opacity-80"
-                              : "border-white/8 bg-white/[0.02] opacity-45"
+                        className={`ap-tile ap-tile-sm ap-tile-interactive flex h-full min-h-[5.6rem] flex-col overflow-hidden px-2.5 py-2.5 text-left transition-all duration-300 sm:min-h-[5.9rem] sm:px-3 ${
+                          isActive ? "is-active" : isSeen ? "opacity-80" : "opacity-45"
                         }`}
                       >
                         <p className="text-[0.68rem] font-medium uppercase tracking-[0.24em] text-white/62">

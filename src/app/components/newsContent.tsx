@@ -4,7 +4,8 @@ import { memo } from "react";
 import Link from "next/link";
 import Card from "@/app/components/Card";
 import ScrollMotionItem from "@/app/components/ScrollMotionItem";
-import type { Locale } from "@/lib/localizedRoutes";
+import { getLocalizedPath, type Locale } from "@/lib/localizedRoutes";
+import { useI18n } from "@/app/i18n-provider";
 
 export type NewsItem = {
   badge: string;
@@ -20,6 +21,7 @@ export type NewsSection = {
   intro: string;
   mediaHeading: string;
   mediaIntro: string;
+  viewAllCta: string;
   items: NewsItem[];
 };
 
@@ -30,6 +32,7 @@ export const NEWS_COPY: Record<Locale, NewsSection> = {
     mediaHeading: "Piszą o nas",
     mediaIntro:
       "Wybrane publikacje o K360: od technologii fulldome po kosmiczny charakter pierwszych seansów.",
+    viewAllCta: "Zobacz wszystkie aktualności",
     items: [
       {
         badge: "Od stycznia",
@@ -109,6 +112,7 @@ export const NEWS_COPY: Record<Locale, NewsSection> = {
     mediaHeading: "In the media",
     mediaIntro:
       "Selected coverage of K360, from fulldome technology to the space-themed character of the first screenings.",
+    viewAllCta: "See all news",
     items: [
       {
         badge: "Since January",
@@ -188,6 +192,7 @@ export const NEWS_COPY: Record<Locale, NewsSection> = {
     mediaHeading: "Nos media",
     mediaIntro:
       "Uma seleção de publicações sobre o K360, da tecnologia fulldome ao caráter espacial das primeiras sessões.",
+    viewAllCta: "Ver todas as atualidades",
     items: [
       {
         badge: "Desde janeiro",
@@ -265,12 +270,54 @@ export const NEWS_COPY: Record<Locale, NewsSection> = {
 
 export const NewsSectionBlock = memo(function NewsSectionBlock({
   news,
+  teaser = false,
 }: {
   news: NewsSection;
+  teaser?: boolean;
 }) {
+  const { locale } = useI18n();
+  const loc = ((locale as Locale) ?? "pl") as Locale;
+  const viewAllHref = getLocalizedPath("/aktualnosci", loc);
+
   const spotlightItem = news.items[1] ?? news.items[0];
-  const secondaryItem = news.items[1] ? news.items[0] : undefined;
-  const mediaItems = news.items.slice(2);
+  const secondaryItem = teaser ? undefined : news.items[1] ? news.items[0] : undefined;
+  const mediaItems = teaser ? [] : news.items.slice(2);
+
+  if (teaser) {
+    return (
+      <ScrollMotionItem strength="soft" delay={90} float={false} className="home-deferred-block">
+        <Card title={news.title} titleCentered titleDivider dense motion="off">
+          <p className="ap-type-section-body mx-auto max-w-3xl text-center">{news.intro}</p>
+
+          {spotlightItem ? (
+            <article className="ap-tile ap-tile-lg ap-tile-accent ap-tile-interactive group relative mt-9 overflow-hidden p-6 sm:p-8">
+              <div className="relative z-10 flex flex-col">
+                <span className="inline-flex w-fit items-center rounded-full border border-white/14 bg-white/6 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/72">
+                  {spotlightItem.badge}
+                </span>
+                <h3 className="mt-4 text-2xl font-semibold leading-tight text-white sm:text-3xl">
+                  {spotlightItem.title}
+                </h3>
+                <p className="mt-3 max-w-2xl text-base leading-7 text-white/76">
+                  {spotlightItem.description}
+                </p>
+              </div>
+            </article>
+          ) : null}
+
+          <div className="mt-7 flex justify-center">
+            <Link
+              href={viewAllHref}
+              className="inline-flex items-center gap-2 rounded-full bg-[#4fcfde] px-6 py-3 text-sm font-semibold text-[#061014] shadow-[0_14px_34px_rgba(79,207,222,0.26)] transition duration-300 hover:bg-white"
+            >
+              <span>{news.viewAllCta}</span>
+              <span aria-hidden="true">→</span>
+            </Link>
+          </div>
+        </Card>
+      </ScrollMotionItem>
+    );
+  }
 
   return (
     <ScrollMotionItem strength="soft" delay={90} float={false} className="home-deferred-block">
@@ -308,7 +355,7 @@ export const NewsSectionBlock = memo(function NewsSectionBlock({
 
             <div className="grid gap-5">
               {secondaryItem ? (
-                <article className="ap-interactive-surface group relative overflow-hidden rounded-[1.6rem] border border-white/12 bg-white/[0.045] p-5 shadow-[0_20px_60px_rgba(0,0,0,0.22)] sm:p-6">
+                <article className="ap-tile ap-tile-sm ap-tile-interactive group relative overflow-hidden p-5 sm:p-6">
                   <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(247,120,40,0.16),transparent_58%)]" />
                   <div className="relative z-10">
                     <span className="inline-flex w-fit items-center rounded-full border border-white/14 bg-white/6 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/72">
@@ -333,7 +380,7 @@ export const NewsSectionBlock = memo(function NewsSectionBlock({
                 </article>
               ) : null}
 
-              <div className="rounded-[1.6rem] border border-white/10 bg-white/[0.035] p-5 sm:p-6">
+              <div className="ap-tile ap-tile-sm p-5 sm:p-6">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#8ce7f0]">
                   Media
                 </p>
@@ -347,7 +394,7 @@ export const NewsSectionBlock = memo(function NewsSectionBlock({
         ) : null}
 
         {mediaItems.length > 0 ? (
-          <div className="mt-5 overflow-hidden rounded-[1.6rem] border border-white/10 bg-white/[0.03] shadow-[0_22px_70px_rgba(0,0,0,0.18)]">
+          <div className="ap-tile ap-tile-sm mt-5 overflow-hidden">
             <ul className="divide-y divide-white/10">
               {mediaItems.map((item) => (
                 <li key={item.title}>

@@ -26,8 +26,10 @@ export function AppBar() {
   const { theme, toggleTheme } = useTheme();
   const [openAttractions, setOpenAttractions] = useState(false);
   const [openAbout, setOpenAbout] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const attractionsHideTimer = useRef<number | null>(null);
   const aboutHideTimer = useRef<number | null>(null);
+  const lastScrollY = useRef(0);
   const loc: Locale = (locale as Locale) ?? "pl";
   const paths = getSitePaths(loc);
   const canonicalPath = mapToPolishRoute(normalizePathname(pathname));
@@ -41,16 +43,18 @@ export function AppBar() {
   const isAttractionsActive = isCurrentSection("/atrakcje");
   const isEventsActive = isCurrentPath("/wydarzenia");
   const isGettingThereActive = isCurrentPath("/jak-dojechac");
-  const isAboutActive = isCurrentPath("/o-alvernia-planet", "/galeria", "/wydarzenia/vr", "/aktualnosci");
+  const isAboutActive = isCurrentPath("/o-alvernia-planet", "/galeria", "/wydarzenia/vr", "/aktualnosci", "/faq");
   const isContactActive = isCurrentPath("/kontakt");
   const isBookingActive = isCurrentPath("/rezerwuj");
   const isExhibitionActive = isCurrentPath("/atrakcje/wystawa");
   const isFilmPathActive = isCurrentPath("/atrakcje/sciezka-filmowa");
   const isK360Active = isCurrentPath("/atrakcje/k360");
+  const isMarsActive = isCurrentPath("/atrakcje/mars");
   const isAboutPageActive = isCurrentPath("/o-alvernia-planet");
   const isGalleryActive = isCurrentPath("/galeria");
   const isVrTourActive = isCurrentPath("/wydarzenia/vr");
   const isNewsActive = isCurrentPath("/aktualnosci");
+  const isFaqActive = isCurrentPath("/faq");
 
   useEffect(() => setOpen(false), [pathname]);
   useEffect(() => {
@@ -63,14 +67,56 @@ export function AppBar() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  useEffect(() => {
+    lastScrollY.current = window.scrollY;
+    let ticking = false;
+    const SHOW_THRESHOLD = 8;
+    const HIDE_THRESHOLD = 12;
+    const TOP_AREA = 32;
+
+    const update = () => {
+      const y = window.scrollY;
+      const delta = y - lastScrollY.current;
+
+      if (y <= TOP_AREA) {
+        setHidden(false);
+      } else if (delta > HIDE_THRESHOLD) {
+        setHidden(true);
+        lastScrollY.current = y;
+      } else if (delta < -SHOW_THRESHOLD) {
+        setHidden(false);
+        lastScrollY.current = y;
+      }
+      ticking = false;
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(update);
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    if (open) setHidden(false);
+  }, [open]);
+
   return (
     <>
       <header
         data-ap-nav
-        className="sticky top-0 z-30 border-b border-[color:var(--ap-border)] bg-[var(--ap-nav-bg)] supports-[backdrop-filter]:md:bg-[var(--ap-nav-bg)] supports-[backdrop-filter]:md:backdrop-blur"
+        data-hidden={hidden ? "true" : "false"}
+        className={cx(
+          "sticky top-2 md:top-4 z-30 px-2 md:px-4 transition-transform duration-300 ease-out will-change-transform",
+          hidden ? "-translate-y-[140%]" : "translate-y-0",
+        )}
       >
         {/* grid 3 kolumny: [lewo] [logo] [prawo] */}
-        <div className="mx-auto grid w-full max-w-[min(94vw,96rem)] grid-cols-[1fr_auto_1fr] items-center gap-2 md:gap-3 px-3.5 md:px-4 py-1.5">
+        <div className="ap-nav-banner mx-auto grid w-full max-w-[min(94vw,96rem)] grid-cols-[1fr_auto_1fr] items-center gap-2 md:gap-3 px-3.5 md:px-5 py-2.5 md:py-3 rounded-full border border-[color:var(--ap-border)] bg-[var(--ap-nav-bg)] supports-[backdrop-filter]:md:bg-[var(--ap-nav-bg)] supports-[backdrop-filter]:md:backdrop-blur">
           {/* LEWO: burger (mobile) + linki (desktop) */}
           <div className="flex items-center gap-2.5 md:gap-3 min-w-0">
             {/* burger tylko na mobile */}
@@ -186,6 +232,18 @@ export function AppBar() {
                           aria-current={isK360Active ? "page" : undefined}
                         >
                           {t("menu.attractions.k360")}
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          href={paths.attractions.mars}
+                          className={cx(
+                            "ap-nav-dropdown-link block px-4 py-2",
+                            isMarsActive && "is-active",
+                          )}
+                          aria-current={isMarsActive ? "page" : undefined}
+                        >
+                          {t("menu.attractions.mars")}
                         </Link>
                       </li>
                     </ul>
@@ -321,6 +379,18 @@ export function AppBar() {
                           {t("nav.news")}
                         </Link>
                       </li>
+                      <li>
+                        <Link
+                          href={paths.faq}
+                          className={cx(
+                            "ap-nav-dropdown-link block px-4 py-2",
+                            isFaqActive && "is-active",
+                          )}
+                          aria-current={isFaqActive ? "page" : undefined}
+                        >
+                          {t("nav.faq")}
+                        </Link>
+                      </li>
                     </ul>
                   </div>
                 </div>
@@ -403,13 +473,13 @@ export function AppBar() {
 
         {/* MENU MOBILNE (reszta linków w burgerze) */}
         <div
-          className={`lg:hidden grid transition-[grid-template-rows,opacity] duration-300 ${
+          className={`lg:hidden mx-auto w-full max-w-[min(94vw,96rem)] mt-2 grid transition-[grid-template-rows,opacity] duration-300 ${
             open ? "grid-rows-[1fr] opacity-100 overflow-visible" : "grid-rows-[0fr] opacity-0 overflow-hidden"
           }`}
           aria-hidden={!open}
         >
           <nav
-            className={`min-h-0 bg-[var(--ap-nav-bg)] ${
+            className={`min-h-0 rounded-2xl border border-[color:var(--ap-border)] bg-[var(--ap-nav-bg)] supports-[backdrop-filter]:md:backdrop-blur shadow-[0_18px_38px_rgba(4,6,18,0.28)] ${
               open ? "overflow-visible" : "overflow-hidden"
             }`}
           >
@@ -456,6 +526,18 @@ export function AppBar() {
                       aria-current={isK360Active ? "page" : undefined}
                     >
                       • {t("menu.attractions.k360")}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href={paths.attractions.mars}
+                      className={cx(
+                        "ap-mobile-link block rounded-md px-3 py-2 text-gray-200",
+                        isMarsActive && "is-active",
+                      )}
+                      aria-current={isMarsActive ? "page" : undefined}
+                    >
+                      • {t("menu.attractions.mars")}
                     </Link>
                   </li>
                 </ul>
@@ -535,6 +617,18 @@ export function AppBar() {
                       aria-current={isNewsActive ? "page" : undefined}
                     >
                       • {t("nav.news")}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href={paths.faq}
+                      className={cx(
+                        "ap-mobile-link block rounded-md px-3 py-2 text-gray-200",
+                        isFaqActive && "is-active",
+                      )}
+                      aria-current={isFaqActive ? "page" : undefined}
+                    >
+                      • {t("nav.faq")}
                     </Link>
                   </li>
                 </ul>

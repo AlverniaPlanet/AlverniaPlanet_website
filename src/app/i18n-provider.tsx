@@ -21,6 +21,8 @@ const DICTS: Record<Locale, Record<string, string>> = {
     "menu.attractions.exhibition": "Wystawa tematyczna",
     "menu.attractions.film_path": "Ścieżka filmowa",
     "menu.attractions.k360": "Projekcja K360",
+    "menu.attractions.mars": "Misja Mars",
+    "nav.faq": "Najczęściej zadawane pytania",
     "nav.events": "Wydarzenia",
   },
   en: {
@@ -39,6 +41,8 @@ const DICTS: Record<Locale, Record<string, string>> = {
     "menu.attractions.exhibition": "Thematic exhibition",
     "menu.attractions.film_path": "Film trail",
     "menu.attractions.k360": "K360 projection",
+    "menu.attractions.mars": "Mars mission",
+    "nav.faq": "Frequently asked questions",
     "nav.events": "Events",
   },
   pt: {
@@ -57,6 +61,8 @@ const DICTS: Record<Locale, Record<string, string>> = {
     "menu.attractions.exhibition": "Exposição temática",
     "menu.attractions.film_path": "Percurso de filmagem",
     "menu.attractions.k360": "Projeção K360",
+    "menu.attractions.mars": "Missão Marte",
+    "nav.faq": "Perguntas mais frequentes",
     "nav.events": "Eventos",
   },
 };

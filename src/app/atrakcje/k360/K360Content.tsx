@@ -703,7 +703,7 @@ export default function K360Content() {
                     {copy.featureStats.map((stat) => (
                       <div
                         key={`${stat.value}-${stat.label}`}
-                        className="rounded-[1.6rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.02)_100%)] px-4 py-4 text-center sm:text-left"
+                        className="ap-tile ap-tile-sm px-4 py-4 text-center sm:text-left"
                       >
                         <p className="whitespace-nowrap text-[clamp(1.3rem,2.5vw,1.8rem)] font-semibold leading-none tracking-[-0.03em] text-white">
                           {stat.value}
@@ -718,7 +718,7 @@ export default function K360Content() {
                   {regularFeatures.map((item, index) => (
                     <article
                       key={item.title}
-                      className="k360-feature-card ap-interactive-surface group relative overflow-hidden rounded-[1.6rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05)_0%,rgba(255,255,255,0.025)_100%)] px-3.5 py-3.5 shadow-[0_18px_44px_rgba(0,0,0,0.18)] transition-all duration-300 ease-out sm:px-4 sm:py-4"
+                      className="k360-feature-card ap-tile ap-tile-sm ap-tile-interactive group relative overflow-hidden px-3.5 py-3.5 transition-all duration-300 ease-out sm:px-4 sm:py-4"
                       style={{ "--tour-delay": `${(index % 6) * 0.18}s` } as CSSProperties}
                     >
                       <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(126,246,255,0.12),transparent_34%)] opacity-70 transition-opacity duration-300 group-hover:opacity-100" />
@@ -762,7 +762,7 @@ export default function K360Content() {
               motion="off"
             >
               <div className="mt-2 space-y-8">
-                <article className="relative overflow-hidden rounded-[2rem] border border-[#4fcfde]/35 bg-[linear-gradient(145deg,rgba(39,47,76,0.96)_0%,rgba(26,31,54,0.98)_100%)] px-6 py-6 shadow-[0_18px_44px_rgba(0,0,0,0.28)] sm:px-7 sm:py-7">
+                <article className="ap-tile ap-tile-lg ap-tile-accent relative overflow-hidden px-6 py-6 sm:px-7 sm:py-7">
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(79,207,222,0.18),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(79,207,222,0.08),transparent_32%)]" />
                   <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-8">
                     <div className="space-y-5 text-center lg:text-left">
@@ -788,7 +788,7 @@ export default function K360Content() {
                     </div>
 
                     <div className="flex w-full flex-col items-center gap-4 lg:w-auto lg:items-end">
-                      <div className="w-full max-w-[22rem] rounded-[1.35rem] border border-white/12 bg-white/[0.05] px-4 py-4 text-center shadow-[0_14px_34px_rgba(0,0,0,0.2)] sm:px-5 lg:text-right">
+                      <div className="ap-tile ap-tile-sm w-full max-w-[22rem] px-4 py-4 text-center sm:px-5 lg:text-right">
                         <p className="text-sm text-white/68">{copy.promoTicket.priceLabel}</p>
                         <p className="mt-1 text-[1.9rem] font-semibold leading-none tracking-[-0.04em] text-white sm:text-[2.1rem]">
                           {copy.promoTicket.price}

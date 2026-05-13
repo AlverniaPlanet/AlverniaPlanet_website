@@ -491,7 +491,7 @@ export default function AboutAlverniaPage() {
                 {copy.bullets.map((item) => (
                   <div
                     key={item.title}
-                    className="ap-tile h-full rounded-2xl bg-white/5 p-2.5 sm:p-3 ring-1 ring-white/10"
+                    className="ap-tile ap-tile-sm ap-tile-interactive h-full p-2.5 sm:p-3"
                   >
                     <div className="relative h-36 w-full overflow-hidden rounded-xl ring-1 ring-white/15 sm:h-40 lg:h-44">
                       <Image
@@ -518,7 +518,7 @@ export default function AboutAlverniaPage() {
               {copy.metrics.map((metric, index) => (
                 <article
                   key={metric.value + metric.label}
-                  className="ap-tile relative overflow-hidden rounded-2xl border border-white/12 bg-white/[0.045] px-4 py-4"
+                  className="ap-tile ap-tile-sm ap-tile-interactive relative overflow-hidden px-4 py-4"
                 >
                   <div
                     className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${metricTones[index % metricTones.length]} opacity-90`}
@@ -538,7 +538,7 @@ export default function AboutAlverniaPage() {
               ))}
             </div>
           </div>
-          <div className="relative mt-8 rounded-[1.75rem] border border-white/12 bg-white/[0.04] p-4 sm:p-5 lg:p-6">
+          <div className="ap-tile ap-tile-lg relative mt-8 p-4 sm:p-5 lg:p-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div className="max-w-3xl">
                 <a
@@ -596,7 +596,7 @@ export default function AboutAlverniaPage() {
               {copy.wikipediaFacts.map((fact) => (
                 <article
                   key={fact.title}
-                  className="rounded-2xl border border-white/10 bg-white/[0.045] px-4 py-3"
+                  className="ap-tile ap-tile-sm px-4 py-3"
                 >
                   <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/45">
                     {fact.title}
@@ -650,7 +650,7 @@ export default function AboutAlverniaPage() {
                 </PrimaryButton>
               </div>
             </div>
-            <div className="rounded-[1.75rem] border border-white/12 bg-white/[0.04] p-4 sm:p-5">
+            <div className="ap-tile ap-tile-lg p-4 sm:p-5">
               <div className="grid gap-3 sm:grid-cols-2">
                 {[
                   "/Alvernia VR/K03_PIC_2017_10_14_21_57_24_20171014221828.jpg",
@@ -660,7 +660,7 @@ export default function AboutAlverniaPage() {
                 ].map((src, index) => (
                   <div
                     key={src}
-                    className={`relative overflow-hidden rounded-2xl border border-white/10 bg-black/20 ${
+                    className={`ap-tile ap-tile-sm relative overflow-hidden bg-black/20 ${
                       index === 0 ? "sm:col-span-2 aspect-[16/8.5]" : "aspect-[16/10]"
                     }`}
                   >

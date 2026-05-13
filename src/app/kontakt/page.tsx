@@ -300,7 +300,7 @@ export default function KontaktPage() {
                   {copy.info.description}
                 </p>
                 <div className="w-full space-y-5">
-                  <div className="space-y-2 rounded-2xl bg-white/5 p-4">
+                  <div className="ap-tile ap-tile-sm space-y-2 p-4">
                     <div className="space-y-1">
                       <p className="text-sm uppercase tracking-[0.2em] text-white/60">{copy.info.phoneLabel}</p>
                       <p className="text-lg font-semibold">{formatPhone(PHONE_INFO)}</p>
@@ -314,7 +314,7 @@ export default function KontaktPage() {
                       </ul>
                     </div>
                   </div>
-                  <div className="w-full space-y-2 rounded-2xl border border-white/10 p-4">
+                  <div className="ap-tile ap-tile-sm w-full space-y-2 p-4">
                     <p className="text-sm uppercase tracking-[0.2em] text-white/60">{copy.info.emailLabel}</p>
                     <p className="font-semibold text-[#f03c64]">{MAIL_INFO}</p>
                   </div>
@@ -330,7 +330,7 @@ export default function KontaktPage() {
                 <p className="text-sm text-gray-300 leading-relaxed px-2 md:px-6 mb-3">
                   {copy.booking.description}
                 </p>
-                <div className="w-full space-y-3 rounded-2xl bg-white/5 p-4">
+                <div className="ap-tile ap-tile-sm w-full space-y-3 p-4">
                   <p className="text-sm uppercase tracking-[0.2em] text-white/60">{copy.booking.caretakerLabel}</p>
                   <div>
                     <p className="font-semibold">Szymon Sambor</p>
@@ -343,7 +343,7 @@ export default function KontaktPage() {
                     <p className="text-[#f77828]">{MAIL_BOOKING}</p>
                   </div>
                 </div>
-                <div className="mt-4 w-full rounded-2xl border border-[#4fcfde]/30 bg-[#4fcfde]/10 p-4">
+                <div className="ap-tile ap-tile-sm ap-tile-accent mt-4 w-full p-4">
                   <p className="text-sm font-semibold text-[#a5e6f0]">{copy.booking.onlineTitle}</p>
                   <p className="text-sm text-gray-200">
                     {copy.booking.onlineDescription}
@@ -369,7 +369,7 @@ export default function KontaktPage() {
                 <p className="text-sm text-gray-300 leading-relaxed px-2 md:px-6 mb-3">
                   {copy.events.description}
                 </p>
-                <div className="w-full space-y-3 rounded-2xl bg-white/5 p-4">
+                <div className="ap-tile ap-tile-sm w-full space-y-3 p-4">
                   <p className="text-sm uppercase tracking-[0.2em] text-white/60">{copy.events.contactLabel}</p>
                   <div className="space-y-1">
                     <p className="font-semibold">Piotr Kozołub</p>

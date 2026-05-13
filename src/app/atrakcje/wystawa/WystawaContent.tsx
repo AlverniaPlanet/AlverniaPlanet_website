@@ -173,7 +173,7 @@ export default function WystawaContent() {
     <main className="relative z-10 min-h-screen">
       <section className="relative z-10 px-4 pt-12 sm:pt-16">
         <div className="ap-shell mb-10 sm:mb-12">
-          <div className="relative overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
+          <div className="ap-tile ap-tile-lg relative overflow-hidden">
             <div className="relative aspect-[4/5] sm:aspect-[16/9] bg-black">
               <AdaptiveVideo
                 mp4Src="/wystawa/AP_wystawaHPX.mp4"

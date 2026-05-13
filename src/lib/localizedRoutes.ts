@@ -115,11 +115,13 @@ export function getSitePaths(locale: Locale) {
     runmageddon: getLocalizedPath("/runmageddon", locale),
     booking: getLocalizedPath("/rezerwuj", locale),
     about: getLocalizedPath("/o-alvernia-planet", locale),
+    faq: getLocalizedPath("/faq", locale),
     contact: getLocalizedPath("/kontakt", locale),
     attractions: {
       exhibition: getLocalizedPath("/atrakcje/wystawa", locale),
       filmPath: getLocalizedPath("/atrakcje/sciezka-filmowa", locale),
       k360: getLocalizedPath("/atrakcje/k360", locale),
+      mars: "/atrakcje/mars",
     },
   };
 }

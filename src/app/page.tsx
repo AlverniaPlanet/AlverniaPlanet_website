@@ -10,7 +10,6 @@ import { PrimaryButton } from "@/app/components/PrimaryButton";
 import { AttractionCard } from "@/app/components/AttractionCard";
 import { NEWS_COPY, NewsSectionBlock, type NewsSection } from "@/app/components/newsContent";
 import ScrollMotionItem from "@/app/components/ScrollMotionItem";
-import TicketFaqWidget, { type TicketFaqCopy } from "@/app/components/TicketFaqWidget";
 import { waitForImagesReady } from "@/app/components/waitForImagesReady";
 import {
   buildBookingPath,
@@ -95,7 +94,6 @@ type HomeCopy = {
   tickets: TicketSection;
   eventsPromo: PromoTile;
   news: NewsSection;
-  faq: TicketFaqCopy;
 };
 
 const HOME_COPY: Record<Locale, HomeCopy> = {
@@ -209,71 +207,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       imageAlt: "Przestrzeń eventowa Alvernia Planet podczas konferencji",
     },
     news: NEWS_COPY.pl,
-    faq: {
-      badge: "FAQ",
-      title: "Najczęstsze pytania",
-      desktopLabel: "Najczęściej zadawane pytania",
-      subtitle: "Szybkie odpowiedzi przed wizytą i rezerwacją.",
-      mobileOpenLabel: "Pokaż FAQ",
-      mobileCloseLabel: "Ukryj FAQ",
-      items: [
-        {
-          question: "Ile trwa zwiedzanie?",
-          answer:
-            "Sama Ścieżka filmowa trwa około 2,5 godziny. Projekcja K360 trwa około 30 minut, więc pakiet Ścieżka + Projekcja K360 to około 3 godziny łącznie.",
-        },
-        {
-          question: "W jakim języku odbywa się oprowadzanie i seans?",
-          answer:
-            "Oprowadzanie Ścieżki filmowej oraz projekcje K360 odbywają się w języku polskim.",
-        },
-        {
-          question: "Ile kosztuje zwiedzanie?",
-          answer:
-            "Bilet normalny kosztuje 79 zł za osobę, a bilet ulgowy 69 zł za osobę. W cenie jest zwiedzanie przestrzeni Alvernia Planet z przewodnikiem oraz część edukacyjna.",
-        },
-        {
-          question: "Czy jest strefa gastro?",
-          answer:
-            "Na miejscu nie ma restauracji, natomiast działa sklepik z pamiątkami, w którym można kupić drobne przekąski i napoje.",
-        },
-        {
-          question: "Czy mają państwo dostępne jakieś warsztaty?",
-          answer:
-            "Standardowa wizyta obejmuje zwiedzanie z przewodnikiem oraz część edukacyjną o produkcji filmowej. Oddzielne warsztaty nie są obecnie prowadzone w ramach standardowego zwiedzania.",
-        },
-        {
-          question: "Czy można wejść bez wcześniejszej rezerwacji biletów?",
-          answer:
-            "Nie - obowiązuje wcześniejsza rezerwacja biletów, ponieważ zwiedzanie odbywa się w określonych godzinach i z przewodnikiem.",
-        },
-        {
-          question: "Jakie są godziny otwarcia?",
-          answer:
-            "Infolinia działa od poniedziałku do piątku w godz. 9:00-16:00. Projekcja K360 jest otwarta od poniedziałku do czwartku 11:00-17:00, w piątki 11:00-18:00, a w soboty i niedziele 11:00-19:30. Ścieżka filmowa działa od poniedziałku do soboty 8:00-17:00, a w niedziele jest zamknięta.",
-        },
-        {
-          question: "Kiedy otrzymam zwrot po anulowaniu rezerwacji?",
-          answer:
-            "W przypadku anulowania rezerwacji zwrot środków wraca do 14 dni roboczych na numer konta podany podczas zakładania rezerwacji.",
-        },
-        {
-          question: "Czy można przyjechać z rodziną lub przyjaciółmi czy tylko grupy?",
-          answer:
-            "Oczywiście można przyjechać zarówno indywidualnie, na przykład z rodziną lub znajomymi, jak i w grupie zorganizowanej.",
-        },
-        {
-          question: "Jaka produkcja była tu realizowana ostatnio?",
-          answer:
-            "W Alvernia Planet powstawało wiele produkcji filmowych, serialowych i reklamowych - między innymi Akademia Pana Kleksa, 99 Gra o wszystko oraz inne liczne międzynarodowe projekty.",
-        },
-        {
-          question: "Czy wejdziemy na plan zdjęciowy jakiejś produkcji?",
-          answer:
-            "Nie - hale zdjęciowe są miejscem pracy ekip filmowych, dlatego podczas zwiedzania nie ma możliwości wejścia na aktywny plan zdjęciowy.",
-        },
-      ],
-    },
   },
   en: {
     heroTitle: "Welcome to Alvernia Planet",
@@ -384,71 +317,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       imageAlt: "Event space at Alvernia Planet during a conference",
     },
     news: NEWS_COPY.en,
-    faq: {
-      badge: "FAQ",
-      title: "Popular questions",
-      desktopLabel: "Frequently asked questions",
-      subtitle: "Quick answers before your visit and booking.",
-      mobileOpenLabel: "Show FAQ",
-      mobileCloseLabel: "Hide FAQ",
-      items: [
-        {
-          question: "How long does the tour take?",
-          answer:
-            "The Film Path visit itself lasts about 2.5 hours. The K360 projection lasts about 30 minutes, so the Film Path + K360 projection package takes about 3 hours in total.",
-        },
-        {
-          question: "What language are the tour and screening in?",
-          answer:
-            "The Film Path guided tour and K360 projection screenings are available in Polish.",
-        },
-        {
-          question: "How much does the tour cost?",
-          answer:
-            "The standard ticket costs 79 PLN per person and the reduced ticket costs 69 PLN per person. The price includes a guided tour of the Alvernia Planet spaces and the educational part.",
-        },
-        {
-          question: "Is there a food zone?",
-          answer:
-            "There is no restaurant on site, but there is a souvenir shop where you can buy small snacks and drinks.",
-        },
-        {
-          question: "Do you offer any workshops?",
-          answer:
-            "The standard visit includes a guided tour and an educational segment about film production. Separate workshops are not currently offered as part of the standard visit.",
-        },
-        {
-          question: "Can you enter without booking tickets in advance?",
-          answer:
-            "No. Advance ticket booking is required because visits take place at scheduled times and with a guide.",
-        },
-        {
-          question: "What are the opening hours?",
-          answer:
-            "The info line is open Monday to Friday from 9:00 to 16:00. The K360 projection is open Monday to Thursday 11:00-17:00, Friday 11:00-18:00, and Saturday to Sunday 11:00-19:30. The Film Path is open Monday to Saturday 8:00-17:00 and closed on Sunday.",
-        },
-        {
-          question: "When will I receive the refund after cancelling a booking?",
-          answer:
-            "If a booking is cancelled, the refund is returned within 14 business days to the account number provided when the reservation was created.",
-        },
-        {
-          question: "Can I come with family or friends, or is it only for groups?",
-          answer:
-            "Of course. You can visit both individually, for example with family or friends, and as part of an organized group.",
-        },
-        {
-          question: "What production was made here most recently?",
-          answer:
-            "Many film, TV and commercial productions have been created at Alvernia Planet, including Akademia Pana Kleksa, 99 Gra o wszystko and many other international projects.",
-        },
-        {
-          question: "Will we enter an active film set during the visit?",
-          answer:
-            "No. Sound stages are workplaces for film crews, so there is no access to an active set during the visit.",
-        },
-      ],
-    },
   },
   pt: {
     heroTitle: "Bem-vindo à Alvernia Planet",
@@ -560,71 +428,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       imageAlt: "Espaço de eventos da Alvernia Planet durante uma conferência",
     },
     news: NEWS_COPY.pt,
-    faq: {
-      badge: "FAQ",
-      title: "Perguntas frequentes",
-      desktopLabel: "Perguntas mais frequentes",
-      subtitle: "Respostas rápidas antes da visita e da reserva.",
-      mobileOpenLabel: "Mostrar FAQ",
-      mobileCloseLabel: "Ocultar FAQ",
-      items: [
-        {
-          question: "Quanto tempo dura a visita?",
-          answer:
-            "O Percurso de filmagem por si só dura cerca de 2,5 horas. A projeção K360 dura cerca de 30 minutos, por isso o pacote Percurso + Projeção K360 dura cerca de 3 horas no total.",
-        },
-        {
-          question: "Em que idioma decorrem a visita e a sessão?",
-          answer:
-            "A visita guiada do Percurso de filmagem e as sessões da projeção K360 decorrem em polaco.",
-        },
-        {
-          question: "Quanto custa a visita?",
-          answer:
-            "O bilhete normal custa 79 PLN por pessoa e o bilhete reduzido custa 69 PLN por pessoa. O preço inclui a visita guiada aos espaços da Alvernia Planet e a parte educativa.",
-        },
-        {
-          question: "Existe zona de restauração?",
-          answer:
-            "No local não existe restaurante, mas há uma loja de recordações onde é possível comprar pequenos snacks e bebidas.",
-        },
-        {
-          question: "Têm workshops disponíveis?",
-          answer:
-            "A visita standard inclui uma visita guiada e uma parte educativa sobre produção audiovisual. Workshops separados não são atualmente realizados no formato standard da visita.",
-        },
-        {
-          question: "É possível entrar sem reservar bilhetes antecipadamente?",
-          answer:
-            "Não. É obrigatória a reserva prévia, porque as visitas decorrem em horários definidos e com guia.",
-        },
-        {
-          question: "Quais são os horários de funcionamento?",
-          answer:
-            "A linha de informação funciona de segunda a sexta das 9:00 às 16:00. A projeção K360 abre de segunda a quinta das 11:00 às 17:00, à sexta das 11:00 às 18:00, e ao sábado e domingo das 11:00 às 19:30. O Percurso de filmagem funciona de segunda a sábado das 8:00 às 17:00 e está encerrado ao domingo.",
-        },
-        {
-          question: "Quando recebo o reembolso após cancelar a reserva?",
-          answer:
-            "Em caso de cancelamento da reserva, o reembolso regressa no prazo de até 14 dias úteis para o número de conta indicado durante a criação da reserva.",
-        },
-        {
-          question: "Posso visitar com família ou amigos ou é só para grupos?",
-          answer:
-            "Claro. Pode visitar individualmente, por exemplo com família ou amigos, e também em grupo organizado.",
-        },
-        {
-          question: "Que produção foi realizada aqui mais recentemente?",
-          answer:
-            "Na Alvernia Planet foram realizadas muitas produções audiovisuais, séries e publicidade, incluindo Akademia Pana Kleksa, 99 Gra o wszystko e muitos outros projetos internacionais.",
-        },
-        {
-          question: "Vamos entrar num set de filmagem ativo?",
-          answer:
-            "Não. Os estúdios são locais de trabalho das equipas de filmagem, por isso não existe acesso a um set ativo durante a visita.",
-        },
-      ],
-    },
   },
 };
 
@@ -717,7 +520,6 @@ export default function Page() {
         secondaryAnimationsReady={secondaryAnimationsReady}
         locale={loc}
       />
-      <HomeFaqSlots faq={copy.faq} />
     </main>
   );
 }
@@ -753,7 +555,7 @@ const HeroSection = memo(function HeroSection({
       }}
     >
       <div className="mx-auto w-full max-w-[72rem]">
-        <div className="relative overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
+        <div className="ap-tile ap-tile-lg relative overflow-hidden">
           <div className="relative aspect-[16/9] bg-black">
             <div className="pointer-events-none absolute inset-x-0 top-7 z-20 flex justify-center px-4 sm:top-8 lg:top-9">
               <div className="flex w-full max-w-[44rem] flex-col items-center gap-2 sm:max-w-[48rem] sm:gap-2.5 lg:max-w-[52rem]">
@@ -906,7 +708,7 @@ const HomeContent = memo(function HomeContent({
           <AttractionsSection attractions={attractions} animate={secondaryAnimationsReady} />
           <TicketsSection tickets={tickets} locale={locale} />
           <EventsPromoSection promo={eventsPromo} />
-          <NewsSectionBlock news={news} />
+          <NewsSectionBlock news={news} teaser />
         </div>
       </div>
     </section>
@@ -1001,7 +803,7 @@ const TicketsSection = memo(function TicketsSection({
           <p className="mt-2 ap-type-cta-body">{tickets.headerCtaSub}</p>
         </div>
         <div className="mt-8 space-y-8">
-          <article className="home-ticket-promo relative overflow-hidden rounded-[2rem] border border-[#4fcfde]/35 bg-[linear-gradient(145deg,rgba(39,47,76,0.96)_0%,rgba(26,31,54,0.98)_100%)] px-6 py-6 shadow-[0_18px_44px_rgba(0,0,0,0.28)] sm:px-7 sm:py-7">
+          <article className="home-ticket-promo ap-tile ap-tile-lg ap-tile-accent relative overflow-hidden px-6 py-6 sm:px-7 sm:py-7">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(79,207,222,0.18),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(79,207,222,0.08),transparent_32%)]" />
             <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-8">
               <div className="space-y-5 text-center lg:text-left">
@@ -1027,7 +829,7 @@ const TicketsSection = memo(function TicketsSection({
               </div>
 
               <div className="flex w-full flex-col items-center gap-4 lg:w-auto lg:items-end">
-                <div className="home-ticket-promo-price w-full max-w-[22rem] rounded-[1.35rem] border border-white/12 bg-white/[0.05] px-4 py-4 text-center shadow-[0_14px_34px_rgba(0,0,0,0.2)] sm:px-5 lg:text-right">
+                <div className="home-ticket-promo-price ap-tile ap-tile-sm w-full max-w-[22rem] px-4 py-4 text-center sm:px-5 lg:text-right">
                   <p className="text-sm text-white/68">{tickets.promoTicket.priceLabel}</p>
                   <p className="mt-1 text-[1.9rem] font-semibold leading-none tracking-[-0.04em] text-white sm:text-[2.1rem]">
                     {tickets.promoTicket.price}
@@ -1200,7 +1002,7 @@ const EventsPromoSection = memo(function EventsPromoSection({
               </PrimaryButton>
             </div>
           </div>
-          <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-black/20 ring-1 ring-white/12 shadow-[0_18px_42px_rgba(0,0,0,0.28)]">
+          <div className="ap-tile ap-tile-sm relative aspect-[16/10] overflow-hidden bg-black/20">
             {previousImageSrc ? (
               <Image
                 src={previousImageSrc}
@@ -1237,23 +1039,6 @@ const EventsPromoSection = memo(function EventsPromoSection({
         </div>
       </Card>
     </ScrollMotionItem>
-  );
-});
-
-const HomeFaqSlots = memo(function HomeFaqSlots({
-  faq,
-}: {
-  faq: TicketFaqCopy;
-}) {
-  return (
-    <>
-      <div className="ticket-faq-fixed-slot xl:hidden">
-        <TicketFaqWidget copy={faq} mode="mobile" />
-      </div>
-      <div className="ticket-faq-fixed-slot hidden xl:block">
-        <TicketFaqWidget copy={faq} mode="desktop" />
-      </div>
-    </>
   );
 });
 

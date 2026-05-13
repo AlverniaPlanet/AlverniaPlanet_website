@@ -1,3 +1,5 @@
 {
-  "/aktualnosci/page": "app/aktualnosci/page.js"
+  "/faq/page": "app/faq/page.js",
+  "/atrakcje/mars/page": "app/atrakcje/mars/page.js",
+  "/page": "app/page.js"
 }

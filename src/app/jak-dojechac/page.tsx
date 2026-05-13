@@ -372,10 +372,8 @@ export default function JakDojechacPage() {
                             <button
                               type="button"
                               onClick={() => setOrigin(route.origin)}
-                              className={`w-full rounded-2xl px-4 py-3 text-left ring-1 transition ${
-                                isActive
-                                  ? "bg-white/10 ring-[color:var(--ap-accent)] text-white"
-                                  : "bg-white/5 ring-white/10 hover:bg-white/10 hover:ring-white/20"
+                              className={`ap-tile ap-tile-sm ap-tile-interactive w-full px-4 py-3 text-left ${
+                                isActive ? "is-active" : ""
                               }`}
                               aria-pressed={isActive}
                             >
@@ -429,10 +427,8 @@ export default function JakDojechacPage() {
                             <button
                               type="button"
                               onClick={() => setOrigin(item.label)}
-                              className={`flex w-full items-center justify-between rounded-2xl px-4 py-3 ring-1 transition ${
-                                isActive
-                                  ? "bg-white/10 ring-[color:var(--ap-accent)] text-white"
-                                  : "bg-white/5 ring-white/10 hover:bg-white/10 hover:ring-white/20"
+                              className={`ap-tile ap-tile-sm ap-tile-interactive flex w-full items-center justify-between px-4 py-3 ${
+                                isActive ? "is-active" : ""
                               }`}
                               aria-pressed={isActive}
                             >
@@ -455,7 +451,7 @@ export default function JakDojechacPage() {
               </div>
 
               <div
-                className="rounded-2xl overflow-hidden ring-1 ring-white/10 bg-black/40"
+                className="ap-tile ap-tile-sm overflow-hidden bg-black/40"
                 ref={mapWrapperRef}
               >
                 {!shouldLoadMap ? (
@@ -485,7 +481,7 @@ export default function JakDojechacPage() {
 
         <ScrollMotionItem strength="soft" delay={130} className="ap-deferred-section">
           <Card variant="solid" className="overflow-hidden p-0" motion="off">
-            <div className="relative w-full overflow-hidden rounded-2xl ring-1 ring-white/10 bg-black">
+            <div className="ap-tile ap-tile-sm relative w-full overflow-hidden bg-black">
               <div className="relative w-full h-[280px] sm:h-[360px] md:h-auto md:aspect-[16/9]">
                 <Image
                   src="/atrakcje.webp"

@@ -197,14 +197,74 @@ p {
 }
 
 /* UX polish v1 (łatwe do cofnięcia) */
-[data-ap-nav] {
-  box-shadow: 0 10px 28px rgba(4, 6, 18, 0.2);
+[data-ap-nav] .ap-nav-banner {
+  box-shadow:
+    0 10px 28px rgba(4, 6, 18, 0.28),
+    0 22px 60px rgba(4, 6, 18, 0.22);
 }
 
-.theme-light [data-ap-nav] {
+.theme-light [data-ap-nav] .ap-nav-banner {
   box-shadow:
     0 1px 0 rgba(118, 203, 217, 0.58),
-    0 14px 34px rgba(70, 145, 161, 0.14);
+    0 14px 34px rgba(70, 145, 161, 0.18),
+    0 24px 60px rgba(70, 145, 161, 0.14);
+}
+
+/* Kanoniczny kafelek — jeden styl powierzchni dla całej strony.
+   Padding zostaje po stronie utility (Tailwind), klasa odpowiada tylko
+   za radius, ramkę, tło i cień, dzięki czemu da się jej używać i na
+   małych "pigułkach", i na dużych kartach hero. */
+.ap-tile {
+  position: relative;
+  border-radius: 1.5rem;
+  border: 1px solid var(--ap-border);
+  background: var(--ap-surface);
+  box-shadow: var(--ap-card-shadow);
+  transition:
+    border-color 220ms var(--ap-ease-standard),
+    background-color 220ms var(--ap-ease-standard),
+    box-shadow 220ms var(--ap-ease-standard),
+    transform 220ms var(--ap-ease-standard);
+}
+
+.ap-tile-sm { border-radius: 1.1rem; }
+.ap-tile-lg { border-radius: 1.75rem; }
+
+/* Interaktywny stan: hover, focus, aktywny element listy/kroku. */
+.ap-tile-interactive:hover,
+.ap-tile-interactive:focus-visible,
+.ap-tile.is-active {
+  border-color: var(--ap-border-strong);
+  background: var(--ap-surface-strong);
+  box-shadow:
+    0 18px 44px rgba(4, 6, 18, 0.28),
+    0 0 0 1px var(--ap-border-strong) inset;
+  transform: translateY(-1px);
+}
+
+.theme-light .ap-tile-interactive:hover,
+.theme-light .ap-tile-interactive:focus-visible,
+.theme-light .ap-tile.is-active {
+  box-shadow: var(--ap-card-hover-shadow);
+}
+
+/* Wariant akcentowy — dla wyróżnionych kafelków (promo, CTA, spotlight). */
+.ap-tile-accent {
+  border-color: var(--ap-border-strong);
+  background:
+    linear-gradient(135deg, rgba(79, 207, 222, 0.16) 0%, var(--ap-surface) 55%, rgba(247, 72, 108, 0.10) 100%);
+}
+
+.theme-light .ap-tile-accent {
+  background:
+    linear-gradient(135deg, rgba(79, 207, 222, 0.20) 0%, var(--ap-surface) 55%, rgba(247, 72, 108, 0.10) 100%);
+}
+
+/* "Wyciszony" wariant — np. wnętrze kafelka, pomocnicze pigułki. */
+.ap-tile-muted {
+  border-color: var(--ap-border);
+  background: transparent;
+  box-shadow: none;
 }
 
 [data-ap-nav] nav a,

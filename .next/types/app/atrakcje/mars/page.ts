@@ -1,8 +1,8 @@
-// File: /Users/a1234/Desktop/Alvernia/strona/V12/AlverniaPlanet_website/src/app/aktualnosci/page.tsx
-import * as entry from '../../../../src/app/aktualnosci/page.js'
+// File: /Users/szymonczermak/Desktop/Alvernia Planet/AlverniaPlanet_website/src/app/atrakcje/mars/page.tsx
+import * as entry from '../../../../../src/app/atrakcje/mars/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
-type TEntry = typeof import('../../../../src/app/aktualnosci/page.js')
+type TEntry = typeof import('../../../../../src/app/atrakcje/mars/page.js')
 
 type SegmentParams<T extends Object = any> = T extends Record<string, any>
   ? { [K in keyof T]: T[K] extends string ? string | string[] | undefined : never }

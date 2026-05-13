@@ -11,10 +11,21 @@
       "static/chunks/main-app.js",
       "static/chunks/app/loading.js"
     ],
-    "/aktualnosci/page": [
+    "/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/aktualnosci/page.js"
+      "static/chunks/app/page.js"
+    ],
+    "/atrakcje/mars/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/atrakcje/mars/page.css",
+      "static/chunks/app/atrakcje/mars/page.js"
+    ],
+    "/faq/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/faq/page.js"
     ]
   }
 }
