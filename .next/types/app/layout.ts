@@ -1,4 +1,4 @@
-// File: /Users/szymonczermak/Desktop/Alvernia Planet/AlverniaPlanet_website/src/app/layout.tsx
+// File: /Users/a1234/Desktop/Alvernia/strona/V12/AlverniaPlanet_website/src/app/layout.tsx
 import * as entry from '../../../src/app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

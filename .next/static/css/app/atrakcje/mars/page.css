@@ -10,7 +10,6 @@
   --mars-progress: 0;
   position: relative;
   isolation: isolate;
-  min-height: 420svh;
   overflow-x: clip;
   background: #070917;
   color: #f7f8ff;
@@ -468,25 +467,29 @@
   align-items: center;
   justify-content: center;
   gap: 0.58rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--ap-border);
   border-radius: 999px;
-  padding: 0.7rem 1.2rem;
-  background: rgba(255, 255, 255, 0.06);
+  padding: 0.7rem 1.35rem;
+  background: var(--ap-surface);
   color: #ffffff;
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: 0.98rem;
+  font-weight: 600;
+  letter-spacing: -0.005em;
   line-height: 1.2;
   text-decoration: none;
+  backdrop-filter: blur(16px);
   transition:
-    border-color 180ms ease,
-    background-color 180ms ease,
-    transform 180ms ease;
+    border-color 200ms ease,
+    background-color 200ms ease,
+    transform 200ms ease,
+    box-shadow 200ms ease;
 }
 
 .MarsLandingContent_secondaryAction__1jDPC:hover,
 .MarsLandingContent_secondaryAction__1jDPC:focus-visible {
-  border-color: rgba(70, 220, 231, 0.55);
-  background: rgba(70, 220, 231, 0.1);
+  border-color: var(--ap-border-strong);
+  background: var(--ap-surface-strong);
+  box-shadow: 0 18px 36px rgba(4, 6, 18, 0.32);
   transform: translateY(-1px);
 }
 
@@ -523,26 +526,17 @@
   color: #ffffff;
 }
 
-.MarsLandingContent_contentGrid__kzacs,
-.MarsLandingContent_cardsWrap__jThGi,
-.MarsLandingContent_routePanel__Yar8v,
+.MarsLandingContent_cardWrap__rht5u,
 .MarsLandingContent_landingContent__P4f_L {
   width: min(1120px, 100%);
   margin: 0 auto;
 }
 
-.MarsLandingContent_contentGrid__kzacs {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.78fr);
-  gap: clamp(1.5rem, 4.5vw, 4rem);
-  align-items: center;
+.MarsLandingContent_cardWrap__rht5u {
+  position: relative;
+  z-index: 4;
 }
 
-.MarsLandingContent_sectionIntro__v_Ipy {
-  max-width: 44rem;
-}
-
-.MarsLandingContent_sectionTitle___Av48,
 .MarsLandingContent_landingTitle__Mp6hq {
   margin: 0;
   color: #ffffff;
@@ -553,115 +547,6 @@
   text-wrap: balance;
 }
 
-.MarsLandingContent_statList__XZwiB {
-  display: grid;
-  gap: 0.65rem;
-}
-
-.MarsLandingContent_statList__XZwiB div,
-.MarsLandingContent_missionCard__X_cnD {
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 8px;
-  background: rgba(8, 11, 30, 0.7);
-  box-shadow: 0 18px 52px rgba(0, 0, 0, 0.22);
-  backdrop-filter: blur(16px);
-}
-
-.MarsLandingContent_statList__XZwiB div {
-  padding: 0.95rem 1.05rem;
-}
-
-.MarsLandingContent_statList__XZwiB strong {
-  display: block;
-  color: #ffffff;
-  font-size: clamp(2rem, 1.6rem + 1.6vw, 3.5rem);
-  font-weight: 800;
-  letter-spacing: 0;
-  line-height: 1;
-}
-
-.MarsLandingContent_statList__XZwiB span {
-  display: block;
-  margin-top: 0.35rem;
-  color: rgba(247, 248, 255, 0.66);
-  font-size: 0.94rem;
-  line-height: 1.4;
-}
-
-.MarsLandingContent_missionCards__uv4hJ {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.85rem;
-  margin-top: clamp(1.35rem, 3.4vw, 2.4rem);
-}
-
-.MarsLandingContent_missionCard__X_cnD {
-  min-height: 14.5rem;
-  padding: clamp(1rem, 2.1vw, 1.45rem);
-}
-
-.MarsLandingContent_missionCard__X_cnD span {
-  display: inline-flex;
-  min-height: 2rem;
-  align-items: center;
-  border-radius: 999px;
-  padding: 0.35rem 0.75rem;
-  background: rgba(70, 220, 231, 0.12);
-  color: #67dfeb;
-  font-size: 0.76rem;
-  font-weight: 800;
-  letter-spacing: 0.14em;
-  line-height: 1;
-  text-transform: uppercase;
-}
-
-.MarsLandingContent_missionCard__X_cnD h3 {
-  margin: 2.6rem 0 0;
-  color: #ffffff;
-  font-size: clamp(1.28rem, 1.18rem + 0.5vw, 1.7rem);
-  font-weight: 800;
-  letter-spacing: 0;
-  line-height: 1.1;
-}
-
-.MarsLandingContent_missionCard__X_cnD p {
-  margin: 0.85rem 0 0;
-  color: rgba(247, 248, 255, 0.68);
-  font-size: 0.98rem;
-  line-height: 1.62;
-}
-
-.MarsLandingContent_routePanel__Yar8v {
-  display: grid;
-  grid-template-columns: minmax(0, 0.88fr) minmax(19rem, 1fr);
-  gap: clamp(1.5rem, 4.5vw, 3.8rem);
-  align-items: start;
-}
-
-.MarsLandingContent_routeSteps__7O78r {
-  display: grid;
-  gap: 0;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.16);
-}
-
-.MarsLandingContent_routeSteps__7O78r li {
-  display: grid;
-  grid-template-columns: 2.4rem minmax(0, 1fr);
-  align-items: center;
-  min-height: 3.9rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
-  color: #ffffff;
-  font-size: clamp(1rem, 0.92rem + 0.38vw, 1.22rem);
-  font-weight: 700;
-  line-height: 1.35;
-}
-
-.MarsLandingContent_routeSteps__7O78r svg {
-  color: #f77828;
-}
 
 .MarsLandingContent_landingSection__9HcSh {
   align-items: flex-start;
@@ -735,19 +620,49 @@
   background:
     linear-gradient(
       180deg,
-      rgba(7, 9, 23, 0) 0%,
-      rgba(7, 9, 23, 0) 28%,
-      rgba(7, 9, 23, 0.04) 38%,
-      rgba(7, 9, 23, 0.1) 48%,
-      rgba(7, 9, 23, 0.2) 58%,
-      rgba(7, 9, 23, 0.34) 67%,
-      rgba(7, 9, 23, 0.5) 75%,
-      rgba(7, 9, 23, 0.68) 83%,
-      rgba(7, 9, 23, 0.84) 90%,
-      rgba(7, 9, 23, 0.96) 96%,
-      #070917 100%
+      rgba(23, 23, 48, 0) 0%,
+      rgba(23, 23, 48, 0) 32%,
+      rgba(23, 23, 48, 0.04) 44%,
+      rgba(23, 23, 48, 0.1) 54%,
+      rgba(23, 23, 48, 0.2) 62%,
+      rgba(23, 23, 48, 0.32) 68%,
+      rgba(23, 23, 48, 0.4) 74%
     );
   height: auto;
+}
+
+.MarsLandingContent_marsBottomWave__pYtOp {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  height: clamp(11rem, 28svh, 24rem);
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.2) 20%,
+    rgba(0, 0, 0, 0.55) 40%,
+    rgba(0, 0, 0, 0.9) 58%,
+    #000 65%,
+    #000 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.2) 20%,
+    rgba(0, 0, 0, 0.55) 40%,
+    rgba(0, 0, 0, 0.9) 58%,
+    #000 65%,
+    #000 100%
+  );
+}
+
+.MarsLandingContent_marsBottomWaveBase__ClDGA {
+  fill: #171730;
 }
 
 .MarsLandingContent_marsSurfaceImage__JIfoE img {
@@ -793,28 +708,11 @@
   .MarsLandingContent_heroTitle__yQYh8 {
     max-width: 9ch;
   }
-
-  .MarsLandingContent_contentGrid__kzacs,
-  .MarsLandingContent_routePanel__Yar8v {
-    grid-template-columns: 1fr;
-  }
-
-  .MarsLandingContent_missionCards__uv4hJ {
-    grid-template-columns: 1fr;
-  }
-
-  .MarsLandingContent_missionCard__X_cnD {
-    min-height: 11.5rem;
-  }
-
-  .MarsLandingContent_missionCard__X_cnD h3 {
-    margin-top: 1.7rem;
-  }
 }
 
 @media (max-width: 640px) {
   .MarsLandingContent_page__ctKvd {
-    min-height: 440svh;
+    min-height: auto;
   }
 
   .MarsLandingContent_section__kEsC7 {
