@@ -16,6 +16,7 @@ type AdaptiveVideoProps = {
   rootMargin?: string;
   threshold?: number;
   preferPosterOnLowPower?: boolean;
+  active?: boolean;
 };
 
 type NavigatorWithHints = Navigator & {
@@ -53,6 +54,7 @@ export default function AdaptiveVideo({
   rootMargin = "240px 0px",
   threshold = 0.2,
   preferPosterOnLowPower = false,
+  active = true,
 }: AdaptiveVideoProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -117,7 +119,7 @@ export default function AdaptiveVideo({
       video.muted = true;
       video.defaultMuted = true;
 
-      if (document.hidden || !isVisible) {
+      if (document.hidden || !isVisible || !active) {
         video.pause();
         return;
       }
@@ -171,7 +173,7 @@ export default function AdaptiveVideo({
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       video.pause();
     };
-  }, [isVisible, posterOnly, shouldLoadVideo]);
+  }, [active, isVisible, posterOnly, shouldLoadVideo]);
 
   return (
     <div ref={containerRef} className="absolute inset-0">

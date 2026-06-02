@@ -69,7 +69,7 @@ const COPY: Record<
       {
         title: "Architektura industrialna",
         body: "Stalowe mosty, antresole, futurystyczne wnętrza i szklane łączniki między kopułami.",
-        image: "/galeria/Sciezka_filmowa/webp/7.webp",
+        image: "/galeria/Sciezka_filmowa/webp/wejscie_korytarz_k9.webp",
         alt: "Industrialne wnętrze kopuły z metalowymi konstrukcjami",
       },
       {
@@ -185,7 +185,7 @@ const COPY: Record<
       {
         title: "Industrial architecture",
         body: "Steel bridges, mezzanines, futuristic interiors, and glass connectors between domes.",
-        image: "/galeria/Sciezka_filmowa/webp/7.webp",
+        image: "/galeria/Sciezka_filmowa/webp/wejscie_korytarz_k9.webp",
         alt: "Industrial-style interior with steel structures inside a dome",
       },
       {
@@ -301,7 +301,7 @@ const COPY: Record<
       {
         title: "Arquitetura industrial",
         body: "Com pontes metálicas, mezaninos, interiores futuristas e ligações envidraçadas entre cúpulas.",
-        image: "/galeria/Sciezka_filmowa/webp/7.webp",
+        image: "/galeria/Sciezka_filmowa/webp/wejscie_korytarz_k9.webp",
         alt: "Interior industrial da cúpula com estruturas metálicas",
       },
       {

@@ -1,9 +1,14 @@
 .page {
   --ap-bg: #070917;
-  --ap-accent: #46dce7;
-  --ap-accent-contrast: #071017;
-  --ap-accent-ring: rgba(70, 220, 231, 0.34);
-  --ap-accent-shadow: 0 0 26px rgba(70, 220, 231, 0.28);
+  --ap-accent: #f77828;
+  --ap-accent-contrast: #170a04;
+  --ap-accent-soft: rgba(247, 120, 40, 0.22);
+  --ap-accent-ring: rgba(247, 120, 40, 0.34);
+  --ap-accent-shadow: 0 0 26px rgba(247, 120, 40, 0.28);
+  --ap-border: rgba(247, 120, 40, 0.16);
+  --ap-border-strong: rgba(247, 120, 40, 0.32);
+  --ap-card-hover-ring: rgba(247, 120, 40, 0.42);
+  --ap-card-hover-outline: rgba(247, 120, 40, 0.32);
   --mars-progress: 0;
   position: relative;
   isolation: isolate;
@@ -18,7 +23,7 @@
   z-index: -2;
   background:
     linear-gradient(180deg, #060815 0%, #0b0d1d 34%, #141221 68%, #080710 100%),
-    linear-gradient(114deg, rgba(70, 220, 231, 0.12), transparent 28%, rgba(247, 72, 108, 0.1) 76%, transparent);
+    linear-gradient(114deg, rgba(247, 120, 40, 0.12), transparent 28%, rgba(247, 72, 108, 0.1) 76%, transparent);
 }
 
 .spaceBackdrop::before {
@@ -86,7 +91,7 @@
   inset: 4% 0 0 2%;
   background:
     radial-gradient(circle at var(--solar-center-x) var(--solar-center-y), rgba(255, 191, 89, 0.18), transparent 16%),
-    radial-gradient(ellipse at 54% 54%, rgba(70, 220, 231, 0.08), transparent 58%),
+    radial-gradient(ellipse at 54% 54%, rgba(247, 120, 40, 0.08), transparent 58%),
     linear-gradient(90deg, rgba(7, 9, 23, 0.64), transparent 40%, rgba(7, 9, 23, 0.28));
   filter: blur(2px);
 }
@@ -118,7 +123,7 @@
 .asteroidBelt {
   left: var(--solar-center-x);
   top: var(--solar-center-y);
-  border: 1px solid rgba(103, 223, 235, 0.15);
+  border: 1px solid rgba(247, 120, 40, 0.15);
   border-radius: 50%;
   transform: translate(-50%, -50%) rotate(-13deg) scaleY(0.58);
   transform-origin: center;
@@ -399,10 +404,20 @@
   display: flex;
   align-items: center;
   min-height: 76svh;
-  padding: clamp(3.2rem, 7vw, 5.4rem) clamp(1.25rem, 5vw, 5rem);
+  padding: clamp(2.2rem, 7vw, 5.4rem) clamp(0.75rem, 5vw, 5rem);
+}
+
+@media (max-width: 640px) {
+  .section {
+    min-height: auto;
+  }
 }
 
 .heroSection {
+  width: 100%;
+  max-width: 1280px;
+  margin-right: auto;
+  margin-left: auto;
   min-height: calc(88svh - 3.8rem);
 }
 
@@ -416,7 +431,7 @@
 
 .kicker {
   margin: 0 0 1rem;
-  color: #67dfeb;
+  color: #ff9357;
   font-size: clamp(0.72rem, 0.68rem + 0.16vw, 0.82rem);
   font-weight: 700;
   letter-spacing: 0.28em;
@@ -428,11 +443,22 @@
   margin: 0;
   max-width: 10ch;
   color: #ffffff;
-  font-size: clamp(3.5rem, 2.1rem + 6.6vw, 8.7rem);
+  font-size: clamp(2.6rem, 2.1rem + 6.6vw, 8.7rem);
   font-weight: 800;
   letter-spacing: 0;
-  line-height: 0.95;
+  line-height: 1.05;
   text-wrap: balance;
+}
+
+.heroTitleSmall {
+  display: block;
+  font-size: 0.5em;
+  line-height: 1.1;
+}
+
+.heroTitleLarge {
+  display: block;
+  line-height: 0.95;
 }
 
 .heroLead,
@@ -518,14 +544,15 @@
 
 .scrollCue:hover,
 .scrollCue:focus-visible {
-  border-color: rgba(70, 220, 231, 0.58);
-  background: rgba(70, 220, 231, 0.12);
+  border-color: rgba(247, 120, 40, 0.58);
+  background: rgba(247, 120, 40, 0.12);
   color: #ffffff;
 }
 
 .cardWrap,
 .landingContent {
-  width: min(1120px, 100%);
+  width: 100%;
+  max-width: 72rem;
   margin: 0 auto;
 }
 
@@ -540,7 +567,7 @@
   font-size: clamp(2rem, 1.42rem + 2.5vw, 4.8rem);
   font-weight: 800;
   letter-spacing: 0;
-  line-height: 1.04;
+  line-height: 1.15;
   text-wrap: balance;
 }
 
@@ -552,13 +579,28 @@
   padding-bottom: 24svh;
 }
 
+.marsTransition {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  height: min(60svh, 40rem);
+  pointer-events: none;
+  overflow: hidden;
+}
+
+@media (min-width: 640px) {
+  .marsTransition {
+    height: min(88svh, 56rem);
+  }
+}
+
 .landingContent {
   position: relative;
   z-index: 4;
 }
 
 .landingTitle {
-  max-width: 11ch;
+  max-width: 100%;
 }
 
 .marsSurface {
@@ -691,7 +733,7 @@
 
   .heroCopy {
     margin-left: 0;
-    padding-top: 7.5rem;
+    padding-top: 5.5rem;
   }
 
   .solarSystem {
@@ -699,11 +741,25 @@
     left: -3rem;
     width: 95vw;
     height: 34rem;
-    opacity: calc(0.72 - (var(--mars-progress) * 0.24));
+    opacity: calc(0.6 - (var(--mars-progress) * 0.22));
   }
 
   .heroTitle {
-    max-width: 9ch;
+    max-width: 100%;
+  }
+
+  .landingSection {
+    min-height: auto;
+    padding-top: 8svh;
+    padding-bottom: 14svh;
+  }
+
+  .landingTitle {
+    max-width: 100%;
+  }
+
+  .marsSurface {
+    height: min(36svh, 26rem);
   }
 }
 
@@ -713,25 +769,22 @@
   }
 
   .section {
-    padding-right: 1rem;
-    padding-left: 1rem;
+    padding-right: 1.1rem;
+    padding-left: 1.1rem;
   }
 
   .heroSection {
     align-items: flex-start;
+    min-height: calc(82svh - 3.8rem);
   }
 
   .heroCopy {
-    padding-top: 10rem;
+    padding-top: 4rem;
   }
 
-  .solarSystem {
-    top: 4.7rem;
-    left: -9.5rem;
-    width: 150vw;
-    height: 30rem;
-    min-height: 25rem;
-    opacity: calc(0.56 - (var(--mars-progress) * 0.18));
+  .heroLead {
+    font-size: 1rem;
+    line-height: 1.6;
   }
 
   .heroActions,
@@ -745,13 +798,29 @@
     width: 100%;
   }
 
-  .scrollCue {
-    right: 1rem;
-    bottom: 1rem;
+  .solarSystem {
+    top: 4rem;
+    left: -8rem;
+    width: 150vw;
+    height: 22rem;
+    min-height: 18rem;
+    opacity: calc(0.42 - (var(--mars-progress) * 0.18));
   }
 
-  .landingTitle {
-    max-width: 9ch;
+  .marsTraveler {
+    opacity: calc(var(--mars-opacity) * clamp(0, var(--mars-progress) * 5, 1));
+  }
+
+  .scrollCue {
+    right: 0.85rem;
+    bottom: 0.85rem;
+    width: 2.4rem;
+    height: 2.4rem;
+  }
+
+  .sectionBody {
+    font-size: 0.98rem;
+    line-height: 1.65;
   }
 }
 
@@ -765,4 +834,14 @@
   .marsBody {
     transition: none;
   }
+}
+
+.page :global(.k360-feature-card)::before,
+.page :global(.k360-feature-hero)::before {
+  background: radial-gradient(circle, rgba(247, 120, 40, 0.22) 0%, rgba(247, 120, 40, 0.08) 40%, rgba(247, 120, 40, 0) 74%);
+}
+
+.page :global(.k360-feature-card)::after,
+.page :global(.k360-feature-hero)::after {
+  border-color: rgba(247, 120, 40, 0.18);
 }

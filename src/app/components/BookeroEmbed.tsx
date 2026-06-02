@@ -16,6 +16,7 @@ type Props = {
   preselectCategory?: string;
   preselectService?: string;
   preselectQuantity?: number;
+  autoPickEarliestSlot?: boolean;
 };
 
 const PRESELECT_POLL_INTERVAL_MS = 250;
@@ -73,11 +74,21 @@ const LEGACY_BOOKING_TEXT_ALIASES: Array<[string, string]> = [
   [legacyBookingText("ci", "ne", "ma", " esferico 360°"), "k360"],
 ];
 
+// Bookero option labels carry a trailing price, e.g. "(od 79,00 zł)" or
+// "(49,00 zł)". Drop it so our category/service strings still match.
+function stripBookingPriceSuffix(value: string) {
+  return value
+    .replace(/\((?:od\s+)?[\d.,\s]+z[łl]\)/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 function normalizeComparableBookingText(value: string | null | undefined) {
-  return LEGACY_BOOKING_TEXT_ALIASES.reduce(
+  const aliased = LEGACY_BOOKING_TEXT_ALIASES.reduce(
     (normalizedValue, [legacyValue, replacement]) => normalizedValue.split(legacyValue).join(replacement),
     normalizeText(value),
   );
+  return stripBookingPriceSuffix(aliased);
 }
 
 function isVisibleSelect(select: HTMLSelectElement) {
@@ -515,6 +526,111 @@ function applyQuantityValue(root: ParentNode, targetValue: number) {
   return parseNumericValue(hiddenInput.value) === targetValue;
 }
 
+const CALENDAR_DAY_DISABLED_CLASSES = [
+  "is-disabled",
+  "is-past",
+  "is-unavailable",
+  "is-blocked",
+  "is-empty",
+  "is-inactive",
+  "is-off",
+  "no-availability",
+];
+
+const HOUR_DISABLED_CLASSES = [
+  "is-disabled",
+  "is-past",
+  "is-unavailable",
+  "is-blocked",
+  "is-empty",
+  "is-inactive",
+  "no-availability",
+];
+
+function isCalendarDayBookable(cell: HTMLElement) {
+  if (cell.hasAttribute("disabled") || cell.getAttribute("aria-disabled") === "true") {
+    return false;
+  }
+  if (CALENDAR_DAY_DISABLED_CLASSES.some((cls) => cell.classList.contains(cls))) {
+    return false;
+  }
+  if (!isVisibleElement(cell)) {
+    return false;
+  }
+  const text = (cell.textContent ?? "").trim();
+  if (!/\d/.test(text)) {
+    return false;
+  }
+  return true;
+}
+
+function isHourSlotBookable(cell: HTMLElement) {
+  if (cell.hasAttribute("disabled") || cell.getAttribute("aria-disabled") === "true") {
+    return false;
+  }
+  if (HOUR_DISABLED_CLASSES.some((cls) => cell.classList.contains(cls))) {
+    return false;
+  }
+  return isVisibleElement(cell);
+}
+
+function isCalendarDaySelected(cell: HTMLElement) {
+  return cell.classList.contains("is-selected") || cell.classList.contains("is-sub-selected");
+}
+
+function isHourSlotSelected(cell: HTMLElement) {
+  return cell.classList.contains("is-selected") || cell.classList.contains("is-sub-selected");
+}
+
+function pickEarliestCalendarDay(root: ParentNode): "selected" | "clicked" | "none" {
+  const dayCells = Array.from(root.querySelectorAll<HTMLElement>(".calendar-days-list-cell"));
+  if (dayCells.length === 0) {
+    return "none";
+  }
+
+  if (dayCells.some(isCalendarDaySelected)) {
+    return "selected";
+  }
+
+  const today = new Date();
+  const todayDay = today.getDate();
+  const candidates = dayCells.filter(isCalendarDayBookable);
+  if (candidates.length === 0) {
+    return "none";
+  }
+
+  const todayCandidate = candidates.find((cell) => {
+    const text = (cell.textContent ?? "").trim();
+    const dayNum = Number.parseInt(text, 10);
+    return Number.isFinite(dayNum) && dayNum === todayDay;
+  });
+
+  const target = todayCandidate ?? candidates[0];
+  target.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
+  target.click();
+  return "clicked";
+}
+
+function pickEarliestHourSlot(root: ParentNode): "selected" | "clicked" | "none" {
+  const hourCells = Array.from(root.querySelectorAll<HTMLElement>(".week-days-hour"));
+  if (hourCells.length === 0) {
+    return "none";
+  }
+
+  if (hourCells.some(isHourSlotSelected)) {
+    return "selected";
+  }
+
+  const target = hourCells.find(isHourSlotBookable);
+  if (!target) {
+    return "none";
+  }
+
+  target.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
+  target.click();
+  return "clicked";
+}
+
 function findElementsByText(root: ParentNode, selector: string, text: string) {
   const normalizedText = normalizeText(text);
   return Array.from(root.querySelectorAll<HTMLElement>(selector)).filter((element) =>
@@ -708,6 +824,7 @@ export default function BookeroEmbed({
   preselectCategory,
   preselectService,
   preselectQuantity,
+  autoPickEarliestSlot = false,
 }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [embedStatus, setEmbedStatus] = useState<"loading" | "slow" | "error" | "ready">("loading");
@@ -775,43 +892,65 @@ export default function BookeroEmbed({
       }
     });
 
-    // Ensure a single valid mount point before each Bookero init.
-    cleanupStaleInlineMounts();
-    if (containerRef.current) {
-      containerRef.current.innerHTML = "";
-    }
-
     observer.observe(document.body, {
       childList: true,
       subtree: true,
     });
 
-    void mountBookeroInstance(
-      {
-        id: pluginId,
-        container: containerId,
-        type,
-        position: position ?? "",
-        plugin_css: pluginCss,
-        lang,
-      },
-      pluginCss,
-      { persist: type === "sticky" },
-    )
-      .then(() => {
-        syncReadyState();
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setEmbedStatus("error");
+    // Mount (or re-mount) the Bookero instance into a fresh, single mount point.
+    // The Bookero compiled script can intermittently boot before the DOM is
+    // settled and abort its own init; re-dispatching the instance recovers it.
+    const attemptMount = () => {
+      if (cancelled) {
+        return;
+      }
+
+      cleanupStaleInlineMounts();
+      if (containerRef.current && !hasRenderedBookeroContent(containerRef.current, type)) {
+        containerRef.current.innerHTML = "";
+      }
+
+      void mountBookeroInstance(
+        {
+          id: pluginId,
+          container: containerId,
+          type,
+          position: position ?? "",
+          plugin_css: pluginCss,
+          lang,
+        },
+        pluginCss,
+        { persist: type === "sticky" },
+      )
+        .then(() => {
+          syncReadyState();
+        })
+        .catch(() => {
+          if (!cancelled) {
+            setEmbedStatus("error");
+          }
+        });
+    };
+
+    attemptMount();
+
+    // Safety retries: if the form has not rendered yet, dispatch the instance
+    // again. Each retry is a no-op once the form is on screen.
+    const retryDelays = [5000, 9500];
+    const retryTimeouts = retryDelays.map((delay) =>
+      window.setTimeout(() => {
+        if (!cancelled && !syncReadyState()) {
+          attemptMount();
         }
-      });
+      }, delay),
+    );
 
     return () => {
       cancelled = true;
       window.clearTimeout(loadingSlowTimeout);
       window.clearTimeout(loadingErrorTimeout);
       window.clearInterval(readinessInterval);
+      retryTimeouts.forEach((id) => window.clearTimeout(id));
       observer.disconnect();
       unmountBookeroInstance({ container: containerId, type });
       if (containerRef.current) {
@@ -844,6 +983,12 @@ export default function BookeroEmbed({
 
       root.querySelectorAll<HTMLElement>(
         "input, select, textarea, option, .multiselect, .multiselect *, .multiselect__single, .multiselect__single *, .multiselect__input, .multiselect__input *, .multiselect__option, .multiselect__option *, .multiselect__placeholder, .multiselect__placeholder *, .vti__input, .vti__input *, .vti__dropdown-item, .vti__dropdown-item *, .vti__dropdown-list, .vti__dropdown-list *"
+      ).forEach((el) => setColor(el, "#0f172a"));
+
+      // Calendar day tiles and time-slot pills have light backgrounds, so their
+      // text must be dark. Selected tiles (handled above) stay white.
+      root.querySelectorAll<HTMLElement>(
+        ".calendar-days-list-cell:not(.is-selected):not(.is-sub-selected), .calendar-days-list-cell:not(.is-selected):not(.is-sub-selected) *, .week-days-hour:not(.is-selected):not(.is-sub-selected), .week-days-hour:not(.is-selected):not(.is-sub-selected) *"
       ).forEach((el) => setColor(el, "#0f172a"));
 
       root.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(
@@ -1000,6 +1145,83 @@ export default function BookeroEmbed({
       observer.disconnect();
     };
   }, [preselectCategory, preselectQuantity, preselectService, type]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!autoPickEarliestSlot) return;
+    if (type === "sticky") return;
+
+    let dayClicked = false;
+    let hourClicked = false;
+    let attempts = 0;
+    let stableAttempts = 0;
+    const startedAt = Date.now();
+
+    const trySync = () => {
+      const root = getBookeroSearchRoot(containerRef.current, type);
+      if (!(root instanceof HTMLElement || root instanceof HTMLDivElement || root instanceof Document)) {
+        return false;
+      }
+
+      attempts += 1;
+
+      const dayResult = pickEarliestCalendarDay(root);
+      if (dayResult === "clicked") {
+        dayClicked = true;
+        stableAttempts = 0;
+        return false;
+      }
+      if (dayResult === "none" && !dayClicked) {
+        return false;
+      }
+
+      const hourResult = pickEarliestHourSlot(root);
+      if (hourResult === "clicked") {
+        hourClicked = true;
+        stableAttempts = 0;
+        return false;
+      }
+      if (hourResult === "none") {
+        return false;
+      }
+
+      if (hourResult === "selected") {
+        stableAttempts += 1;
+      }
+
+      return hourClicked && stableAttempts >= 4;
+    };
+
+    const intervalId = window.setInterval(() => {
+      const done = trySync();
+      if (
+        done ||
+        attempts >= PRESELECT_MAX_ATTEMPTS ||
+        Date.now() - startedAt >= PRESELECT_MAX_RUNTIME_MS
+      ) {
+        window.clearInterval(intervalId);
+        observer.disconnect();
+      }
+    }, PRESELECT_POLL_INTERVAL_MS);
+
+    const observer = new MutationObserver(() => {
+      trySync();
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    trySync();
+
+    return () => {
+      window.clearInterval(intervalId);
+      observer.disconnect();
+    };
+  }, [autoPickEarliestSlot, preselectCategory, preselectService, type]);
 
   const isLoading = embedStatus !== "ready";
   const statusCopy = getBookeroStatusCopy(lang, embedStatus === "ready" ? "loading" : embedStatus);

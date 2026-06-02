@@ -31,12 +31,6 @@ const COPY: Record<
       phoneLabel: string;
       hoursLabel: string;
       hotlineHours: string[];
-      venueHoursLabel: string;
-      cinemaLabel: string;
-      cinemaHours: string[];
-      pathLabel: string;
-      pathHours: string[];
-      languageNote: string;
       emailLabel: string;
     };
     booking: {
@@ -79,16 +73,6 @@ const COPY: Record<
       phoneLabel: "Telefon",
       hoursLabel: "Godziny infolinii",
       hotlineHours: ["Poniedziałek - piątek: 9:00 - 16:00"],
-      venueHoursLabel: "Godziny atrakcji",
-      cinemaLabel: "Projekcja K360",
-      cinemaHours: [
-        "Poniedziałek - czwartek: 11:00 - 17:00",
-        "Piątek: 11:00 - 18:00",
-        "Sobota - niedziela: 11:00 - 19:30",
-      ],
-      pathLabel: "Ścieżka filmowa",
-      pathHours: ["Poniedziałek - sobota: 8:00 - 17:00", "Niedziela: zamknięte"],
-      languageNote: "Oprowadzanie Ścieżki filmowej oraz projekcje K360 odbywają się w języku polskim.",
       emailLabel: "Email",
     },
     booking: {
@@ -130,16 +114,6 @@ const COPY: Record<
       phoneLabel: "Phone",
       hoursLabel: "Info line hours",
       hotlineHours: ["Monday - Friday: 9:00 - 16:00"],
-      venueHoursLabel: "Attraction hours",
-      cinemaLabel: "K360 projection",
-      cinemaHours: [
-        "Monday - Thursday: 11:00 - 17:00",
-        "Friday: 11:00 - 18:00",
-        "Saturday - Sunday: 11:00 - 19:30",
-      ],
-      pathLabel: "Film path",
-      pathHours: ["Monday - Saturday: 8:00 - 17:00", "Sunday: closed"],
-      languageNote: "The Film Path guided tour and K360 projection screenings are available in Polish.",
       emailLabel: "Email",
     },
     booking: {
@@ -181,16 +155,6 @@ const COPY: Record<
       phoneLabel: "Telefone",
       hoursLabel: "Horário da linha de informação",
       hotlineHours: ["Segunda - sexta: 9:00 - 16:00"],
-      venueHoursLabel: "Horário das atrações",
-      cinemaLabel: "Projeção K360",
-      cinemaHours: [
-        "Segunda - quinta: 11:00 - 17:00",
-        "Sexta: 11:00 - 18:00",
-        "Sábado - domingo: 11:00 - 19:30",
-      ],
-      pathLabel: "Percurso de filmagem",
-      pathHours: ["Segunda - sábado: 8:00 - 17:00", "Domingo: encerrado"],
-      languageNote: "A visita guiada do Percurso de filmagem e as sessões da projeção K360 decorrem em polaco.",
       emailLabel: "Email",
     },
     booking: {
@@ -384,44 +348,6 @@ export default function KontaktPage() {
                 </div>
               </Card>
             </div>
-            </div>
-          </ScrollMotionItem>
-        </section>
-
-        <section className="ap-shell">
-          <ScrollMotionItem strength="soft" delay={90} className="ap-deferred-section" float={false}>
-            <div className="space-y-6">
-              <div className="text-center">
-                <p className="text-sm uppercase tracking-[0.24em] text-[#4fcfde]">{copy.info.venueHoursLabel}</p>
-              </div>
-              <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                <Card variant="solid" motion="off" className="h-full flex flex-col gap-4">
-                  <div className="space-y-2">
-                    <h2 className="text-2xl font-semibold text-center">{copy.info.cinemaLabel}</h2>
-                    <div className="h-[1px] w-full bg-white/15" />
-                  </div>
-                  <ul className="space-y-2 text-sm leading-relaxed text-gray-200 text-center">
-                    {copy.info.cinemaHours.map((line) => (
-                      <li key={line}>{line}</li>
-                    ))}
-                  </ul>
-                </Card>
-
-                <Card variant="solid" motion="off" className="h-full flex flex-col gap-4">
-                  <div className="space-y-2">
-                    <h2 className="text-2xl font-semibold text-center">{copy.info.pathLabel}</h2>
-                    <div className="h-[1px] w-full bg-white/15" />
-                  </div>
-                  <ul className="space-y-2 text-sm leading-relaxed text-gray-200 text-center">
-                    {copy.info.pathHours.map((line) => (
-                      <li key={line}>{line}</li>
-                    ))}
-                  </ul>
-                </Card>
-              </div>
-              <Card variant="solid" motion="off" className="border border-[#4fcfde]/30 bg-[#4fcfde]/10">
-                <p className="text-center text-sm leading-relaxed text-gray-100">{copy.info.languageNote}</p>
-              </Card>
             </div>
           </ScrollMotionItem>
         </section>

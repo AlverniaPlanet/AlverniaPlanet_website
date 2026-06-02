@@ -13,7 +13,7 @@ const supportedAssetExtensions = [
   ".gif",
 ];
 
-const surfaceAssetExtensions = [".png", ".webp", ".jpg", ".jpeg", ".avif"];
+const surfaceAssetExtensions = [".webp", ".avif", ".jpg", ".jpeg", ".png"];
 
 function getMarsAssets() {
   try {
@@ -52,8 +52,10 @@ function getMarsAssets() {
           const bScore = Number(
             bName.includes("podloga") || bName.includes("floor"),
           );
+          const aExt = surfaceAssetExtensions.indexOf(path.extname(a).toLowerCase());
+          const bExt = surfaceAssetExtensions.indexOf(path.extname(b).toLowerCase());
 
-          return bScore - aScore || a.localeCompare(b, "pl");
+          return bScore - aScore || aExt - bExt || a.localeCompare(b, "pl");
         })[0] ?? null;
 
     return {
@@ -68,7 +70,7 @@ function getMarsAssets() {
 }
 
 export const metadata: Metadata = {
-  title: "Misja Mars - Alvernia Planet",
+  title: "Projekt: MARS - Alvernia Planet",
   description: "Niepubliczny podglad koncepcji strony Mars w Alvernia Planet.",
   robots: {
     index: false,

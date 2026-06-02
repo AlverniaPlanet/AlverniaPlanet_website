@@ -4,7 +4,12 @@ import Card from "@/app/components/Card";
 import BookeroEmbed from "@/app/components/BookeroEmbed";
 import ScrollMotionItem from "@/app/components/ScrollMotionItem";
 import { useI18n } from "@/app/i18n-provider";
-import { BOOKING_CATEGORY_PARAM, BOOKING_QUANTITY_PARAM, BOOKING_SERVICE_PARAM } from "@/lib/booking";
+import {
+  BOOKING_AUTOPICK_PARAM,
+  BOOKING_CATEGORY_PARAM,
+  BOOKING_QUANTITY_PARAM,
+  BOOKING_SERVICE_PARAM,
+} from "@/lib/booking";
 import { useSearchParams } from "next/navigation";
 import { FaClock, FaLanguage, FaRoute, FaRotateLeft } from "react-icons/fa6";
 
@@ -91,6 +96,7 @@ export default function BookingPage() {
   const preselectService = searchParams.get(BOOKING_SERVICE_PARAM) ?? "";
   const preselectQuantityValue = Number.parseInt(searchParams.get(BOOKING_QUANTITY_PARAM) ?? "", 10);
   const preselectQuantity = Number.isFinite(preselectQuantityValue) ? preselectQuantityValue : undefined;
+  const autoPickEarliestSlot = searchParams.get(BOOKING_AUTOPICK_PARAM) === "1";
 
   return (
     <main className="relative min-h-screen text-white px-4 py-12 sm:py-16 ap-page-intro-stagger">
@@ -105,6 +111,29 @@ export default function BookingPage() {
         </header>
 
         <ScrollMotionItem strength="soft" delay={40} className="ap-deferred-section" float={false}>
+          <Card
+            id="bookero-form"
+            variant="solid"
+            className="relative overflow-hidden !bg-white !ring-black/10"
+            motion="off"
+          >
+            <BookeroEmbed
+              pluginId={BOOKERO_PLUGIN_ID}
+              containerId="bookero"
+              type="calendar"
+              position=""
+              pluginCss
+              lang={bookeroLang}
+              preselectCategory={preselectCategory}
+              preselectService={preselectService}
+              preselectQuantity={preselectQuantity}
+              autoPickEarliestSlot={autoPickEarliestSlot}
+              className="w-full min-h-[980px] overflow-hidden rounded-2xl bg-white ring-1 ring-black/10"
+            />
+          </Card>
+        </ScrollMotionItem>
+
+        <ScrollMotionItem strength="soft" delay={90} className="ap-deferred-section" float={false}>
           <section
             aria-labelledby="booking-notes-title"
             className="relative overflow-hidden rounded-[2rem] border border-[#4fcfde]/28 bg-[radial-gradient(circle_at_12%_0%,rgba(79,207,222,0.18),transparent_30%),linear-gradient(135deg,rgba(31,35,62,0.96),rgba(18,20,42,0.98))] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.28)] ring-1 ring-white/8 sm:p-6 lg:p-7"
@@ -149,23 +178,6 @@ export default function BookingPage() {
               </aside>
             </div>
           </section>
-        </ScrollMotionItem>
-
-        <ScrollMotionItem strength="soft" delay={90} className="ap-deferred-section" float={false}>
-          <Card id="bookero-form" variant="solid" className="relative overflow-hidden" motion="off">
-            <BookeroEmbed
-              pluginId={BOOKERO_PLUGIN_ID}
-              containerId="bookero"
-              type="standard"
-              position=""
-              pluginCss
-              lang={bookeroLang}
-              preselectCategory={preselectCategory}
-              preselectService={preselectService}
-              preselectQuantity={preselectQuantity}
-              className="w-full min-h-[980px] overflow-hidden rounded-2xl bg-white ring-1 ring-black/10"
-            />
-          </Card>
         </ScrollMotionItem>
       </div>
     </main>

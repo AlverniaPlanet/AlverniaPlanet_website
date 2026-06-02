@@ -117,6 +117,136 @@ body.mars-route-active [data-ap-nav] .ap-nav-banner {
   background-color: #070917 !important;
 }
 
+body.mars-route-active .ticket-card-badge {
+  background: linear-gradient(135deg, #f77828, #ffb585) !important;
+  color: #2a0f04 !important;
+  box-shadow: 0 8px 22px rgba(247, 120, 40, 0.32) !important;
+}
+
+body.mars-route-active .ticket-card-divider {
+  background: linear-gradient(
+    90deg,
+    rgba(247, 120, 40, 0) 0%,
+    rgba(247, 120, 40, 0.55) 50%,
+    rgba(247, 120, 40, 0) 100%
+  ) !important;
+}
+
+body.mars-route-active #mars-tickets .h-\[1px\].bg-white\/15 {
+  background: linear-gradient(
+    90deg,
+    rgba(247, 120, 40, 0) 0%,
+    rgba(247, 120, 40, 0.55) 50%,
+    rgba(247, 120, 40, 0) 100%
+  ) !important;
+}
+
+body.k360-route-active,
+html:has(body.k360-route-active) {
+  background-color: #0a0612 !important;
+}
+
+body.k360-route-active::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(ellipse 70% 50% at 20% 14%, rgba(247, 72, 108, 0.12), transparent 60%),
+    radial-gradient(ellipse 55% 45% at 84% 70%, rgba(192, 60, 120, 0.09), transparent 62%),
+    radial-gradient(ellipse 45% 38% at 50% 96%, rgba(151, 40, 72, 0.07), transparent 60%),
+    radial-gradient(circle 38% at 50% -10%, rgba(247, 72, 108, 0.07), transparent 55%),
+    radial-gradient(circle 28% at 8% 60%, rgba(120, 56, 130, 0.05), transparent 65%);
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+body.k360-route-active::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.55;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='320' viewBox='0 0 320 320'><g fill='%23ffffff'><circle cx='27' cy='42' r='0.7' opacity='0.5'/><circle cx='178' cy='91' r='0.5' opacity='0.35'/><circle cx='243' cy='171' r='0.8' opacity='0.55'/><circle cx='65' cy='198' r='0.5' opacity='0.3'/><circle cx='128' cy='254' r='0.6' opacity='0.4'/><circle cx='201' cy='28' r='0.55' opacity='0.4'/><circle cx='14' cy='128' r='0.5' opacity='0.3'/><circle cx='95' cy='75' r='0.4' opacity='0.25'/><circle cx='270' cy='225' r='0.7' opacity='0.45'/><circle cx='285' cy='55' r='0.45' opacity='0.3'/><circle cx='52' cy='285' r='0.5' opacity='0.32'/><circle cx='162' cy='168' r='0.4' opacity='0.22'/><circle cx='118' cy='14' r='0.45' opacity='0.28'/><circle cx='225' cy='305' r='0.55' opacity='0.36'/><circle cx='305' cy='148' r='0.5' opacity='0.3'/></g><g fill='%23ffd6e0'><circle cx='150' cy='115' r='0.45' opacity='0.32'/><circle cx='40' cy='240' r='0.4' opacity='0.28'/><circle cx='258' cy='12' r='0.45' opacity='0.3'/></g></svg>");
+  background-repeat: repeat;
+  background-size: 320px 320px;
+  transform: translateZ(0);
+  will-change: transform;
+  mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.7) 55%, rgba(0, 0, 0, 0.25) 100%);
+  -webkit-mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.7) 55%, rgba(0, 0, 0, 0.25) 100%);
+}
+
+html:has(body.k360-route-active) {
+  scrollbar-gutter: stable !important;
+}
+
+body.k360-route-active [data-ap-nav] .ap-nav-banner {
+  background-color: #0a0612 !important;
+}
+
+body.k360-route-active .ticket-card-badge {
+  background: linear-gradient(135deg, #f7486c, #ff96aa) !important;
+  color: #2a0410 !important;
+  box-shadow: 0 8px 22px rgba(247, 72, 108, 0.32) !important;
+}
+
+body.k360-route-active .ticket-card-divider {
+  background: linear-gradient(
+    90deg,
+    rgba(247, 72, 108, 0) 0%,
+    rgba(247, 72, 108, 0.55) 50%,
+    rgba(247, 72, 108, 0) 100%
+  ) !important;
+}
+
+body.k360-route-active #k360-tickets .h-\[1px\].bg-white\/15 {
+  background: linear-gradient(
+    90deg,
+    rgba(247, 72, 108, 0) 0%,
+    rgba(247, 72, 108, 0.55) 50%,
+    rgba(247, 72, 108, 0) 100%
+  ) !important;
+}
+
+body.film-path-route-active,
+html:has(body.film-path-route-active) {
+  background-color: #06121a !important;
+}
+
+body.film-path-route-active::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(ellipse at 18% 12%, rgba(79, 207, 222, 0.10), transparent 42%),
+    radial-gradient(ellipse at 85% 72%, rgba(79, 207, 222, 0.06), transparent 48%),
+    radial-gradient(ellipse at 45% 95%, rgba(40, 120, 138, 0.07), transparent 52%);
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+html:has(body.film-path-route-active) {
+  scrollbar-gutter: stable !important;
+}
+
+body.film-path-route-active [data-ap-nav] .ap-nav-banner {
+  background-color: #06121a !important;
+}
+
+body.film-path-route-active .ticket-pill {
+  background: linear-gradient(135deg, #4fcfde, #7ef6ff) !important;
+  color: #062a33 !important;
+  border-color: rgba(255, 255, 255, 0.28) !important;
+  box-shadow:
+    0 8px 18px rgba(79, 207, 222, 0.32),
+    0 0 18px rgba(79, 207, 222, 0.22) !important;
+  --tw-ring-color: rgba(79, 207, 222, 0.55) !important;
+}
+
 ::selection {
   background: rgba(79, 207, 222, 0.28);
   color: var(--ap-text-strong);
@@ -552,6 +682,16 @@ p {
   margin-inline: auto;
 }
 
+.k360-page .ap-page-stack {
+  gap: 2.5rem;
+}
+
+@media (min-width: 640px) {
+  .k360-page .ap-page-stack {
+    gap: 3rem;
+  }
+}
+
 @media (min-width: 640px) {
   .ap-page-stack {
     gap: 5rem;
@@ -612,7 +752,7 @@ p {
 
 @supports (scrollbar-gutter: stable) {
   :root {
-    scrollbar-gutter: stable both-edges;
+    scrollbar-gutter: stable;
   }
 }
 
@@ -765,8 +905,18 @@ p {
 .theme-light .text-white\/75 {
   color: var(--ap-text) !important;
 }
+.theme-light .text-white\/78,
+.theme-light .text-white\/76,
+.theme-light .text-white\/72,
+.theme-light .text-white\/68,
+.theme-light .text-white\/65 {
+  color: var(--ap-text-dim) !important;
+}
 .theme-light .text-white\/70,
 .theme-light .text-white\/60,
+.theme-light .text-white\/55,
+.theme-light .text-white\/50,
+.theme-light .text-white\/45,
 .theme-light .text-gray-200,
 .theme-light .text-gray-300 {
   color: var(--ap-text-muted) !important;
@@ -908,6 +1058,82 @@ p {
 }
 
 #bookero :where(
+    .bookero-plugin-form-heading.is-inactive,
+    .services-section .field.is-inactive,
+    .params-section:not(.is-active),
+    .add-to-cart-section:not(.is-active),
+    .submit-section:not(.is-active)
+  ) {
+  opacity: 0.72 !important;
+}
+
+/* Booking page widget (calendar/standard) renders into #bookero-plugin, which
+   can sit outside #bookero. Force it to always be a light panel — readable in
+   BOTH the dark and light site theme, matching the (correct) light look. */
+#bookero-plugin:not([data-mode="sticky"]) {
+  background-color: #ffffff !important;
+  border-radius: 1rem;
+  color: #0f172a !important;
+}
+
+#bookero-plugin:not([data-mode="sticky"]) :where(
+    h1, h2, h3, h4, h5, h6, p, span, label, small, legend, li, dt, dd, a, strong, em, b, div,
+    .bookero-plugin-form-heading,
+    .calendar-nav-month,
+    .calendar-days-heading-cell,
+    .calendar-days-list-cell,
+    .week-days-heading-day,
+    .week-days-heading-date,
+    .week-days-hour,
+    .week-days-hour-info,
+    .switcher-label,
+    input, select, textarea, option,
+    .multiselect, .multiselect *,
+    .multiselect__single, .multiselect__single *,
+    .multiselect__input, .multiselect__input *,
+    .multiselect__option, .multiselect__option *,
+    .multiselect__placeholder, .multiselect__placeholder *
+  ) {
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+  opacity: 1 !important;
+}
+
+#bookero-plugin:not([data-mode="sticky"]) :where(
+    input, select, textarea, .multiselect__single, .multiselect__input
+  ) {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+}
+
+#bookero-plugin:not([data-mode="sticky"]) :where(
+    input::placeholder, textarea::placeholder, .multiselect__placeholder
+  ) {
+  color: rgba(15, 23, 42, 0.55) !important;
+  -webkit-text-fill-color: rgba(15, 23, 42, 0.55) !important;
+}
+
+/* Selected day / hour and primary controls keep white text on their blue fill. */
+#bookero-plugin:not([data-mode="sticky"]) :where(
+    .bookero-plugin-header,
+    .bookero-plugin-header *,
+    .add-to-cart-section .add-button,
+    .add-to-cart-section .add-button *,
+    .bookero-plugin-error-btn,
+    .calendar-days-list-cell.is-selected,
+    .calendar-days-list-cell.is-selected *,
+    .calendar-days-list-cell.is-sub-selected,
+    .calendar-days-list-cell.is-sub-selected *,
+    .week-days-hour.is-selected,
+    .week-days-hour.is-selected *,
+    .week-days-hour.is-sub-selected,
+    .week-days-hour.is-sub-selected *
+  ) {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+#bookero-plugin:not([data-mode="sticky"]) :where(
     .bookero-plugin-form-heading.is-inactive,
     .services-section .field.is-inactive,
     .params-section:not(.is-active),
@@ -2620,7 +2846,7 @@ p {
   height: 14rem;
   border-radius: 9999px;
   pointer-events: none;
-  background: radial-gradient(circle, rgba(126, 246, 255, 0.22) 0%, rgba(126, 246, 255, 0.08) 40%, rgba(126, 246, 255, 0) 74%);
+  background: radial-gradient(circle, rgba(247, 72, 108, 0.22) 0%, rgba(247, 72, 108, 0.08) 40%, rgba(247, 72, 108, 0) 74%);
   opacity: 0.7;
   transform: scale(1);
   transition:
@@ -2635,7 +2861,7 @@ p {
   inset: 0;
   border-radius: inherit;
   pointer-events: none;
-  border: 1px solid rgba(126, 246, 255, 0.12);
+  border: 1px solid rgba(247, 72, 108, 0.18);
   opacity: 0.42;
   transition:
     opacity 280ms ease,
@@ -2691,7 +2917,7 @@ p {
 
 .theme-light .k360-feature-card::before,
 .theme-light .k360-feature-hero::before {
-  background: radial-gradient(circle, rgba(79, 207, 222, 0.18) 0%, rgba(79, 207, 222, 0.08) 40%, rgba(79, 207, 222, 0) 74%);
+  background: radial-gradient(circle, rgba(247, 72, 108, 0.18) 0%, rgba(247, 72, 108, 0.08) 40%, rgba(247, 72, 108, 0) 74%);
 }
 
 .theme-light .k360-feature-card:hover,

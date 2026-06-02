@@ -2,7 +2,6 @@
 
 import { useEffect, useId, useRef, useState, type CSSProperties } from "react";
 import AdaptiveVideo from "@/app/components/AdaptiveVideo";
-import Card from "@/app/components/Card";
 import TourLineAccentTitle from "@/app/components/TourLineAccentTitle";
 import TourLineGalleryRow from "@/app/components/TourLineGalleryRow";
 import { PrimaryButton } from "@/app/components/PrimaryButton";
@@ -10,10 +9,10 @@ import ScrollMotionItem from "@/app/components/ScrollMotionItem";
 import { useI18n } from "@/app/i18n-provider";
 import {
   buildBookingPath,
-  COMBINED_PROMO_BOOKING_CATEGORY,
   K360_BOOKING_CATEGORY,
   K360_BOOKING_SERVICES,
 } from "@/lib/booking";
+import { PROMO_PACKAGES } from "@/lib/promoPackages";
 
 type Locale = "pl" | "en" | "pt";
 
@@ -40,7 +39,9 @@ type TicketOption = {
   subtitle: string;
   details: string[];
   price: string;
+  priceLabel?: string;
   bookingServiceName: string;
+  bookingQuantity?: number;
   eligibilityInfo?: TicketEligibilityInfo;
 };
 type PromoTicketOption = {
@@ -52,6 +53,10 @@ type PromoTicketOption = {
   price: string;
   savings: string;
   savingsPercent: string;
+  reducedPriceLabel: string;
+  reducedPrice: string;
+  reducedSavings: string;
+  reducedSavingsPercent: string;
   button: string;
 };
 
@@ -196,11 +201,13 @@ const COPY: Record<
     videoFallback: string;
     featuresTitle: string;
     featuresIntro: string;
+    featuresIntroHighlight: string;
     featureStats: FeatureStat[];
     features: Feature[];
     galleryTitle: string;
     galleryItems: GalleryItem[];
     promoTicket: PromoTicketOption;
+    legacyCombinedPromoTicket?: PromoTicketOption;
     ticketsTitle: string;
     ticketsIntro: string;
     ticketsPriceLabel: string;
@@ -216,9 +223,11 @@ const COPY: Record<
     heroTag: "Atrakcje",
     heroTitle: "Projekcja K360",
     videoFallback: "Twój browser nie wspiera elementu video.",
-    featuresTitle: "Pierwsza projekcja: One Step Beyond",
+    featuresTitle: "PRZEŻYJ projekcję",
     featuresIntro:
-      "Premierowa projekcja otwiera projekcję K360 formatem, który działa skalą, przestrzenią i pełnym zanurzeniem, zamiast klasycznej projekcji salowej. Seans odbywa się w języku polskim i trwa około 30 minut.",
+      "Projekcja K360 działa skalą, przestrzenią i pełnym zanurzeniem zamiast klasycznej projekcji salowej.",
+    featuresIntroHighlight:
+      "Aktualnym seansem jest „One Step Beyond: A Journey to Mars” — trwa około 30 minut i odbywa się w języku polskim.",
     featureStats: [
       { value: "15 m", label: "wysokość kopuły" },
       { value: "30 min", label: "czas trwania seansu" },
@@ -251,11 +260,6 @@ const COPY: Record<
         body: "Surowa estetyka Marsa, klaustrofobiczna podróż i ścieżka dźwiękowa składają się na mocne, pełne zanurzenie.",
       },
       {
-        badge: "Premiera",
-        title: "Projekcja otwarcia",
-        body: "„One Step Beyond: A Journey to Mars” otwiera repertuar projekcji K360.",
-      },
-      {
         badge: "Doświadczenie",
         title: "Największa przestrzeń fulldome w Europie",
         body: "Projekcja K360 to największy obiekt tego typu w Europie i skaluje projekcję do poziomu, którego nie da się osiągnąć tradycyjnie.",
@@ -264,24 +268,34 @@ const COPY: Record<
     galleryTitle: "Zobacz przestrzeń",
     galleryItems: [
       {
-        title: "Kompleks kopuł nocą",
-        body: "Widok z lotu ptaka na wszystkie kopuły Alvernia Planet.",
-        image: "/galeria/Ogolne/webp/4.webp",
+        title: "Kadr z projekcji",
+        body: "Światło i dźwięk otaczają widza ze wszystkich stron.",
+        image: "/galeria/K360/1.webp",
       },
       {
-        title: "Wejście do kopuły",
-        body: "Główne lobby z charakterystycznym łukowym portalem.",
-        image: "/galeria/Ogolne/webp/5.webp",
+        title: "Kadr z projekcji",
+        body: "Fulldome na całej kopule — największa przestrzeń tego typu w Europie.",
+        image: "/galeria/K360/2.webp",
       },
       {
-        title: "Tunel wejściowy",
-        body: "Przeszklony korytarz prowadzący do wnętrza kompleksu.",
-        image: "/galeria/Ogolne/webp/6.webp",
+        title: "Kadr z projekcji",
+        body: "Obraz 360° wypełnia całe pole widzenia widowni.",
+        image: "/galeria/K360/3.webp",
       },
       {
-        title: "Otoczenie kompleksu",
-        body: "Po projekcji goście mogą eksplorować pozostałe strefy Alvernia Planet.",
-        image: "/galeria/Ogolne/webp/1.webp",
+        title: "Kadr z projekcji",
+        body: "Surowa estetyka Marsa — projekcja działa skalą i kolorem.",
+        image: "/galeria/K360/4.webp",
+      },
+      {
+        title: "Wnętrze kopuły",
+        body: "Pełna skala konstrukcji widziana od wewnątrz.",
+        image: "/galeria/K360/K360_1.webp",
+      },
+      {
+        title: "Pod kopułą",
+        body: "Architektura przestrzeni przygotowanej pod immersję 360°.",
+        image: "/galeria/K360/K360_2.webp",
       },
     ],
     promoTicket: {
@@ -290,10 +304,30 @@ const COPY: Record<
       subtitle:
         "Jeden duży pakiet promocyjny, który łączy zwiedzanie Ścieżki filmowej z projekcją K360.",
       details: ["Około 3 godzin łącznie ze zwiedzaniem i seansem"],
-      priceLabel: "Cena promocyjna",
+      priceLabel: "Cena normalna",
       price: "119,00 zł",
       savings: "Oszczędzasz 9,00 zł",
       savingsPercent: "7%",
+      reducedPriceLabel: "Cena ulgowa",
+      reducedPrice: "99,00 zł",
+      reducedSavings: "Oszczędzasz 9,00 zł",
+      reducedSavingsPercent: "8%",
+      button: "Wybierz pakiet",
+    },
+    legacyCombinedPromoTicket: {
+      badge: "Pakiet",
+      title: "K360 + Projekt: MARS",
+      subtitle:
+        "Pakiet promocyjny łączący projekcję K360 z Projektem MARS — dwie atrakcje w jednej cenie.",
+      details: ["Dwie atrakcje w jednym dniu"],
+      priceLabel: "Cena normalna",
+      price: "89,00 zł",
+      savings: "Oszczędzasz 29,00 zł",
+      savingsPercent: "25%",
+      reducedPriceLabel: "Cena ulgowa",
+      reducedPrice: "79,00 zł",
+      reducedSavings: "Oszczędzasz 19,00 zł",
+      reducedSavingsPercent: "19%",
       button: "Wybierz pakiet",
     },
     ticketsTitle: "Bilety na projekcję K360",
@@ -341,6 +375,16 @@ const COPY: Record<
           ],
         },
       },
+      {
+        badge: "Grupowy",
+        title: "Bilet grupowy/szkolny",
+        subtitle: "30-50 osób w grupie",
+        details: ["Dla szkół i grup zorganizowanych", "39 zł za każdą osobę"],
+        price: "1 170 - 1 950 zł",
+        priceLabel: "Cena grupowa",
+        bookingServiceName: K360_BOOKING_SERVICES.group,
+        bookingQuantity: 30,
+      },
     ],
   },
   en: {
@@ -351,9 +395,11 @@ const COPY: Record<
     heroTag: "Attractions",
     heroTitle: "K360 projection",
     videoFallback: "Your browser does not support the video element.",
-    featuresTitle: "First projection: One Step Beyond",
+    featuresTitle: "EXPERIENCE the projection",
     featuresIntro:
-      "The opening projection introduces K360 through scale, immersion, and a full-dome image instead of a standard auditorium setup. The screening is available in Polish and lasts about 30 minutes.",
+      "K360 works through scale, space, and full immersion instead of a standard auditorium setup.",
+    featuresIntroHighlight:
+      "The current screening is “One Step Beyond: A Journey to Mars” — about 30 minutes, in Polish.",
     featureStats: [
       { value: "15 m", label: "dome height" },
       { value: "30 min", label: "screening duration" },
@@ -386,11 +432,6 @@ const COPY: Record<
         body: "The raw visuals of Mars, the confined journey, and the soundtrack combine into a strong immersive experience.",
       },
       {
-        badge: "Opening",
-        title: "Opening projection",
-        body: "“One Step Beyond: A Journey to Mars” opens the K360 projection lineup.",
-      },
-      {
         badge: "Experience",
         title: "The largest fulldome space in Europe",
         body: "The K360 projection is the largest fulldome space in Europe, giving the projection a scale impossible to match in a standard auditorium.",
@@ -399,24 +440,34 @@ const COPY: Record<
     galleryTitle: "See the venue",
     galleryItems: [
       {
-        title: "Domes complex at night",
-        body: "Aerial view of all Alvernia Planet domes after dark.",
-        image: "/galeria/Ogolne/webp/4.webp",
+        title: "Frame from the projection",
+        body: "Light and sound wrap around the audience from every side.",
+        image: "/galeria/K360/1.webp",
       },
       {
-        title: "Dome entrance",
-        body: "Main lobby with the signature arched portal.",
-        image: "/galeria/Ogolne/webp/5.webp",
+        title: "Frame from the projection",
+        body: "Fulldome across the entire ceiling — Europe's largest space of its kind.",
+        image: "/galeria/K360/2.webp",
       },
       {
-        title: "Entrance tunnel",
-        body: "A glass corridor leading into the complex interior.",
-        image: "/galeria/Ogolne/webp/6.webp",
+        title: "Frame from the projection",
+        body: "A 360° image filling the audience's entire field of view.",
+        image: "/galeria/K360/3.webp",
       },
       {
-        title: "Around the complex",
-        body: "After the projection, guests can explore other Alvernia Planet zones.",
-        image: "/galeria/Ogolne/webp/1.webp",
+        title: "Frame from the projection",
+        body: "The raw aesthetic of Mars — the projection works through scale and color.",
+        image: "/galeria/K360/4.webp",
+      },
+      {
+        title: "Inside the dome",
+        body: "The full scale of the structure seen from within.",
+        image: "/galeria/K360/K360_1.webp",
+      },
+      {
+        title: "Under the dome",
+        body: "Architecture built for full 360° immersion.",
+        image: "/galeria/K360/K360_2.webp",
       },
     ],
     promoTicket: {
@@ -425,10 +476,30 @@ const COPY: Record<
       subtitle:
         "One large promotional package that combines the Film Path visit with a K360 projection.",
       details: ["About 3 hours in total with the visit and screening"],
-      priceLabel: "Promo price",
+      priceLabel: "Standard price",
       price: "119.00 PLN",
       savings: "You save 9.00 PLN",
       savingsPercent: "7%",
+      reducedPriceLabel: "Reduced price",
+      reducedPrice: "99.00 PLN",
+      reducedSavings: "You save 9.00 PLN",
+      reducedSavingsPercent: "8%",
+      button: "Choose package",
+    },
+    legacyCombinedPromoTicket: {
+      badge: "Package",
+      title: "K360 + Mars Project",
+      subtitle:
+        "Promotional package combining the K360 projection with the Mars Project — two attractions at one price.",
+      details: ["Two attractions in a single day"],
+      priceLabel: "Standard price",
+      price: "89.00 PLN",
+      savings: "You save 29.00 PLN",
+      savingsPercent: "25%",
+      reducedPriceLabel: "Reduced price",
+      reducedPrice: "79.00 PLN",
+      reducedSavings: "You save 19.00 PLN",
+      reducedSavingsPercent: "19%",
       button: "Choose package",
     },
     ticketsTitle: "Tickets for K360 projection",
@@ -476,6 +547,16 @@ const COPY: Record<
           ],
         },
       },
+      {
+        badge: "Group",
+        title: "Group / school ticket",
+        subtitle: "30-50 people in a group",
+        details: ["For schools and organized groups", "39 PLN per person"],
+        price: "1,170 - 1,950 PLN",
+        priceLabel: "Group price",
+        bookingServiceName: K360_BOOKING_SERVICES.group,
+        bookingQuantity: 30,
+      },
     ],
   },
   pt: {
@@ -486,9 +567,11 @@ const COPY: Record<
     heroTag: "Atrações",
     heroTitle: "Projeção K360",
     videoFallback: "O seu navegador não suporta o elemento de vídeo.",
-    featuresTitle: "Primeira projeção: One Step Beyond",
+    featuresTitle: "VIVE a projeção",
     featuresIntro:
-      "A projeção de estreia apresenta o K360 com um formato feito para impressionar pela escala, pela imersão e pela imagem fulldome em toda a cúpula. A sessão decorre em polaco e dura cerca de 30 minutos.",
+      "O K360 funciona pela escala, espaço e imersão total em vez de uma sala de cinema clássica.",
+    featuresIntroHighlight:
+      "A sessão atual é “One Step Beyond: A Journey to Mars” — cerca de 30 minutos, em polaco.",
     featureStats: [
       { value: "15 m", label: "altura da cúpula" },
       { value: "30 min", label: "duração da sessão" },
@@ -521,11 +604,6 @@ const COPY: Record<
         body: "A estética crua de Marte, a viagem confinada e a banda sonora criam uma experiência de forte imersão.",
       },
       {
-        badge: "Estreia",
-        title: "Projeção de abertura",
-        body: "“One Step Beyond: A Journey to Mars” abre a programação de projeções do K360.",
-      },
-      {
         badge: "Experiência",
         title: "O maior espaço fulldome da Europa",
         body: "A projeção K360 é o maior espaço fulldome da Europa, dando à experiência uma escala impossível de reproduzir de forma tradicional.",
@@ -534,24 +612,34 @@ const COPY: Record<
     galleryTitle: "Ver o espaço",
     galleryItems: [
       {
-        title: "Complexo de cúpulas à noite",
-        body: "Vista aérea de todas as cúpulas da Alvernia Planet.",
-        image: "/galeria/Ogolne/webp/4.webp",
+        title: "Imagem da projeção",
+        body: "Luz e som envolvem o público por todos os lados.",
+        image: "/galeria/K360/1.webp",
       },
       {
-        title: "Entrada da cúpula",
-        body: "Lobby principal com o portal arqueado característico.",
-        image: "/galeria/Ogolne/webp/5.webp",
+        title: "Imagem da projeção",
+        body: "Fulldome em toda a cúpula — o maior espaço deste tipo na Europa.",
+        image: "/galeria/K360/2.webp",
       },
       {
-        title: "Túnel de entrada",
-        body: "Corredor envidraçado que conduz ao interior do complexo.",
-        image: "/galeria/Ogolne/webp/6.webp",
+        title: "Imagem da projeção",
+        body: "Imagem 360° preenche todo o campo de visão da plateia.",
+        image: "/galeria/K360/3.webp",
       },
       {
-        title: "Em torno do complexo",
-        body: "Depois da projeção, os visitantes podem explorar outras zonas da Alvernia Planet.",
-        image: "/galeria/Ogolne/webp/1.webp",
+        title: "Imagem da projeção",
+        body: "A estética crua de Marte — a projeção funciona pela escala e pela cor.",
+        image: "/galeria/K360/4.webp",
+      },
+      {
+        title: "Interior da cúpula",
+        body: "A escala total da estrutura vista por dentro.",
+        image: "/galeria/K360/K360_1.webp",
+      },
+      {
+        title: "Sob a cúpula",
+        body: "Arquitetura concebida para imersão total a 360°.",
+        image: "/galeria/K360/K360_2.webp",
       },
     ],
     promoTicket: {
@@ -560,10 +648,30 @@ const COPY: Record<
       subtitle:
         "Um grande pacote promocional que junta a visita aos bastidores com a projeção no K360.",
       details: ["Cerca de 3 horas no total com visita e sessão"],
-      priceLabel: "Preço promocional",
+      priceLabel: "Preço normal",
       price: "119,00 PLN",
       savings: "Poupa 9,00 PLN",
       savingsPercent: "7%",
+      reducedPriceLabel: "Preço reduzido",
+      reducedPrice: "99,00 PLN",
+      reducedSavings: "Poupa 9,00 PLN",
+      reducedSavingsPercent: "8%",
+      button: "Escolher pacote",
+    },
+    legacyCombinedPromoTicket: {
+      badge: "Pacote",
+      title: "K360 + Projeto MARS",
+      subtitle:
+        "Pacote promocional que combina a projeção K360 com o Projeto Mars — duas atrações num só preço.",
+      details: ["Duas atrações no mesmo dia"],
+      priceLabel: "Preço normal",
+      price: "89,00 PLN",
+      savings: "Poupa 29,00 PLN",
+      savingsPercent: "25%",
+      reducedPriceLabel: "Preço reduzido",
+      reducedPrice: "79,00 PLN",
+      reducedSavings: "Poupa 19,00 PLN",
+      reducedSavingsPercent: "19%",
       button: "Escolher pacote",
     },
     ticketsTitle: "Bilhetes para a projeção K360",
@@ -611,6 +719,16 @@ const COPY: Record<
           ],
         },
       },
+      {
+        badge: "Grupo",
+        title: "Bilhete grupo/escola",
+        subtitle: "30-50 pessoas no grupo",
+        details: ["Para escolas e grupos organizados", "39 PLN por pessoa"],
+        price: "1 170 - 1 950 PLN",
+        priceLabel: "Preço de grupo",
+        bookingServiceName: K360_BOOKING_SERVICES.group,
+        bookingQuantity: 30,
+      },
     ],
   },
 };
@@ -621,13 +739,22 @@ export default function K360Content() {
   const copy = COPY[loc];
   const [openEligibilityTicket, setOpenEligibilityTicket] = useState<string | null>(null);
   const activeHero = copy.heroMoment;
-  const regularFeatures = copy.features.slice(0, -1);
+  const regularFeatures = copy.features;
+  const promoPackages = PROMO_PACKAGES[loc];
+
+  useEffect(() => {
+    document.body.classList.add("k360-route-active");
+
+    return () => {
+      document.body.classList.remove("k360-route-active");
+    };
+  }, []);
 
   return (
-    <main className="k360-page relative z-10 min-h-screen">
-      <section className="relative z-10 px-4 pt-12 sm:pt-16">
-        <div className="ap-shell mb-10 sm:mb-12">
-          <div className="k360-hero-shell relative overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
+    <main className="k360-page relative z-10 min-h-screen overflow-hidden">
+      <section className="relative z-10 px-3 pt-6 sm:px-6 sm:pt-12 lg:px-12 lg:pt-14">
+        <div className="ap-shell mb-6 sm:mb-10 lg:mb-12">
+          <div className="k360-hero-shell relative overflow-hidden rounded-2xl sm:rounded-3xl ring-1 ring-white/10 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
             <div className="k360-hero-stage relative aspect-[4/5] sm:aspect-[16/9] bg-[#071020]">
               <AdaptiveVideo
                 mp4Src="/k360/one_step_beyond.mp4"
@@ -642,19 +769,19 @@ export default function K360Content() {
               />
               <div className="k360-hero-overlay absolute inset-0 bg-gradient-to-b from-[#071524]/85 via-[#0b2340]/60 to-black/78" />
               <div className="absolute inset-0 opacity-60 mix-blend-soft-light bg-[radial-gradient(circle_at_20%_25%,rgba(76,153,255,0.25),transparent_45%),radial-gradient(circle_at_75%_20%,rgba(24,103,201,0.22),transparent_42%),radial-gradient(circle_at_50%_75%,rgba(7,48,108,0.28),transparent_46%)]" />
-              <div className="relative flex h-full items-center justify-center p-5 sm:p-10 text-center force-overlay">
-                <div className="space-y-4 ap-page-intro-stagger">
-                  <div className="relative mx-auto flex min-h-[7rem] max-w-5xl items-center justify-center sm:min-h-[9rem]">
+              <div className="relative flex h-full items-center justify-center p-4 sm:p-8 md:p-10 text-center force-overlay">
+                <div className="space-y-3 sm:space-y-4 ap-page-intro-stagger">
+                  <div className="relative mx-auto flex min-h-[5.5rem] max-w-5xl items-center justify-center sm:min-h-[9rem]">
                     <div
-                      className="pointer-events-none absolute left-1/2 top-1/2 h-28 w-[min(90vw,42rem)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(126,246,255,0.22)_0%,rgba(126,246,255,0.08)_42%,rgba(126,246,255,0)_74%)] opacity-80 blur-2xl"
+                      className="pointer-events-none absolute left-1/2 top-1/2 h-28 w-[min(90vw,42rem)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(247,72,108,0.22)_0%,rgba(247,72,108,0.08)_42%,rgba(247,72,108,0)_74%)] opacity-80 blur-2xl"
                       aria-hidden="true"
                     />
-                    <div className="relative max-w-5xl px-4 sm:px-6">
-                      <p className="k360-hero-highlight text-balance text-[clamp(2rem,6.2vw,5rem)] font-black leading-[0.92] tracking-[-0.065em] text-white drop-shadow-[0_10px_34px_rgba(0,0,0,0.55)]">
+                    <div className="relative max-w-5xl px-2 sm:px-6">
+                      <p className="k360-hero-highlight text-balance text-[clamp(1.6rem,6.2vw,5rem)] font-black leading-[0.92] tracking-[-0.05em] sm:tracking-[-0.065em] text-white drop-shadow-[0_10px_34px_rgba(0,0,0,0.55)]">
                         {activeHero.title}
                       </p>
                       <div
-                        className="k360-hero-divider mx-auto mt-4 h-[3px] w-24 rounded-full bg-[linear-gradient(90deg,rgba(126,246,255,0),rgba(126,246,255,0.95),rgba(126,246,255,0))]"
+                        className="k360-hero-divider mx-auto mt-3 sm:mt-4 h-[3px] w-20 sm:w-24 rounded-full bg-[linear-gradient(90deg,rgba(247,72,108,0),rgba(247,72,108,0.95),rgba(247,72,108,0))]"
                         aria-hidden="true"
                       />
                     </div>
@@ -662,11 +789,11 @@ export default function K360Content() {
                   <p className="ap-type-kicker force-overlay-muted">
                     {copy.heroTag}
                   </p>
-                  <h1 className="ap-type-hero-title force-overlay text-[clamp(3.2rem,8vw,5.9rem)] font-black tracking-[-0.06em] drop-shadow-[0_0_24px_rgba(0,0,0,0.55)]">
+                  <h1 className="ap-type-hero-title force-overlay text-[clamp(2.4rem,8vw,5.9rem)] font-black tracking-[-0.045em] sm:tracking-[-0.06em] drop-shadow-[0_0_24px_rgba(0,0,0,0.55)]">
                     {copy.heroTitle}
                   </h1>
-                  <div className="mx-auto min-h-[6.2rem] max-w-3xl">
-                    <p className="ap-type-hero-subtitle force-overlay-dim mx-auto max-w-3xl text-[clamp(1.08rem,0.96rem+0.85vw,1.72rem)] font-medium leading-[1.45] text-white/86">
+                  <div className="mx-auto min-h-[4.5rem] sm:min-h-[6.2rem] max-w-3xl">
+                    <p className="ap-type-hero-subtitle force-overlay-dim mx-auto max-w-3xl text-[clamp(0.95rem,0.9rem+0.85vw,1.72rem)] font-medium leading-[1.4] sm:leading-[1.45] text-white/86">
                       {activeHero.lines.map((line) => (
                         <span key={line} className="block">
                           {line}
@@ -681,157 +808,165 @@ export default function K360Content() {
         </div>
       </section>
 
-      <section className="px-4 pb-16 sm:pb-20">
+      <section className="px-3 pb-10 sm:px-6 sm:pb-16 lg:px-12">
         <div className="ap-shell ap-page-stack">
           <ScrollMotionItem strength="strong" delay={110} className="ap-deferred-section">
-            <Card className="space-y-5 sm:space-y-6" motion="off" dense>
-              <div className="grid gap-7 xl:grid-cols-[minmax(20rem,0.84fr)_minmax(0,1.16fr)] xl:items-start xl:gap-8 2xl:grid-cols-[minmax(22rem,0.78fr)_minmax(0,1.22fr)]">
-                <div className="space-y-5 lg:space-y-6 xl:sticky xl:top-20">
-                  <div className="space-y-4 text-center sm:text-left">
-                    <p className="text-[0.72rem] font-medium uppercase tracking-[0.28em] text-[#7ef6ff]/76">
-                      360°
-                    </p>
-                    <h3 className="mx-auto max-w-[12ch] text-pretty text-[clamp(2.1rem,6.8vw,3.4rem)] font-semibold leading-[1.02] tracking-[-0.04em] text-white sm:mx-0">
-                      {copy.featuresTitle}
+            <div className="py-2 sm:py-4">
+              <div className="space-y-4 sm:space-y-6 text-center">
+                {(() => {
+                  const trimmed = copy.featuresTitle.trim();
+                  const firstSpace = trimmed.indexOf(" ");
+                  const accent = firstSpace > 0 ? trimmed.slice(0, firstSpace) : trimmed;
+                  const rest = firstSpace > 0 ? trimmed.slice(firstSpace) : "";
+                  return (
+                    <h3 className="mx-auto max-w-5xl text-pretty text-[clamp(1.85rem,7vw,4.4rem)] font-semibold leading-[1.02] tracking-[-0.035em] sm:tracking-[-0.04em] text-white drop-shadow-[0_8px_30px_rgba(0,0,0,0.55)]">
+                      <span className="font-bold text-[#ff7a92]">{accent}</span>
+                      {rest}
                     </h3>
-                    <p className="mx-auto max-w-2xl text-lg leading-relaxed text-white/72 sm:mx-0">
-                      {copy.featuresIntro}
-                    </p>
-                  </div>
-
-                  <div className="grid gap-3 sm:grid-cols-3 xl:grid-cols-1 2xl:grid-cols-3">
-                    {copy.featureStats.map((stat) => (
-                      <div
-                        key={`${stat.value}-${stat.label}`}
-                        className="ap-tile ap-tile-sm px-4 py-4 text-center sm:text-left"
-                      >
-                        <p className="whitespace-nowrap text-[clamp(1.3rem,2.5vw,1.8rem)] font-semibold leading-none tracking-[-0.03em] text-white">
-                          {stat.value}
-                        </p>
-                        <p className="mt-2 text-sm leading-relaxed text-white/60">{stat.label}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="grid gap-3 md:grid-cols-2 xl:auto-rows-fr">
-                  {regularFeatures.map((item, index) => (
-                    <article
-                      key={item.title}
-                      className="k360-feature-card ap-tile ap-tile-sm ap-tile-interactive group relative overflow-hidden px-3.5 py-3.5 transition-all duration-300 ease-out sm:px-4 sm:py-4"
-                      style={{ "--tour-delay": `${(index % 6) * 0.18}s` } as CSSProperties}
-                    >
-                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(126,246,255,0.12),transparent_34%)] opacity-70 transition-opacity duration-300 group-hover:opacity-100" />
-                      <div className="relative space-y-3">
-                        <div className="flex items-center justify-between gap-3">
-                          <span className="inline-flex rounded-full border border-cyan-400/25 bg-cyan-500/15 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.16em] text-cyan-100">
-                            {item.badge}
-                          </span>
-                          <span className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-white/28">
-                            {String(index + 1).padStart(2, "0")}
-                          </span>
-                        </div>
-                        <h4 className="max-w-[11ch] text-pretty text-[clamp(1.18rem,1.7vw,1.6rem)] font-semibold leading-[1.06] tracking-[-0.03em] text-white">
-                          {item.title}
-                        </h4>
-                        <p className="text-[0.88rem] leading-[1.55] text-white/70 sm:text-[0.92rem]">
-                          {item.body}
-                        </p>
-                      </div>
-                    </article>
-                  ))}
-                </div>
+                  );
+                })()}
+                <div className="mx-auto h-[3px] w-24 rounded-full bg-[linear-gradient(90deg,rgba(247,72,108,0),rgba(247,72,108,0.95),rgba(247,72,108,0))]" />
+                <p className="mx-auto max-w-4xl text-base sm:text-lg leading-relaxed text-white/72">
+                  {copy.featuresIntro}
+                </p>
+                <p className="mx-auto max-w-4xl text-base sm:text-lg font-semibold leading-relaxed text-[#ff7a92]">
+                  {copy.featuresIntroHighlight}
+                </p>
               </div>
-            </Card>
+
+              <div className="mt-8 grid gap-3 sm:mt-12 sm:gap-4 lg:mt-16 sm:grid-cols-2 xl:grid-cols-3 xl:auto-rows-fr">
+                {regularFeatures.map((item, index) => (
+                  <article
+                    key={item.title}
+                    className="k360-feature-card ap-tile ap-tile-sm ap-tile-interactive group relative flex flex-col items-center overflow-hidden rounded-2xl px-4 py-5 text-center transition-all duration-300 ease-out sm:px-5 sm:py-5 !border-[rgba(247,72,108,0.22)] hover:!border-[rgba(247,72,108,0.45)] focus-visible:!border-[rgba(247,72,108,0.45)]"
+                    style={{ "--tour-delay": `${(index % 6) * 0.18}s` } as CSSProperties}
+                  >
+                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(247,72,108,0.08),transparent_38%),radial-gradient(circle_at_bottom_right,rgba(247,72,108,0.04),transparent_32%)] opacity-80 transition-opacity duration-300 group-hover:opacity-100" />
+                    <div className="relative flex w-full items-center justify-between gap-2.5">
+                      <span className="inline-flex rounded-full border border-rose-400/35 bg-rose-500/15 px-2 py-0.5 text-[8px] font-semibold uppercase tracking-[0.18em] text-rose-100 sm:text-[9px]">
+                        {item.badge}
+                      </span>
+                      <span className="text-[0.6rem] font-semibold uppercase tracking-[0.22em] text-white/30 sm:text-[0.65rem]">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                    </div>
+                    <div className="relative mt-3 flex w-full flex-col items-center gap-2.5 sm:gap-3">
+                      <h4 className="text-pretty text-[clamp(1.05rem,1.5vw,1.35rem)] font-semibold leading-[1.15] tracking-[-0.02em] text-white">
+                        {item.title}
+                      </h4>
+                      <p className="text-[0.82rem] leading-[1.55] text-white/70 sm:text-[0.86rem]">
+                        {item.body}
+                      </p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
           </ScrollMotionItem>
 
           <ScrollMotionItem strength="soft" delay={170} className="ap-deferred-section">
-            <Card className="space-y-6" variant="solid" motion="off">
-              <TourLineAccentTitle variant="cool">{copy.galleryTitle}</TourLineAccentTitle>
+            <div className="space-y-6">
+              <TourLineAccentTitle variant="red">{copy.galleryTitle}</TourLineAccentTitle>
               <TourLineGalleryRow items={copy.galleryItems} />
-            </Card>
+            </div>
           </ScrollMotionItem>
 
           <ScrollMotionItem strength="strong" delay={220} className="ap-deferred-section">
-            <Card
-              id="k360-tickets"
-              title={copy.ticketsTitle}
-              titleCentered
-              titleDivider
-              dense
-              motion="off"
-            >
-              <div className="mt-2 space-y-8">
-                <article className="ap-tile ap-tile-lg ap-tile-accent relative overflow-hidden px-6 py-6 sm:px-7 sm:py-7">
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(79,207,222,0.18),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(79,207,222,0.08),transparent_32%)]" />
-                  <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-8">
-                    <div className="space-y-5 text-center lg:text-left">
-                      <span className="ticket-card-badge mx-auto lg:mx-0">{copy.promoTicket.badge}</span>
-                      <div className="space-y-3">
-                        <h3 className="text-3xl font-semibold leading-tight tracking-[-0.03em] text-white sm:text-4xl">
-                          {copy.promoTicket.title}
-                        </h3>
-                        <p className="mx-auto max-w-3xl text-base leading-relaxed text-white/76 sm:text-lg lg:mx-0">
-                          {copy.promoTicket.subtitle}
-                        </p>
+            <div id="k360-tickets">
+              <div className="space-y-3 text-center">
+                <h2 className="ap-type-section-title text-white">{copy.ticketsTitle}</h2>
+                <div className="mx-auto h-[3px] w-24 rounded-full bg-[linear-gradient(90deg,rgba(247,72,108,0),rgba(247,72,108,0.95),rgba(247,72,108,0))]" />
+              </div>
+              <div className="mt-8 space-y-6 sm:space-y-8">
+                {promoPackages.map((promo) => (
+                  <article
+                    key={promo.title}
+                    className="ap-tile ap-tile-lg ap-tile-accent relative overflow-hidden px-4 py-5 sm:px-7 sm:py-7"
+                  >
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(247,72,108,0.18),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(247,72,108,0.10),transparent_32%)]" />
+                    <div className="relative grid gap-5 sm:gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-8">
+                      <div className="space-y-4 sm:space-y-5 text-center lg:text-left">
+                        <span className="ticket-card-badge mx-auto lg:mx-0">{promo.badge}</span>
+                        <div className="space-y-2 sm:space-y-3">
+                          <h3 className="text-2xl font-semibold leading-tight tracking-[-0.03em] text-white sm:text-3xl lg:text-4xl">
+                            {promo.title}
+                          </h3>
+                          <p className="mx-auto max-w-3xl text-sm leading-relaxed text-white/76 sm:text-base lg:mx-0 lg:text-lg">
+                            {promo.subtitle}
+                          </p>
+                        </div>
+                        <div className="flex flex-wrap justify-center gap-2 sm:gap-3 lg:justify-start">
+                          {promo.details.map((detail) => (
+                            <div
+                              key={detail}
+                              className="rounded-full border border-white/12 bg-white/[0.05] px-3 py-1.5 text-xs text-white/72 sm:px-4 sm:py-2 sm:text-sm"
+                            >
+                              {detail}
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                      <div className="flex flex-wrap justify-center gap-3 lg:justify-start">
-                        {copy.promoTicket.details.map((detail) => (
-                          <div
-                            key={detail}
-                            className="rounded-full border border-white/12 bg-white/[0.05] px-4 py-2 text-sm text-white/72"
-                          >
-                            {detail}
+
+                      <div className="flex w-full flex-col items-center gap-3 sm:gap-4 lg:w-auto lg:items-end">
+                        <div className="ap-tile ap-tile-sm w-full max-w-[27rem] px-4 py-3.5 text-center sm:px-5 sm:py-4 lg:text-right">
+                          <div className="grid grid-cols-2 gap-0 lg:text-right">
+                            <div className="pr-3 sm:pr-4">
+                              <p className="text-[0.65rem] uppercase tracking-[0.18em] text-white/55 sm:text-xs">
+                                {promo.priceLabel}
+                              </p>
+                              <p className="mt-1 text-xl font-semibold leading-none tracking-[-0.03em] text-white sm:text-2xl lg:text-[1.75rem]">
+                                {promo.price}
+                              </p>
+                              <p className="mt-1.5 inline-flex flex-nowrap items-center gap-1.5 whitespace-nowrap text-[0.65rem] font-semibold leading-tight text-[#ff96aa] sm:text-[0.72rem]">
+                                <span>−{promo.savingsPercent}</span>
+                                <span className="text-white/55">{promo.savings}</span>
+                              </p>
+                            </div>
+                            <div className="border-l border-white/10 pl-3 sm:pl-4">
+                              <p className="text-[0.65rem] uppercase tracking-[0.18em] text-white/55 sm:text-xs">
+                                {promo.reducedPriceLabel}
+                              </p>
+                              <p className="mt-1 text-xl font-semibold leading-none tracking-[-0.03em] text-white sm:text-2xl lg:text-[1.75rem]">
+                                {promo.reducedPrice}
+                              </p>
+                              <p className="mt-1.5 inline-flex flex-nowrap items-center gap-1.5 whitespace-nowrap text-[0.65rem] font-semibold leading-tight text-[#ff96aa] sm:text-[0.72rem]">
+                                <span>−{promo.reducedSavingsPercent}</span>
+                                <span className="text-white/55">{promo.reducedSavings}</span>
+                              </p>
+                            </div>
                           </div>
-                        ))}
+                        </div>
+
+                        <PrimaryButton
+                          href={buildBookingPath(loc, { category: promo.category })}
+                          size="lg"
+                          className="ticket-pill w-full whitespace-nowrap ring-[color:rgba(240,60,100,0.55)] sm:w-auto sm:min-w-[13rem]"
+                        >
+                          {promo.button}
+                        </PrimaryButton>
                       </div>
                     </div>
+                  </article>
+                ))}
 
-                    <div className="flex w-full flex-col items-center gap-4 lg:w-auto lg:items-end">
-                      <div className="ap-tile ap-tile-sm w-full max-w-[22rem] px-4 py-4 text-center sm:px-5 lg:text-right">
-                        <p className="text-sm text-white/68">{copy.promoTicket.priceLabel}</p>
-                        <p className="mt-1 text-[1.9rem] font-semibold leading-none tracking-[-0.04em] text-white sm:text-[2.1rem]">
-                          {copy.promoTicket.price}
-                        </p>
-                        <p className="mt-3 flex flex-wrap items-center justify-center gap-2 text-sm font-semibold text-[#8ff3ff] lg:justify-end">
-                          <span>{copy.promoTicket.savings}</span>
-                          <span className="rounded-full border border-[#8ff3ff]/25 bg-[#8ff3ff]/12 px-2.5 py-0.5 text-[0.78rem] leading-none text-[#b8f8ff]">
-                            {copy.promoTicket.savingsPercent} taniej
-                          </span>
-                        </p>
-                      </div>
-
-                      <PrimaryButton
-                        href={buildBookingPath(loc, {
-                          category: COMBINED_PROMO_BOOKING_CATEGORY,
-                        })}
-                        size="lg"
-                        className="ticket-pill min-w-[13rem] whitespace-nowrap ring-[color:rgba(240,60,100,0.55)]"
-                      >
-                        {copy.promoTicket.button}
-                      </PrimaryButton>
-                    </div>
-                  </div>
-                </article>
-
-                <div className="mx-auto grid w-full max-w-[68rem] grid-cols-1 items-start gap-x-5 gap-y-8 lg:grid-cols-2">
+                <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-3">
                   {copy.ticketsOptions.map((option) => (
-                    <div
+                    <article
                       key={option.title}
-                      className="ticket-card ap-tile group mx-auto flex w-full max-w-[32rem] self-start flex-col rounded-3xl text-white/90 [&_.ticket-card-top]:px-4 [&_.ticket-card-top]:pt-3 [&_.ticket-card-top]:pb-0.5 sm:[&_.ticket-card-top]:px-5"
+                      className="ap-tile ap-tile-lg relative flex flex-col overflow-hidden px-4 py-5 sm:px-7 sm:py-7"
                     >
-                      <div className="ticket-card-top">
-                        <span className="ticket-card-badge">{option.badge}</span>
-                      </div>
-                      <div className="ticket-card-content flex h-full flex-col px-4 py-3.5 text-center sm:px-5 sm:py-4">
-                        <h3 className="ticket-card-title text-[1.65rem] sm:text-[1.9rem] font-semibold text-white">
-                          {option.title}
-                        </h3>
-                        <p className="ticket-card-subtitle mt-1.5 text-sm sm:text-[0.98rem] text-white/75">
-                          {option.subtitle}
-                        </p>
-                        <div className="ticket-card-divider mt-4" />
-                        <div className="mt-3.5 mb-5 flex flex-col items-center gap-2">
+                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(247,72,108,0.18),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(247,72,108,0.10),transparent_32%)]" />
+                      <div className="relative flex h-full flex-col gap-4 sm:gap-5 text-center lg:text-left">
+                        <span className="ticket-card-badge mx-auto lg:mx-0">{option.badge}</span>
+                        <div className="space-y-2 sm:space-y-3">
+                          <h3 className="text-pretty text-lg font-semibold leading-tight tracking-[-0.03em] text-white sm:text-xl lg:text-2xl">
+                            {option.title}
+                          </h3>
+                          <p className="mx-auto max-w-3xl text-sm leading-relaxed text-white/76 sm:text-base lg:mx-0 lg:text-lg">
+                            {option.subtitle}
+                          </p>
+                        </div>
+                        <div className="flex flex-wrap justify-center gap-2 sm:gap-3 lg:justify-start">
                           {option.details.map((detail, detailIndex) =>
                             detailIndex === 0 && option.eligibilityInfo ? (
                               <TicketEligibilityPopover
@@ -849,42 +984,40 @@ export default function K360Content() {
                             ) : (
                               <div
                                 key={detail}
-                                className="ticket-list-panel w-full max-w-[28rem] px-4 py-3 text-sm text-white/75"
+                                className="rounded-full border border-white/12 bg-white/[0.05] px-3 py-1.5 text-xs text-white/72 sm:px-4 sm:py-2 sm:text-sm"
                               >
-                                <div className="ticket-detail flex gap-3">
-                                  <span className="ticket-detail-dot mt-2 h-1.5 w-1.5 rounded-full bg-[#4fcfde] shrink-0" />
-                                  <span>{detail}</span>
-                                </div>
+                                {detail}
                               </div>
                             ),
                           )}
                         </div>
-                        <div className="ticket-price-block mt-5 px-3 py-4">
-                          <p className="ticket-price-label text-[0.7rem] uppercase tracking-[0.25em] text-white/60">
-                            {copy.ticketsPriceLabel}
-                          </p>
-                          <p className="ticket-price mt-2 text-[1.8rem] sm:text-[2.2rem] font-bold text-amber-200">
-                            {option.price}
-                          </p>
-                          <div className="mt-5 flex justify-center">
-                            <PrimaryButton
-                              href={buildBookingPath(loc, {
-                                category: K360_BOOKING_CATEGORY,
-                                service: option.bookingServiceName,
-                              })}
-                              size="md"
-                              className="ticket-pill ring-[color:rgba(240,60,100,0.55)]"
-                            >
-                              {copy.ticketsButton}
-                            </PrimaryButton>
+
+                        <div className="mt-auto flex flex-col items-center gap-3 pt-2 sm:gap-4 lg:items-stretch">
+                          <div className="ap-tile ap-tile-sm w-full px-4 py-3 text-center sm:px-5 sm:py-4">
+                            <p className="text-[0.65rem] uppercase tracking-[0.22em] text-white/60 sm:text-[0.7rem] sm:tracking-[0.25em]">{option.priceLabel ?? copy.ticketsPriceLabel}</p>
+                            <p className="mt-1 text-2xl font-semibold leading-none tracking-[-0.04em] text-white sm:text-[1.9rem] lg:text-[2.1rem]">
+                              {option.price}
+                            </p>
                           </div>
+
+                          <PrimaryButton
+                            href={buildBookingPath(loc, {
+                              category: K360_BOOKING_CATEGORY,
+                              service: option.bookingServiceName,
+                              quantity: option.bookingQuantity,
+                            })}
+                            size="lg"
+                            className="ticket-pill w-full whitespace-nowrap ring-[color:rgba(240,60,100,0.55)]"
+                          >
+                            {copy.ticketsButton}
+                          </PrimaryButton>
                         </div>
                       </div>
-                    </div>
+                    </article>
                   ))}
                 </div>
               </div>
-            </Card>
+            </div>
           </ScrollMotionItem>
         </div>
       </section>

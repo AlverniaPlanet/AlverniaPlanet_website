@@ -26,9 +26,9 @@ const COPY: Record<
 > = {
   pl: {
     heroTag: "Atrakcje",
-    heroTitle: "Wystawa tematyczna",
+    heroTitle: "Harry Potter: The Exhibition",
     heroLead:
-      "Harry Potter: The Exhibition — zakończona 17 sierpnia 2025. Dziękujemy za odwiedziny i czekamy na kolejną wystawę.",
+      "Wystawa zakończona 17 sierpnia 2025. Dziękujemy za odwiedziny i czekamy na kolejną.",
     videoFallback: "Twój browser nie wspiera elementu video.",
     sectionTitle: "Harry Potter: The Exhibition",
     paragraphs: [
@@ -72,9 +72,9 @@ const COPY: Record<
   },
   en: {
     heroTag: "Attractions",
-    heroTitle: "Themed exhibition",
+    heroTitle: "Harry Potter: The Exhibition",
     heroLead:
-      "Harry Potter: The Exhibition — closed on August 17, 2025. Thank you for visiting; stay tuned for the next exhibition.",
+      "Exhibition closed on August 17, 2025. Thank you for visiting; stay tuned for the next one.",
     videoFallback: "Your browser does not support the video element.",
     sectionTitle: "Harry Potter: The Exhibition",
     paragraphs: [
@@ -118,9 +118,9 @@ const COPY: Record<
   },
   pt: {
     heroTag: "Atrações",
-    heroTitle: "Exposição temática",
+    heroTitle: "Harry Potter: The Exhibition",
     heroLead:
-      "Harry Potter: The Exhibition — encerrada em 17 de agosto de 2025. Obrigado pela visita; aguardem a próxima exposição.",
+      "Exposição encerrada a 17 de agosto de 2025. Obrigado pela visita; aguardem a próxima.",
     videoFallback: "O seu navegador não suporta o elemento de vídeo.",
     sectionTitle: "Harry Potter: The Exhibition",
     paragraphs: [

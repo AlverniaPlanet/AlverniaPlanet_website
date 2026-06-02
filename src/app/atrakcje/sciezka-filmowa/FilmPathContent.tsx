@@ -9,9 +9,11 @@ import TourLineGalleryRow from "@/app/components/TourLineGalleryRow";
 import { useI18n } from "@/app/i18n-provider";
 import {
   buildBookingPath,
+  COMBINED_PROMO_BOOKING_CATEGORY,
   FILM_PATH_BOOKING_CATEGORY,
   FILM_PATH_BOOKING_SERVICES,
 } from "@/lib/booking";
+import { PROMO_PACKAGES } from "@/lib/promoPackages";
 
 type Locale = "pl" | "en" | "pt";
 
@@ -24,6 +26,22 @@ type TicketOption = {
   price?: string;
   bookingServiceName: string;
   bookingQuantity?: number;
+};
+
+type PromoTicketOption = {
+  badge: string;
+  title: string;
+  subtitle: string;
+  details: string[];
+  priceLabel: string;
+  price: string;
+  savings: string;
+  savingsPercent: string;
+  reducedPriceLabel: string;
+  reducedPrice: string;
+  reducedSavings: string;
+  reducedSavingsPercent: string;
+  button: string;
 };
 
 type IntroStat = {
@@ -51,9 +69,9 @@ type GalleryItem = {
 };
 
 const OPENING_PHOTO_SOURCES = {
-  entrance: "/galeria/Sciezka_filmowa_v2/webp/wejscie_korytarz_k9.webp",
-  silent: "/galeria/Sciezka_filmowa_v2/webp/era_niema.webp",
-  interactive: "/galeria/Sciezka_filmowa_v2/webp/K9_quizy.webp",
+  entrance: "/galeria/Sciezka_filmowa/webp/wejscie_korytarz_k9.webp",
+  silent: "/galeria/Sciezka_filmowa/webp/era_niema.webp",
+  interactive: "/galeria/Sciezka_filmowa/webp/K9_quizy.webp",
 } as const;
 
 const COPY: Record<
@@ -79,6 +97,7 @@ const COPY: Record<
     ticketsPriceLabel: string;
     ticketsPrice: string;
     ticketsButton: string;
+    promoTicket: PromoTicketOption;
     ticketsOptions: TicketOption[];
     videoFallback: string;
   }
@@ -88,7 +107,7 @@ const COPY: Record<
     heroTitle: "Ścieżka filmowa",
     heroLead: "Przejdź trasę zwiedzania, która odsłania kulisy tworzenia filmowych światów.",
     planEyebrow: "Ścieżka edukacyjna",
-    planTitle: "Wejdź do świata filmu, krok po kroku.",
+    planTitle: "Poznaj świat filmu",
     planBody:
       "Odświeżona ścieżka edukacyjna została wzbogacona o nowe atrakcje i prowadzi przez historię kina, przestrzenie Alvernia Planet oraz kolejne etapy pracy na planie. To jedna spójna trasa, która łączy wiedzę, scenografię, dźwięk i finał interaktywny. Oprowadzanie odbywa się w języku polskim.",
     planCaption:
@@ -115,8 +134,8 @@ const COPY: Record<
       { value: "2,5 h", label: "oprowadzania z przewodnikiem" },
       { value: "polski", label: "język oprowadzania" },
     ],
-    routeEyebrow: "Animowana trasa",
-    routeTitle: "Przewiń przez kolejne etapy zwiedzania.",
+    routeEyebrow: "Trasa zwiedzania",
+    routeTitle: "8 etapów na trasie",
     route: [
       {
         number: "01",
@@ -215,32 +234,52 @@ const COPY: Record<
       {
         title: "Korytarz wejściowy",
         body: "Początek trasy i pierwsze wejście w świat ścieżki edukacyjnej.",
-        image: "/galeria/Sciezka_filmowa_v2/webp/wejscie_korytarz_k9.webp",
+        image: "/galeria/Sciezka_filmowa/webp/wejscie_korytarz_k9.webp",
       },
       {
         title: "Era niema",
         body: "Stanowisko poświęcone początkom projekcji i pierwszym ruchomym obrazom.",
-        image: "/galeria/Sciezka_filmowa_v2/webp/era_niema.webp",
+        image: "/galeria/Sciezka_filmowa/webp/era_niema.webp",
       },
       {
         title: "Era analogowa",
         body: "Materiały i eksponaty pokazujące erę analogowej rejestracji i projekcji.",
-        image: "/galeria/Sciezka_filmowa_v2/webp/era_analogowa_1.webp",
+        image: "/galeria/Sciezka_filmowa/webp/era_analogowa_1.webp",
       },
       {
         title: "Era cyfrowa",
         body: "Nowoczesne rozwiązania i narzędzia używane w produkcji obrazu.",
-        image: "/galeria/Sciezka_filmowa_v2/webp/era_cyfrowa_1.webp",
+        image: "/galeria/Sciezka_filmowa/webp/era_cyfrowa_1.webp",
       },
       {
         title: "Ozdoby i detale",
         body: "Elementy scenografii i dekoracji budujące klimat filmowego świata.",
-        image: "/galeria/Sciezka_filmowa_v2/webp/K10_ozdoby.webp",
+        image: "/galeria/Sciezka_filmowa/webp/K10_ozdoby.webp",
       },
       {
         title: "Strefa quizów",
         body: "Interaktywne stanowiska, które domykają zwiedzanie aktywnym finałem.",
-        image: "/galeria/Sciezka_filmowa_v2/webp/K9_quizy.webp",
+        image: "/galeria/Sciezka_filmowa/webp/K9_quizy.webp",
+      },
+      {
+        title: "Kadr ze ścieżki",
+        body: "Fragment ekspozycji z trasy zwiedzania.",
+        image: "/galeria/Sciezka_filmowa/webp/sciezka_1.webp",
+      },
+      {
+        title: "Kadr ze ścieżki",
+        body: "Kolejne stanowisko prezentujące historię filmu.",
+        image: "/galeria/Sciezka_filmowa/webp/sciezka_2.webp",
+      },
+      {
+        title: "Kadr ze ścieżki",
+        body: "Detale scenografii i rekwizyty zebrane na trasie.",
+        image: "/galeria/Sciezka_filmowa/webp/sciezka_3.webp",
+      },
+      {
+        title: "Kadr ze ścieżki",
+        body: "Atmosfera planu filmowego dla zwiedzających.",
+        image: "/galeria/Sciezka_filmowa/webp/sciezka_4.webp",
       },
     ],
     ticketsTitle: "Bilety na ścieżkę edukacyjną",
@@ -249,6 +288,22 @@ const COPY: Record<
     ticketsPriceLabel: "Cena za osobę",
     ticketsPrice: "79 zł/os. lub 69 zł/os.",
     ticketsButton: "Kup bilet",
+    promoTicket: {
+      badge: "Pakiet",
+      title: "Ścieżka + Projekcja K360",
+      subtitle:
+        "Jeden duży pakiet promocyjny, który łączy zwiedzanie Ścieżki filmowej z projekcją K360.",
+      details: ["Około 3 godzin łącznie ze zwiedzaniem i seansem"],
+      priceLabel: "Cena normalna",
+      price: "119,00 zł",
+      savings: "Oszczędzasz 9,00 zł",
+      savingsPercent: "7%",
+      reducedPriceLabel: "Cena ulgowa",
+      reducedPrice: "99,00 zł",
+      reducedSavings: "Oszczędzasz 9,00 zł",
+      reducedSavingsPercent: "8%",
+      button: "Wybierz pakiet",
+    },
     ticketsOptions: [
       {
         badge: "Normalny",
@@ -268,7 +323,7 @@ const COPY: Record<
       },
       {
         badge: "Grupowe",
-        title: "Bilet grupowy (szkolny)",
+        title: "Bilet grupowy/szkolny",
         subtitle: "30-50 osób w grupie",
         details: [
           "Dla szkół i grup zorganizowanych",
@@ -288,7 +343,7 @@ const COPY: Record<
     heroTitle: "Film path",
     heroLead: "Walk the tour that reveals how film worlds are built.",
     planEyebrow: "Educational path",
-    planTitle: "Step into the world of film, stage by stage.",
+    planTitle: "Discover the world of film",
     planBody:
       "The refreshed educational path has been expanded with new attractions and now leads through moving-image history, Alvernia Planet spaces, and the key stages of film production. It is one cohesive route that combines learning, set design, sound, and an interactive finale. The guided tour is available in Polish.",
     planCaption:
@@ -315,8 +370,8 @@ const COPY: Record<
       { value: "2.5 h", label: "guided visit" },
       { value: "Polish", label: "tour language" },
     ],
-    routeEyebrow: "Animated route",
-    routeTitle: "Scroll through the full visit step by step.",
+    routeEyebrow: "Tour route",
+    routeTitle: "8 stages on the route",
     route: [
       {
         number: "01",
@@ -415,32 +470,52 @@ const COPY: Record<
       {
         title: "Entrance corridor",
         body: "The beginning of the route and the first step into the educational path.",
-        image: "/galeria/Sciezka_filmowa_v2/webp/wejscie_korytarz_k9.webp",
+        image: "/galeria/Sciezka_filmowa/webp/wejscie_korytarz_k9.webp",
       },
       {
         title: "Silent era",
         body: "A station focused on the earliest era of film and moving image.",
-        image: "/galeria/Sciezka_filmowa_v2/webp/era_niema.webp",
+        image: "/galeria/Sciezka_filmowa/webp/era_niema.webp",
       },
       {
         title: "Analog era",
         body: "Displays and materials showing the age of analog projection and recording.",
-        image: "/galeria/Sciezka_filmowa_v2/webp/era_analogowa_1.webp",
+        image: "/galeria/Sciezka_filmowa/webp/era_analogowa_1.webp",
       },
       {
         title: "Digital era",
         body: "Modern tools and techniques used in contemporary image production.",
-        image: "/galeria/Sciezka_filmowa_v2/webp/era_cyfrowa_1.webp",
+        image: "/galeria/Sciezka_filmowa/webp/era_cyfrowa_1.webp",
       },
       {
         title: "Set details",
         body: "Scenic details and decorative elements that shape the film atmosphere.",
-        image: "/galeria/Sciezka_filmowa_v2/webp/K10_ozdoby.webp",
+        image: "/galeria/Sciezka_filmowa/webp/K10_ozdoby.webp",
       },
       {
         title: "Quiz zone",
         body: "Interactive stations that close the visit with a more active finale.",
-        image: "/galeria/Sciezka_filmowa_v2/webp/K9_quizy.webp",
+        image: "/galeria/Sciezka_filmowa/webp/K9_quizy.webp",
+      },
+      {
+        title: "Frame from the path",
+        body: "A glimpse of the exhibition along the route.",
+        image: "/galeria/Sciezka_filmowa/webp/sciezka_1.webp",
+      },
+      {
+        title: "Frame from the path",
+        body: "Another stop telling the story of cinema.",
+        image: "/galeria/Sciezka_filmowa/webp/sciezka_2.webp",
+      },
+      {
+        title: "Frame from the path",
+        body: "Set details and props gathered along the way.",
+        image: "/galeria/Sciezka_filmowa/webp/sciezka_3.webp",
+      },
+      {
+        title: "Frame from the path",
+        body: "The atmosphere of a working film set for visitors.",
+        image: "/galeria/Sciezka_filmowa/webp/sciezka_4.webp",
       },
     ],
     ticketsTitle: "Educational path tickets",
@@ -449,6 +524,22 @@ const COPY: Record<
     ticketsPriceLabel: "Price per person",
     ticketsPrice: "79 PLN/person or 69 PLN/person",
     ticketsButton: "Buy tickets",
+    promoTicket: {
+      badge: "Package",
+      title: "Film Path + K360 projection",
+      subtitle:
+        "One large promotional package that combines the Film Path visit with a K360 projection.",
+      details: ["About 3 hours in total with the visit and screening"],
+      priceLabel: "Standard price",
+      price: "119.00 PLN",
+      savings: "You save 9.00 PLN",
+      savingsPercent: "7%",
+      reducedPriceLabel: "Reduced price",
+      reducedPrice: "99.00 PLN",
+      reducedSavings: "You save 9.00 PLN",
+      reducedSavingsPercent: "8%",
+      button: "Choose package",
+    },
     ticketsOptions: [
       {
         badge: "Standard",
@@ -468,7 +559,7 @@ const COPY: Record<
       },
       {
         badge: "Group",
-        title: "Group ticket (schools)",
+        title: "Group / school ticket",
         subtitle: "30-50 people in a group",
         details: [
           "For schools and organized groups",
@@ -488,7 +579,7 @@ const COPY: Record<
     heroTitle: "Percurso de filmagem",
     heroLead: "Percorra a visita que revela como nascem mundos em imagem e som.",
     planEyebrow: "Percurso educativo",
-    planTitle: "Entra no universo das produções etapa a etapa.",
+    planTitle: "Descobre o mundo do cinema",
     planBody:
       "O percurso educativo renovado foi enriquecido com novas atrações e conduz pela história da projeção, pelos espaços da Alvernia Planet e pelas etapas centrais do trabalho em set. É uma rota coesa que junta aprendizagem, cenografia, som e um final interativo. A visita guiada decorre em polaco.",
     planCaption:
@@ -515,8 +606,8 @@ const COPY: Record<
       { value: "2,5 h", label: "visita guiada" },
       { value: "polaco", label: "idioma da visita" },
     ],
-    routeEyebrow: "Rota animada",
-    routeTitle: "Percorra a visita etapa por etapa durante o scroll.",
+    routeEyebrow: "Percurso da visita",
+    routeTitle: "8 etapas no percurso",
     route: [
       {
         number: "01",
@@ -615,32 +706,52 @@ const COPY: Record<
       {
         title: "Corredor de entrada",
         body: "O início do percurso e o primeiro contacto com a visita educativa.",
-        image: "/galeria/Sciezka_filmowa_v2/webp/wejscie_korytarz_k9.webp",
+        image: "/galeria/Sciezka_filmowa/webp/wejscie_korytarz_k9.webp",
       },
       {
         title: "Era muda",
         body: "Uma zona dedicada às origens da projeção e aos primeiros filmes.",
-        image: "/galeria/Sciezka_filmowa_v2/webp/era_niema.webp",
+        image: "/galeria/Sciezka_filmowa/webp/era_niema.webp",
       },
       {
         title: "Era analógica",
         body: "Exposição de materiais e referências da era analógica da projeção.",
-        image: "/galeria/Sciezka_filmowa_v2/webp/era_analogowa_1.webp",
+        image: "/galeria/Sciezka_filmowa/webp/era_analogowa_1.webp",
       },
       {
         title: "Era digital",
         body: "Ferramentas e soluções ligadas à produção visual contemporânea.",
-        image: "/galeria/Sciezka_filmowa_v2/webp/era_cyfrowa_1.webp",
+        image: "/galeria/Sciezka_filmowa/webp/era_cyfrowa_1.webp",
       },
       {
         title: "Detalhes de cenário",
         body: "Elementos visuais e decorativos que constroem o ambiente visual.",
-        image: "/galeria/Sciezka_filmowa_v2/webp/K10_ozdoby.webp",
+        image: "/galeria/Sciezka_filmowa/webp/K10_ozdoby.webp",
       },
       {
         title: "Zona de quiz",
         body: "Estações interativas que fecham a visita com um final mais dinâmico.",
-        image: "/galeria/Sciezka_filmowa_v2/webp/K9_quizy.webp",
+        image: "/galeria/Sciezka_filmowa/webp/K9_quizy.webp",
+      },
+      {
+        title: "Imagem do percurso",
+        body: "Um excerto da exposição ao longo do percurso.",
+        image: "/galeria/Sciezka_filmowa/webp/sciezka_1.webp",
+      },
+      {
+        title: "Imagem do percurso",
+        body: "Outra paragem que conta a história do cinema.",
+        image: "/galeria/Sciezka_filmowa/webp/sciezka_2.webp",
+      },
+      {
+        title: "Imagem do percurso",
+        body: "Detalhes de cenário e adereços recolhidos pelo caminho.",
+        image: "/galeria/Sciezka_filmowa/webp/sciezka_3.webp",
+      },
+      {
+        title: "Imagem do percurso",
+        body: "A atmosfera de um plano de filmagens para visitantes.",
+        image: "/galeria/Sciezka_filmowa/webp/sciezka_4.webp",
       },
     ],
     ticketsTitle: "Bilhetes para o percurso educativo",
@@ -649,6 +760,22 @@ const COPY: Record<
     ticketsPriceLabel: "Preço por pessoa",
     ticketsPrice: "79 PLN/pessoa ou 69 PLN/pessoa",
     ticketsButton: "Comprar bilhete",
+    promoTicket: {
+      badge: "Pacote",
+      title: "Percurso + Projeção K360",
+      subtitle:
+        "Um grande pacote promocional que junta a visita ao Percurso de filmagem com a projeção no K360.",
+      details: ["Cerca de 3 horas no total com visita e sessão"],
+      priceLabel: "Preço normal",
+      price: "119,00 PLN",
+      savings: "Poupa 9,00 PLN",
+      savingsPercent: "7%",
+      reducedPriceLabel: "Preço reduzido",
+      reducedPrice: "99,00 PLN",
+      reducedSavings: "Poupa 9,00 PLN",
+      reducedSavingsPercent: "8%",
+      button: "Escolher pacote",
+    },
     ticketsOptions: [
       {
         badge: "Normal",
@@ -668,7 +795,7 @@ const COPY: Record<
       },
       {
         badge: "Grupo",
-        title: "Bilhete de grupo (escolas)",
+        title: "Bilhete grupo/escola",
         subtitle: "30-50 pessoas no grupo",
         details: [
           "Para escolas e grupos organizados",
@@ -867,29 +994,29 @@ function RouteStepCard({
   const offsetClass = index % 2 === 0 ? "2xl:ml-0" : "2xl:ml-12";
 
   return (
-    <div className={`relative pl-8 sm:pl-10 ${offsetClass}`}>
+    <div className={`relative pl-6 sm:pl-10 ${offsetClass}`}>
       <span
-        className={`absolute left-[0.2rem] top-9 h-3.5 w-3.5 rounded-full border transition-all duration-500 ${dotClasses}`}
+        className={`absolute left-[0.05rem] top-7 h-3 w-3 rounded-full border transition-all duration-500 sm:left-[0.2rem] sm:top-9 sm:h-3.5 sm:w-3.5 ${dotClasses}`}
       />
       <article
         ref={setRef}
         data-step-index={index}
-        className={`ap-tile ap-tile-lg ap-tile-interactive relative overflow-hidden px-5 py-6 transition-all duration-500 ease-out sm:px-6 ${stateClasses}`}
+        className={`ap-tile ap-tile-lg ap-tile-interactive relative overflow-hidden px-4 py-5 transition-all duration-500 ease-out sm:px-6 sm:py-6 ${stateClasses}`}
       >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(126,246,255,0.12),transparent_34%)]" />
         <div className="relative">
-          <div className="flex items-start justify-between gap-4">
+          <div className="flex items-start justify-between gap-3 sm:gap-4">
             <div>
-              <p className="text-[0.72rem] font-medium uppercase tracking-[0.28em] text-[#7ef6ff]/78">
+              <p className="text-[0.65rem] font-medium uppercase tracking-[0.24em] text-[#7ef6ff]/78 sm:text-[0.72rem] sm:tracking-[0.28em]">
                 {step.number}
               </p>
-              <h4 className="mt-4 max-w-xl text-2xl font-semibold leading-tight text-white sm:text-[2rem]">
+              <h4 className="mt-2 max-w-xl text-xl font-semibold leading-tight text-white sm:mt-4 sm:text-2xl lg:text-[2rem]">
                 {step.title}
               </h4>
             </div>
           </div>
-          <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/72 sm:text-lg">{step.summary}</p>
-          <div className="mt-6 grid gap-3 sm:grid-cols-2">
+          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/72 sm:mt-4 sm:text-base lg:text-lg">{step.summary}</p>
+          <div className="mt-4 grid gap-2.5 sm:mt-6 sm:gap-3 sm:grid-cols-2">
             {step.highlights.map((highlight) => (
               <div
                 key={highlight}
@@ -911,16 +1038,25 @@ export default function FilmPathContent() {
   const { locale } = useI18n();
   const loc: Locale = (locale as Locale) ?? "pl";
   const t = COPY[loc];
-  const { activeIndex, seenSet, setStepRef } = useRouteTimeline(t.route.length);
-  const activeStep = t.route[activeIndex] ?? t.route[0];
-  const progress = t.route.length > 0 ? ((activeIndex + 1) / t.route.length) * 100 : 0;
+
+  const [flippedSteps, setFlippedSteps] = useState<Record<string, boolean>>({});
+  const toggleStep = (key: string) =>
+    setFlippedSteps((prev) => ({ ...prev, [key]: !prev[key] }));
+
+  useEffect(() => {
+    document.body.classList.add("film-path-route-active");
+
+    return () => {
+      document.body.classList.remove("film-path-route-active");
+    };
+  }, []);
 
   return (
-    <main className="relative z-10 min-h-screen">
-      <section className="relative z-10 px-4 pt-12 sm:pt-16">
-        <div className="ap-shell mb-10 sm:mb-12">
+    <main className="film-path-page relative z-10 min-h-screen">
+      <section className="relative z-10 px-3 pt-6 sm:px-6 sm:pt-12 lg:px-12 lg:pt-16">
+        <div className="ap-shell mb-6 sm:mb-10 lg:mb-12">
           <div className="ap-tile ap-tile-lg relative overflow-hidden">
-            <div className="relative aspect-[16/9] bg-black">
+            <div className="relative aspect-[4/5] sm:aspect-[16/9] bg-black">
               <AdaptiveVideo
                 mp4Src="/wycieczka/APE_sciezafilmowa.mp4"
                 webmSrc="/wycieczka/APE_sciezafilmowa.webm"
@@ -933,13 +1069,13 @@ export default function FilmPathContent() {
                 preferPosterOnLowPower
               />
               <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/35 to-black/80" />
-              <div className="relative flex h-full items-center justify-center p-6 text-center sm:p-10 force-overlay">
+              <div className="relative flex h-full items-center justify-center p-4 text-center sm:p-8 lg:p-10 force-overlay">
                 <div className="space-y-2 ap-page-intro-stagger">
                   <p className="ap-type-kicker force-overlay-muted">{t.heroTag}</p>
                   <h1 className="ap-type-hero-title force-overlay drop-shadow-[0_0_24px_rgba(0,0,0,0.55)]">
                     {t.heroTitle}
                   </h1>
-                  <p className="ap-type-hero-subtitle mx-auto max-w-3xl force-overlay-dim">
+                  <p className="ap-type-hero-subtitle mx-auto max-w-3xl force-overlay-dim text-sm sm:text-base lg:text-lg">
                     {t.heroLead}
                   </p>
                 </div>
@@ -949,142 +1085,176 @@ export default function FilmPathContent() {
         </div>
       </section>
 
-      <section className="px-4 pb-16 sm:pb-20">
-        <div className="ap-shell space-y-14 sm:space-y-16">
-          <section className="grid gap-8 xl:grid-cols-[minmax(21rem,0.92fr)_minmax(0,1.08fr)] xl:items-center xl:gap-10 2xl:grid-cols-[minmax(24rem,0.86fr)_minmax(0,1.14fr)]">
-            <div className="space-y-6 text-center sm:text-left">
-              <p className="text-[0.72rem] font-medium uppercase tracking-[0.28em] text-[#7ef6ff]/76">
-                {t.planEyebrow}
-              </p>
-              <h2 className="mx-auto max-w-[12ch] text-pretty text-[clamp(2.2rem,7vw,3.65rem)] font-semibold leading-[1.05] tracking-[-0.038em] text-white sm:mx-0 sm:leading-[1.01] lg:text-[4rem] lg:leading-[0.96]">
-                {t.planTitle}
-              </h2>
-              <p className="mx-auto max-w-2xl text-lg leading-relaxed text-white/72 sm:mx-0 sm:text-xl">{t.planBody}</p>
-
-              <div className="grid gap-3 sm:grid-cols-2">
-                {t.stats.map((stat) => (
-                  <div
-                    key={stat.value}
-                    className="ap-tile ap-tile-sm px-5 py-4 text-center sm:text-left"
-                  >
-                    <p className={`whitespace-nowrap font-semibold text-white ${getIntroStatValueClasses(stat.value)}`}>
-                      {stat.value}
-                    </p>
-                    <p className="mt-2 text-sm leading-relaxed text-white/60">{stat.label}</p>
-                  </div>
-                ))}
-              </div>
+      <section className="px-3 pb-12 sm:px-6 sm:pb-16 lg:px-12 lg:pb-20">
+        <div className="ap-shell space-y-10 sm:space-y-14 lg:space-y-16">
+          <Card dense motion="off" className="!py-8 sm:!py-12 lg:!py-16">
+            <div className="space-y-4 sm:space-y-6 text-center">
+              {(() => {
+                const trimmed = t.planTitle.trim();
+                const firstSpace = trimmed.indexOf(" ");
+                const accent = firstSpace > 0 ? trimmed.slice(0, firstSpace) : trimmed;
+                const rest = firstSpace > 0 ? trimmed.slice(firstSpace) : "";
+                return (
+                  <h2 className="mx-auto max-w-5xl text-pretty text-[clamp(1.85rem,7vw,4.4rem)] font-bold leading-[1.02] tracking-[-0.035em] sm:tracking-[-0.04em] text-white">
+                    <span className="text-[#7ef6ff]">{accent}</span>
+                    {rest}
+                  </h2>
+                );
+              })()}
+              <p className="mx-auto max-w-4xl text-base sm:text-lg leading-relaxed text-white/72">{t.planBody}</p>
             </div>
 
-            <div className="ap-tile ap-tile-lg p-3 sm:p-4">
-              <div className="grid gap-3 sm:grid-cols-[minmax(0,1.12fr)_minmax(0,0.88fr)] sm:grid-rows-2 sm:gap-4">
-                {t.planPhotos.map((photo, index) => {
-                  const isPrimary = index === 0;
+            <div className="mt-8 grid gap-3 sm:mt-12 lg:mt-16 sm:grid-cols-3">
+              {t.stats.map((stat) => (
+                <div
+                  key={stat.value}
+                  className="ap-tile ap-tile-sm px-4 py-3 text-center sm:px-5 sm:py-4"
+                >
+                  <p className={`whitespace-nowrap font-semibold text-white ${getIntroStatValueClasses(stat.value)}`}>
+                    {stat.value}
+                  </p>
+                  <p className="mt-1.5 text-xs leading-relaxed text-white/60 sm:mt-2 sm:text-sm">{stat.label}</p>
+                </div>
+              ))}
+            </div>
 
-                  return (
-                    <figure
-                      key={photo.src}
-                      className={`ap-tile ap-tile-sm group relative overflow-hidden bg-[#050811] ${
-                        isPrimary ? "min-h-[18rem] sm:row-span-2 sm:min-h-[27rem]" : "min-h-[10rem]"
+            <div className="mt-6 grid gap-3 sm:mt-10 sm:grid-cols-3 sm:gap-4">
+              {t.planPhotos.map((photo) => (
+                <figure
+                  key={photo.src}
+                  className="ap-tile ap-tile-sm group relative overflow-hidden bg-[#050811] min-h-[12rem] sm:min-h-[18rem]"
+                >
+                  <Image
+                    src={photo.src}
+                    alt={photo.alt}
+                    fill
+                    sizes="(min-width: 1280px) 20rem, (min-width: 640px) 33vw, 100vw"
+                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/18 to-transparent" />
+                  <figcaption className="absolute inset-x-3 bottom-3 sm:inset-x-5 sm:bottom-5">
+                    <span className="inline-flex rounded-full border border-white/12 bg-black/36 px-2.5 py-1 text-[0.65rem] font-medium tracking-[0.14em] text-white/86 backdrop-blur-sm sm:px-3 sm:text-[0.72rem] sm:tracking-[0.16em]">
+                      {photo.label}
+                    </span>
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+
+            <p className="mx-auto mt-5 max-w-3xl text-center text-xs leading-relaxed text-white/70 sm:mt-6 sm:text-sm lg:text-[0.95rem]">
+              {t.planCaption}
+            </p>
+          </Card>
+
+          <Card dense motion="off" className="!py-8 sm:!py-12 lg:!py-16">
+            <div className="space-y-4 sm:space-y-6 text-center">
+              <p className="text-[0.65rem] font-medium uppercase tracking-[0.24em] text-[#7ef6ff]/76 sm:text-[0.72rem] sm:tracking-[0.28em]">
+                {t.routeEyebrow}
+              </p>
+              {(() => {
+                const trimmed = t.routeTitle.trim();
+                const firstSpace = trimmed.indexOf(" ");
+                const accent = firstSpace > 0 ? trimmed.slice(0, firstSpace) : trimmed;
+                const rest = firstSpace > 0 ? trimmed.slice(firstSpace) : "";
+                return (
+                  <h3 className="mx-auto max-w-5xl text-pretty text-[clamp(1.85rem,7vw,4.4rem)] font-bold leading-[1.02] tracking-[-0.035em] sm:tracking-[-0.04em] text-white">
+                    <span className="text-[#7ef6ff]">{accent}</span>
+                    {rest}
+                  </h3>
+                );
+              })()}
+            </div>
+
+            <div className="mt-8 grid auto-rows-fr gap-4 sm:mt-12 sm:gap-5 sm:grid-cols-2 xl:grid-cols-4">
+              {t.route.map((step, index) => {
+                const isFlipped = Boolean(flippedSteps[step.number]);
+                const counter = `${String(index + 1).padStart(2, "0")} / ${String(t.route.length).padStart(2, "0")}`;
+                return (
+                  <div
+                    key={step.number}
+                    className="ap-tile ap-tile-sm ap-tile-interactive group relative h-full min-h-[6.5rem] overflow-hidden rounded-2xl sm:min-h-[11rem]"
+                  >
+                    {/* Front — tylko tytuł */}
+                    <div
+                      className={`absolute inset-0 flex flex-col px-3.5 py-3 transition-opacity duration-300 ease-out sm:px-5 sm:py-5 ${
+                        isFlipped ? "pointer-events-none opacity-0" : "opacity-100"
                       }`}
                     >
-                      <Image
-                        src={photo.src}
-                        alt={photo.alt}
-                        fill
-                        sizes={isPrimary ? "(min-width: 1280px) 28rem, 100vw" : "(min-width: 1280px) 18rem, 100vw"}
-                        className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/18 to-transparent" />
-                      <figcaption className="absolute inset-x-4 bottom-4 sm:inset-x-5 sm:bottom-5">
-                        <span className="inline-flex rounded-full border border-white/12 bg-black/36 px-3 py-1 text-[0.72rem] font-medium tracking-[0.16em] text-white/86 backdrop-blur-sm">
-                          {photo.label}
-                        </span>
-                      </figcaption>
-                    </figure>
-                  );
-                })}
-              </div>
-              <p className="mt-4 max-w-2xl text-sm leading-relaxed text-white/70 sm:px-1 sm:text-[0.95rem]">
-                {t.planCaption}
-              </p>
-            </div>
-          </section>
-
-          <section className="grid gap-8 xl:grid-cols-[minmax(22rem,0.86fr)_minmax(0,1.14fr)] xl:items-start xl:gap-10 2xl:grid-cols-[minmax(24rem,0.78fr)_minmax(0,1.22fr)]">
-            <div className="space-y-5 lg:space-y-6 xl:sticky xl:top-20 xl:max-h-[calc(100svh-5.5rem)] xl:max-w-[27rem] xl:overflow-y-auto xl:pr-1">
-              <div className="space-y-4">
-                <p className="text-[0.72rem] font-medium uppercase tracking-[0.28em] text-[#7ef6ff]/76">
-                  {t.routeEyebrow}
-                </p>
-                <h3 className="max-w-[11ch] text-pretty text-[clamp(2.15rem,7.8vw,3.7rem)] font-semibold leading-[1] tracking-[-0.04em] text-white sm:leading-[0.97] xl:text-[clamp(2.2rem,2.9vw,3.2rem)] 2xl:text-[3.6rem]">
-                  {t.routeTitle}
-                </h3>
-              </div>
-
-              <div className="ap-tile ap-tile-lg ap-tile-accent px-4 py-5 sm:px-5 sm:py-6 lg:px-6 xl:px-5 xl:py-5 2xl:px-6 2xl:py-6">
-                <div className="grid gap-3 md:grid-cols-[auto_minmax(0,1fr)] md:items-end xl:grid-cols-1 2xl:grid-cols-[auto_minmax(0,1fr)]">
-                  <p className="text-[clamp(2.95rem,13vw,4.15rem)] font-semibold leading-none text-white">
-                    {activeStep.number}
-                  </p>
-                  <div className="space-y-2">
-                    <p className={`font-semibold text-white ${getActiveStepTitleClasses(activeStep.title)}`}>
-                      {activeStep.title}
-                    </p>
-                    <p className="text-[clamp(0.92rem,2.65vw,1rem)] leading-relaxed text-white/68">
-                      {activeStep.summary}
-                    </p>
-                  </div>
-                </div>
-                <div className="mt-5 h-1.5 rounded-full bg-white/10">
-                  <div
-                    className="h-full rounded-full bg-[linear-gradient(90deg,#7ef6ff_0%,#f85d7e_100%)] transition-all duration-500"
-                    style={{ width: `${progress}%` }}
-                  />
-                </div>
-                <div className="mt-4 grid auto-rows-fr grid-cols-2 gap-2 sm:grid-cols-4 xl:grid-cols-2 2xl:grid-cols-4">
-                  {t.route.map((step, index) => {
-                    const isActive = index === activeIndex;
-                    const isSeen = seenSet.has(index);
-
-                    return (
-                      <div
-                        key={step.number}
-                        className={`ap-tile ap-tile-sm ap-tile-interactive flex h-full min-h-[5.6rem] flex-col overflow-hidden px-2.5 py-2.5 text-left transition-all duration-300 sm:min-h-[5.9rem] sm:px-3 ${
-                          isActive ? "is-active" : isSeen ? "opacity-80" : "opacity-45"
-                        }`}
-                      >
-                        <p className="text-[0.68rem] font-medium uppercase tracking-[0.24em] text-white/62">
-                          {step.number}
-                        </p>
-                        <p
-                          className={`mt-1.5 max-w-full text-pretty break-words text-white/74 ${getStepBadgeTitleClasses(step.title)}`}
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(126,246,255,0.16),transparent_38%)] opacity-70 transition-opacity duration-300 group-hover:opacity-100" />
+                        <div className="relative flex h-full flex-col">
+                          <div className="flex items-center justify-between gap-3">
+                            <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#7ef6ff]/40 bg-[#7ef6ff]/14 text-xs font-bold text-[#7ef6ff] shadow-[0_0_16px_rgba(126,246,255,0.25)] sm:h-10 sm:w-10 sm:text-base">
+                              {step.number}
+                            </span>
+                            <span className="text-[0.6rem] font-semibold uppercase tracking-[0.22em] text-white/28 sm:text-[0.68rem] sm:tracking-[0.24em]">
+                              {counter}
+                            </span>
+                          </div>
+                          <h4 className="mt-2 pr-9 text-pretty text-[1.05rem] font-semibold leading-[1.2] tracking-[-0.015em] text-white sm:mt-auto sm:text-[clamp(1.05rem,1.6vw,1.35rem)] sm:leading-[1.15] sm:tracking-[-0.02em]">
+                            {step.title}
+                          </h4>
+                        </div>
+                        <span
+                          aria-hidden="true"
+                          className="absolute bottom-2.5 right-2.5 flex h-6 w-6 items-center justify-center rounded-full border border-[#7ef6ff]/40 bg-[#06121a] text-[#7ef6ff] shadow-[0_0_14px_rgba(126,246,255,0.3)] transition-transform duration-300 group-hover:translate-x-0.5 sm:bottom-4 sm:right-4 sm:h-7 sm:w-7"
                         >
-                          {step.title}
-                        </p>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
+                          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                            <path
+                              d="M4.5 2.5 8 6l-3.5 3.5"
+                              stroke="currentColor"
+                              strokeWidth="1.7"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </span>
+                    </div>
 
-            <div className="relative">
-              <div className="absolute bottom-8 left-[0.55rem] top-8 w-px bg-[linear-gradient(180deg,rgba(126,246,255,0.22)_0%,rgba(255,255,255,0.08)_60%,rgba(248,93,126,0.16)_100%)] sm:left-[0.7rem]" />
-              <div className="space-y-5 sm:space-y-6">
-                {t.route.map((step, index) => (
-                  <RouteStepCard
-                    key={step.number}
-                    step={step}
-                    index={index}
-                    isActive={index === activeIndex}
-                    isSeen={seenSet.has(index)}
-                    setRef={setStepRef(index)}
-                  />
-                ))}
-              </div>
+                    {/* Back — opis */}
+                    <div
+                      className={`absolute inset-0 flex flex-col px-3.5 py-3 transition-opacity duration-300 ease-out sm:px-5 sm:py-5 ${
+                        isFlipped ? "opacity-100" : "pointer-events-none opacity-0"
+                      }`}
+                    >
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(126,246,255,0.18),transparent_42%)]" />
+                        <div className="relative flex h-full flex-col">
+                          <span className="text-[0.6rem] font-semibold uppercase tracking-[0.22em] text-[#7ef6ff]/55 sm:text-[0.68rem] sm:tracking-[0.24em]">
+                            {counter}
+                          </span>
+                          <h4 className="mt-1 text-[1rem] font-semibold leading-[1.2] tracking-[-0.015em] text-white sm:mt-1.5 sm:text-[1.05rem]">
+                            {step.title}
+                          </h4>
+                          <p className="mt-1.5 pr-8 text-[0.88rem] leading-[1.45] text-white/75 sm:mt-2 sm:text-[0.88rem]">
+                            {step.summary}
+                          </p>
+                        </div>
+                        <span
+                          aria-hidden="true"
+                          className="absolute bottom-2.5 right-2.5 flex h-6 w-6 items-center justify-center rounded-full border border-[#7ef6ff]/40 bg-[#06121a] text-[#7ef6ff] shadow-[0_0_14px_rgba(126,246,255,0.3)] transition-transform duration-300 group-hover:-translate-x-0.5 sm:bottom-4 sm:right-4 sm:h-7 sm:w-7"
+                        >
+                          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                            <path
+                              d="M7.5 2.5 4 6l3.5 3.5"
+                              stroke="currentColor"
+                              strokeWidth="1.7"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => toggleStep(step.number)}
+                      aria-pressed={isFlipped}
+                      aria-label={step.title}
+                      className="absolute inset-0 z-20 cursor-pointer rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7ef6ff]/60"
+                    />
+                  </div>
+                );
+              })}
             </div>
-          </section>
+          </Card>
 
           <Card title={t.galleryTitle} titleCentered titleDivider dense motion="off" className="overflow-hidden">
             <p className="ap-type-section-body mx-auto max-w-3xl text-center">{t.galleryIntro}</p>
@@ -1094,56 +1264,132 @@ export default function FilmPathContent() {
           </Card>
 
           <Card id="film-path-tickets" title={t.ticketsTitle} titleCentered titleDivider dense motion="off">
-            <p className="ap-type-section-body mx-auto max-w-3xl text-center">{t.ticketsIntro}</p>
-            <div className="mt-8 grid grid-cols-1 gap-x-6 gap-y-10 lg:grid-cols-2 xl:grid-cols-3">
-              {t.ticketsOptions.map((option) => (
-                <div
-                  key={option.title}
-                  className="ticket-card ap-tile group flex h-full flex-col rounded-3xl text-white/90"
+            <div className="mt-2 space-y-6 sm:space-y-8">
+              {PROMO_PACKAGES[loc]
+                .filter((promo) => promo.category === COMBINED_PROMO_BOOKING_CATEGORY)
+                .map((promo) => (
+                <article
+                  key={promo.title}
+                  className="ap-tile ap-tile-lg ap-tile-accent relative overflow-hidden px-4 py-5 sm:px-7 sm:py-7"
                 >
-                  <div className="ticket-card-top">
-                    <span className="ticket-card-badge">{option.badge}</span>
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(79,207,222,0.18),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(79,207,222,0.10),transparent_32%)]" />
+                  <div className="relative grid gap-5 sm:gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-8">
+                    <div className="space-y-4 sm:space-y-5 text-center lg:text-left">
+                      <span className="ticket-card-badge mx-auto lg:mx-0">{promo.badge}</span>
+                      <div className="space-y-2 sm:space-y-3">
+                        <h3 className="text-2xl font-semibold leading-tight tracking-[-0.03em] text-white sm:text-3xl lg:text-4xl">
+                          {promo.title}
+                        </h3>
+                        <p className="mx-auto max-w-3xl text-sm leading-relaxed text-white/76 sm:text-base lg:mx-0 lg:text-lg">
+                          {promo.subtitle}
+                        </p>
+                      </div>
+                      <div className="flex flex-wrap justify-center gap-2 sm:gap-3 lg:justify-start">
+                        {promo.details.map((detail) => (
+                          <div
+                            key={detail}
+                            className="rounded-full border border-white/12 bg-white/[0.05] px-3 py-1.5 text-xs text-white/72 sm:px-4 sm:py-2 sm:text-sm"
+                          >
+                            {detail}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex w-full flex-col items-center gap-3 sm:gap-4 lg:w-auto lg:items-end">
+                      <div className="ap-tile ap-tile-sm w-full max-w-[24rem] px-4 py-3.5 text-center sm:px-5 sm:py-4 lg:text-right">
+                        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:text-right">
+                          <div>
+                            <p className="text-[0.65rem] uppercase tracking-[0.18em] text-white/55 sm:text-xs">
+                              {promo.priceLabel}
+                            </p>
+                            <p className="mt-1 text-xl font-semibold leading-none tracking-[-0.03em] text-white sm:text-2xl lg:text-[1.75rem]">
+                              {promo.price}
+                            </p>
+                            <p className="mt-1.5 inline-flex flex-wrap items-center gap-1.5 text-[0.65rem] font-semibold leading-tight text-[#8ff3ff] sm:text-[0.72rem]">
+                              <span>−{promo.savingsPercent}</span>
+                              <span className="text-white/55">{promo.savings}</span>
+                            </p>
+                          </div>
+                          <div className="border-l border-white/10 pl-3 sm:pl-4">
+                            <p className="text-[0.65rem] uppercase tracking-[0.18em] text-white/55 sm:text-xs">
+                              {promo.reducedPriceLabel}
+                            </p>
+                            <p className="mt-1 text-xl font-semibold leading-none tracking-[-0.03em] text-white sm:text-2xl lg:text-[1.75rem]">
+                              {promo.reducedPrice}
+                            </p>
+                            <p className="mt-1.5 inline-flex flex-wrap items-center gap-1.5 text-[0.65rem] font-semibold leading-tight text-[#8ff3ff] sm:text-[0.72rem]">
+                              <span>−{promo.reducedSavingsPercent}</span>
+                              <span className="text-white/55">{promo.reducedSavings}</span>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <PrimaryButton
+                        href={buildBookingPath(loc, { category: promo.category })}
+                        size="lg"
+                        className="ticket-pill w-full whitespace-nowrap ring-[color:rgba(79,207,222,0.55)] sm:w-auto sm:min-w-[13rem]"
+                      >
+                        {promo.button}
+                      </PrimaryButton>
+                    </div>
                   </div>
-                  <div className="ticket-card-content flex h-full flex-col p-5 text-center sm:p-6">
-                    <h3 className="ticket-card-title text-xl font-semibold text-white sm:text-2xl">
-                      {option.title}
-                    </h3>
-                    <p className="ticket-card-subtitle mt-2 text-sm text-white/75 sm:text-base">
-                      {option.subtitle}
-                    </p>
-                    <div className="ticket-card-divider mt-6" />
-                    <ul className="ticket-list-panel mx-auto mb-8 mt-5 max-w-sm space-y-3 text-left text-sm text-white/75">
-                      {option.details.map((detail) => (
-                        <li key={detail} className="ticket-detail flex gap-3">
-                          <span className="ticket-detail-dot mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#4fcfde]" />
-                          <span>{detail}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <div className="ticket-price-block mt-auto pt-7">
-                      <p className="ticket-price-label text-[0.7rem] uppercase tracking-[0.25em] text-white/60">
-                        {option.priceLabel ?? t.ticketsPriceLabel}
-                      </p>
-                      <p className="ticket-price mt-2 text-2xl font-bold text-amber-200 sm:text-3xl">
-                        {option.price ?? t.ticketsPrice}
-                      </p>
-                      <div className="mt-6 flex justify-center">
+                </article>
+              ))}
+
+              <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-3">
+                {t.ticketsOptions.map((option) => (
+                  <article
+                    key={option.title}
+                    className="ap-tile ap-tile-lg relative flex flex-col overflow-hidden px-4 py-5 sm:px-6 sm:py-6"
+                  >
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(79,207,222,0.18),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(79,207,222,0.10),transparent_32%)]" />
+                    <div className="relative flex h-full flex-col gap-4 sm:gap-5 text-center">
+                      <span className="ticket-card-badge mx-auto">{option.badge}</span>
+                      <div className="space-y-2 sm:space-y-3">
+                        <h3 className="text-pretty text-lg font-semibold leading-tight tracking-[-0.03em] text-white sm:text-xl lg:text-2xl">
+                          {option.title}
+                        </h3>
+                        <p className="mx-auto max-w-3xl text-sm leading-relaxed text-white/76 sm:text-base">
+                          {option.subtitle}
+                        </p>
+                      </div>
+                      <ul className="ticket-list-panel mx-auto w-full max-w-sm space-y-2.5 text-left text-xs text-white/75 sm:space-y-3 sm:text-sm">
+                        {option.details.map((detail) => (
+                          <li key={detail} className="ticket-detail flex gap-2.5 sm:gap-3">
+                            <span className="ticket-detail-dot mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#4fcfde] sm:mt-2" />
+                            <span>{detail}</span>
+                          </li>
+                        ))}
+                      </ul>
+
+                      <div className="mt-auto flex flex-col items-center gap-3 pt-2 sm:gap-4">
+                        <div className="ap-tile ap-tile-sm w-full px-4 py-3 text-center sm:px-5 sm:py-4">
+                          <p className="text-[0.65rem] uppercase tracking-[0.22em] text-white/60 sm:text-[0.7rem] sm:tracking-[0.25em]">
+                            {option.priceLabel ?? t.ticketsPriceLabel}
+                          </p>
+                          <p className="mt-1 text-2xl font-semibold leading-none tracking-[-0.04em] text-white sm:text-[1.9rem] lg:text-[2.1rem]">
+                            {option.price ?? t.ticketsPrice}
+                          </p>
+                        </div>
+
                         <PrimaryButton
                           href={buildBookingPath(loc, {
                             category: FILM_PATH_BOOKING_CATEGORY,
                             service: option.bookingServiceName,
                             quantity: option.bookingQuantity,
                           })}
-                          size="md"
-                          className="ticket-pill ring-[color:rgba(240,60,100,0.55)]"
+                          size="lg"
+                          className="ticket-pill w-full whitespace-nowrap ring-[color:rgba(79,207,222,0.55)]"
                         >
                           {t.ticketsButton}
                         </PrimaryButton>
                       </div>
                     </div>
-                  </div>
-                </div>
-              ))}
+                  </article>
+                ))}
+              </div>
             </div>
           </Card>
         </div>

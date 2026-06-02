@@ -1,8 +1,13 @@
 import type { MetadataRoute } from "next";
+import { GALLERY_CATEGORIES } from "./galeria/galleryData";
 
 export const dynamic = "force-static";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://alverniaplanet.com";
+
+const galleryCategoryRoutes = GALLERY_CATEGORIES.map(
+  (category) => `/galeria/${category.slug}`,
+);
 
 const routes = [
   "/",
@@ -41,6 +46,7 @@ const routes = [
   "/atrakcje/k360",
   "/en/attractions/k360",
   "/pt/attractions/k360",
+  ...galleryCategoryRoutes,
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

@@ -42,11 +42,11 @@ export default function TourLineGalleryRow({ items }: Props) {
     const lowMemory = typeof deviceMemory === "number" && deviceMemory <= 4;
     const lowCpu = (nav.hardwareConcurrency ?? 8) <= 4;
 
+    void coarsePointer;
     setCanAnimate(
       !reducedMotion &&
         !saveData &&
         !constrainedNetwork &&
-        !coarsePointer &&
         !(narrowViewport && (lowMemory || lowCpu)),
     );
   }, []);

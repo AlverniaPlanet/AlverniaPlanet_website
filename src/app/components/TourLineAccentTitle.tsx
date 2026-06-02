@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 type Props = {
   children: ReactNode;
   className?: string;
-  variant?: "warm" | "cool" | "green";
+  variant?: "warm" | "cool" | "green" | "red";
 };
 
 export default function TourLineAccentTitle({ children, className, variant = "warm" }: Props) {
@@ -11,6 +11,7 @@ export default function TourLineAccentTitle({ children, className, variant = "wa
     warm: "from-[#f03c64] via-[#f77828] to-[#4fcfde]",
     cool: "from-[#4fcfde] via-[#a5e6f0] to-[#171730]",
     green: "from-[#aab4be] via-[#4fcfde] to-[#171730]",
+    red: "from-[#f7486c] via-[#ff8a9b] to-[#471028]",
   };
   const underline = underlineByVariant[variant] ?? underlineByVariant.warm;
 

@@ -5,13 +5,11 @@ import Script from "next/script";
 import dynamic from "next/dynamic";
 import AppBar from "@/app/appbar";
 import Footer from "@/app/components/Footer";
-import BookeroRuntimeWarmup from "@/app/components/BookeroRuntimeWarmup";
+import FloatingDemoPromo from "@/app/components/FloatingDemoPromo";
+import FloatingMascotCta from "@/app/components/FloatingMascotCta";
 import { I18nProvider } from "./i18n-provider";
 import { ThemeProvider } from "./theme-provider";
 
-const FloatingBookingButton = dynamic(
-  () => import("@/app/components/FloatingBookingButton"),
-);
 const AnalyticsTracker = dynamic(
   () => import("./components/AnalyticsTracker").then((mod) => mod.AnalyticsTracker),
 );
@@ -108,8 +106,15 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${poppins.variable} theme-dark`}
     >
+      <head>
+        <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="" />
+        <link rel="preconnect" href="https://www.google-analytics.com" crossOrigin="" />
+        <link rel="preconnect" href="https://connect.facebook.net" crossOrigin="" />
+        <link rel="dns-prefetch" href="https://www.facebook.com" />
+        <link rel="dns-prefetch" href="https://i.ytimg.com" />
+      </head>
       <body className="min-h-screen bg-[var(--ap-bg)] text-[color:var(--ap-text)] transition-colors duration-300">
-        <Script id="meta-pixel-init" strategy="afterInteractive">
+        <Script id="meta-pixel-init" strategy="lazyOnload">
           {`
             !function(f,b,e,v,n,t,s)
             {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -132,10 +137,10 @@ export default function RootLayout({
           />
         </noscript>
         <Script
-          strategy="afterInteractive"
+          strategy="lazyOnload"
           src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}
         />
-        <Script id="ga4-init" strategy="afterInteractive">
+        <Script id="ga4-init" strategy="lazyOnload">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
@@ -143,7 +148,7 @@ export default function RootLayout({
             gtag('config', '${gaMeasurementId}');
           `}
         </Script>
-        <Script id="gtm-script" strategy="afterInteractive">
+        <Script id="gtm-script" strategy="lazyOnload">
           {`
             (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
             new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -167,8 +172,9 @@ export default function RootLayout({
               <AppBar />
               {children}
               <Footer />
-              <FloatingBookingButton />
             </div>
+            <FloatingDemoPromo />
+            <FloatingMascotCta />
           </I18nProvider>
         </ThemeProvider>
         <script
@@ -177,7 +183,6 @@ export default function RootLayout({
         />
         <AnalyticsTracker />
         <MetaPixelPageViewTracker />
-        <BookeroRuntimeWarmup />
       </body>
     </html>
   );

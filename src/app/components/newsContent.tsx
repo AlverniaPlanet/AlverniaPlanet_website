@@ -286,35 +286,46 @@ export const NewsSectionBlock = memo(function NewsSectionBlock({
   if (teaser) {
     return (
       <ScrollMotionItem strength="soft" delay={90} float={false} className="home-deferred-block">
-        <Card title={news.title} titleCentered titleDivider dense motion="off">
-          <p className="ap-type-section-body mx-auto max-w-3xl text-center">{news.intro}</p>
+        <div>
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="ap-type-section-title">{news.title}</h2>
+            <div className="mx-auto mt-3 h-[2px] w-24 rounded-full bg-gradient-to-r from-[#4fcfde] via-[#7ef6ff] to-[#f03c64]" />
+            <p className="ap-type-section-body mt-5">{news.intro}</p>
+          </div>
 
           {spotlightItem ? (
-            <article className="ap-tile ap-tile-lg ap-tile-accent ap-tile-interactive group relative mt-9 overflow-hidden p-6 sm:p-8">
+            <article className="ap-tile ap-tile-lg ap-tile-accent ap-tile-interactive group relative mt-9 flex flex-col gap-5 overflow-hidden p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
               <div className="relative z-10 flex flex-col">
-                <span className="inline-flex w-fit items-center rounded-full border border-white/14 bg-white/6 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/72">
+                <span className="inline-flex w-fit items-center rounded-full border border-[color:var(--ap-border)] bg-[color:var(--ap-surface-strong)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--ap-text-muted)]">
                   {spotlightItem.badge}
                 </span>
-                <h3 className="mt-4 text-2xl font-semibold leading-tight text-white sm:text-3xl">
+                <h3 className="mt-4 text-2xl font-semibold leading-tight text-[color:var(--ap-text-strong)] sm:text-3xl">
                   {spotlightItem.title}
                 </h3>
-                <p className="mt-3 max-w-2xl text-base leading-7 text-white/76">
+                <p className="mt-3 max-w-2xl text-base leading-7 text-[color:var(--ap-text-dim)]">
                   {spotlightItem.description}
                 </p>
               </div>
+              <Link
+                href={viewAllHref}
+                className="relative z-10 inline-flex shrink-0 items-center gap-2 self-start rounded-full bg-[#4fcfde] px-6 py-3 text-sm font-semibold text-[#061014] shadow-[0_14px_34px_rgba(79,207,222,0.26)] transition duration-300 hover:bg-white sm:self-auto"
+              >
+                <span>{news.viewAllCta}</span>
+                <span aria-hidden="true">→</span>
+              </Link>
             </article>
-          ) : null}
-
-          <div className="mt-7 flex justify-center">
-            <Link
-              href={viewAllHref}
-              className="inline-flex items-center gap-2 rounded-full bg-[#4fcfde] px-6 py-3 text-sm font-semibold text-[#061014] shadow-[0_14px_34px_rgba(79,207,222,0.26)] transition duration-300 hover:bg-white"
-            >
-              <span>{news.viewAllCta}</span>
-              <span aria-hidden="true">→</span>
-            </Link>
-          </div>
-        </Card>
+          ) : (
+            <div className="mt-7 flex justify-center">
+              <Link
+                href={viewAllHref}
+                className="inline-flex items-center gap-2 rounded-full bg-[#4fcfde] px-6 py-3 text-sm font-semibold text-[#061014] shadow-[0_14px_34px_rgba(79,207,222,0.26)] transition duration-300 hover:bg-white"
+              >
+                <span>{news.viewAllCta}</span>
+                <span aria-hidden="true">→</span>
+              </Link>
+            </div>
+          )}
+        </div>
       </ScrollMotionItem>
     );
   }

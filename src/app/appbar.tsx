@@ -194,59 +194,39 @@ export function AppBar() {
                   </svg>
                 </button>
                 <div
-                  className={`ap-nav-dropdown absolute left-0 top-full mt-1 w-56 z-50 origin-top transition-all duration-150 ${openAttractions ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-0.5 pointer-events-none"}`}
+                  className={`absolute left-0 top-full mt-2 min-w-max z-50 origin-top transition-all duration-150 ${openAttractions ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-0.5 pointer-events-none"}`}
                 >
-                  <div className="ap-nav-dropdown-panel rounded-xl bg-[color:var(--ap-surface-contrast)] backdrop-blur ring-1 ring-[color:var(--ap-border)] shadow-xl overflow-hidden text-[color:var(--ap-text)]">
-                    <ul className="py-2 text-xs">
-                      <li>
-                        <Link
-                          href={paths.attractions.exhibition}
-                          className={cx(
-                            "ap-nav-dropdown-link block px-4 py-2",
-                            isExhibitionActive && "is-active",
-                          )}
-                          aria-current={isExhibitionActive ? "page" : undefined}
-                        >
-                          {t("menu.attractions.exhibition")}
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          href={paths.attractions.filmPath}
-                          className={cx(
-                            "ap-nav-dropdown-link block px-4 py-2",
-                            isFilmPathActive && "is-active",
-                          )}
-                          aria-current={isFilmPathActive ? "page" : undefined}
-                        >
-                          {t("menu.attractions.film_path")}
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          href={paths.attractions.k360}
-                          className={cx(
-                            "ap-nav-dropdown-link block px-4 py-2",
-                            isK360Active && "is-active",
-                          )}
-                          aria-current={isK360Active ? "page" : undefined}
-                        >
-                          {t("menu.attractions.k360")}
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          href={paths.attractions.mars}
-                          className={cx(
-                            "ap-nav-dropdown-link block px-4 py-2",
-                            isMarsActive && "is-active",
-                          )}
-                          aria-current={isMarsActive ? "page" : undefined}
-                        >
-                          {t("menu.attractions.mars")}
-                        </Link>
-                      </li>
-                    </ul>
+                  <div className="flex flex-col gap-1 rounded-2xl border border-[color:var(--ap-border)] bg-[color:var(--ap-surface-contrast)] p-1.5 shadow-[0_18px_42px_rgba(0,0,0,0.32)] text-[color:var(--ap-text)]">
+                    <Link
+                      href={paths.attractions.k360}
+                      className={cx(
+                        "rounded-full whitespace-nowrap px-3 py-1.5 text-xs transition hover:bg-[color:var(--ap-surface-strong)]",
+                        isK360Active && "bg-[color:var(--ap-surface-strong)] text-[color:var(--ap-text)]",
+                      )}
+                      aria-current={isK360Active ? "page" : undefined}
+                    >
+                      {t("menu.attractions.k360")}
+                    </Link>
+                    <Link
+                      href={paths.attractions.mars}
+                      className={cx(
+                        "rounded-full whitespace-nowrap px-3 py-1.5 text-xs transition hover:bg-[color:var(--ap-surface-strong)]",
+                        isMarsActive && "bg-[color:var(--ap-surface-strong)] text-[color:var(--ap-text)]",
+                      )}
+                      aria-current={isMarsActive ? "page" : undefined}
+                    >
+                      {t("menu.attractions.mars")}
+                    </Link>
+                    <Link
+                      href={paths.attractions.filmPath}
+                      className={cx(
+                        "rounded-full whitespace-nowrap px-3 py-1.5 text-xs transition hover:bg-[color:var(--ap-surface-strong)]",
+                        isFilmPathActive && "bg-[color:var(--ap-surface-strong)] text-[color:var(--ap-text)]",
+                      )}
+                      aria-current={isFilmPathActive ? "page" : undefined}
+                    >
+                      {t("menu.attractions.film_path")}
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -327,71 +307,69 @@ export function AppBar() {
                   </svg>
                 </button>
                 <div
-                  className={`ap-nav-dropdown absolute right-0 top-full mt-1 w-72 z-50 origin-top transition-all duration-150 ${openAbout ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-0.5 pointer-events-none"}`}
+                  className={`absolute right-0 top-full mt-2 min-w-max z-50 origin-top transition-all duration-150 ${openAbout ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-0.5 pointer-events-none"}`}
                 >
-                  <div className="ap-nav-dropdown-panel rounded-xl bg-[color:var(--ap-surface-contrast)] backdrop-blur ring-1 ring-[color:var(--ap-border)] shadow-xl overflow-hidden text-[color:var(--ap-text)]">
-                    <ul className="py-2 text-xs">
-                      <li>
-                        <Link
-                          href={paths.about}
-                          className={cx(
-                            "ap-nav-dropdown-link block px-4 py-2",
-                            isAboutPageActive && "is-active",
-                          )}
-                          aria-current={isAboutPageActive ? "page" : undefined}
-                        >
-                          {t("nav.about_alvernia")}
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          href={paths.gallery}
-                          className={cx(
-                            "ap-nav-dropdown-link block px-4 py-2",
-                            isGalleryActive && "is-active",
-                          )}
-                          aria-current={isGalleryActive ? "page" : undefined}
-                        >
-                          {t("nav.gallery")}
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          href={paths.vrTour}
-                          className={cx(
-                            "ap-nav-dropdown-link block px-4 py-2",
-                            isVrTourActive && "is-active",
-                          )}
-                          aria-current={isVrTourActive ? "page" : undefined}
-                        >
-                          {t("nav.virtual_walk")}
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          href={paths.news}
-                          className={cx(
-                            "ap-nav-dropdown-link block px-4 py-2",
-                            isNewsActive && "is-active",
-                          )}
-                          aria-current={isNewsActive ? "page" : undefined}
-                        >
-                          {t("nav.news")}
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          href={paths.faq}
-                          className={cx(
-                            "ap-nav-dropdown-link block px-4 py-2",
-                            isFaqActive && "is-active",
-                          )}
-                          aria-current={isFaqActive ? "page" : undefined}
-                        >
-                          {t("nav.faq")}
-                        </Link>
-                      </li>
-                    </ul>
+                  <div className="flex flex-col gap-1 rounded-2xl border border-[color:var(--ap-border)] bg-[color:var(--ap-surface-contrast)] p-1.5 shadow-[0_18px_42px_rgba(0,0,0,0.32)] text-[color:var(--ap-text)]">
+                    <Link
+                      href={paths.about}
+                      className={cx(
+                        "rounded-full whitespace-nowrap px-3 py-1.5 text-xs transition hover:bg-[color:var(--ap-surface-strong)]",
+                        isAboutPageActive && "bg-[color:var(--ap-surface-strong)] text-[color:var(--ap-text)]",
+                      )}
+                      aria-current={isAboutPageActive ? "page" : undefined}
+                    >
+                      {t("nav.about_alvernia")}
+                    </Link>
+                    <Link
+                      href={paths.attractions.exhibition}
+                      className={cx(
+                        "rounded-full whitespace-nowrap px-3 py-1.5 text-xs transition hover:bg-[color:var(--ap-surface-strong)]",
+                        isExhibitionActive && "bg-[color:var(--ap-surface-strong)] text-[color:var(--ap-text)]",
+                      )}
+                      aria-current={isExhibitionActive ? "page" : undefined}
+                    >
+                      {t("menu.attractions.exhibition")}
+                    </Link>
+                    <Link
+                      href={paths.gallery}
+                      className={cx(
+                        "rounded-full whitespace-nowrap px-3 py-1.5 text-xs transition hover:bg-[color:var(--ap-surface-strong)]",
+                        isGalleryActive && "bg-[color:var(--ap-surface-strong)] text-[color:var(--ap-text)]",
+                      )}
+                      aria-current={isGalleryActive ? "page" : undefined}
+                    >
+                      {t("nav.gallery")}
+                    </Link>
+                    <Link
+                      href={paths.vrTour}
+                      className={cx(
+                        "rounded-full whitespace-nowrap px-3 py-1.5 text-xs transition hover:bg-[color:var(--ap-surface-strong)]",
+                        isVrTourActive && "bg-[color:var(--ap-surface-strong)] text-[color:var(--ap-text)]",
+                      )}
+                      aria-current={isVrTourActive ? "page" : undefined}
+                    >
+                      {t("nav.virtual_walk")}
+                    </Link>
+                    <Link
+                      href={paths.news}
+                      className={cx(
+                        "rounded-full whitespace-nowrap px-3 py-1.5 text-xs transition hover:bg-[color:var(--ap-surface-strong)]",
+                        isNewsActive && "bg-[color:var(--ap-surface-strong)] text-[color:var(--ap-text)]",
+                      )}
+                      aria-current={isNewsActive ? "page" : undefined}
+                    >
+                      {t("nav.news")}
+                    </Link>
+                    <Link
+                      href={paths.faq}
+                      className={cx(
+                        "rounded-full whitespace-nowrap px-3 py-1.5 text-xs transition hover:bg-[color:var(--ap-surface-strong)]",
+                        isFaqActive && "bg-[color:var(--ap-surface-strong)] text-[color:var(--ap-text)]",
+                      )}
+                      aria-current={isFaqActive ? "page" : undefined}
+                    >
+                      {t("nav.faq")}
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -473,15 +451,13 @@ export function AppBar() {
 
         {/* MENU MOBILNE (reszta linków w burgerze) */}
         <div
-          className={`lg:hidden mx-auto w-full max-w-[min(94vw,96rem)] mt-2 grid transition-[grid-template-rows,opacity] duration-300 ${
-            open ? "grid-rows-[1fr] opacity-100 overflow-visible" : "grid-rows-[0fr] opacity-0 overflow-hidden"
+          className={`lg:hidden mx-auto w-full max-w-[min(94vw,96rem)] mt-2 grid transition-[grid-template-rows,opacity] duration-300 overflow-hidden ${
+            open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
           }`}
           aria-hidden={!open}
         >
           <nav
-            className={`min-h-0 rounded-2xl border border-[color:var(--ap-border)] bg-[var(--ap-nav-bg)] supports-[backdrop-filter]:md:backdrop-blur shadow-[0_18px_38px_rgba(4,6,18,0.28)] ${
-              open ? "overflow-visible" : "overflow-hidden"
-            }`}
+            className={`min-h-0 max-h-[calc(100svh-7rem)] overflow-y-auto overscroll-contain rounded-2xl border border-[color:var(--ap-border)] bg-[var(--ap-nav-bg)] supports-[backdrop-filter]:md:backdrop-blur shadow-[0_18px_38px_rgba(4,6,18,0.28)]`}
           >
             <ul className="space-y-1 px-4 pb-4 pt-1 text-sm">
               <li>
@@ -492,30 +468,6 @@ export function AppBar() {
               {/* submenu: Atrakcje (mobile) */}
               <li className="ml-3">
                 <ul className="space-y-1">
-                  <li>
-                    <Link
-                      href={paths.attractions.exhibition}
-                      className={cx(
-                        "ap-mobile-link block rounded-md px-3 py-2 text-gray-200",
-                        isExhibitionActive && "is-active",
-                      )}
-                      aria-current={isExhibitionActive ? "page" : undefined}
-                    >
-                      • {t("menu.attractions.exhibition")}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href={paths.attractions.filmPath}
-                      className={cx(
-                        "ap-mobile-link block rounded-md px-3 py-2 text-gray-200",
-                        isFilmPathActive && "is-active",
-                      )}
-                      aria-current={isFilmPathActive ? "page" : undefined}
-                    >
-                      • {t("menu.attractions.film_path")}
-                    </Link>
-                  </li>
                   <li>
                     <Link
                       href={paths.attractions.k360}
@@ -538,6 +490,18 @@ export function AppBar() {
                       aria-current={isMarsActive ? "page" : undefined}
                     >
                       • {t("menu.attractions.mars")}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href={paths.attractions.filmPath}
+                      className={cx(
+                        "ap-mobile-link block rounded-md px-3 py-2 text-gray-200",
+                        isFilmPathActive && "is-active",
+                      )}
+                      aria-current={isFilmPathActive ? "page" : undefined}
+                    >
+                      • {t("menu.attractions.film_path")}
                     </Link>
                   </li>
                 </ul>
@@ -581,6 +545,18 @@ export function AppBar() {
                       aria-current={isAboutPageActive ? "page" : undefined}
                     >
                       • {t("nav.about_alvernia")}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href={paths.attractions.exhibition}
+                      className={cx(
+                        "ap-mobile-link block rounded-md px-3 py-2 text-gray-200",
+                        isExhibitionActive && "is-active",
+                      )}
+                      aria-current={isExhibitionActive ? "page" : undefined}
+                    >
+                      • {t("menu.attractions.exhibition")}
                     </Link>
                   </li>
                   <li>

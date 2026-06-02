@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useI18n } from "@/app/i18n-provider";
 import { getLocalizedPath, mapToPolishRoute, normalizePathname, type Locale } from "@/lib/localizedRoutes";
@@ -52,42 +52,115 @@ export default function LangSwitcher() {
   const pathname = usePathname();
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => setMounted(true), []);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!containerRef.current?.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [open]);
 
   if (!mounted) return null;
 
   const active = OPTIONS.find((opt) => opt.code === locale) ?? OPTIONS[0];
+  const others = OPTIONS.filter((opt) => opt.code !== active.code);
 
   const switchLocale = (target: LangOption["code"]) => {
     const current = normalizePathname(pathname);
     const nextPath = getLocalizedPath(mapToPolishRoute(current), target);
     setLocale(target);
     router.push(nextPath);
+    setOpen(false);
   };
 
   return (
-    <div className="inline-flex items-center gap-2">
-      {OPTIONS.map((opt) => {
-        const isActive = opt.code === active.code;
-        return (
-          <button
-            key={opt.code}
-            type="button"
-            onClick={() => switchLocale(opt.code)}
-            className={`ap-lang-pill inline-flex items-center justify-center rounded-full ring-1 px-2.5 py-1.5 transition ${
-              isActive
-                ? "is-active bg-[color:var(--ap-surface-contrast)] ring-[color:var(--ap-border)]"
-                : "bg-[color:var(--ap-surface-strong)] ring-[color:var(--ap-border)] opacity-88 hover:opacity-100"
-            }`}
-            aria-pressed={isActive}
-            aria-label={opt.label}
-            title={opt.label}
+    <>
+      {/* Mobile: 3 flags side by side */}
+      <div className="inline-flex items-center gap-2 md:hidden">
+        {OPTIONS.map((opt) => {
+          const isActive = opt.code === active.code;
+          return (
+            <button
+              key={opt.code}
+              type="button"
+              onClick={() => switchLocale(opt.code)}
+              className={`ap-lang-pill inline-flex items-center justify-center rounded-full ring-1 px-2.5 py-1.5 transition ${
+                isActive
+                  ? "is-active bg-[color:var(--ap-surface-contrast)] ring-[color:var(--ap-border)]"
+                  : "bg-[color:var(--ap-surface-strong)] ring-[color:var(--ap-border)] opacity-88 hover:opacity-100"
+              }`}
+              aria-pressed={isActive}
+              aria-label={opt.label}
+              title={opt.label}
+            >
+              <Flag code={opt.code} />
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Desktop: dropdown */}
+      <div ref={containerRef} className="relative hidden md:inline-flex">
+        <button
+          type="button"
+          onClick={() => setOpen((value) => !value)}
+          className="ap-lang-pill is-active inline-flex items-center gap-1.5 rounded-full ring-1 bg-[color:var(--ap-surface-contrast)] ring-[color:var(--ap-border)] px-2.5 py-1.5 transition"
+          aria-haspopup="listbox"
+          aria-expanded={open}
+          aria-label={`${active.label} — zmień język`}
+          title={active.label}
+        >
+          <Flag code={active.code} />
+          <svg
+            aria-hidden="true"
+            width="10"
+            height="10"
+            viewBox="0 0 10 10"
+            className={`text-[color:var(--ap-text-dim)] transition-transform duration-200 ${open ? "rotate-180" : ""}`}
           >
-            <Flag code={opt.code} />
-          </button>
-        );
-      })}
-    </div>
+            <path d="M2 4l3 3 3-3" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+
+        {open ? (
+          <div
+            role="listbox"
+            className="absolute right-0 top-full z-40 mt-2 flex min-w-max flex-col gap-1 rounded-2xl border border-[color:var(--ap-border)] bg-[color:var(--ap-surface-contrast)] p-1.5 shadow-[0_18px_42px_rgba(0,0,0,0.32)]"
+          >
+            {others.map((opt) => (
+              <button
+                key={opt.code}
+                type="button"
+                role="option"
+                aria-selected="false"
+                onClick={() => switchLocale(opt.code)}
+                className="ap-lang-pill inline-flex items-center gap-2 rounded-full px-2.5 py-1.5 text-left text-xs text-[color:var(--ap-text)] transition hover:bg-[color:var(--ap-surface-strong)]"
+                title={opt.label}
+              >
+                <Flag code={opt.code} />
+                <span className="whitespace-nowrap">{opt.label}</span>
+              </button>
+            ))}
+          </div>
+        ) : null}
+      </div>
+    </>
   );
 }

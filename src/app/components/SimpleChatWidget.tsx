@@ -92,7 +92,7 @@ const CHAT_COPY: Record<
       events:
         "Informacje o wynajmie przestrzeni i eventach znajdziesz na podstronie „Wydarzenia”.",
       attractions:
-        "Najważniejsze atrakcje to: Projekcja K360, Ścieżka filmowa i Wystawa tematyczna.",
+        "Najważniejsze atrakcje to: Projekcja K360, Projekt: MARS i Ścieżka filmowa.",
       gallery: "Pełna galeria zdjęć jest dostępna na osobnej podstronie „Galeria”.",
       booking: "Rezerwację najwygodniej zrobić bezpośrednio przez system Bookero.",
     },
@@ -126,7 +126,7 @@ const CHAT_COPY: Record<
         "Contact: +48 12 344 40 00, rezerwacje@alverniaplanet.com. You can also use the contact form.",
       events: "Venue rental and event details are on the “Events” page.",
       attractions:
-        "Main attractions: K360 projection, Film Path and Themed Exhibition.",
+        "Main attractions: K360 projection, Mars Project and Film Path.",
       gallery: "The full photo gallery is available on the separate “Gallery” page.",
       booking: "The easiest way to book is via Bookero.",
     },
@@ -161,7 +161,7 @@ const CHAT_COPY: Record<
       events:
         "Informações sobre aluguer de espaço e eventos estão na página “Eventos”.",
       attractions:
-        "Atrações principais: Projeção K360, Percurso de filmagem e Exposição temática.",
+        "Atrações principais: Projeção K360, Projeto MARS e Percurso de filmagem.",
       gallery: "A galeria completa está disponível na página “Galeria”.",
       booking: "A forma mais rápida de reservar é pelo Bookero.",
     },
