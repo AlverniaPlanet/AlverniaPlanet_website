@@ -26,6 +26,7 @@ type BusRoute = {
   stop: string;
   schedule: string;
   scheduleUrl?: string;
+  highlight?: boolean;
 };
 
 const COPY: Record<
@@ -48,6 +49,7 @@ const COPY: Record<
     busStopLabel: string;
     busScheduleLabel: string;
     busScheduleLink: string;
+    badgeNew: string;
     unit: string;
   }
 > = {
@@ -69,6 +71,7 @@ const COPY: Record<
     busStopLabel: "Najbliższy przystanek:",
     busScheduleLabel: "Rozkład:",
     busScheduleLink: "Zobacz rozkład",
+    badgeNew: "NOWOŚĆ",
     unit: "km",
   },
   en: {
@@ -89,6 +92,7 @@ const COPY: Record<
     busStopLabel: "Nearest stop:",
     busScheduleLabel: "Timetable:",
     busScheduleLink: "View timetable",
+    badgeNew: "NEW",
     unit: "km",
   },
   pt: {
@@ -109,6 +113,7 @@ const COPY: Record<
     busStopLabel: "Paragem mais próxima:",
     busScheduleLabel: "Horário:",
     busScheduleLink: "Ver horários",
+    badgeNew: "NOVIDADE",
     unit: "km",
   },
 };
@@ -170,8 +175,21 @@ const ATTRACTIONS: Record<Locale, NearbyItem[]> = {
   ],
 };
 
+const FLIXBUS_URL =
+  "https://shop.flixbus.pl/search?departureCity=40de7eb5-8646-11e6-9066-549f350fcb0c&arrivalCity=dcc38757-f8af-4d9b-a71f-a1c7d5d3c269&route=Kraków-Nieporaz&adult=1&_locale=pl";
+
 const BUS_ROUTES: Record<Locale, BusRoute[]> = {
   pl: [
+    {
+      origin: "Kraków MDA, ul. Bosacka",
+      heading: "FlixBus: Kraków MDA → Alvernia Planet",
+      from: "Kraków MDA, ul. Bosacka",
+      stop: "Alvernia Planet (bezpośrednio pod obiektem)",
+      schedule:
+        "Codziennie 2 kursy: 07:45 → 08:24 oraz 14:20 → 14:59 (ok. 39 min jazdy, ceny od ok. 28 zł).",
+      scheduleUrl: FLIXBUS_URL,
+      highlight: true,
+    },
     {
       origin: "Krzeszowice Dworzec Komunikacyjny",
       heading: "M-Bus Matysik: Krzeszowice → Rudno",
@@ -194,6 +212,16 @@ const BUS_ROUTES: Record<Locale, BusRoute[]> = {
   ],
   en: [
     {
+      origin: "Kraków MDA, ul. Bosacka",
+      heading: "FlixBus: Kraków MDA → Alvernia Planet",
+      from: "Kraków MDA, ul. Bosacka",
+      stop: "Alvernia Planet (drop-off at the venue)",
+      schedule:
+        "Daily, 2 departures: 07:45 → 08:24 and 14:20 → 14:59 (~39 min ride, from ~28 PLN).",
+      scheduleUrl: FLIXBUS_URL,
+      highlight: true,
+    },
+    {
       origin: "Krzeszowice Dworzec Komunikacyjny",
       heading: "M-Bus Matysik: Krzeszowice → Rudno",
       from: "Krzeszowice – bus station",
@@ -214,6 +242,16 @@ const BUS_ROUTES: Record<Locale, BusRoute[]> = {
     },
   ],
   pt: [
+    {
+      origin: "Kraków MDA, ul. Bosacka",
+      heading: "FlixBus: Cracóvia MDA → Alvernia Planet",
+      from: "Cracóvia MDA, ul. Bosacka",
+      stop: "Alvernia Planet (paragem junto ao recinto)",
+      schedule:
+        "Diariamente, 2 ligações: 07:45 → 08:24 e 14:20 → 14:59 (~39 min de viagem, desde ~28 PLN).",
+      scheduleUrl: FLIXBUS_URL,
+      highlight: true,
+    },
     {
       origin: "Krzeszowice Dworzec Komunikacyjny",
       heading: "M-Bus Matysik: Krzeszowice → Rudno",
@@ -254,7 +292,7 @@ export default function JakDojechacPage() {
   const buses = BUS_ROUTES[loc];
   const [mapSrc, setMapSrc] = useState<string>(MAP_SRC);
   const [activeOrigin, setActiveOrigin] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"attractions" | "routes" | "buses">("routes");
+  const [activeTab, setActiveTab] = useState<"attractions" | "routes" | "buses">("buses");
   const [shouldLoadMap, setShouldLoadMap] = useState(false);
   const mapWrapperRef = useRef<HTMLDivElement | null>(null);
 
@@ -374,12 +412,21 @@ export default function JakDojechacPage() {
                               onClick={() => setOrigin(route.origin)}
                               className={`ap-tile ap-tile-sm ap-tile-interactive w-full px-4 py-3 text-left ${
                                 isActive ? "is-active" : ""
+                              } ${
+                                route.highlight
+                                  ? "!border-[#7ef6ff]/55 !ring-1 !ring-[#7ef6ff]/35 shadow-[0_0_24px_rgba(126,246,255,0.18)]"
+                                  : ""
                               }`}
                               aria-pressed={isActive}
                             >
-                              <span className="inline-flex items-center gap-3 font-semibold">
+                              <span className="inline-flex flex-wrap items-center gap-2.5 font-semibold sm:gap-3">
                                 <FaBus className="text-[color:var(--ap-accent)] h-4 w-4 shrink-0" />
                                 {route.heading}
+                                {route.highlight ? (
+                                  <span className="inline-flex items-center rounded-full bg-[#7ef6ff] px-2 py-0.5 text-[0.62rem] font-extrabold uppercase tracking-[0.18em] text-[#06121a] shadow-[0_4px_14px_rgba(126,246,255,0.35)]">
+                                    {copy.badgeNew}
+                                  </span>
+                                ) : null}
                               </span>
                               <span className="mt-2 block text-sm text-white/75 space-y-1">
                                 <span className="block">

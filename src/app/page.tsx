@@ -12,6 +12,8 @@ import { NEWS_COPY, NewsSectionBlock, type NewsSection } from "@/app/components/
 import ScrollMotionItem from "@/app/components/ScrollMotionItem";
 import { waitForImagesReady } from "@/app/components/waitForImagesReady";
 import {
+  ALL_ATTRACTIONS_BOOKING_CATEGORY,
+  ALL_ATTRACTIONS_BOOKING_SERVICES,
   buildBookingPath,
   FILM_PATH_BOOKING_CATEGORY,
   FILM_PATH_BOOKING_SERVICES,
@@ -114,8 +116,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
     heroTitle: "Witamy w Alvernia Planet",
     heroPromos: [
       {
-        message: "Przeżyj projekcję K360",
-        cta: "Zobacz projekcję K360",
+        message: "Przeżyj kino K360",
+        cta: "Zobacz kino K360",
         href: "/atrakcje/k360",
         tone: "hot",
         previewMedia: "k360",
@@ -126,13 +128,13 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       intro: "Wejdź do świata kopuł i zacznij od naszych trzech flagowych doświadczeń.",
       items: [
         {
-          title: "Projekcja K360",
+          title: "Kino K360",
           description:
             "Immersyjna projekcja fulldome w jednej z najbardziej zaawansowanych kopuł w Europie.",
-          cta: "Zobacz projekcję K360",
+          cta: "Zobacz kino K360",
           href: "/atrakcje/k360",
           image: "/galeria/K360/2.webp",
-          imageAlt: "Kadr z projekcji K360 — fulldome na całej kopule",
+          imageAlt: "Kadr z kina K360 — fulldome na całej kopule",
           accent: "red",
         },
         {
@@ -169,7 +171,7 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       ctaHref: "/rezerwuj",
       promoTicket: {
         badge: "Pakiet",
-        title: "Ścieżka + Projekcja K360",
+        title: "Ścieżka + Kino K360",
         subtitle:
           "Jeden duży pakiet promocyjny, który łączy zwiedzanie Ścieżki filmowej z projekcją K360.",
         details: ["Około 3 godzin łącznie ze zwiedzaniem i seansem"],
@@ -182,7 +184,7 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       options: [
         {
           badge: "K360",
-          title: "Projekcja K360",
+          title: "Kino K360",
           subtitle: "Immersyjne fulldome na 360°",
           details: ["Cena regularna za osobę"],
           price: "49 zł/os.",
@@ -241,8 +243,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
     heroTitle: "Welcome to Alvernia Planet",
     heroPromos: [
       {
-        message: "Experience the K360 projection",
-        cta: "See K360 projection",
+        message: "Experience the K360 Cinema",
+        cta: "See K360 Cinema",
         href: "/atrakcje/k360",
         tone: "hot",
         previewMedia: "k360",
@@ -253,12 +255,12 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       intro: "Start with our signature experiences inside the domes.",
       items: [
         {
-          title: "K360 projection",
+          title: "K360 Cinema",
           description: "Immersive dome projection with the image all around you.",
-          cta: "See K360 projection",
+          cta: "See K360 Cinema",
           href: "/atrakcje/k360",
           image: "/galeria/K360/2.webp",
-          imageAlt: "Frame from the K360 projection — fulldome across the ceiling",
+          imageAlt: "Frame from the K360 Cinema — fulldome across the ceiling",
           accent: "red",
         },
         {
@@ -294,9 +296,9 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       ctaHref: "/en/reserve",
       promoTicket: {
         badge: "Package",
-        title: "Film Path + K360 projection",
+        title: "Film Path + K360 Cinema",
         subtitle:
-          "One large promotional package that combines the Film Path visit with a K360 projection.",
+          "One large promotional package that combines the Film Path visit with a K360 Cinema.",
         details: ["About 3 hours in total with the visit and screening"],
         priceLabel: "Promo price",
         price: "119.00 PLN",
@@ -307,7 +309,7 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       options: [
         {
           badge: "K360",
-          title: "K360 projection",
+          title: "K360 Cinema",
           subtitle: "Immersive 360° fulldome",
           details: ["Standard price per person"],
           price: "49 PLN/person",
@@ -366,8 +368,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
     heroTitle: "Bem-vindo à Alvernia Planet",
     heroPromos: [
       {
-        message: "Vive a projeção K360",
-        cta: "Ver a projeção K360",
+        message: "Vive a cinema K360",
+        cta: "Ver a cinema K360",
         href: "/atrakcje/k360",
         tone: "hot",
         previewMedia: "k360",
@@ -378,13 +380,13 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       intro: "Entre no mundo das cúpulas e comece pelas nossas três experiências emblemáticas.",
       items: [
         {
-          title: "Projeção K360",
+          title: "Cinema K360",
           description:
             "Projeções imersivas em cúpula com imagem a 360° numa das estruturas mais avançadas da Europa.",
-          cta: "Ver a projeção K360",
+          cta: "Ver a cinema K360",
           href: "/atrakcje/k360",
           image: "/galeria/K360/2.webp",
-          imageAlt: "Imagem da projeção K360 — fulldome em toda a cúpula",
+          imageAlt: "Imagem da cinema K360 — fulldome em toda a cúpula",
           accent: "red",
         },
         {
@@ -420,7 +422,7 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       ctaHref: "/pt/reservar",
       promoTicket: {
         badge: "Pacote",
-        title: "Percurso + Projeção K360",
+        title: "Percurso + Cinema K360",
         subtitle:
           "Um grande pacote promocional que junta a visita ao Percurso de filmagem com a projeção no K360.",
         details: ["Cerca de 3 horas no total com visita e sessão"],
@@ -433,7 +435,7 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       options: [
         {
           badge: "K360",
-          title: "Projeção K360",
+          title: "Cinema K360",
           subtitle: "Fulldome imersivo a 360°",
           details: ["Preço normal por pessoa"],
           price: "49 PLN/pessoa",
@@ -604,25 +606,38 @@ export default function Page() {
 
 const HERO_NAV_LABELS: Record<
   Locale,
-  { attractions: string; about: string; route: string; buy: string }
+  {
+    attractions: string;
+    about: string;
+    route: string;
+    buy: string;
+    promoEyebrow: string;
+    promoMain: string;
+  }
 > = {
   pl: {
     attractions: "Sprawdź atrakcje",
     about: "Informacje",
     route: "Jak dojechać",
     buy: "Kup bilet",
+    promoEyebrow: "Promocja • do 30.06",
+    promoMain: "Jeden bilet na wszystkie atrakcje — od 99 zł",
   },
   en: {
     attractions: "See attractions",
     about: "Information",
     route: "How to get there",
     buy: "Buy ticket",
+    promoEyebrow: "Offer • until 30.06",
+    promoMain: "One ticket for all attractions — from 99 PLN",
   },
   pt: {
     attractions: "Ver atrações",
     about: "Informações",
     route: "Como chegar",
     buy: "Comprar bilhete",
+    promoEyebrow: "Promoção • até 30.06",
+    promoMain: "Um bilhete para todas as atrações — desde 99 PLN",
   },
 };
 
@@ -642,8 +657,8 @@ const HeroSection = memo(function HeroSection({
   const paths = getSitePaths(locale);
   const navLabels = HERO_NAV_LABELS[locale];
   const heroBookingHref = buildBookingPath(locale, {
-    category: K360_BOOKING_CATEGORY,
-    service: K360_BOOKING_SERVICES.reduced,
+    category: ALL_ATTRACTIONS_BOOKING_CATEGORY,
+    service: ALL_ATTRACTIONS_BOOKING_SERVICES.reduced,
     autopick: true,
   });
   const pinRef = useRef<HTMLDivElement | null>(null);
@@ -767,6 +782,40 @@ const HeroSection = memo(function HeroSection({
           transitionDelay: "320ms",
         }}
       >
+        <Link
+          href={heroBookingHref}
+          className="pointer-events-auto group mb-5 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#4fcfde] via-[#7ef6ff] to-[#4fcfde] px-3.5 py-2 text-[#06121a] shadow-[0_14px_36px_rgba(126,246,255,0.45),0_0_28px_rgba(126,246,255,0.35)] ring-1 ring-white/45 transition hover:scale-[1.03] hover:brightness-105 sm:mb-7 sm:gap-3 sm:px-5 sm:py-2.5 lg:mb-9 lg:px-6 lg:py-3"
+        >
+          <span className="relative inline-flex h-2 w-2 shrink-0">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#ff3960] opacity-75" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-[#ff3960]" />
+          </span>
+          <span className="flex flex-col items-start leading-none sm:flex-row sm:items-center sm:gap-2">
+            <span className="text-[0.58rem] font-bold uppercase tracking-[0.18em] text-[#06121a]/80 sm:text-[0.62rem] sm:tracking-[0.2em]">
+              {navLabels.promoEyebrow}
+            </span>
+            <span className="hidden h-3 w-px bg-[#06121a]/30 sm:inline-block" aria-hidden="true" />
+            <span className="mt-0.5 text-[0.78rem] font-extrabold tracking-[-0.005em] sm:mt-0 sm:text-sm lg:text-[0.95rem]">
+              {navLabels.promoMain}
+            </span>
+          </span>
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 14 14"
+            fill="none"
+            aria-hidden="true"
+            className="shrink-0 transition-transform group-hover:translate-x-0.5"
+          >
+            <path
+              d="M5 3l4 4-4 4"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </Link>
         <h1 className="ap-type-hero-title !text-white [text-shadow:0_2px_8px_rgba(0,0,0,0.75),0_12px_30px_rgba(0,0,0,0.85),0_24px_60px_rgba(0,0,0,0.6)]">
           {heroTitle}
         </h1>

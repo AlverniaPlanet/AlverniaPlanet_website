@@ -3,4 +3,14 @@ node_modules/
 .env.local
 .env.*
 
+# Build outputs / caches — never commit
+.next/
+out/
 out.zip
+.tmp-ql/
+
+# Logs and IDE/OS junk
+*.log
+firebase-debug.log
+tsconfig.tsbuildinfo
+.DS_Store

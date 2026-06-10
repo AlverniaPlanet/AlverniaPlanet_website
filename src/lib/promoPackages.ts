@@ -1,7 +1,4 @@
-import {
-  COMBINED_PROMO_BOOKING_CATEGORY,
-  K360_MARS_PROMO_BOOKING_CATEGORY,
-} from "@/lib/booking";
+import { ALL_ATTRACTIONS_BOOKING_CATEGORY } from "@/lib/booking";
 
 export type PromoLocale = "pl" | "en" | "pt";
 
@@ -22,114 +19,65 @@ export type PromoPackage = {
   category: string;
 };
 
-// Both promo packages, in a fixed order, shown on every attraction page.
+// Jeden pakiet: bilet na wszystkie 3 atrakcje (K360 + MARS + Ścieżka).
+// ⚠️ Zweryfikuj ceny normalny/oszczędności — założyłem 119,00 zł normalny / 99,00 zł ulgowy
+//    co daje oszczędność ~50% względem 3 osobnych biletów (49 + 69 + 79 = 197 zł normalny).
 export const PROMO_PACKAGES: Record<PromoLocale, PromoPackage[]> = {
   pl: [
     {
       badge: "Pakiet",
-      title: "K360 + Projekt: MARS",
+      title: "Bilet na wszystkie atrakcje",
       subtitle:
-        "Pakiet promocyjny łączący projekcję K360 z Projektem MARS — dwie atrakcje w jednej cenie.",
-      details: ["Dwie atrakcje w jednym dniu"],
-      priceLabel: "Cena normalna",
-      price: "89,00 zł",
-      savings: "Oszczędzasz 29,00 zł",
-      savingsPercent: "25%",
-      reducedPriceLabel: "Cena ulgowa",
-      reducedPrice: "79,00 zł",
-      reducedSavings: "Oszczędzasz 19,00 zł",
-      reducedSavingsPercent: "19%",
-      button: "Wybierz pakiet",
-      category: K360_MARS_PROMO_BOOKING_CATEGORY,
-    },
-    {
-      badge: "Pakiet",
-      title: "Ścieżka + Projekcja K360",
-      subtitle:
-        "Jeden duży pakiet promocyjny, który łączy zwiedzanie Ścieżki filmowej z projekcją K360.",
-      details: ["Około 3 godzin łącznie ze zwiedzaniem i seansem"],
+        "Jeden bilet, trzy atrakcje: Kino K360, Projekt: MARS i Ścieżka filmowa — najtaniej i najwygodniej.",
+      details: ["Trzy atrakcje w jednej cenie", "Ważny w jednym dniu"],
       priceLabel: "Cena normalna",
       price: "119,00 zł",
-      savings: "Oszczędzasz 9,00 zł",
-      savingsPercent: "7%",
+      savings: "Oszczędzasz 78,00 zł",
+      savingsPercent: "40%",
       reducedPriceLabel: "Cena ulgowa",
       reducedPrice: "99,00 zł",
-      reducedSavings: "Oszczędzasz 9,00 zł",
-      reducedSavingsPercent: "8%",
-      button: "Wybierz pakiet",
-      category: COMBINED_PROMO_BOOKING_CATEGORY,
+      reducedSavings: "Oszczędzasz 68,00 zł",
+      reducedSavingsPercent: "41%",
+      button: "Kup bilet",
+      category: ALL_ATTRACTIONS_BOOKING_CATEGORY,
     },
   ],
   en: [
     {
       badge: "Package",
-      title: "K360 + Mars Project",
+      title: "All-attractions ticket",
       subtitle:
-        "Promotional package combining the K360 projection with the Mars Project — two attractions at one price.",
-      details: ["Two attractions in a single day"],
-      priceLabel: "Standard price",
-      price: "89.00 PLN",
-      savings: "You save 29.00 PLN",
-      savingsPercent: "25%",
-      reducedPriceLabel: "Reduced price",
-      reducedPrice: "79.00 PLN",
-      reducedSavings: "You save 19.00 PLN",
-      reducedSavingsPercent: "19%",
-      button: "Choose package",
-      category: K360_MARS_PROMO_BOOKING_CATEGORY,
-    },
-    {
-      badge: "Package",
-      title: "Film Path + K360 projection",
-      subtitle:
-        "One large promotional package that combines the Film Path visit with a K360 projection.",
-      details: ["About 3 hours in total with the visit and screening"],
+        "One ticket, three attractions: K360 Cinema, Mars Project and the Film Path — the cheapest and most convenient option.",
+      details: ["Three attractions, one price", "Valid on a single day"],
       priceLabel: "Standard price",
       price: "119.00 PLN",
-      savings: "You save 9.00 PLN",
-      savingsPercent: "7%",
+      savings: "You save 78.00 PLN",
+      savingsPercent: "40%",
       reducedPriceLabel: "Reduced price",
       reducedPrice: "99.00 PLN",
-      reducedSavings: "You save 9.00 PLN",
-      reducedSavingsPercent: "8%",
-      button: "Choose package",
-      category: COMBINED_PROMO_BOOKING_CATEGORY,
+      reducedSavings: "You save 68.00 PLN",
+      reducedSavingsPercent: "41%",
+      button: "Buy ticket",
+      category: ALL_ATTRACTIONS_BOOKING_CATEGORY,
     },
   ],
   pt: [
     {
       badge: "Pacote",
-      title: "K360 + Projeto MARS",
+      title: "Bilhete para todas as atrações",
       subtitle:
-        "Pacote promocional que combina a projeção K360 com o Projeto Mars — duas atrações num só preço.",
-      details: ["Duas atrações no mesmo dia"],
-      priceLabel: "Preço normal",
-      price: "89,00 PLN",
-      savings: "Poupa 29,00 PLN",
-      savingsPercent: "25%",
-      reducedPriceLabel: "Preço reduzido",
-      reducedPrice: "79,00 PLN",
-      reducedSavings: "Poupa 19,00 PLN",
-      reducedSavingsPercent: "19%",
-      button: "Escolher pacote",
-      category: K360_MARS_PROMO_BOOKING_CATEGORY,
-    },
-    {
-      badge: "Pacote",
-      title: "Percurso + Projeção K360",
-      subtitle:
-        "Um grande pacote promocional que junta a visita ao Percurso de filmagem com a projeção no K360.",
-      details: ["Cerca de 3 horas no total com visita e sessão"],
+        "Um bilhete, três atrações: Cinema K360, Projeto MARS e Percurso de filmagem — a opção mais económica e prática.",
+      details: ["Três atrações num só preço", "Válido num único dia"],
       priceLabel: "Preço normal",
       price: "119,00 PLN",
-      savings: "Poupa 9,00 PLN",
-      savingsPercent: "7%",
+      savings: "Poupa 78,00 PLN",
+      savingsPercent: "40%",
       reducedPriceLabel: "Preço reduzido",
       reducedPrice: "99,00 PLN",
-      reducedSavings: "Poupa 9,00 PLN",
-      reducedSavingsPercent: "8%",
-      button: "Escolher pacote",
-      category: COMBINED_PROMO_BOOKING_CATEGORY,
+      reducedSavings: "Poupa 68,00 PLN",
+      reducedSavingsPercent: "41%",
+      button: "Comprar bilhete",
+      category: ALL_ATTRACTIONS_BOOKING_CATEGORY,
     },
   ],
 };

@@ -28,6 +28,14 @@ export const MARS_BOOKING_SERVICES = {
   group: "Bilet grupowy: Projekt: MARS (59,00 zł)",
 } as const;
 
+// Bilet na wszystkie 3 atrakcje (K360 + MARS + Ścieżka).
+// ⚠️ Zweryfikuj nazwę usługi "normalny" w panelu Bookero — założyłem 119,00 zł.
+export const ALL_ATTRACTIONS_BOOKING_CATEGORY = "Bilet na wszystkie atrakcje";
+export const ALL_ATTRACTIONS_BOOKING_SERVICES = {
+  normal: "Bilet normalny na wszystkie atrakcje (119,00 zł)",
+  reduced: "Bilet ulgowy na wszystkie atrakcje (99,00 zł)",
+} as const;
+
 export const FILM_PATH_BOOKING_CATEGORY = "Ścieżka filmowa";
 export const FILM_PATH_BOOKING_SERVICES = {
   normal: "Bilet normalny: Ścieżka filmowa (79,00 zł)",

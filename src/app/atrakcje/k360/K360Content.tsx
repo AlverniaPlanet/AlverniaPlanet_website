@@ -221,11 +221,11 @@ const COPY: Record<
       lines: ["Kup bilety już teraz na „One Step Beyond: A Journey to Mars”."],
     },
     heroTag: "Atrakcje",
-    heroTitle: "Projekcja K360",
+    heroTitle: "Kino K360",
     videoFallback: "Twój browser nie wspiera elementu video.",
     featuresTitle: "PRZEŻYJ projekcję",
     featuresIntro:
-      "Projekcja K360 działa skalą, przestrzenią i pełnym zanurzeniem zamiast klasycznej projekcji salowej.",
+      "Kino K360 działa skalą, przestrzenią i pełnym zanurzeniem zamiast klasycznej projekcji salowej.",
     featuresIntroHighlight:
       "Aktualnym seansem jest „One Step Beyond: A Journey to Mars” — trwa około 30 minut i odbywa się w języku polskim.",
     featureStats: [
@@ -262,7 +262,7 @@ const COPY: Record<
       {
         badge: "Doświadczenie",
         title: "Największa przestrzeń fulldome w Europie",
-        body: "Projekcja K360 to największy obiekt tego typu w Europie i skaluje projekcję do poziomu, którego nie da się osiągnąć tradycyjnie.",
+        body: "Kino K360 to największy obiekt tego typu w Europie i skaluje projekcję do poziomu, którego nie da się osiągnąć tradycyjnie.",
       },
     ],
     galleryTitle: "Zobacz przestrzeń",
@@ -300,7 +300,7 @@ const COPY: Record<
     ],
     promoTicket: {
       badge: "Pakiet",
-      title: "Ścieżka + Projekcja K360",
+      title: "Ścieżka + Kino K360",
       subtitle:
         "Jeden duży pakiet promocyjny, który łączy zwiedzanie Ścieżki filmowej z projekcją K360.",
       details: ["Około 3 godzin łącznie ze zwiedzaniem i seansem"],
@@ -318,7 +318,7 @@ const COPY: Record<
       badge: "Pakiet",
       title: "K360 + Projekt: MARS",
       subtitle:
-        "Pakiet promocyjny łączący projekcję K360 z Projektem MARS — dwie atrakcje w jednej cenie.",
+        "Pakiet promocyjny łączący kino K360 z Projektem MARS — dwie atrakcje w jednej cenie.",
       details: ["Dwie atrakcje w jednym dniu"],
       priceLabel: "Cena normalna",
       price: "89,00 zł",
@@ -330,7 +330,7 @@ const COPY: Record<
       reducedSavingsPercent: "19%",
       button: "Wybierz pakiet",
     },
-    ticketsTitle: "Bilety na projekcję K360",
+    ticketsTitle: "Bilety na kino K360",
     ticketsIntro:
       "Najpierw wybierz pakiet albo wariant biletu. Po kliknięciu formularz otworzy od razu właściwą opcję. Seans odbywa się w języku polskim i trwa około 30 minut.",
     ticketsPriceLabel: "Cena za osobę",
@@ -339,7 +339,7 @@ const COPY: Record<
       {
         badge: "Normalny",
         title: "Bilet normalny",
-        subtitle: "Projekcja K360",
+        subtitle: "Kino K360",
         details: ["Cena regularna za osobę"],
         price: "49 zł",
         bookingServiceName: K360_BOOKING_SERVICES.normal,
@@ -347,7 +347,7 @@ const COPY: Record<
       {
         badge: "Ulgowy",
         title: "Bilet ulgowy",
-        subtitle: "Projekcja K360",
+        subtitle: "Kino K360",
         details: ["Cena ulgowa za osobę"],
         price: "39 zł",
         bookingServiceName: K360_BOOKING_SERVICES.reduced,
@@ -393,7 +393,7 @@ const COPY: Record<
       lines: ["Get your tickets now for “One Step Beyond: A Journey to Mars”."],
     },
     heroTag: "Attractions",
-    heroTitle: "K360 projection",
+    heroTitle: "K360 Cinema",
     videoFallback: "Your browser does not support the video element.",
     featuresTitle: "EXPERIENCE the projection",
     featuresIntro:
@@ -434,7 +434,7 @@ const COPY: Record<
       {
         badge: "Experience",
         title: "The largest fulldome space in Europe",
-        body: "The K360 projection is the largest fulldome space in Europe, giving the projection a scale impossible to match in a standard auditorium.",
+        body: "The K360 Cinema is the largest fulldome space in Europe, giving the projection a scale impossible to match in a standard auditorium.",
       },
     ],
     galleryTitle: "See the venue",
@@ -472,9 +472,9 @@ const COPY: Record<
     ],
     promoTicket: {
       badge: "Package",
-      title: "Film Path + K360 projection",
+      title: "Film Path + K360 Cinema",
       subtitle:
-        "One large promotional package that combines the Film Path visit with a K360 projection.",
+        "One large promotional package that combines the Film Path visit with a K360 Cinema.",
       details: ["About 3 hours in total with the visit and screening"],
       priceLabel: "Standard price",
       price: "119.00 PLN",
@@ -490,7 +490,7 @@ const COPY: Record<
       badge: "Package",
       title: "K360 + Mars Project",
       subtitle:
-        "Promotional package combining the K360 projection with the Mars Project — two attractions at one price.",
+        "Promotional package combining the K360 Cinema with the Mars Project — two attractions at one price.",
       details: ["Two attractions in a single day"],
       priceLabel: "Standard price",
       price: "89.00 PLN",
@@ -502,7 +502,7 @@ const COPY: Record<
       reducedSavingsPercent: "19%",
       button: "Choose package",
     },
-    ticketsTitle: "Tickets for K360 projection",
+    ticketsTitle: "Tickets for K360 Cinema",
     ticketsIntro:
       "Choose the package or ticket type first. After clicking, the booking form will open with the matching option selected. The screening is available in Polish and lasts about 30 minutes.",
     ticketsPriceLabel: "Price per person",
@@ -511,7 +511,7 @@ const COPY: Record<
       {
         badge: "Standard",
         title: "Standard ticket",
-        subtitle: "K360 projection",
+        subtitle: "K360 Cinema",
         details: ["Regular price per person"],
         price: "49 PLN",
         bookingServiceName: K360_BOOKING_SERVICES.normal,
@@ -519,7 +519,7 @@ const COPY: Record<
       {
         badge: "Reduced",
         title: "Reduced ticket",
-        subtitle: "K360 projection",
+        subtitle: "K360 Cinema",
         details: ["Reduced price per person"],
         price: "39 PLN",
         bookingServiceName: K360_BOOKING_SERVICES.reduced,
@@ -565,7 +565,7 @@ const COPY: Record<
       lines: ["Compra já os teus bilhetes para “One Step Beyond: A Journey to Mars”."],
     },
     heroTag: "Atrações",
-    heroTitle: "Projeção K360",
+    heroTitle: "Cinema K360",
     videoFallback: "O seu navegador não suporta o elemento de vídeo.",
     featuresTitle: "VIVE a projeção",
     featuresIntro:
@@ -606,7 +606,7 @@ const COPY: Record<
       {
         badge: "Experiência",
         title: "O maior espaço fulldome da Europa",
-        body: "A projeção K360 é o maior espaço fulldome da Europa, dando à experiência uma escala impossível de reproduzir de forma tradicional.",
+        body: "A cinema K360 é o maior espaço fulldome da Europa, dando à experiência uma escala impossível de reproduzir de forma tradicional.",
       },
     ],
     galleryTitle: "Ver o espaço",
@@ -644,7 +644,7 @@ const COPY: Record<
     ],
     promoTicket: {
       badge: "Pacote",
-      title: "Percurso + Projeção K360",
+      title: "Percurso + Cinema K360",
       subtitle:
         "Um grande pacote promocional que junta a visita aos bastidores com a projeção no K360.",
       details: ["Cerca de 3 horas no total com visita e sessão"],
@@ -662,7 +662,7 @@ const COPY: Record<
       badge: "Pacote",
       title: "K360 + Projeto MARS",
       subtitle:
-        "Pacote promocional que combina a projeção K360 com o Projeto Mars — duas atrações num só preço.",
+        "Pacote promocional que combina a cinema K360 com o Projeto Mars — duas atrações num só preço.",
       details: ["Duas atrações no mesmo dia"],
       priceLabel: "Preço normal",
       price: "89,00 PLN",
@@ -674,7 +674,7 @@ const COPY: Record<
       reducedSavingsPercent: "19%",
       button: "Escolher pacote",
     },
-    ticketsTitle: "Bilhetes para a projeção K360",
+    ticketsTitle: "Bilhetes para a cinema K360",
     ticketsIntro:
       "Escolha primeiro o pacote ou o tipo de bilhete. Após o clique, o formulário abre com a opção certa já selecionada. A sessão decorre em polaco e dura cerca de 30 minutos.",
     ticketsPriceLabel: "Preço por pessoa",
@@ -683,7 +683,7 @@ const COPY: Record<
       {
         badge: "Normal",
         title: "Bilhete normal",
-        subtitle: "Projeção K360",
+        subtitle: "Cinema K360",
         details: ["Preço normal por pessoa"],
         price: "49 PLN",
         bookingServiceName: K360_BOOKING_SERVICES.normal,
@@ -691,7 +691,7 @@ const COPY: Record<
       {
         badge: "Reduzido",
         title: "Bilhete reduzido",
-        subtitle: "Projeção K360",
+        subtitle: "Cinema K360",
         details: ["Preço reduzido por pessoa"],
         price: "39 PLN",
         bookingServiceName: K360_BOOKING_SERVICES.reduced,

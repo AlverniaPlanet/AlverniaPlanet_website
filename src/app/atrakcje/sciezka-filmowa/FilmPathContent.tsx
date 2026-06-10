@@ -290,7 +290,7 @@ const COPY: Record<
     ticketsButton: "Kup bilet",
     promoTicket: {
       badge: "Pakiet",
-      title: "Ścieżka + Projekcja K360",
+      title: "Ścieżka + Kino K360",
       subtitle:
         "Jeden duży pakiet promocyjny, który łączy zwiedzanie Ścieżki filmowej z projekcją K360.",
       details: ["Około 3 godzin łącznie ze zwiedzaniem i seansem"],
@@ -520,15 +520,15 @@ const COPY: Record<
     ],
     ticketsTitle: "Educational path tickets",
     ticketsIntro:
-      "The standard ticket costs 79 PLN per person and the reduced ticket costs 69 PLN per person. For school groups the starting price is 2,070 PLN for 30 guests, then 69 PLN for each additional guest up to 50 people per booking. The Film Path itself lasts about 2.5 hours, and with the K360 projection package the full visit takes about 3 hours.",
+      "The standard ticket costs 79 PLN per person and the reduced ticket costs 69 PLN per person. For school groups the starting price is 2,070 PLN for 30 guests, then 69 PLN for each additional guest up to 50 people per booking. The Film Path itself lasts about 2.5 hours, and with the K360 Cinema package the full visit takes about 3 hours.",
     ticketsPriceLabel: "Price per person",
     ticketsPrice: "79 PLN/person or 69 PLN/person",
     ticketsButton: "Buy tickets",
     promoTicket: {
       badge: "Package",
-      title: "Film Path + K360 projection",
+      title: "Film Path + K360 Cinema",
       subtitle:
-        "One large promotional package that combines the Film Path visit with a K360 projection.",
+        "One large promotional package that combines the Film Path visit with a K360 Cinema.",
       details: ["About 3 hours in total with the visit and screening"],
       priceLabel: "Standard price",
       price: "119.00 PLN",
@@ -756,13 +756,13 @@ const COPY: Record<
     ],
     ticketsTitle: "Bilhetes para o percurso educativo",
     ticketsIntro:
-      "O bilhete normal custa 79 PLN por pessoa e o bilhete reduzido custa 69 PLN por pessoa. Para grupos escolares, o valor começa em 2 070 PLN para 30 pessoas, depois 69 PLN por cada pessoa adicional até 50 participantes por reserva. O Percurso de filmagem por si só dura cerca de 2,5 horas e, no pacote com a projeção K360, a visita completa dura cerca de 3 horas.",
+      "O bilhete normal custa 79 PLN por pessoa e o bilhete reduzido custa 69 PLN por pessoa. Para grupos escolares, o valor começa em 2 070 PLN para 30 pessoas, depois 69 PLN por cada pessoa adicional até 50 participantes por reserva. O Percurso de filmagem por si só dura cerca de 2,5 horas e, no pacote com a cinema K360, a visita completa dura cerca de 3 horas.",
     ticketsPriceLabel: "Preço por pessoa",
     ticketsPrice: "79 PLN/pessoa ou 69 PLN/pessoa",
     ticketsButton: "Comprar bilhete",
     promoTicket: {
       badge: "Pacote",
-      title: "Percurso + Projeção K360",
+      title: "Percurso + Cinema K360",
       subtitle:
         "Um grande pacote promocional que junta a visita ao Percurso de filmagem com a projeção no K360.",
       details: ["Cerca de 3 horas no total com visita e sessão"],

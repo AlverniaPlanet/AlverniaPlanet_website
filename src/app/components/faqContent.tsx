@@ -25,7 +25,7 @@ export const FAQ_COPY: Record<Locale, FaqCopy> = {
       {
         question: "Ile trwa zwiedzanie?",
         answer:
-          "Sama Ścieżka filmowa trwa około 2,5 godziny. Projekcja K360 trwa około 30 minut, więc pakiet Ścieżka + Projekcja K360 to około 3 godziny łącznie.",
+          "Sama Ścieżka filmowa trwa około 2,5 godziny. Kino K360 trwa około 30 minut, więc pakiet Ścieżka + Kino K360 to około 3 godziny łącznie.",
       },
       {
         question: "W jakim języku odbywa się oprowadzanie i seans?",
@@ -55,7 +55,7 @@ export const FAQ_COPY: Record<Locale, FaqCopy> = {
       {
         question: "Jakie są godziny otwarcia?",
         answer:
-          "Infolinia działa od poniedziałku do piątku w godz. 9:00-16:00. Projekcja K360 jest otwarta od poniedziałku do czwartku 11:00-17:00, w piątki 11:00-18:00, a w soboty i niedziele 11:00-19:30. Ścieżka filmowa działa od poniedziałku do soboty 8:00-17:00, a w niedziele jest zamknięta.",
+          "Infolinia działa od poniedziałku do piątku w godz. 9:00-16:00. Kino K360 jest otwarta od poniedziałku do czwartku 11:00-17:00, w piątki 11:00-18:00, a w soboty i niedziele 11:00-19:30. Ścieżka filmowa działa od poniedziałku do soboty 8:00-17:00, a w niedziele jest zamknięta.",
       },
       {
         question: "Kiedy otrzymam zwrot po anulowaniu rezerwacji?",
@@ -87,12 +87,12 @@ export const FAQ_COPY: Record<Locale, FaqCopy> = {
       {
         question: "How long does the tour take?",
         answer:
-          "The Film Path visit itself lasts about 2.5 hours. The K360 projection lasts about 30 minutes, so the Film Path + K360 projection package takes about 3 hours in total.",
+          "The Film Path visit itself lasts about 2.5 hours. The K360 Cinema lasts about 30 minutes, so the Film Path + K360 Cinema package takes about 3 hours in total.",
       },
       {
         question: "What language are the tour and screening in?",
         answer:
-          "The Film Path guided tour and K360 projection screenings are available in Polish.",
+          "The Film Path guided tour and K360 Cinema screenings are available in Polish.",
       },
       {
         question: "How much does the tour cost?",
@@ -117,7 +117,7 @@ export const FAQ_COPY: Record<Locale, FaqCopy> = {
       {
         question: "What are the opening hours?",
         answer:
-          "The info line is open Monday to Friday from 9:00 to 16:00. The K360 projection is open Monday to Thursday 11:00-17:00, Friday 11:00-18:00, and Saturday to Sunday 11:00-19:30. The Film Path is open Monday to Saturday 8:00-17:00 and closed on Sunday.",
+          "The info line is open Monday to Friday from 9:00 to 16:00. The K360 Cinema is open Monday to Thursday 11:00-17:00, Friday 11:00-18:00, and Saturday to Sunday 11:00-19:30. The Film Path is open Monday to Saturday 8:00-17:00 and closed on Sunday.",
       },
       {
         question: "When will I receive the refund after cancelling a booking?",
@@ -149,12 +149,12 @@ export const FAQ_COPY: Record<Locale, FaqCopy> = {
       {
         question: "Quanto tempo dura a visita?",
         answer:
-          "O Percurso de filmagem por si só dura cerca de 2,5 horas. A projeção K360 dura cerca de 30 minutos, por isso o pacote Percurso + Projeção K360 dura cerca de 3 horas no total.",
+          "O Percurso de filmagem por si só dura cerca de 2,5 horas. A cinema K360 dura cerca de 30 minutos, por isso o pacote Percurso + Cinema K360 dura cerca de 3 horas no total.",
       },
       {
         question: "Em que idioma decorrem a visita e a sessão?",
         answer:
-          "A visita guiada do Percurso de filmagem e as sessões da projeção K360 decorrem em polaco.",
+          "A visita guiada do Percurso de filmagem e as sessões da cinema K360 decorrem em polaco.",
       },
       {
         question: "Quanto custa a visita?",
@@ -179,7 +179,7 @@ export const FAQ_COPY: Record<Locale, FaqCopy> = {
       {
         question: "Quais são os horários de funcionamento?",
         answer:
-          "A linha de informação funciona de segunda a sexta das 9:00 às 16:00. A projeção K360 abre de segunda a quinta das 11:00 às 17:00, à sexta das 11:00 às 18:00, e ao sábado e domingo das 11:00 às 19:30. O Percurso de filmagem funciona de segunda a sábado das 8:00 às 17:00 e está encerrado ao domingo.",
+          "A linha de informação funciona de segunda a sexta das 9:00 às 16:00. A cinema K360 abre de segunda a quinta das 11:00 às 17:00, à sexta das 11:00 às 18:00, e ao sábado e domingo das 11:00 às 19:30. O Percurso de filmagem funciona de segunda a sábado das 8:00 às 17:00 e está encerrado ao domingo.",
       },
       {
         question: "Quando recebo o reembolso após cancelar a reserva?",

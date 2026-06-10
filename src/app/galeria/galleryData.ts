@@ -22,7 +22,16 @@ const MARS_DIR = "/galeria/Projekt_MARS/webp";
 
 const range = (n: number) => Array.from({ length: n }, (_, i) => i + 1);
 
-const GENERAL_IMAGES = range(8).map((n) => `${GENERAL_DIR}/webp/${n}.webp`);
+const GENERAL_IMAGES = [
+  `${GENERAL_DIR}/webp/1.webp`,
+  `${GENERAL_DIR}/webp/kopuly_1.webp`,
+  `${GENERAL_DIR}/webp/3.webp`,
+  `${GENERAL_DIR}/webp/kopuly_7.webp`,
+  `${GENERAL_DIR}/webp/kopuly_2.webp`,
+  `${GENERAL_DIR}/webp/6.webp`,
+  `${GENERAL_DIR}/webp/7.webp`,
+  `${GENERAL_DIR}/webp/8.webp`,
+];
 const FILM_IMAGES = [
   "wejscie_korytarz_k9",
   "korytarz_k7",
@@ -74,30 +83,30 @@ export const GALLERY_CATEGORIES: GalleryCategory[] = [
     captions: {
       pl: [
         "Kopuły z lotu ptaka",
-        "Szklane łączniki między kopułami",
+        "Kopuły z bliska",
         "Korytarz kapsułowy",
-        "Kompleks nocą z lotu ptaka",
-        "Wejście do kopuły",
+        "Kopuły — kadr panoramiczny",
+        "Kopuły — widok z perspektywy",
         "Przeszklony tunel wejściowy",
         "Domy kopułowe o zmierzchu",
         "Kompleks z drona",
       ],
       en: [
         "Domes from above",
-        "Glass connectors between domes",
+        "Domes up close",
         "Capsule corridor",
-        "Night view of the complex",
-        "Dome entrance",
+        "Domes — panoramic frame",
+        "Domes — perspective view",
         "Glass entry tunnel",
         "Domes at dusk",
         "Drone view of the complex",
       ],
       pt: [
         "Cúpulas vistas de cima",
-        "Passagens envidraçadas entre cúpulas",
+        "Cúpulas em primeiro plano",
         "Corredor cápsula",
-        "Vista noturna do complexo",
-        "Entrada da cúpula",
+        "Cúpulas — vista panorâmica",
+        "Cúpulas — vista em perspetiva",
         "Túnel de entrada envidraçado",
         "Cúpulas ao entardecer",
         "Vista do complexo por drone",
@@ -108,7 +117,7 @@ export const GALLERY_CATEGORIES: GalleryCategory[] = [
     slug: "k360",
     cover: K360_IMAGES[1],
     images: K360_IMAGES,
-    title: { pl: "Projekcja K360", en: "K360 projection", pt: "Projeção K360" },
+    title: { pl: "Kino K360", en: "K360 Cinema", pt: "Cinema K360" },
     intro: {
       pl: "Kadry z fulldome 360° — największej kopuły projekcyjnej w Europie.",
       en: "Frames from the 360° fulldome — Europe's largest projection dome.",
@@ -319,14 +328,14 @@ export const GALLERY_CATEGORIES: GalleryCategory[] = [
     cover: OPENING_GALA_IMAGES[0],
     images: OPENING_GALA_IMAGES,
     title: {
-      pl: "Gala otwarcia Projekcji K360",
-      en: "K360 Projection opening gala",
-      pt: "Gala de abertura da Projeção K360",
+      pl: "Gala otwarcia Kina K360",
+      en: "K360 Cinema opening gala",
+      pt: "Gala de abertura da Cinema K360",
     },
     intro: {
-      pl: "Zdjęcia z oficjalnej gali otwarcia Projekcji K360 w Alvernia Planet.",
-      en: "Photos from the official opening gala of the K360 Projection at Alvernia Planet.",
-      pt: "Fotografias da gala oficial de abertura da Projeção K360 na Alvernia Planet.",
+      pl: "Zdjęcia z oficjalnej gali otwarcia Kina K360 w Alvernia Planet.",
+      en: "Photos from the official opening gala of the K360 Cinema at Alvernia Planet.",
+      pt: "Fotografias da gala oficial de abertura da Cinema K360 na Alvernia Planet.",
     },
     hubTagline: {
       pl: "Premiera obiektu",

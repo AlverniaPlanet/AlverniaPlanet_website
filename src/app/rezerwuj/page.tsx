@@ -40,7 +40,7 @@ const COPY: Record<
     notesTitle: "Ważne przed rezerwacją",
     notesHeading: "Najważniejsze informacje przed wyborem terminu",
     notes: [
-      "Projekcja K360 trwa około 30 minut.",
+      "Kino K360 trwa około 30 minut.",
       "Oprowadzanie Ścieżki filmowej oraz projekcje K360 odbywają się w języku polskim.",
       "Zwiedzanie Ścieżki filmowej trwa około 2,5 godziny.",
     ],
@@ -57,8 +57,8 @@ const COPY: Record<
     notesTitle: "Before you book",
     notesHeading: "Key details before choosing a date",
     notes: [
-      "The K360 projection lasts about 30 minutes.",
-      "The Film Path guided tour and K360 projection screenings are available in Polish.",
+      "The K360 Cinema lasts about 30 minutes.",
+      "The Film Path guided tour and K360 Cinema screenings are available in Polish.",
       "The Film Path visit lasts about 2.5 hours.",
     ],
     refundTitle: "Cancellations and refunds",
@@ -74,8 +74,8 @@ const COPY: Record<
     notesTitle: "Antes de reservar",
     notesHeading: "Informações principais antes de escolher a data",
     notes: [
-      "A projeção K360 dura cerca de 30 minutos.",
-      "A visita guiada do Percurso de filmagem e as sessões da projeção K360 decorrem em polaco.",
+      "A cinema K360 dura cerca de 30 minutos.",
+      "A visita guiada do Percurso de filmagem e as sessões da cinema K360 decorrem em polaco.",
       "A visita ao Percurso de filmagem dura cerca de 2,5 horas.",
     ],
     refundTitle: "Cancelamentos e reembolsos",

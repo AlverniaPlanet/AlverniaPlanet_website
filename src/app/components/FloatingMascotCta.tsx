@@ -6,9 +6,9 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useI18n } from "@/app/i18n-provider";
 import {
+  ALL_ATTRACTIONS_BOOKING_CATEGORY,
+  ALL_ATTRACTIONS_BOOKING_SERVICES,
   buildBookingPath,
-  K360_BOOKING_CATEGORY,
-  K360_BOOKING_SERVICES,
 } from "@/lib/booking";
 
 type Locale = "pl" | "en" | "pt";
@@ -32,8 +32,8 @@ export default function FloatingMascotCta() {
   const pathname = usePathname();
   const isHiddenPath = HIDDEN_PATHS.has((pathname ?? "/").replace(/\/+$/, "") || "/");
   const bookingHref = buildBookingPath(loc, {
-    category: K360_BOOKING_CATEGORY,
-    service: K360_BOOKING_SERVICES.reduced,
+    category: ALL_ATTRACTIONS_BOOKING_CATEGORY,
+    service: ALL_ATTRACTIONS_BOOKING_SERVICES.reduced,
     autopick: true,
   });
 
