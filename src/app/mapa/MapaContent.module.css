@@ -1,0 +1,282 @@
+.page {
+  --mapa-route: #46dce7;
+  position: relative;
+  min-height: 100vh;
+  padding: clamp(1rem, 4vw, 2.5rem) clamp(0.75rem, 4vw, 2rem) 3rem;
+  background:
+    radial-gradient(120% 80% at 50% -10%, rgba(70, 220, 231, 0.12), transparent 60%),
+    linear-gradient(180deg, #0a1024 0%, #0c1430 55%, #080b1c 100%);
+  color: #eef3ff;
+}
+
+.intro {
+  max-width: 42rem;
+  margin: 0 auto clamp(1rem, 3vw, 1.75rem);
+  text-align: center;
+}
+
+.kicker {
+  margin: 0 0 0.4rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--mapa-route);
+}
+
+.title {
+  margin: 0 0 0.6rem;
+  font-size: clamp(1.6rem, 6vw, 2.4rem);
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.lead {
+  margin: 0 auto;
+  max-width: 34rem;
+  color: rgba(238, 243, 255, 0.72);
+  font-size: clamp(0.9rem, 3.4vw, 1rem);
+  line-height: 1.55;
+}
+
+.stage {
+  position: relative;
+  max-width: 48rem;
+  margin: 0 auto;
+  border-radius: 1.1rem;
+  overflow: hidden;
+  border: 1px solid rgba(70, 220, 231, 0.22);
+  box-shadow:
+    0 0 0 1px rgba(70, 220, 231, 0.08),
+    0 20px 50px -22px rgba(0, 0, 0, 0.7);
+  background: #060a16;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  touch-action: manipulation;
+}
+
+/* --- Trasa --- */
+.routeLine {
+  stroke: var(--mapa-route);
+  stroke-width: 9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 26 22;
+  filter: drop-shadow(0 0 6px rgba(70, 220, 231, 0.9));
+  animation: dash 1.4s linear infinite;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -48;
+  }
+}
+
+/* --- Wyjście --- */
+.exit {
+  pointer-events: none;
+}
+
+.exitDot {
+  fill: #ff6b6b;
+  stroke: #1a0606;
+  stroke-width: 4;
+  filter: drop-shadow(0 0 8px rgba(255, 107, 107, 0.85));
+}
+
+.exitText {
+  fill: #ffd6d6;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  font-family: var(--font-ap-sans, sans-serif);
+  paint-order: stroke;
+  stroke: #1a0606;
+  stroke-width: 5;
+}
+
+/* --- Klikalne kopuły --- */
+.hotspot {
+  cursor: pointer;
+  outline: none;
+}
+
+.touch {
+  fill: transparent;
+}
+
+.ring {
+  fill: rgba(70, 220, 231, 0.06);
+  stroke: var(--mapa-route);
+  stroke-width: 7;
+  filter: drop-shadow(0 0 6px rgba(70, 220, 231, 0.7));
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Puls tylko przez opacity i grubość obrysu — bez transform, by pierścień
+   nie przesuwał się względem środka kopuły (problem z transform-box w SVG). */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+    stroke-width: 6;
+  }
+  50% {
+    opacity: 1;
+    stroke-width: 10;
+  }
+}
+
+.hotspot:hover .ring,
+.hotspot:focus-visible .ring {
+  fill: rgba(70, 220, 231, 0.18);
+  stroke: #8af3fb;
+  animation: none;
+  opacity: 1;
+}
+
+.ringActive,
+.hotspot:focus-visible .ringActive {
+  fill: rgba(70, 220, 231, 0.26);
+  stroke: #8af3fb;
+  stroke-width: 9;
+  animation: none;
+  opacity: 1;
+  filter: drop-shadow(0 0 12px rgba(70, 220, 231, 0.95));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .routeLine,
+  .ring {
+    animation: none;
+  }
+}
+
+/* --- Okienko (modal / bottom sheet) --- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+  background: rgba(4, 7, 16, 0.66);
+  backdrop-filter: blur(4px);
+  animation: fade 0.18s ease;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+.sheet {
+  position: relative;
+  width: 100%;
+  max-width: 32rem;
+  border-radius: 1.25rem 1.25rem 0 0;
+  border: 1px solid rgba(70, 220, 231, 0.28);
+  border-bottom: none;
+  background: linear-gradient(180deg, #131c3c 0%, #0d1430 100%);
+  padding: 1.5rem 1.25rem 2rem;
+  box-shadow: 0 -20px 60px -20px rgba(0, 0, 0, 0.9);
+  animation: slideUp 0.26s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sheet::before {
+  content: "";
+  position: absolute;
+  top: 0.6rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2.5rem;
+  height: 0.28rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+.sheetClose {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  width: 2.2rem;
+  height: 2.2rem;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.06);
+  color: #eef3ff;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.sheetClose:hover {
+  background: rgba(70, 220, 231, 0.16);
+}
+
+.sheetTag {
+  display: inline-block;
+  margin: 0.4rem 0 0.6rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(70, 220, 231, 0.16);
+  color: var(--mapa-route);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.sheetTitle {
+  margin: 0 0 0.65rem;
+  font-size: clamp(1.25rem, 5vw, 1.5rem);
+  font-weight: 700;
+  line-height: 1.2;
+  padding-right: 2rem;
+}
+
+.sheetDesc {
+  margin: 0;
+  color: rgba(238, 243, 255, 0.82);
+  line-height: 1.65;
+  font-size: clamp(0.95rem, 3.6vw, 1rem);
+}
+
+/* Na większych ekranach okienko wyśrodkowane jak karta */
+@media (min-width: 700px) {
+  .overlay {
+    align-items: center;
+    padding: 1.5rem;
+  }
+
+  .sheet {
+    border-radius: 1.25rem;
+    border-bottom: 1px solid rgba(70, 220, 231, 0.28);
+    box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.9);
+    animation: pop 0.2s ease;
+  }
+
+  .sheet::before {
+    display: none;
+  }
+
+  @keyframes pop {
+    from {
+      opacity: 0;
+      transform: scale(0.96);
+    }
+  }
+}

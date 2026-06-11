@@ -1,0 +1,259 @@
+.page,
+.gate {
+  --gt-accent: #46dce7;
+  position: relative;
+  min-height: 100vh;
+  padding: clamp(1.5rem, 5vw, 3.5rem) clamp(0.9rem, 4vw, 2rem) 4rem;
+  background:
+    radial-gradient(120% 80% at 50% -10%, rgba(70, 220, 231, 0.12), transparent 60%),
+    linear-gradient(180deg, #0a1024 0%, #0c1430 55%, #080b1c 100%);
+  color: #eef3ff;
+}
+
+/* --- Bramka logowania --- */
+.gate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card {
+  width: 100%;
+  max-width: 23rem;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(70, 220, 231, 0.24);
+  background: linear-gradient(180deg, #131c3c 0%, #0d1430 100%);
+  padding: clamp(1.5rem, 5vw, 2.25rem);
+  box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.9);
+}
+
+.lockIcon {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  margin: 0 auto 0.9rem;
+  border-radius: 999px;
+  background: rgba(70, 220, 231, 0.14);
+  color: var(--gt-accent);
+  font-size: 1.35rem;
+}
+
+.gateTitle {
+  margin: 0 0 0.4rem;
+  font-size: clamp(1.6rem, 7vw, 2.1rem);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.gateLead {
+  margin: 0 0 1.4rem;
+  color: rgba(238, 243, 255, 0.7);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.field {
+  display: block;
+  text-align: left;
+  margin-bottom: 0.9rem;
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: rgba(238, 243, 255, 0.78);
+}
+
+.input {
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+  border-radius: 0.7rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.05);
+  color: #eef3ff;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.input:focus {
+  border-color: var(--gt-accent);
+  box-shadow: 0 0 0 3px rgba(70, 220, 231, 0.18);
+}
+
+.error {
+  margin: 0 0 0.9rem;
+  color: #ff9a9a;
+  font-size: 0.85rem;
+}
+
+.submit {
+  margin-top: 0.4rem;
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: none;
+  border-radius: 0.7rem;
+  background: var(--gt-accent);
+  color: #04121a;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: filter 0.15s, transform 0.05s;
+}
+
+.submit:hover {
+  filter: brightness(1.08);
+}
+
+.submit:active {
+  transform: translateY(1px);
+}
+
+/* --- Widok zasobów --- */
+.intro {
+  max-width: 48rem;
+  margin: 0 auto clamp(1.5rem, 4vw, 2.5rem);
+  text-align: center;
+}
+
+.kicker {
+  margin: 0 0 0.4rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--gt-accent);
+}
+
+.title {
+  margin: 0 0 0.6rem;
+  font-size: clamp(1.8rem, 6vw, 2.6rem);
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.lead {
+  margin: 0 auto;
+  max-width: 34rem;
+  color: rgba(238, 243, 255, 0.72);
+  font-size: clamp(0.92rem, 3.4vw, 1rem);
+  line-height: 1.55;
+}
+
+.logout {
+  margin-top: 1rem;
+  padding: 0.4rem 0.95rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(238, 243, 255, 0.85);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.logout:hover {
+  background: rgba(70, 220, 231, 0.16);
+}
+
+.grid {
+  max-width: 34rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.7rem, 2vw, 1rem);
+}
+
+.tile {
+  position: relative;
+  display: flex;
+  gap: 1.1rem;
+  align-items: center;
+  padding: 1.15rem 1.35rem;
+  border-radius: 1.1rem;
+  border: 1px solid rgba(70, 220, 231, 0.2);
+  background: linear-gradient(180deg, rgba(19, 28, 60, 0.85) 0%, rgba(13, 20, 48, 0.85) 100%);
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 18px 44px -28px rgba(0, 0, 0, 0.8);
+  overflow: hidden;
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+
+/* Akcentowy pasek po lewej */
+.tile::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--gt-accent);
+  opacity: 0.55;
+  transition: opacity 0.15s;
+}
+
+.tile:hover {
+  transform: translateY(-2px);
+  border-color: rgba(70, 220, 231, 0.5);
+  box-shadow: 0 24px 54px -26px rgba(0, 0, 0, 0.85);
+}
+
+.tile:hover::before {
+  opacity: 1;
+}
+
+.tileIcon {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.85rem;
+  background: rgba(70, 220, 231, 0.14);
+  color: var(--gt-accent);
+  font-size: 1.45rem;
+}
+
+.tileBody {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.tileTitle {
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.tileDesc {
+  margin-top: 0.25rem;
+  color: rgba(238, 243, 255, 0.66);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+/* Strzałka „otwórz" po prawej stronie kafelka */
+.tileArrow {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  color: rgba(238, 243, 255, 0.45);
+  font-size: 1.2rem;
+  transition: color 0.15s, transform 0.15s;
+}
+
+.tile:hover .tileArrow {
+  color: var(--gt-accent);
+  transform: translateX(3px);
+}
