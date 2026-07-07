@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import MapaContent from "./MapaContent";
 
-// Podstrona dostępna tylko pod bezpośrednim linkiem /mapa — bez odnośnika
+// Podstrona dostępna tylko pod bezpośrednim linkiem /mapa, bez odnośnika
 // w nawigacji i wykluczona z indeksowania oraz z mapy strony.
 export const metadata: Metadata = {
   title: "Mapa zwiedzania | Alvernia Planet",

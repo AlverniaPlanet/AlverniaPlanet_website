@@ -70,7 +70,7 @@ function getMarsAssets() {
 }
 
 export const metadata: Metadata = {
-  title: "Projekt: MARS - Alvernia Planet",
+  title: "MARS - Alvernia Planet",
   description: "Niepubliczny podglad koncepcji strony Mars w Alvernia Planet.",
   robots: {
     index: false,

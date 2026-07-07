@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { useI18n } from "@/app/i18n-provider";
 import { useTheme } from "@/app/theme-provider";
 import { trackEvent } from "@/lib/analytics";
-import { getLocalizedPath, type Locale } from "@/lib/localizedRoutes";
+import { getLocalizedPath, isBareChromeRoute, type Locale } from "@/lib/localizedRoutes";
 type LinkItem = { label: string; href: string };
 type Section = { title: string; links: LinkItem[] };
 type PolicyLink = { label: string; href: string; highlight?: boolean };
@@ -117,7 +117,7 @@ const FOOTER_COPY: Record<
     designCredit: "Design i realizacja strony:",
     socials: "Wpadnij na nasze social media!",
     ctaTitle: "Masz pytania? Jesteśmy online.",
-    ctaSubtitle: "Odpowiemy najszybciej, jak to możliwe — napisz lub zadzwoń.",
+    ctaSubtitle: "Odpowiemy najszybciej, jak to możliwe. Napisz lub zadzwoń.",
     phoneLabel: "Telefon",
     emailLabel: "Email",
     messengerLabel: "Messenger",
@@ -129,7 +129,7 @@ const FOOTER_COPY: Record<
     addressTitle: "Adres",
     addressLines: ["Alvernia Planet", "ul. Ferdynanda Wspaniałego 1", "32-566 Nieporaz, Polska"],
     policies: [
-      { label: "Regulamin", href: "/legal/regulamin.html" },
+      { label: "Regulamin", href: "/legal/regulamin.pdf" },
       { label: "Regulamin przebywania", href: "/legal/Regulamin-przebywania-na-terenie-alvernia-planet.html" },
       { label: "Polityka prywatności", href: "/legal/polityka-prywatnosci.pdf" },
       { label: "Polityka cookies", href: "/legal/polityka-cookies.pdf" },
@@ -139,9 +139,9 @@ const FOOTER_COPY: Record<
       {
         title: "Atrakcje",
         links: [
-          { label: "Harry Potter: The Exhibition", href: "/atrakcje/wystawa" },
-          { label: "Ścieżka filmowa", href: "/atrakcje/sciezka-filmowa" },
-          { label: "Kino K360", href: "/atrakcje/k360" },
+          { label: "Harry Potter: The Exhibition", href: "/harry-potter-the-exhibition" },
+          { label: "FILMWORLD", href: "/atrakcje/filmworld" },
+          { label: "Kino 360", href: "/atrakcje/kino-360" },
           { label: "Galeria", href: "/galeria" },
         ],
       },
@@ -150,6 +150,7 @@ const FOOTER_COPY: Record<
         links: [
           { label: "Wydarzenia", href: "/wydarzenia" },
           { label: "Jak dojechać", href: "/jak-dojechac" },
+          { label: "Grupy", href: "/grupy" },
           { label: "Runmageddon", href: "/runmageddon" },
           { label: "Bilety i rezerwacje", href: "/rezerwuj" },
         ],
@@ -169,7 +170,7 @@ const FOOTER_COPY: Record<
     designCredit: "Design & implementation:",
     socials: "Follow us on social media!",
     ctaTitle: "Questions? We’re here.",
-    ctaSubtitle: "We reply as fast as possible — drop us a line or call.",
+    ctaSubtitle: "We reply as fast as possible. Drop us a line or call.",
     phoneLabel: "Phone",
     emailLabel: "Email",
     messengerLabel: "Messenger",
@@ -181,7 +182,7 @@ const FOOTER_COPY: Record<
     addressTitle: "Address",
     addressLines: ["Alvernia Planet", "ul. Ferdynanda Wspaniałego 1", "32-566 Nieporaz, Poland"],
     policies: [
-      { label: "Terms & conditions", href: "/legal/regulamin.html" },
+      { label: "Terms & conditions", href: "/legal/regulamin.pdf" },
       { label: "Stay regulations", href: "/legal/Regulamin-przebywania-na-terenie-alvernia-planet.html" },
       { label: "Privacy policy", href: "/legal/polityka-prywatnosci.pdf" },
       { label: "Cookies policy", href: "/legal/polityka-cookies.pdf" },
@@ -191,9 +192,9 @@ const FOOTER_COPY: Record<
       {
         title: "Attractions",
         links: [
-          { label: "Harry Potter: The Exhibition", href: "/atrakcje/wystawa" },
-          { label: "Film path", href: "/atrakcje/sciezka-filmowa" },
-          { label: "K360 Cinema", href: "/atrakcje/k360" },
+          { label: "Harry Potter: The Exhibition", href: "/harry-potter-the-exhibition" },
+          { label: "FILMWORLD", href: "/atrakcje/filmworld" },
+          { label: "K360 Cinema", href: "/atrakcje/kino-360" },
           { label: "Gallery", href: "/galeria" },
         ],
       },
@@ -202,6 +203,7 @@ const FOOTER_COPY: Record<
         links: [
           { label: "Events", href: "/wydarzenia" },
           { label: "Getting here", href: "/jak-dojechac" },
+          { label: "Groups", href: "/grupy" },
           { label: "Runmageddon", href: "/runmageddon" },
           { label: "Tickets & bookings", href: "/rezerwuj" },
         ],
@@ -221,7 +223,7 @@ const FOOTER_COPY: Record<
     designCredit: "Design e implementação:",
     socials: "Segue-nos nas redes sociais!",
     ctaTitle: "Tem perguntas? Estamos online.",
-    ctaSubtitle: "Respondemos o mais rápido possível — escreve-nos ou liga.",
+    ctaSubtitle: "Respondemos o mais rápido possível. Escreve-nos ou liga.",
     phoneLabel: "Telefone",
     emailLabel: "Email",
     messengerLabel: "Messenger",
@@ -233,7 +235,7 @@ const FOOTER_COPY: Record<
     addressTitle: "Morada",
     addressLines: ["Alvernia Planet", "ul. Ferdynanda Wspaniałego 1", "32-566 Nieporaz, Polónia"],
     policies: [
-      { label: "Regulamento", href: "/legal/regulamin.html" },
+      { label: "Regulamento", href: "/legal/regulamin.pdf" },
       { label: "Regras de permanência", href: "/legal/Regulamin-przebywania-na-terenie-alvernia-planet.html" },
       { label: "Política de privacidade", href: "/legal/polityka-prywatnosci.pdf" },
       { label: "Política de cookies", href: "/legal/polityka-cookies.pdf" },
@@ -243,9 +245,9 @@ const FOOTER_COPY: Record<
       {
         title: "Atrações",
         links: [
-          { label: "Harry Potter: The Exhibition", href: "/atrakcje/wystawa" },
-          { label: "Percurso de filmagem", href: "/atrakcje/sciezka-filmowa" },
-          { label: "Cinema K360", href: "/atrakcje/k360" },
+          { label: "Harry Potter: The Exhibition", href: "/harry-potter-the-exhibition" },
+          { label: "FILMWORLD", href: "/atrakcje/filmworld" },
+          { label: "Cinema K360", href: "/atrakcje/kino-360" },
           { label: "Galeria", href: "/galeria" },
         ],
       },
@@ -254,6 +256,7 @@ const FOOTER_COPY: Record<
         links: [
           { label: "Eventos", href: "/wydarzenia" },
           { label: "Como chegar", href: "/jak-dojechac" },
+          { label: "Grupos", href: "/grupy" },
           { label: "Runmageddon", href: "/runmageddon" },
           { label: "Bilhetes e reservas", href: "/rezerwuj" },
         ],
@@ -323,6 +326,8 @@ const Footer = memo(function Footer() {
   const { locale } = useI18n();
   const { theme } = useTheme();
   const pathname = usePathname();
+  // Bez stopki na trasach bare (np. /aplikacje/identyfikacja).
+  if (isBareChromeRoute(pathname)) return null;
   const loc: Locale = (locale as Locale) ?? "pl";
   const copy = FOOTER_COPY[loc];
   const rights = copy.rights.replace("{year}", String(new Date().getFullYear()));

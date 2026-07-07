@@ -8,8 +8,10 @@ import AdaptiveVideo from "@/app/components/AdaptiveVideo";
 import Card from "@/app/components/Card";
 import { PrimaryButton } from "@/app/components/PrimaryButton";
 import { AttractionCard } from "@/app/components/AttractionCard";
+import { FaFilm, FaRocket, FaStar, FaTicket } from "react-icons/fa6";
 import { NEWS_COPY, NewsSectionBlock, type NewsSection } from "@/app/components/newsContent";
 import ScrollMotionItem from "@/app/components/ScrollMotionItem";
+import { FaqAccordion, FAQ_COPY } from "@/app/components/faqContent";
 import { waitForImagesReady } from "@/app/components/waitForImagesReady";
 import {
   ALL_ATTRACTIONS_BOOKING_CATEGORY,
@@ -35,11 +37,17 @@ type AttractionItem = {
   image: string;
   imageAlt: string;
   accent?: "red" | "orange" | "cyan";
+  highlightLabel?: string;
+  cornerLabel?: string;
+  featured?: boolean;
 };
 
 type TicketOption = {
   badge: string;
   title: string;
+  titleLead?: string;
+  titleHighlight?: string;
+  bgColor?: string;
   subtitle: string;
   details: string[];
   priceLabel?: string;
@@ -100,6 +108,8 @@ type HeroPromo = {
 
 type HomeCopy = {
   heroTitle: string;
+  heroEuropeBadge: string;
+  heroTagline: string;
   heroPromos: HeroPromo[];
   attractions: {
     title: string;
@@ -113,49 +123,56 @@ type HomeCopy = {
 
 const HOME_COPY: Record<Locale, HomeCopy> = {
   pl: {
-    heroTitle: "Witamy w Alvernia Planet",
+    heroTitle: "Kino 360",
+    heroEuropeBadge: "Największe w Europie",
+    heroTagline: "Witamy!",
     heroPromos: [
       {
         message: "Przeżyj kino K360",
         cta: "Zobacz kino K360",
-        href: "/atrakcje/k360",
+        href: "/atrakcje/kino-360",
         tone: "hot",
         previewMedia: "k360",
       },
     ],
     attractions: {
       title: "Atrakcje",
-      intro: "Wejdź do świata kopuł i zacznij od naszych trzech flagowych doświadczeń.",
+      intro: "Trzy filmowe atrakcje dla całej rodziny, coś dla małych odkrywców i dorosłych kinomanów.",
       items: [
         {
-          title: "Kino K360",
-          description:
-            "Immersyjna projekcja fulldome w jednej z najbardziej zaawansowanych kopuł w Europie.",
-          cta: "Zobacz kino K360",
-          href: "/atrakcje/k360",
-          image: "/galeria/K360/2.webp",
-          imageAlt: "Kadr z kina K360 — fulldome na całej kopule",
-          accent: "red",
-        },
-        {
-          title: "Projekt: MARS",
-          description:
-            "Wciel się w bohatera własnej misji i nakręć krótki film na profesjonalnej scenografii marsjańskiej.",
-          cta: "Odkryj Projekt: MARS",
-          href: "/atrakcje/mars",
-          image: "/galeria/Projekt_MARS/webp/MARS_1.webp",
-          imageAlt: "Astronauta na powierzchni Marsa — Projekt: MARS w Alvernia Planet",
-          accent: "orange",
-        },
-        {
-          title: "Ścieżka filmowa",
+          title: "FILMWORLD",
           description:
             "Zakulisowa trasa przez plany zdjęciowe, rekwizyty i technologię używaną w produkcjach filmowych.",
           cta: "Poznaj ścieżkę filmową",
-          href: "/atrakcje/sciezka-filmowa",
+          href: "/atrakcje/filmworld",
           image: "/galeria/Sciezka_filmowa/webp/era_niema.webp",
           imageAlt: "Elementy scenografii na ścieżce filmowej",
           accent: "cyan",
+          cornerLabel: "Poznaj",
+        },
+        {
+          title: "Kino 360",
+          description:
+            "NAJWIĘKSZE kino 360 w Europie. Kopuła o średnicy 48 metrów otacza widza obrazem i dźwiękiem ze wszystkich stron.",
+          cta: "Zobacz kino K360",
+          href: "/atrakcje/kino-360",
+          image: "/galeria/K360/K360_2.webp",
+          imageAlt: "Kadr z kina K360, fulldome na całej kopule",
+          accent: "red",
+          highlightLabel: "Największe w Europie",
+          cornerLabel: "Przeżyj",
+          featured: true,
+        },
+        {
+          title: "MARS",
+          description:
+            "Wciel się w bohatera własnej misji i nakręć krótki film na profesjonalnej scenografii marsjańskiej.",
+          cta: "Odkryj MARS",
+          href: "/atrakcje/mars",
+          image: "/galeria/Projekt_MARS/webp/MARS_1.webp",
+          imageAlt: "Astronauta na powierzchni Marsa, MARS w Alvernia Planet",
+          accent: "orange",
+          cornerLabel: "Zagraj",
         },
       ],
     },
@@ -164,14 +181,14 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       intro:
         "Wybierz atrakcję i kup bilet bezpośrednio na jej podstronie.",
       headerCta: "Trzy atrakcje, jeden krok do rezerwacji",
-      headerCtaSub: "K360, Projekt: MARS i Ścieżka filmowa — każda ma własną sprzedaż biletów.",
+      headerCtaSub: "K360, MARS i FILMWORLD. Każda ma własną sprzedaż biletów.",
       priceLabel: "Cena za osobę",
       price: "79 zł/os. lub 69 zł/os.",
       cta: "Kup bilet",
       ctaHref: "/rezerwuj",
       promoTicket: {
         badge: "Pakiet",
-        title: "Ścieżka + Kino K360",
+        title: "Ścieżka + Kino 360",
         subtitle:
           "Jeden duży pakiet promocyjny, który łączy zwiedzanie Ścieżki filmowej z projekcją K360.",
         details: ["Około 3 godzin łącznie ze zwiedzaniem i seansem"],
@@ -184,8 +201,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       options: [
         {
           badge: "K360",
-          title: "Kino K360",
-          subtitle: "Immersyjne fulldome na 360°",
+          title: "Kino 360",
+          subtitle: "Największe kino 360 w Europie, kopuła 48 m.",
           details: ["Cena regularna za osobę"],
           price: "49 zł/os.",
           reducedPriceLabel: "Cena ulgowa",
@@ -197,8 +214,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         },
         {
           badge: "MARS",
-          title: "Projekt: MARS",
-          subtitle: "Wciel się w bohatera misji",
+          title: "MARS",
+          subtitle: "Wcielasz się w astronautę i kręcisz własny film SF.",
           details: ["Cena regularna za osobę"],
           price: "69 zł/os.",
           reducedPriceLabel: "Cena ulgowa",
@@ -209,9 +226,9 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
           ctaLabel: "Wybierz bilet",
         },
         {
-          badge: "Ścieżka",
-          title: "Ścieżka filmowa",
-          subtitle: "Zakulisowa trasa po planach",
+          badge: "Kopuła",
+          title: "FILMWORLD",
+          subtitle: "Zwiedź tajemnicze kopuły pod Krakowem i poznaj film zza kulis.",
           details: ["Cena regularna za osobę"],
           price: "79 zł/os.",
           reducedPriceLabel: "Cena ulgowa",
@@ -240,48 +257,56 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
     news: NEWS_COPY.pl,
   },
   en: {
-    heroTitle: "Welcome to Alvernia Planet",
+    heroTitle: "K360 Cinema",
+    heroEuropeBadge: "Largest in Europe",
+    heroTagline: "Welcome!",
     heroPromos: [
       {
         message: "Experience the K360 Cinema",
         cta: "See K360 Cinema",
-        href: "/atrakcje/k360",
+        href: "/atrakcje/kino-360",
         tone: "hot",
         previewMedia: "k360",
       },
     ],
     attractions: {
       title: "Attractions",
-      intro: "Start with our signature experiences inside the domes.",
+      intro: "Three cinematic attractions for the whole family, something for young explorers and grown-up film fans alike.",
       items: [
         {
-          title: "K360 Cinema",
-          description: "Immersive dome projection with the image all around you.",
-          cta: "See K360 Cinema",
-          href: "/atrakcje/k360",
-          image: "/galeria/K360/2.webp",
-          imageAlt: "Frame from the K360 Cinema — fulldome across the ceiling",
-          accent: "red",
-        },
-        {
-          title: "Mars Project",
-          description:
-            "Step into your own mission and shoot a short film on a professional Martian set.",
-          cta: "Discover Mars Project",
-          href: "/atrakcje/mars",
-          image: "/galeria/Projekt_MARS/webp/MARS_1.webp",
-          imageAlt: "Astronaut on the Martian surface — Mars Project at Alvernia Planet",
-          accent: "orange",
-        },
-        {
-          title: "Film Path",
+          title: "FILMWORLD",
           description:
             "A behind-the-scenes walk through sets, props, and the technology that powers productions.",
           cta: "Explore the film path",
-          href: "/atrakcje/sciezka-filmowa",
+          href: "/atrakcje/filmworld",
           image: "/galeria/Sciezka_filmowa/webp/era_niema.webp",
           imageAlt: "Film set elements on the film path",
           accent: "cyan",
+          cornerLabel: "Discover",
+        },
+        {
+          title: "K360 Cinema",
+          description:
+            "EUROPE'S LARGEST 360° cinema. A 48-metre dome wraps you in image and sound from every direction.",
+          cta: "See K360 Cinema",
+          href: "/atrakcje/kino-360",
+          image: "/galeria/K360/K360_2.webp",
+          imageAlt: "Frame from the K360 Cinema, fulldome across the ceiling",
+          accent: "red",
+          highlightLabel: "Largest in Europe",
+          cornerLabel: "Experience",
+          featured: true,
+        },
+        {
+          title: "MARS",
+          description:
+            "Step into your own mission and shoot a short film on a professional Martian set.",
+          cta: "Discover MARS",
+          href: "/atrakcje/mars",
+          image: "/galeria/Projekt_MARS/webp/MARS_1.webp",
+          imageAlt: "Astronaut on the Martian surface, MARS at Alvernia Planet",
+          accent: "orange",
+          cornerLabel: "Play",
         },
       ],
     },
@@ -289,7 +314,7 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       title: "Tickets",
       intro: "Pick an attraction and buy tickets directly on its page.",
       headerCta: "Three attractions, one step to booking",
-      headerCtaSub: "K360, Mars Project and Film Path — each has its own ticket flow.",
+      headerCtaSub: "K360, MARS and FILMWORLD. Each has its own ticket flow.",
       priceLabel: "Price per person",
       price: "79 PLN/person or 69 PLN/person",
       cta: "Buy tickets",
@@ -310,7 +335,7 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         {
           badge: "K360",
           title: "K360 Cinema",
-          subtitle: "Immersive 360° fulldome",
+          subtitle: "Europe's largest 360° cinema, a 48-metre dome.",
           details: ["Standard price per person"],
           price: "49 PLN/person",
           reducedPriceLabel: "Reduced price",
@@ -322,8 +347,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         },
         {
           badge: "MARS",
-          title: "Mars Project",
-          subtitle: "Star in your own mission",
+          title: "MARS",
+          subtitle: "Play the astronaut and shoot your own sci-fi short.",
           details: ["Standard price per person"],
           price: "69 PLN/person",
           reducedPriceLabel: "Reduced price",
@@ -334,9 +359,9 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
           ctaLabel: "Choose ticket",
         },
         {
-          badge: "Film Path",
-          title: "Film Path",
-          subtitle: "Behind-the-scenes walk",
+          badge: "Dome",
+          title: "FILMWORLD",
+          subtitle: "Explore the mysterious domes near Kraków and discover film from behind the scenes.",
           details: ["Standard price per person"],
           price: "79 PLN/person",
           reducedPriceLabel: "Reduced price",
@@ -365,49 +390,56 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
     news: NEWS_COPY.en,
   },
   pt: {
-    heroTitle: "Bem-vindo à Alvernia Planet",
+    heroTitle: "Cinema K360",
+    heroEuropeBadge: "O maior da Europa",
+    heroTagline: "Bem-vindos!",
     heroPromos: [
       {
         message: "Vive a cinema K360",
         cta: "Ver a cinema K360",
-        href: "/atrakcje/k360",
+        href: "/atrakcje/kino-360",
         tone: "hot",
         previewMedia: "k360",
       },
     ],
     attractions: {
       title: "Atrações",
-      intro: "Entre no mundo das cúpulas e comece pelas nossas três experiências emblemáticas.",
+      intro: "Três atrações num só sítio: descobre os bastidores do cinema, vê um filme dentro de uma cúpula gigante e protagoniza a tua cena num plano real.",
       items: [
         {
-          title: "Cinema K360",
-          description:
-            "Projeções imersivas em cúpula com imagem a 360° numa das estruturas mais avançadas da Europa.",
-          cta: "Ver a cinema K360",
-          href: "/atrakcje/k360",
-          image: "/galeria/K360/2.webp",
-          imageAlt: "Imagem da cinema K360 — fulldome em toda a cúpula",
-          accent: "red",
-        },
-        {
-          title: "Projeto MARS",
-          description:
-            "Encarna o herói da tua missão e filma uma curta numa cenografia marciana profissional.",
-          cta: "Descobrir Projeto MARS",
-          href: "/atrakcje/mars",
-          image: "/galeria/Projekt_MARS/webp/MARS_1.webp",
-          imageAlt: "Astronauta na superfície de Marte — Projeto MARS na Alvernia Planet",
-          accent: "orange",
-        },
-        {
-          title: "Percurso de filmagem",
+          title: "FILMWORLD",
           description:
             "Uma visita aos bastidores com cenários, adereços e tecnologia usada nas produções.",
           cta: "Conheça o percurso",
-          href: "/atrakcje/sciezka-filmowa",
+          href: "/atrakcje/filmworld",
           image: "/galeria/Sciezka_filmowa/webp/era_niema.webp",
           imageAlt: "Elementos de cenário no percurso de filmagem",
           accent: "cyan",
+          cornerLabel: "Descobre",
+        },
+        {
+          title: "Cinema K360",
+          description:
+            "O MAIOR cinema 360° da Europa. Uma cúpula de 48 metros envolve-te em imagem e som por todos os lados.",
+          cta: "Ver a cinema K360",
+          href: "/atrakcje/kino-360",
+          image: "/galeria/K360/K360_2.webp",
+          imageAlt: "Imagem da cinema K360, fulldome em toda a cúpula",
+          accent: "red",
+          highlightLabel: "O maior da Europa",
+          cornerLabel: "Vive",
+          featured: true,
+        },
+        {
+          title: "MARS",
+          description:
+            "Encarna o herói da tua missão e filma uma curta numa cenografia marciana profissional.",
+          cta: "Descobrir MARS",
+          href: "/atrakcje/mars",
+          image: "/galeria/Projekt_MARS/webp/MARS_1.webp",
+          imageAlt: "Astronauta na superfície de Marte, MARS na Alvernia Planet",
+          accent: "orange",
+          cornerLabel: "Joga",
         },
       ],
     },
@@ -415,7 +447,7 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       title: "Bilhetes",
       intro: "Escolhe uma atração e compra o bilhete diretamente na sua página.",
       headerCta: "Três atrações, um passo até à reserva",
-      headerCtaSub: "K360, Projeto MARS e Percurso de filmagem — cada um com a sua venda.",
+      headerCtaSub: "K360, MARS e FILMWORLD, cada um com a sua venda.",
       priceLabel: "Preço por pessoa",
       price: "79 PLN/pessoa ou 69 PLN/pessoa",
       cta: "Comprar bilhetes",
@@ -436,7 +468,7 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         {
           badge: "K360",
           title: "Cinema K360",
-          subtitle: "Fulldome imersivo a 360°",
+          subtitle: "O maior cinema 360° da Europa, cúpula de 48 m.",
           details: ["Preço normal por pessoa"],
           price: "49 PLN/pessoa",
           reducedPriceLabel: "Preço reduzido",
@@ -448,8 +480,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         },
         {
           badge: "MARS",
-          title: "Projeto MARS",
-          subtitle: "Encarna o herói da missão",
+          title: "MARS",
+          subtitle: "Encarnas um astronauta e filmas a tua curta de FC.",
           details: ["Preço normal por pessoa"],
           price: "69 PLN/pessoa",
           reducedPriceLabel: "Preço reduzido",
@@ -460,9 +492,9 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
           ctaLabel: "Escolher bilhete",
         },
         {
-          badge: "Percurso",
-          title: "Percurso de filmagem",
-          subtitle: "Visita aos bastidores",
+          badge: "Cúpula",
+          title: "FILMWORLD",
+          subtitle: "Visita as misteriosas cúpulas perto de Cracóvia e descobre o cinema nos bastidores.",
           details: ["Preço normal por pessoa"],
           price: "79 PLN/pessoa",
           reducedPriceLabel: "Preço reduzido",
@@ -584,6 +616,8 @@ export default function Page() {
     <main className="relative min-h-screen text-white">
       <HeroSection
         heroTitle={copy.heroTitle}
+        heroEuropeBadge={copy.heroEuropeBadge}
+        heroTagline={copy.heroTagline}
         heroVideoFallback={heroVideoFallback}
         introReady={introReady}
         heroWelcomeVisible={heroWelcomeVisible}
@@ -611,8 +645,15 @@ const HERO_NAV_LABELS: Record<
     about: string;
     route: string;
     buy: string;
+    learnMore: string;
     promoEyebrow: string;
     promoMain: string;
+    promoMainPre: string;
+    promoMainHighlight: string;
+    promoMainPost: string;
+    promoMainEurope: string;
+    promoMainTail: string;
+    promoMainLine2: string;
   }
 > = {
   pl: {
@@ -620,35 +661,60 @@ const HERO_NAV_LABELS: Record<
     about: "Informacje",
     route: "Jak dojechać",
     buy: "Kup bilet",
+    learnMore: "Dowiedz się więcej",
     promoEyebrow: "Promocja • do 30.06",
-    promoMain: "Jeden bilet na wszystkie atrakcje — od 99 zł",
+    promoMain: "Przeżyj największe kino 360 w Europie! Bilety już od 39 zł",
+    promoMainPre: "Przeżyj ",
+    promoMainHighlight: "NAJWIĘKSZE KINO 360",
+    promoMainPost: " w Europie! Bilety już od 39 zł",
+    promoMainEurope: "w Europie",
+    promoMainTail: "!",
+    promoMainLine2: "Bilety już od 39 zł",
   },
   en: {
     attractions: "See attractions",
     about: "Information",
     route: "How to get there",
     buy: "Buy ticket",
+    learnMore: "Learn more",
     promoEyebrow: "Offer • until 30.06",
-    promoMain: "One ticket for all attractions — from 99 PLN",
+    promoMain: "Experience the largest 360° cinema in Europe! Tickets from 39 PLN",
+    promoMainPre: "Experience the ",
+    promoMainHighlight: "LARGEST 360° CINEMA",
+    promoMainPost: " in Europe! Tickets from 39 PLN",
+    promoMainEurope: "in Europe",
+    promoMainTail: "!",
+    promoMainLine2: "Tickets from 39 PLN",
   },
   pt: {
     attractions: "Ver atrações",
     about: "Informações",
     route: "Como chegar",
     buy: "Comprar bilhete",
+    learnMore: "Saber mais",
     promoEyebrow: "Promoção • até 30.06",
-    promoMain: "Um bilhete para todas as atrações — desde 99 PLN",
+    promoMain: "Vive o maior cinema 360° da Europa! Bilhetes desde 39 PLN",
+    promoMainPre: "Vive o ",
+    promoMainHighlight: "MAIOR CINEMA 360°",
+    promoMainPost: " da Europa! Bilhetes desde 39 PLN",
+    promoMainEurope: "da Europa",
+    promoMainTail: "!",
+    promoMainLine2: "Bilhetes desde 39 PLN",
   },
 };
 
 const HeroSection = memo(function HeroSection({
   heroTitle,
+  heroEuropeBadge,
+  heroTagline,
   heroVideoFallback,
   introReady,
   heroWelcomeVisible,
   locale,
 }: {
   heroTitle: string;
+  heroEuropeBadge: string;
+  heroTagline: string;
   heroVideoFallback: string;
   introReady: boolean;
   heroWelcomeVisible: boolean;
@@ -681,7 +747,7 @@ const HeroSection = memo(function HeroSection({
       const progress = Math.min(Math.max(window.scrollY / viewportHeight, 0), 1);
 
       // Hero is position:fixed, so AdaptiveVideo's IntersectionObserver can't
-      // tell when it's covered — drive playback from scroll instead.
+      // tell when it's covered. Drive playback from scroll instead.
       const shouldBeActive = progress < 0.98;
       if (shouldBeActive !== videoActiveRef.current) {
         videoActiveRef.current = shouldBeActive;
@@ -771,60 +837,46 @@ const HeroSection = memo(function HeroSection({
           aria-hidden
         />
         <div ref={parallaxRef} className="absolute inset-0 z-20 will-change-[transform,opacity]">
-      <div
-        className={`pointer-events-none absolute inset-x-0 top-1/2 flex -translate-y-1/2 flex-col items-center justify-center px-4 text-center transition-[opacity,transform,filter] duration-[1400ms] will-change-[opacity,transform,filter] sm:top-[44%] lg:top-[42%] ${
-          introReady
-            ? "opacity-100 translate-y-[-50%] blur-0 scale-100"
-            : "opacity-0 translate-y-[calc(-50%+2.5rem)] blur-2xl scale-[0.88]"
-        }`}
-        style={{
-          transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
-          transitionDelay: "320ms",
-        }}
-      >
-        <Link
-          href={heroBookingHref}
-          className="pointer-events-auto group mb-5 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#4fcfde] via-[#7ef6ff] to-[#4fcfde] px-3.5 py-2 text-[#06121a] shadow-[0_14px_36px_rgba(126,246,255,0.45),0_0_28px_rgba(126,246,255,0.35)] ring-1 ring-white/45 transition hover:scale-[1.03] hover:brightness-105 sm:mb-7 sm:gap-3 sm:px-5 sm:py-2.5 lg:mb-9 lg:px-6 lg:py-3"
+      <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-4 text-center">
+        {/* Napis hero, taki sam jak na podstronie Kina: korona + złota plakietka + „Przeżyj" + tytuł + tagline */}
+        <div className="ap-page-intro-stagger flex flex-col items-center">
+          {/* Korona + złota plakietka „Największe w Europie", ZAWSZE na górze, większa */}
+          <div className="relative mb-1.5 inline-flex flex-col items-center sm:mb-2">
+            {/* Korona spada z góry i ląduje na górnej krawędzi plakietki */}
+            <svg
+              className="ap-crown-drop absolute -top-[2.05rem] left-1/2 z-10 h-[2.15rem] w-[2.15rem] text-[#f5b301] drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)] sm:-top-[2.5rem] sm:h-[2.65rem] sm:w-[2.65rem]"
+              viewBox="0 0 16 16"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path d="M1.5 5.2 4.4 7l1.9-4.6L8 5l1.7-2.6L11.6 7l2.9-1.8L13 12.7H3L1.5 5.2zM3 14h10v1.2H3V14z" />
+            </svg>
+            <span className="inline-flex items-center whitespace-nowrap rounded-full bg-[linear-gradient(135deg,#f5b301,#fcd34d)] px-3.5 py-1 text-[0.55rem] font-extrabold uppercase tracking-[0.14em] text-[#231903] shadow-[0_6px_18px_rgba(251,191,36,0.45)] ring-1 ring-black/10 sm:px-5 sm:py-1.5 sm:text-[0.67rem] sm:tracking-[0.18em]">
+              {heroEuropeBadge}
+            </span>
+          </div>
+          {/* Kino 360, duży główny napis hero (h1) */}
+          <h1 className="force-overlay !leading-[0.92] mb-2 drop-shadow-[0_0_30px_rgba(0,0,0,0.65)] [text-shadow:0_3px_16px_rgba(0,0,0,0.55)] !text-[clamp(3.6rem,14vw,5.5rem)] font-extrabold tracking-[-0.02em] text-white sm:mb-3 lg:!text-[clamp(6.5rem,3rem+5.5vw,9rem)]">
+            {heroTitle}
+          </h1>
+          {/* Witamy!: mniejszy podpis pod tytułem */}
+          <p className="force-overlay leading-tight [text-shadow:0_2px_12px_rgba(0,0,0,0.6)] !text-[clamp(1.7rem,5.5vw,2.4rem)] font-extrabold tracking-[-0.01em] text-white sm:!text-[clamp(2.1rem,3.2vw,3rem)]">
+            {heroTagline}
+          </p>
+        </div>
+        {/* Kup bilet + Dowiedz się więcej, dwa przyciski obok siebie, jak na podstronie Kina.
+            Na wąskich ekranach zawijają się (flex-wrap), na większych rosną. */}
+        <div
+          className={`mt-6 flex w-full flex-row flex-wrap items-center justify-center gap-2.5 transition-[opacity,transform] duration-[1000ms] will-change-[opacity,transform] sm:mt-8 sm:gap-3.5 lg:mt-10 lg:gap-4 ${
+            introReady ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
+          }`}
+          style={{ transitionDelay: "450ms", transitionTimingFunction: "cubic-bezier(0.33, 1, 0.68, 1)" }}
         >
-          <span className="relative inline-flex h-2 w-2 shrink-0">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#ff3960] opacity-75" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-[#ff3960]" />
-          </span>
-          <span className="flex flex-col items-start leading-none sm:flex-row sm:items-center sm:gap-2">
-            <span className="text-[0.58rem] font-bold uppercase tracking-[0.18em] text-[#06121a]/80 sm:text-[0.62rem] sm:tracking-[0.2em]">
-              {navLabels.promoEyebrow}
-            </span>
-            <span className="hidden h-3 w-px bg-[#06121a]/30 sm:inline-block" aria-hidden="true" />
-            <span className="mt-0.5 text-[0.78rem] font-extrabold tracking-[-0.005em] sm:mt-0 sm:text-sm lg:text-[0.95rem]">
-              {navLabels.promoMain}
-            </span>
-          </span>
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 14 14"
-            fill="none"
-            aria-hidden="true"
-            className="shrink-0 transition-transform group-hover:translate-x-0.5"
-          >
-            <path
-              d="M5 3l4 4-4 4"
-              stroke="currentColor"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </Link>
-        <h1 className="ap-type-hero-title !text-white [text-shadow:0_2px_8px_rgba(0,0,0,0.75),0_12px_30px_rgba(0,0,0,0.85),0_24px_60px_rgba(0,0,0,0.6)]">
-          {heroTitle}
-        </h1>
-        <div className="mt-6 sm:mt-8 lg:mt-10">
           <Link
             href={heroBookingHref}
-            className="pointer-events-auto inline-flex items-center gap-3 rounded-full bg-gradient-to-br from-[#ff7a3c] via-[#ff5544] to-[#ff3960] px-7 py-3.5 text-sm font-bold uppercase tracking-[0.2em] !text-white shadow-[0_20px_50px_rgba(255,90,60,0.45),0_0_30px_rgba(255,90,60,0.35)] transition hover:scale-[1.02] hover:brightness-110 sm:px-10 sm:py-4 sm:text-base lg:px-12 lg:py-5 lg:text-lg"
+            className="pointer-events-auto inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-br from-[#ff7a3c] via-[#ff5544] to-[#ff3960] px-5 py-2.5 text-xs font-bold uppercase tracking-[0.18em] !text-white shadow-[0_20px_50px_rgba(255,90,60,0.45),0_0_30px_rgba(255,90,60,0.35)] transition hover:scale-[1.02] hover:brightness-110 sm:gap-3 sm:px-9 sm:py-4 sm:text-sm sm:tracking-[0.2em] lg:px-11 lg:py-5 lg:text-base"
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="h-[18px] w-[18px] sm:h-5 sm:w-5">
               <path
                 d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7Z"
                 stroke="currentColor"
@@ -835,8 +887,22 @@ const HeroSection = memo(function HeroSection({
             </svg>
             {navLabels.buy}
           </Link>
+          <Link
+            href={paths.attractions.k360}
+            className="pointer-events-auto inline-flex items-center justify-center gap-1.5 rounded-full border-2 border-[#7ef6ff]/70 bg-black/40 px-4 py-2.5 text-xs font-semibold !text-white shadow-[0_8px_28px_rgba(0,0,0,0.55),0_0_22px_rgba(126,246,255,0.3)] backdrop-blur-md transition hover:border-[#7ef6ff] hover:bg-black/60 hover:shadow-[0_8px_30px_rgba(0,0,0,0.6),0_0_34px_rgba(126,246,255,0.5)] sm:gap-2 sm:px-7 sm:py-4 sm:text-sm lg:px-8 lg:py-5 lg:text-base"
+          >
+            {navLabels.learnMore}
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" className="h-3.5 w-3.5 sm:h-4 sm:w-4">
+              <path d="M3 8h9M8.5 4l4 4-4 4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </Link>
         </div>
-        <div className="mt-6 flex justify-center sm:mt-8 lg:mt-10">
+        <div
+          className={`mt-6 flex justify-center transition-[opacity,transform] duration-[1000ms] will-change-[opacity,transform] sm:mt-8 lg:mt-10 ${
+            introReady ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
+          }`}
+          style={{ transitionDelay: "750ms", transitionTimingFunction: "cubic-bezier(0.33, 1, 0.68, 1)" }}
+        >
           <div className="pointer-events-auto inline-flex flex-col items-stretch justify-center gap-2.5 sm:flex-row sm:items-center sm:gap-5 sm:rounded-full sm:border sm:border-[#7ef6ff]/25 sm:bg-black/65 sm:px-7 sm:py-3 sm:shadow-[0_18px_50px_rgba(0,0,0,0.6),0_0_22px_rgba(126,246,255,0.18)] sm:backdrop-blur-xl sm:supports-[backdrop-filter]:bg-black/55 lg:gap-8 lg:px-9 lg:py-3.5">
             <Link
               href="#content-start"
@@ -926,6 +992,9 @@ const HomeContent = memo(function HomeContent({
         <div className="mx-auto w-full max-w-[72rem] 2xl:max-w-[92rem] min-[1800px]:max-w-[104rem]">
           <TicketsSection tickets={tickets} locale={locale} />
         </div>
+        <div className="mx-auto w-full max-w-[72rem] 2xl:max-w-[92rem] min-[1800px]:max-w-[104rem]">
+          <FaqAccordion copy={FAQ_COPY[locale]} />
+        </div>
         <EventsPromoSection promo={eventsPromo} />
         <div className="mx-auto w-full max-w-[72rem] 2xl:max-w-[92rem] min-[1800px]:max-w-[104rem]">
           <NewsSectionBlock news={news} teaser />
@@ -942,25 +1011,80 @@ const AttractionsSection = memo(function AttractionsSection({
   attractions: HomeCopy["attractions"];
   animate: boolean;
 }) {
+  // Reveal na scroll: Kino (środek) wjeżdża pierwsze, Filmworld z lewej, Mars z prawej.
+  const gridRef = useRef<HTMLDivElement | null>(null);
+  const [revealed, setRevealed] = useState(false);
+  useEffect(() => {
+    const el = gridRef.current;
+    if (!el) return;
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+      setRevealed(true);
+      return;
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          setRevealed(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.25, rootMargin: "0px 0px -8% 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  const featuredIndex = attractions.items.findIndex((item) => item.featured);
+
   return (
     <ScrollMotionItem strength="strong" delay={40}>
       <div className="mx-auto w-full max-w-[92rem] lg:max-w-[80rem] 2xl:max-w-[92rem]">
         <div className="text-center">
           <h2 className="ap-type-section-title !text-[clamp(2.6rem,2rem+2.6vw,4.6rem)] !leading-[1.05]">{attractions.title}</h2>
-          <div className="mx-auto mt-4 h-[3px] w-28 rounded-full bg-gradient-to-r from-[#f03c64] via-[#f77828] to-[#4fcfde]" />
+          <div className="mx-auto mt-4 h-[3px] w-28 rounded-full bg-gradient-to-r from-[#4fcfde] via-[#f7486c] to-[#f77828]" />
           <p className="ap-type-section-body mx-auto mt-6 max-w-2xl !text-[clamp(1.15rem,1rem+0.7vw,1.6rem)] !leading-[1.5] lg:max-w-none lg:whitespace-nowrap">{attractions.intro}</p>
         </div>
 
-        {/* Mobile + tablet: roller jak był */}
+        {/* Mobile + tablet: roller (Kino wyróżnione na środku) */}
         <div className="lg:hidden">
           <AttractionsScroller items={attractions.items} animate={animate} />
         </div>
 
-        {/* Desktop (lg+): statyczna siatka 3 kolumn */}
-        <div className="mt-14 hidden gap-8 lg:grid lg:grid-cols-3">
-          {attractions.items.map((item) => (
-            <AttractionCard key={item.title} {...item} />
-          ))}
+        {/* Desktop (lg+): siatka 3 kolumn: Kino wjeżdża pierwsze (środek), Filmworld z lewej, Mars z prawej */}
+        <div
+          ref={gridRef}
+          className="mt-14 hidden gap-8 overflow-x-clip lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)_minmax(0,1fr)] lg:items-center"
+        >
+          {attractions.items.map((item, i) => {
+            const dir = item.featured ? "center" : i < featuredIndex ? "left" : "right";
+            const hiddenTransform =
+              dir === "left"
+                ? "-translate-x-24"
+                : dir === "right"
+                ? "translate-x-24"
+                : "translate-y-10 scale-[0.97]";
+            return (
+              <div
+                key={item.title}
+                className={`transition-[opacity,transform] duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-[opacity,transform] ${
+                  revealed
+                    ? "translate-x-0 translate-y-0 scale-100 opacity-100"
+                    : `opacity-0 ${hiddenTransform}`
+                }`}
+                style={{ transitionDelay: revealed && !item.featured ? "240ms" : "0ms" }}
+              >
+                <AttractionCard
+                  {...item}
+                  {...(item.featured
+                    ? {
+                        videoMp4: "/home/Cinema360_home.mp4",
+                        videoWebm: "/home/Cinema360_home.webm",
+                        videoPoster: "/home/Cinema360_home_poster.webp",
+                      }
+                    : {})}
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
     </ScrollMotionItem>
@@ -977,50 +1101,76 @@ const TICKET_ACCENT_TOKENS: Record<
     dot: string;
     glow: string;
     border: string;
+    accentHex: string;
+    shadowGlow: string;
     priceColor: string;
     buttonClass: string;
   }
 > = {
   red: {
     badgeBg: "linear-gradient(135deg, #f7486c, #ff96aa)",
-    badgeColor: "#2a0410",
-    badgeShadow: "0 8px 22px rgba(247, 72, 108, 0.32)",
+    badgeColor: "#ffffff",
+    badgeShadow: "0 8px 22px rgba(247, 72, 108, 0.45)",
     divider:
       "linear-gradient(90deg, rgba(247,72,108,0) 0%, rgba(247,72,108,0.55) 50%, rgba(247,72,108,0) 100%)",
     dot: "#ff7a92",
-    glow: "radial-gradient(circle at top left, rgba(247,72,108,0.18), transparent 38%), radial-gradient(circle at bottom right, rgba(247,72,108,0.08), transparent 32%)",
+    glow: "radial-gradient(circle at top left, rgba(247,72,108,0.22), transparent 40%), radial-gradient(circle at bottom right, rgba(247,72,108,0.1), transparent 32%)",
     border: "border-[rgba(247,72,108,0.32)]",
+    accentHex: "#f7486c",
+    shadowGlow: "0 24px 60px rgba(0,0,0,0.45), 0 0 24px rgba(247,72,108,0.35)",
     priceColor: "text-[#ff96aa]",
     buttonClass:
-      "ticket-pill w-full !bg-[#f7486c] ring-[color:rgba(247,72,108,0.55)] hover:!brightness-110",
+      "ticket-pill w-full !bg-[#f7486c] !text-white !font-extrabold [text-shadow:0_1px_2px_rgba(0,0,0,0.55)] ring-[color:rgba(247,72,108,0.55)] hover:!brightness-110",
   },
   orange: {
     badgeBg: "linear-gradient(135deg, #f77828, #ffb585)",
-    badgeColor: "#2a0f04",
-    badgeShadow: "0 8px 22px rgba(247, 120, 40, 0.32)",
+    badgeColor: "#ffffff",
+    badgeShadow: "0 8px 22px rgba(247, 120, 40, 0.45)",
     divider:
       "linear-gradient(90deg, rgba(247,120,40,0) 0%, rgba(247,120,40,0.55) 50%, rgba(247,120,40,0) 100%)",
     dot: "#ff9357",
-    glow: "radial-gradient(circle at top left, rgba(247,120,40,0.18), transparent 38%), radial-gradient(circle at bottom right, rgba(247,120,40,0.08), transparent 32%)",
+    glow: "radial-gradient(circle at top left, rgba(247,120,40,0.22), transparent 40%), radial-gradient(circle at bottom right, rgba(247,120,40,0.1), transparent 32%)",
     border: "border-[rgba(247,120,40,0.32)]",
+    accentHex: "#f77828",
+    shadowGlow: "0 24px 60px rgba(0,0,0,0.45), 0 0 24px rgba(247,120,40,0.35)",
     priceColor: "text-[#ffb585]",
     buttonClass:
-      "ticket-pill w-full !bg-[linear-gradient(135deg,#f77828,#ffb585)] !text-[#2a0f04] !shadow-[0_8px_18px_rgba(247,120,40,0.32)] ring-[color:rgba(247,120,40,0.55)] hover:!brightness-110",
+      "ticket-pill w-full !bg-[linear-gradient(135deg,#e2580c,#f59044)] !text-white !font-extrabold [text-shadow:0_1px_2px_rgba(0,0,0,0.55)] !shadow-[0_8px_18px_rgba(247,120,40,0.45)] ring-[color:rgba(247,120,40,0.6)] hover:!brightness-110",
   },
   cyan: {
     badgeBg: "linear-gradient(135deg, #4fcfde, #a5e6f0)",
-    badgeColor: "#062a33",
-    badgeShadow: "0 8px 22px rgba(79, 207, 222, 0.32)",
+    badgeColor: "#ffffff",
+    badgeShadow: "0 8px 22px rgba(79, 207, 222, 0.45)",
     divider:
       "linear-gradient(90deg, rgba(79,207,222,0) 0%, rgba(79,207,222,0.55) 50%, rgba(79,207,222,0) 100%)",
     dot: "#7ef6ff",
-    glow: "radial-gradient(circle at top left, rgba(79,207,222,0.18), transparent 38%), radial-gradient(circle at bottom right, rgba(79,207,222,0.08), transparent 32%)",
+    glow: "radial-gradient(circle at top left, rgba(79,207,222,0.22), transparent 40%), radial-gradient(circle at bottom right, rgba(79,207,222,0.1), transparent 32%)",
     border: "border-[rgba(79,207,222,0.32)]",
+    accentHex: "#4fcfde",
+    shadowGlow: "0 24px 60px rgba(0,0,0,0.45), 0 0 24px rgba(79,207,222,0.35)",
     priceColor: "text-[#7ef6ff]",
     buttonClass:
-      "ticket-pill w-full !bg-[linear-gradient(135deg,#4fcfde,#7ef6ff)] !text-[#062a33] !shadow-[0_8px_18px_rgba(79,207,222,0.32)] ring-[color:rgba(79,207,222,0.55)] hover:!brightness-110",
+      "ticket-pill w-full !bg-[linear-gradient(135deg,#1ea6b7,#4fcfde)] !text-white !font-extrabold [text-shadow:0_1px_2px_rgba(0,0,0,0.55)] !shadow-[0_8px_18px_rgba(79,207,222,0.45)] ring-[color:rgba(79,207,222,0.6)] hover:!brightness-110",
   },
 };
+
+// Stałe wyniesione poza komponenty (czyste, bez zależności od props/stanu),
+// żeby nie były realokowane przy ewentualnym re-renderze. Identyczne wartości.
+const promoButtonClass =
+  "ticket-pill w-full !bg-[linear-gradient(90deg,#4fcfde,#a855f7,#f7486c,#f77828)] !text-white !font-extrabold [text-shadow:0_1px_2px_rgba(0,0,0,0.55)] ring-[color:rgba(168,85,247,0.5)] hover:!brightness-110";
+const attractionIcons = [
+  <FaFilm key="kino" aria-hidden="true" />,
+  <FaRocket key="mars" aria-hidden="true" />,
+  <svg key="dome" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+    <path d="M3.5 13a8.5 8.5 0 0 1 17 0" />
+    <path d="M3.5 13h17M12 4.5V13M7 6 9.4 13M17 6 14.6 13" />
+  </svg>,
+];
+const rowDescriptions = [
+  "Seans w kinie sferycznym 360°",
+  "Marsjańska misja i łazik w akcji",
+  "Futurystyczna przestrzeń pełna wrażeń",
+];
 
 const TicketOptionCard = memo(function TicketOptionCard({
   option,
@@ -1040,33 +1190,67 @@ const TicketOptionCard = memo(function TicketOptionCard({
   const linkHref = option.href ?? ctaHref;
   const buttonLabel = option.ctaLabel ?? cta;
   const isComingSoon = Boolean(option.comingSoon);
+  // Kafelek pakietu „Wszystkie atrakcje" (bgColor ustawiony), czarny z tęczowym
+  // akcentem, żeby NIE wyglądał jak cyjanowy kafelek „FILMWORLD".
+  const isPromo = Boolean(option.bgColor);
 
   return (
     <div
-      className={`ticket-card ap-tile group relative flex h-full flex-col overflow-hidden rounded-3xl text-white/90 border ${tokens.border}`}
+      className={`ticket-card group relative flex h-full flex-col overflow-hidden rounded-[1.75rem] text-white/90 transition-transform duration-300 hover:-translate-y-1`}
+      style={{
+        backgroundColor: option.bgColor ?? "#0a0d18",
+        border: `2px solid ${isPromo ? "rgba(255,255,255,0.16)" : tokens.accentHex}`,
+        boxShadow: isPromo
+          ? "0 24px 60px rgba(0,0,0,0.55), 0 0 22px rgba(168,85,247,0.25)"
+          : tokens.shadowGlow,
+        WebkitMask:
+          "radial-gradient(circle 12px at 0 65%, transparent 12px, #000 12.5px) left center / 100% 100% no-repeat, radial-gradient(circle 12px at 100% 65%, transparent 12px, #000 12.5px) right center / 100% 100% no-repeat",
+        WebkitMaskComposite: "source-in",
+        maskComposite: "intersect",
+      }}
     >
       <div
         className="pointer-events-none absolute inset-0"
-        style={{ backgroundImage: tokens.glow }}
+        style={{
+          backgroundImage: isPromo
+            ? "radial-gradient(circle at top left, rgba(79,207,222,0.16), transparent 42%), radial-gradient(circle at bottom right, rgba(247,72,108,0.14), transparent 40%)"
+            : tokens.glow,
+        }}
         aria-hidden="true"
       />
-      <div className="ticket-card-top relative">
+      <div className="ticket-card-top relative !px-2 !pt-2.5 !pb-1 sm:!px-5 sm:!pt-4 sm:!pb-[0.3rem]">
         <span
-          className="ticket-card-badge"
-          style={{ background: tokens.badgeBg, color: tokens.badgeColor, boxShadow: tokens.badgeShadow }}
+          className="ticket-card-badge !min-w-0 !w-full !px-1.5 !py-1 !text-[0.5rem] !tracking-[0.12em] sm:!min-w-[12.5rem] sm:!w-auto sm:!px-4 sm:!py-[0.45rem] sm:!text-[0.72rem] sm:!tracking-[0.26em]"
+          style={{
+            background: isPromo ? "linear-gradient(90deg,#4fcfde,#a855f7,#f7486c,#f77828)" : tokens.badgeBg,
+            color: isPromo ? "#ffffff" : tokens.badgeColor,
+            boxShadow: isPromo ? "0 8px 22px rgba(168,85,247,0.35)" : tokens.badgeShadow,
+          }}
         >
           {option.badge}
         </span>
       </div>
-      <div className="ticket-card-content relative flex h-full flex-col p-4 text-center sm:p-6">
-        <h3 className="ticket-card-title text-lg font-semibold text-white sm:text-2xl">
-          {option.title}
+      <div className="ticket-card-content relative flex h-full flex-col p-2 text-center sm:p-6">
+        <h3 className="ticket-card-title text-[0.95rem] font-extrabold leading-tight tracking-[-0.02em] text-white sm:text-[2.4rem]">
+          {option.titleHighlight ? (
+            <>
+              {option.titleLead}{" "}
+              <span
+                className="block bg-[linear-gradient(90deg,#4fcfde_0%,#a855f7_45%,#f7486c_65%,#f77828_100%)] bg-clip-text uppercase text-transparent"
+                style={{ WebkitBackgroundClip: "text" }}
+              >
+                {option.titleHighlight}
+              </span>
+            </>
+          ) : (
+            option.title
+          )}
         </h3>
-        <p className="ticket-card-subtitle mt-1.5 text-xs text-white/75 sm:mt-2 sm:text-base">
+        <p className="ticket-card-subtitle mt-1.5 hidden text-xs text-white/75 sm:mt-2.5 sm:block sm:text-lg">
           {option.subtitle}
         </p>
-        <div className="mt-4 h-px w-full sm:mt-6" style={{ background: tokens.divider }} />
-        <ul className="ticket-list-panel mx-auto mb-6 mt-4 max-w-sm space-y-2.5 text-left text-xs text-white/75 sm:mb-8 sm:mt-5 sm:space-y-3 sm:text-sm">
+        <div className="mt-2.5 h-px w-full sm:mt-6" style={{ background: tokens.divider }} />
+        <ul className="ticket-list-panel mx-auto mb-6 mt-4 hidden max-w-sm space-y-2.5 text-left text-xs text-white/75 sm:mb-6 sm:mt-6 sm:block sm:space-y-3.5 sm:text-base">
           {option.details.map((detail) => (
             <li key={detail} className="ticket-detail flex gap-2.5 sm:gap-3">
               <span
@@ -1077,30 +1261,33 @@ const TicketOptionCard = memo(function TicketOptionCard({
             </li>
           ))}
         </ul>
-        <div className="ticket-price-block mt-auto pt-5 sm:pt-7">
-          <p className="ticket-price-label text-[0.65rem] uppercase tracking-[0.22em] text-white/60 sm:text-[0.7rem] sm:tracking-[0.25em]">
+        <div
+          className="ticket-price-block mt-auto !p-2.5 pt-2.5 sm:!p-4 sm:pt-7"
+          style={option.bgColor ? { background: "transparent", borderColor: "rgba(255,255,255,0.1)" } : undefined}
+        >
+          <p className="ticket-price-label text-[0.5rem] uppercase tracking-[0.12em] text-white/60 sm:text-[0.7rem] sm:tracking-[0.25em]">
             {option.priceLabel ?? defaultPriceLabel}
           </p>
-          <p className={`ticket-price mt-1.5 text-xl font-bold sm:mt-2 sm:text-3xl ${tokens.priceColor}`}>
+          <p className={`ticket-price mt-1 text-base font-bold sm:mt-2 sm:text-[2.3rem] ${tokens.priceColor}`}>
             {option.price ?? defaultPrice}
           </p>
           {option.reducedPrice ? (
-            <div className="mt-3 flex flex-col items-center gap-0.5 border-t border-white/10 pt-3">
-              <p className="text-[0.6rem] uppercase tracking-[0.22em] text-white/45 sm:text-[0.65rem]">
+            <div className="mt-2 flex flex-col items-center gap-0.5 border-t border-white/10 pt-2 sm:mt-3 sm:pt-3">
+              <p className="text-[0.46rem] uppercase tracking-[0.12em] text-white/45 sm:text-[0.65rem] sm:tracking-[0.22em]">
                 {option.reducedPriceLabel}
               </p>
-              <p className="text-sm font-semibold text-white/80 sm:text-base">
+              <p className="text-[0.7rem] font-semibold text-white/80 sm:text-base">
                 {option.reducedPrice}
               </p>
             </div>
           ) : null}
-          <div className="mt-4 flex justify-center sm:mt-6">
+          <div className="mt-2.5 flex justify-center sm:mt-6">
             {isComingSoon ? (
               <button
                 type="button"
                 disabled
                 aria-disabled="true"
-                className="ticket-pill w-full cursor-not-allowed whitespace-nowrap rounded-full bg-white/10 px-6 py-3 text-sm font-semibold text-white/55 ring-1 ring-white/10"
+                className="ticket-pill w-full cursor-not-allowed whitespace-normal rounded-full bg-white/10 !px-2 !py-1.5 !text-[0.6rem] font-semibold leading-tight text-white/55 ring-1 ring-white/10 sm:whitespace-nowrap sm:!px-6 sm:!py-3 sm:!text-sm"
               >
                 {buttonLabel}
               </button>
@@ -1108,7 +1295,7 @@ const TicketOptionCard = memo(function TicketOptionCard({
               <PrimaryButton
                 href={linkHref}
                 size="md"
-                className={`whitespace-nowrap ${tokens.buttonClass}`}
+                className={`!w-1/2 sm:!w-full !px-2 !py-1.5 !text-[0.6rem] whitespace-normal leading-tight sm:!px-5 sm:!py-2 sm:!text-base sm:whitespace-nowrap ${isPromo ? promoButtonClass : tokens.buttonClass}`}
               >
                 {buttonLabel}
               </PrimaryButton>
@@ -1127,6 +1314,42 @@ const TicketsSection = memo(function TicketsSection({
   tickets: TicketSection;
   locale: Locale;
 }) {
+  // Na mobile/tablet (< lg) pokazujemy 4 równe kafelki w siatce 2x2,
+  // pakiet „Wszystkie atrakcje" w tym samym kompaktowym formacie co reszta.
+  const firstPromo = PROMO_PACKAGES[locale][0];
+  const promoOption: TicketOption = {
+    badge: firstPromo.badge,
+    title: firstPromo.title,
+    titleLead: firstPromo.heroLead,
+    titleHighlight: firstPromo.heroHighlight,
+    bgColor: "#000000",
+    subtitle: firstPromo.subtitle,
+    details: firstPromo.details,
+    priceLabel: firstPromo.priceLabel,
+    price: firstPromo.price,
+    reducedPriceLabel: firstPromo.reducedPriceLabel,
+    reducedPrice: firstPromo.reducedPrice,
+    bookingCategory: firstPromo.category,
+    bookingServiceName: firstPromo.service,
+    accent: "cyan",
+    ctaLabel: firstPromo.button,
+  };
+  const promoHref = buildBookingPath(locale, {
+    category: firstPromo.category,
+    service: firstPromo.service,
+    autopick: firstPromo.autopick,
+  });
+  const promoPriceParts = firstPromo.price.split(",");
+  // Bilet KINO 360, rozbudowana karta na mobile, nad pakietem (dane z options[0]).
+  const kino = tickets.options[0];
+  const kinoHref = kino.bookingServiceName
+    ? buildBookingPath(locale, {
+        category: kino.bookingCategory ?? FILM_PATH_BOOKING_CATEGORY,
+        service: kino.bookingServiceName,
+        quantity: kino.bookingQuantity,
+      })
+    : tickets.ctaHref;
+
   return (
     <ScrollMotionItem strength="soft" delay={30} float={false} className="home-deferred-block">
       <Card
@@ -1139,21 +1362,191 @@ const TicketsSection = memo(function TicketsSection({
       >
         <div className="mt-1 text-center">
           <p className="ap-type-cta-title !text-[clamp(1.25rem,1.05rem+0.8vw,1.9rem)] !leading-[1.3]">{tickets.headerCta}</p>
-          <p className="mt-3 ap-type-cta-body !text-[clamp(1.05rem,0.95rem+0.5vw,1.4rem)] !leading-[1.5]">{tickets.headerCtaSub}</p>
         </div>
-        <div className="mt-8 space-y-6 sm:space-y-8">
+        <div className="mt-8">
+          {/* MOBILE / tablet (< lg): hero pakiet + „lub pojedyncza" + rzędy atrakcji + zaufanie */}
+          <div className="lg:hidden">
+            {/* HERO: bilet KINO 360 (czerwony, w stylu pakietu, nad pakietem) */}
+            <article className="relative overflow-hidden rounded-[1.9rem] border-2 border-[#f7486c] bg-[#05060c] px-5 py-6 shadow-[0_0_38px_rgba(247,72,108,0.32),0_30px_60px_rgba(0,0,0,0.6)]">
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_88%_22%,rgba(247,72,108,0.24),transparent_46%),radial-gradient(circle_at_78%_88%,rgba(255,107,133,0.16),transparent_46%),radial-gradient(circle_at_60%_58%,rgba(247,120,40,0.1),transparent_52%)]" />
+              <div className="relative">
+                <div className="flex justify-center">
+                  <span className="inline-flex items-center whitespace-nowrap rounded-full bg-[linear-gradient(135deg,#f5b301,#fcd34d)] px-3.5 py-1.5 text-[0.6rem] font-extrabold uppercase tracking-[0.18em] text-[#231903] shadow-[0_6px_18px_rgba(251,191,36,0.45)] ring-1 ring-black/10">
+                    Największe w Europie
+                  </span>
+                </div>
+                <h3 className="mt-4 text-[1.85rem] font-black leading-[1.05] tracking-[-0.02em] text-white">
+                  <span className="block uppercase">{kino.title}</span>
+                </h3>
+                <div className="mt-3 h-px w-16 bg-white/15" />
+                <div className="mt-4 flex items-center justify-between gap-4">
+                  <p className="max-w-[8rem] text-[0.82rem] leading-snug text-white/65">
+                    Obraz dookoła w kopule 48 m
+                  </p>
+                  <div className="shrink-0 text-right leading-none">
+                    <p className="text-[1.7rem] font-black text-white">
+                      {(kino.price ?? "").split("/")[0].trim()}
+                      <span className="text-sm font-bold">/{(kino.price ?? "").split("/")[1] ?? "os."}</span>
+                    </p>
+                    <p className="mt-1.5 text-[0.66rem] text-white/55">
+                      ulgowy <span className="font-extrabold text-[#ff8da3]">{kino.reducedPrice}</span>
+                    </p>
+                  </div>
+                </div>
+                <PrimaryButton
+                  href={kinoHref}
+                  size="lg"
+                  className="ticket-pill mt-5 !flex !w-full !items-center !justify-center !gap-2 !bg-[linear-gradient(135deg,#e2580c,#f7486c,#ff6b85)] !text-white !font-extrabold [text-shadow:0_1px_2px_rgba(0,0,0,0.5)] !shadow-[0_0_26px_rgba(247,72,108,0.5)] ring-[color:rgba(247,72,108,0.6)]"
+                >
+                  <FaTicket aria-hidden="true" /> {kino.ctaLabel ?? tickets.cta}
+                </PrimaryButton>
+              </div>
+            </article>
+
+            {/* HERO: pakiet „Wszystkie atrakcje" */}
+            <article className="relative mt-6 overflow-hidden rounded-[1.9rem] border-2 border-[#4fcfde] bg-[#05060c] px-5 py-6 shadow-[0_0_38px_rgba(79,207,222,0.32),0_30px_60px_rgba(0,0,0,0.6)]">
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_88%_22%,rgba(79,207,222,0.22),transparent_46%),radial-gradient(circle_at_78%_88%,rgba(247,72,108,0.18),transparent_46%),radial-gradient(circle_at_60%_58%,rgba(168,85,247,0.12),transparent_52%)]" />
+              <div className="relative">
+                <div className="flex justify-center">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[#4fcfde]/12 px-3.5 py-1.5 text-[0.6rem] font-bold uppercase tracking-[0.2em] text-[#7ef6ff] ring-1 ring-[#4fcfde]/40">
+                    <FaStar className="text-[0.7rem]" aria-hidden="true" /> Najlepszy wybór
+                  </span>
+                </div>
+                <h3 className="mt-4 text-[1.85rem] font-black leading-[1.05] tracking-[-0.02em] text-white">
+                  {firstPromo.heroLead}
+                  <span
+                    className="block bg-[linear-gradient(90deg,#4fcfde,#a855f7,#f7486c,#f77828)] bg-clip-text uppercase text-transparent"
+                    style={{ WebkitBackgroundClip: "text" }}
+                  >
+                    {firstPromo.heroHighlight}
+                  </span>
+                </h3>
+                <div className="mt-3 h-px w-16 bg-white/15" />
+                <div className="mt-4 flex items-center justify-between gap-4">
+                  <p className="max-w-[8rem] text-[0.82rem] leading-snug text-white/65">
+                    Pełne doświadczenie w najlepszej cenie
+                  </p>
+                  <div className="shrink-0 text-right leading-none">
+                    <p className="text-[1.7rem] font-black text-white">
+                      {promoPriceParts[0]}
+                      <span className="text-sm font-bold">,{promoPriceParts[1] ?? "00 zł"}</span>
+                    </p>
+                    <p className="mt-1.5 text-[0.66rem] text-white/55">
+                      ulgowy <span className="font-extrabold text-[#7ef6ff]">{firstPromo.reducedPrice}</span>
+                    </p>
+                  </div>
+                </div>
+                <p className="mt-2 text-[0.7rem] text-white/45">zamiast osobno drożej</p>
+                <PrimaryButton
+                  href={promoHref}
+                  size="lg"
+                  className="ticket-pill mt-5 !flex !w-full !items-center !justify-center !gap-2 !bg-[linear-gradient(135deg,#1ea6b7,#4fcfde,#7ef6ff)] !text-white !font-extrabold [text-shadow:0_1px_2px_rgba(0,0,0,0.5)] !shadow-[0_0_26px_rgba(79,207,222,0.5)] ring-[color:rgba(79,207,222,0.6)]"
+                >
+                  <FaTicket aria-hidden="true" /> {firstPromo.button}
+                </PrimaryButton>
+              </div>
+            </article>
+
+            {/* separator */}
+            <div className="my-6 flex items-center gap-3">
+              <span className="h-px flex-1 bg-white/10" />
+              <span className="whitespace-nowrap text-[0.56rem] font-semibold uppercase tracking-[0.16em] text-white/45">
+                Lub wybierz pojedynczą atrakcję
+              </span>
+              <span className="h-px flex-1 bg-white/10" />
+            </div>
+
+            {/* rzędy pojedynczych atrakcji */}
+            <div className="space-y-3">
+              {tickets.options.map((option, i) => {
+                if (i === 0) return null; // Kino jest teraz osobną kartą na górze
+                const tk = TICKET_ACCENT_TOKENS[option.accent ?? "cyan"];
+                const href = option.bookingServiceName
+                  ? buildBookingPath(locale, {
+                      category: option.bookingCategory ?? FILM_PATH_BOOKING_CATEGORY,
+                      service: option.bookingServiceName,
+                      quantity: option.bookingQuantity,
+                    })
+                  : tickets.ctaHref;
+                return (
+                  <div
+                    key={option.title}
+                    className="flex items-center gap-3 rounded-2xl border bg-white/[0.03] p-2.5"
+                    style={{ borderColor: `${tk.accentHex}3d` }}
+                  >
+                    <span
+                      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-lg"
+                      style={{ border: `1.5px solid ${tk.accentHex}`, color: tk.accentHex, boxShadow: `0 0 14px ${tk.accentHex}40` }}
+                    >
+                      {attractionIcons[i] ?? attractionIcons[0]}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-bold text-white">{option.title}</p>
+                      <p className="line-clamp-2 text-[0.72rem] leading-snug text-white/55">{rowDescriptions[i] ?? option.subtitle}</p>
+                    </div>
+                    <div className="shrink-0 border-l border-white/10 pl-2.5 text-right">
+                      <p className="whitespace-nowrap text-sm font-extrabold leading-none text-white">
+                        {(option.price ?? "").split("/")[0].trim()}
+                        <span className="text-[0.6rem] font-medium text-white/50">/{(option.price ?? "").split("/")[1] ?? "os."}</span>
+                      </p>
+                    </div>
+                    <a
+                      href={href}
+                      className="shrink-0 whitespace-nowrap rounded-full px-3 py-2 text-[0.64rem] font-bold text-white transition hover:brightness-110"
+                      style={{ background: tk.accentHex, boxShadow: `0 0 16px ${tk.accentHex}55` }}
+                    >
+                      {option.ctaLabel ?? tickets.cta}
+                    </a>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* lg+: bogaty pakiet na całą szerokość + 3 bilety w rzędzie */}
+          <div className="hidden space-y-8 lg:block">
           {PROMO_PACKAGES[locale].map((promo) => (
             <article
               key={promo.title}
-              className="home-ticket-promo ap-tile ap-tile-lg ap-tile-accent relative overflow-hidden px-4 py-5 sm:px-7 sm:py-7"
+              className="home-ticket-promo relative overflow-hidden rounded-[1.75rem] border-2 border-[#4fcfde] px-4 py-5 shadow-[0_30px_80px_rgba(0,0,0,0.55),0_0_28px_rgba(79,207,222,0.35)] sm:px-7 sm:py-7"
+              style={{
+                backgroundColor: "#0a0d18",
+                WebkitMask:
+                  "radial-gradient(circle 14px at 0 50%, transparent 14px, #000 14.5px) left center / 100% 100% no-repeat, radial-gradient(circle 14px at 100% 50%, transparent 14px, #000 14.5px) right center / 100% 100% no-repeat",
+                WebkitMaskComposite: "source-in",
+                maskComposite: "intersect",
+              }}
             >
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(79,207,222,0.18),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(79,207,222,0.08),transparent_32%)]" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(79,207,222,0.18),transparent_38%),radial-gradient(circle_at_top_right,rgba(247,120,40,0.16),transparent_38%),radial-gradient(circle_at_bottom_center,rgba(247,72,108,0.14),transparent_42%)]" />
+
+              {/* Pionowa „dziurkowana" linia w środku, jak na bilecie */}
+              <div
+                className="pointer-events-none absolute top-6 bottom-6 hidden lg:block"
+                style={{
+                  left: "calc(100% - 23rem)",
+                  width: "1px",
+                  backgroundImage:
+                    "repeating-linear-gradient(to bottom, rgba(255,255,255,0.28) 0 6px, transparent 6px 12px)",
+                }}
+                aria-hidden="true"
+              />
+
               <div className="relative grid gap-5 sm:gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-8">
                 <div className="space-y-4 sm:space-y-5 text-center lg:text-left">
-                  <span className="ticket-card-badge mx-auto lg:mx-0">{promo.badge}</span>
+                  <span
+                    className="ticket-card-badge mx-auto lg:mx-0 !text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.6)]"
+                  >
+                    {promo.badge}
+                  </span>
                   <div className="space-y-2 sm:space-y-3">
-                    <h3 className="text-2xl font-semibold leading-tight tracking-[-0.03em] text-[color:var(--ap-text-strong)] sm:text-3xl lg:text-4xl">
-                      {promo.title}
+                    <h3 className="text-2xl font-extrabold leading-[1.02] tracking-[-0.03em] text-[color:var(--ap-text-strong)] sm:text-3xl lg:text-4xl">
+                      {promo.heroLead}{" "}
+                      <span
+                        className="block whitespace-nowrap bg-[linear-gradient(90deg,#4fcfde_0%,#a855f7_45%,#f7486c_65%,#f77828_100%)] bg-clip-text uppercase font-black text-transparent sm:inline"
+                        style={{ WebkitBackgroundClip: "text" }}
+                      >
+                        {promo.heroHighlight}
+                      </span>
                     </h3>
                     <p className="mx-auto max-w-3xl text-sm leading-relaxed text-[color:var(--ap-text-dim)] sm:text-base lg:mx-0 lg:text-lg">
                       {promo.subtitle}
@@ -1171,29 +1564,43 @@ const TicketsSection = memo(function TicketsSection({
                   </div>
                 </div>
 
-                <div className="flex w-full flex-col items-center gap-3 sm:gap-4 lg:w-auto lg:items-end">
-                  <div className="home-ticket-promo-price ap-tile ap-tile-sm w-full max-w-[27rem] px-4 py-3.5 text-center sm:px-5 sm:py-4 lg:text-right">
-                    <div className="grid grid-cols-2 gap-0 lg:text-right">
-                      <div className="pr-3 sm:pr-4">
-                        <p className="text-[0.65rem] uppercase tracking-[0.18em] text-[color:var(--ap-text-muted)] sm:text-xs">
+                {/* Pozioma perforacja, tylko mobile/tablet (pod lg) */}
+                <div
+                  className="h-px w-full lg:hidden"
+                  style={{
+                    backgroundImage:
+                      "repeating-linear-gradient(to right, rgba(255,255,255,0.32) 0 6px, transparent 6px 12px)",
+                  }}
+                  aria-hidden="true"
+                />
+
+                <div className="flex w-full flex-col items-center gap-3 sm:gap-4 lg:w-[20rem] lg:items-stretch">
+                  {/* Dwie ceny: normalna + ulgowa */}
+                  <div className="home-ticket-promo-price ap-tile ap-tile-sm w-full px-3 py-3.5 text-center sm:px-5 sm:py-4">
+                    <p className="text-[0.56rem] font-bold uppercase tracking-[0.18em] text-[color:var(--ap-text-muted)] sm:text-[0.64rem] sm:tracking-[0.22em]">
+                      {promo.promoStripLabel}
+                    </p>
+                    <div className="mt-2 grid grid-cols-2 gap-0">
+                      <div className="pr-2 sm:pr-4">
+                        <p className="text-[0.54rem] uppercase tracking-[0.12em] text-[color:var(--ap-text-muted)] sm:text-[0.66rem] sm:tracking-[0.18em]">
                           {promo.priceLabel}
                         </p>
-                        <p className="mt-1 text-xl font-semibold leading-none tracking-[-0.03em] text-[color:var(--ap-text-strong)] sm:text-2xl lg:text-[1.75rem]">
+                        <p className="mt-1 text-lg font-extrabold leading-none tracking-[-0.03em] text-[color:var(--ap-text-strong)] sm:text-2xl">
                           {promo.price}
                         </p>
-                        <p className="mt-1.5 inline-flex flex-nowrap items-center gap-1.5 whitespace-nowrap text-[0.65rem] font-semibold leading-tight text-[color:var(--ap-breeze-strong)] sm:text-[0.72rem]">
+                        <p className="mt-1.5 inline-flex flex-wrap items-center justify-center gap-1.5 text-[0.55rem] font-semibold leading-tight text-[color:var(--ap-breeze-strong)] sm:text-[0.68rem]">
                           <span>−{promo.savingsPercent}</span>
                           <span className="text-[color:var(--ap-text-muted)]">{promo.savings}</span>
                         </p>
                       </div>
-                      <div className="border-l border-[color:var(--ap-border)] pl-3 sm:pl-4">
-                        <p className="text-[0.65rem] uppercase tracking-[0.18em] text-[color:var(--ap-text-muted)] sm:text-xs">
+                      <div className="border-l border-[color:var(--ap-border)] pl-2 sm:pl-4">
+                        <p className="text-[0.54rem] uppercase tracking-[0.12em] text-[color:var(--ap-text-muted)] sm:text-[0.66rem] sm:tracking-[0.18em]">
                           {promo.reducedPriceLabel}
                         </p>
-                        <p className="mt-1 text-xl font-semibold leading-none tracking-[-0.03em] text-[color:var(--ap-text-strong)] sm:text-2xl lg:text-[1.75rem]">
+                        <p className="mt-1 text-lg font-extrabold leading-none tracking-[-0.03em] text-[color:var(--ap-text-strong)] sm:text-2xl">
                           {promo.reducedPrice}
                         </p>
-                        <p className="mt-1.5 inline-flex flex-nowrap items-center gap-1.5 whitespace-nowrap text-[0.65rem] font-semibold leading-tight text-[color:var(--ap-breeze-strong)] sm:text-[0.72rem]">
+                        <p className="mt-1.5 inline-flex flex-wrap items-center justify-center gap-1.5 text-[0.55rem] font-semibold leading-tight text-[color:var(--ap-breeze-strong)] sm:text-[0.68rem]">
                           <span>−{promo.reducedSavingsPercent}</span>
                           <span className="text-[color:var(--ap-text-muted)]">{promo.reducedSavings}</span>
                         </p>
@@ -1202,9 +1609,9 @@ const TicketsSection = memo(function TicketsSection({
                   </div>
 
                   <PrimaryButton
-                    href={buildBookingPath(locale, { category: promo.category })}
+                    href={buildBookingPath(locale, { category: promo.category, service: promo.service, autopick: promo.autopick })}
                     size="lg"
-                    className="ticket-pill w-full whitespace-nowrap ring-[color:rgba(240,60,100,0.55)] sm:w-auto sm:min-w-[13rem]"
+                    className="ticket-pill w-full whitespace-nowrap !bg-[linear-gradient(135deg,#1ea6b7,#4fcfde,#7ef6ff)] !text-white !font-extrabold [text-shadow:0_1px_2px_rgba(0,0,0,0.55)] !shadow-[0_10px_30px_rgba(79,207,222,0.45),0_0_24px_rgba(79,207,222,0.35)] ring-[color:rgba(79,207,222,0.6)] hover:!brightness-110"
                   >
                     {promo.button}
                   </PrimaryButton>
@@ -1213,7 +1620,7 @@ const TicketsSection = memo(function TicketsSection({
             </article>
           ))}
 
-          <div className="grid grid-cols-1 gap-x-6 gap-y-10 lg:grid-cols-2 xl:grid-cols-3">
+          <div className="grid grid-cols-3 gap-2 sm:gap-4 lg:grid-cols-2 lg:gap-x-6 lg:gap-y-10 xl:grid-cols-3">
             {tickets.options.map((option) => (
               <TicketOptionCard
                 key={option.title}
@@ -1232,6 +1639,7 @@ const TicketsSection = memo(function TicketsSection({
                 }
               />
             ))}
+          </div>
           </div>
         </div>
       </Card>
@@ -1664,6 +2072,33 @@ const AttractionsScroller = memo(function AttractionsScroller({
     };
   }, [canAnimate, items.length]);
 
+  // W trybie przesuwania (mobile/tablet) ustaw start na środkowej (wyróżnionej)
+  // atrakcji. K360 pojawia się pierwsze, a Ścieżkę / MARS odsłania się w lewo/prawo.
+  useEffect(() => {
+    if (canAnimate) {
+      return;
+    }
+    const container = containerRef.current;
+    const track = trackRef.current;
+    if (!container || !track) {
+      return;
+    }
+
+    const featuredIndex = items.findIndex((item) => item.featured);
+    const index = featuredIndex >= 0 ? featuredIndex : Math.floor(items.length / 2);
+
+    const frameId = window.requestAnimationFrame(() => {
+      const cardEl = track.children[index] as HTMLElement | undefined;
+      if (!cardEl) {
+        return;
+      }
+      const target = cardEl.offsetLeft + cardEl.offsetWidth / 2 - container.clientWidth / 2;
+      container.scrollLeft = Math.max(0, target);
+    });
+
+    return () => window.cancelAnimationFrame(frameId);
+  }, [canAnimate, items]);
+
   const renderItems = canAnimate ? loopItems : items;
 
   const scrollByCard = (direction: "left" | "right") => {
@@ -1686,30 +2121,21 @@ const AttractionsScroller = memo(function AttractionsScroller({
         }`}
         style={canAnimate ? undefined : { scrollbarWidth: "none" }}
       >
-        {canAnimate ? (
-          <>
-            <div
-              className="attractions-edge-fade attractions-edge-fade-left pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-[color:var(--ap-bg)] to-transparent sm:w-20"
-              aria-hidden="true"
-            />
-            <div
-              className="attractions-edge-fade attractions-edge-fade-right pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-[color:var(--ap-bg)] to-transparent sm:w-20"
-              aria-hidden="true"
-            />
-          </>
-        ) : null}
+        {/* Krawędziowy fade usunięty na życzenie. Powodował przyciemnienie/ucięcie kart. */}
 
         <div
           ref={trackRef}
           className={`attractions-track flex min-w-max gap-4 py-2 sm:gap-5 ${
-            canAnimate ? "will-change-transform" : "pr-4"
+            canAnimate
+              ? "will-change-transform"
+              : "px-[max(1rem,calc(50%_-_150px))] sm:px-[max(1rem,calc(50%_-_166px))]"
           }`}
         >
           {renderItems.map((item, index) => (
             <div
               key={`${item.title}-${index}`}
               className={`w-[300px] shrink-0 sm:w-[332px] lg:w-[352px] ${
-                canAnimate ? "" : "snap-start"
+                canAnimate ? "" : "snap-center"
               }`}
             >
               <AttractionCard {...item} />

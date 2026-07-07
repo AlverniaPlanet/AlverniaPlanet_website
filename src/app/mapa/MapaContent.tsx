@@ -47,7 +47,7 @@ export default function MapaContent() {
         <h1 className={styles.title}>Mapa zwiedzania</h1>
         <p className={styles.lead}>
           Dotknij świecącej kopuły, aby zobaczyć jej opis. Linia pokazuje trasę
-          wycieczki — od strefy startowej K5/K6 aż po wyjście między K11 a K4.
+          wycieczki, od strefy startowej K5/K6 aż po wyjście między K11 a K4.
         </p>
       </div>
 
@@ -100,7 +100,7 @@ export default function MapaContent() {
             </text>
           </g>
 
-          {/* Klikalne kopuły — pulsujące pierścienie (nazwy są już na mapie) */}
+          {/* Klikalne kopuły, pulsujące pierścienie (nazwy są już na mapie) */}
           {hotspots.map((k) => {
             const isActive = k.id === activeId;
             return (

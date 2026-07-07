@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Gra Runmageddon zakończona — Alvernia Planet",
+  title: "Gra Runmageddon zakończona, Alvernia Planet",
   description: "Akcja Runmageddon Game zakończyła się 12 kwietnia 2026.",
   robots: {
     index: false,

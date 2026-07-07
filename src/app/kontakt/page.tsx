@@ -81,7 +81,7 @@ const COPY: Record<
       caretakerLabel: "Opiekun",
       caretakerName: "Bartłomiej Jacoń",
       onlineTitle: "Rezerwacja online",
-      onlineDescription: "Wybierz termin i liczbę osób — potwierdzimy rezerwację na maila.",
+      onlineDescription: "Wybierz termin i liczbę osób. Potwierdzimy rezerwację na maila.",
       button: "Otwórz kalendarz rezerwacji",
     },
     events: {
@@ -92,7 +92,7 @@ const COPY: Record<
     },
     form: {
       title: "Formularz kontaktowy",
-      subtitle: "Napisz do nas — odpowiemy jak najszybciej.",
+      subtitle: "Napisz do nas. Odpowiemy jak najszybciej.",
       nameLabel: "Imię i nazwisko",
       emailLabel: "Adres e-mail",
       phoneLabel: "Nr telefonu",
@@ -122,7 +122,7 @@ const COPY: Record<
       caretakerLabel: "Coordinator",
       caretakerName: "Bartłomiej Jacoń",
       onlineTitle: "Online booking",
-      onlineDescription: "Pick a date and headcount—we’ll confirm your reservation by email.",
+      onlineDescription: "Pick a date and headcount. We’ll confirm your reservation by email.",
       button: "Open booking calendar",
     },
     events: {
@@ -133,7 +133,7 @@ const COPY: Record<
     },
     form: {
       title: "Contact form",
-      subtitle: "Write to us — we’ll get back to you as soon as possible.",
+      subtitle: "Write to us. We’ll get back to you as soon as possible.",
       nameLabel: "Full name",
       emailLabel: "Email address",
       phoneLabel: "Phone number",
@@ -163,7 +163,7 @@ const COPY: Record<
       caretakerLabel: "Responsável",
       caretakerName: "Bartłomiej Jacoń",
       onlineTitle: "Reserva online",
-      onlineDescription: "Escolha a data e o número de pessoas — confirmaremos por email.",
+      onlineDescription: "Escolha a data e o número de pessoas. Confirmaremos por email.",
       button: "Abrir calendário de reservas",
     },
     events: {
@@ -174,7 +174,7 @@ const COPY: Record<
     },
     form: {
       title: "Formulário de contacto",
-      subtitle: "Escreva-nos — responderemos o mais rápido possível.",
+      subtitle: "Escreva-nos. Responderemos o mais rápido possível.",
       nameLabel: "Nome e apelido",
       emailLabel: "Endereço de email",
       phoneLabel: "Número de telefone",

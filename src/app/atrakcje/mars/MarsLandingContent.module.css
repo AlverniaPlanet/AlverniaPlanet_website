@@ -845,3 +845,93 @@
 .page :global(.k360-feature-hero)::after {
   border-color: rgba(247, 120, 40, 0.18);
 }
+
+/* ============================================================================
+   Reveal-on-scroll podróży Marsa — JEDEN spójny fade-up, bramkowany tak, że
+   stan ukryty włącza się DOPIERO gdy JS oznaczy root (data-reveal-ready).
+   SSR / brak-JS / reduced-motion = stan finalny (bez mignięcia, crawler-safe).
+   Animuje tylko opacity + transform ⇒ 0 CLS. Trzy kluczowe boksy dodatkowo
+   rozbłyskują ciepłym „touchdown glow" i delikatnie się „dosiadają"
+   scale(0.985)→1 (tylko kompozytor, dekoracja).
+   ============================================================================ */
+
+.revealRoot {
+  /* marker zakresu dla selektorów poniżej */
+}
+
+.revealRoot :global([data-reveal]) {
+  transition:
+    opacity 760ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 760ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(var(--reveal-i, 0) * 70ms);
+  will-change: opacity, transform;
+}
+
+.revealRoot[data-reveal-ready] :global([data-reveal]:not([data-revealed])) {
+  opacity: 0;
+  transform: translate3d(0, 16px, 0);
+}
+
+.revealRoot[data-reveal-ready]
+  :global([data-reveal][data-reveal-glow]:not([data-revealed])) {
+  transform: translate3d(0, 16px, 0) scale(0.985);
+}
+
+.revealRoot :global([data-reveal][data-revealed]) {
+  opacity: 1;
+  transform: none;
+  will-change: auto;
+}
+
+/* Ciepły pomarańczowy „touchdown glow" — dekoracyjny blask za 3 boksami. */
+.revealRoot :global([data-reveal-glow]) {
+  position: relative;
+}
+.revealRoot :global([data-reveal-glow])::before {
+  content: "";
+  position: absolute;
+  inset: -14%;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(
+    closest-side,
+    rgba(247, 120, 40, 0.42),
+    rgba(247, 120, 40, 0.16) 52%,
+    transparent 78%
+  );
+  filter: blur(22px);
+  opacity: 0;
+}
+.revealRoot[data-reveal-ready]
+  :global([data-reveal-glow][data-revealed])::before {
+  animation: marsTouchdownGlow 1500ms ease-out
+    calc(var(--reveal-i, 0) * 70ms + 160ms) both;
+}
+
+@keyframes marsTouchdownGlow {
+  0% {
+    opacity: 0;
+  }
+  38% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.34;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .revealRoot :global([data-reveal]),
+  .revealRoot[data-reveal-ready] :global([data-reveal]:not([data-revealed])) {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .revealRoot :global([data-reveal-glow])::before,
+  .revealRoot[data-reveal-ready]
+    :global([data-reveal-glow][data-revealed])::before {
+    animation: none !important;
+    opacity: 0.28;
+  }
+}

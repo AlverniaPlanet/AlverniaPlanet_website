@@ -1,0 +1,119 @@
+/* HeroMarquee — seamless infinite ticker for attraction hero facts bars.
+   Themed per page via the --ap-marquee-accent / --ap-marquee-duration vars
+   set inline on .bar. */
+
+.bar {
+  /* Matches the facts bar it replaces: absolute-bottom strip styling is
+     applied by the page wrapper className; this only carries the look. */
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.viewport {
+  /* Clip the duplicated track so it never creates horizontal scroll. */
+  overflow: hidden;
+  width: 100%;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .viewport {
+    padding-top: 0.875rem;
+    padding-bottom: 0.875rem;
+  }
+}
+
+.track {
+  display: flex;
+  width: max-content;
+  flex-wrap: nowrap;
+  will-change: transform;
+  animation: ap-marquee-scroll var(--ap-marquee-duration, 26s) linear infinite;
+}
+
+/* Each .copy is exactly half the track; translating -50% swaps copy A for
+   copy B's start position => no visible jump. */
+.copy {
+  display: flex;
+  flex-wrap: nowrap;
+  flex: 0 0 auto;
+}
+
+.copyItem {
+  display: inline-flex;
+}
+
+.unit {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.72rem;
+  line-height: 1;
+}
+
+@media (min-width: 640px) {
+  .unit {
+    font-size: 0.95rem;
+    letter-spacing: 0.16em;
+  }
+}
+
+.verb {
+  color: var(--ap-marquee-accent, #ffffff);
+}
+
+.word {
+  color: #ffffff;
+  margin-left: 0.4em;
+}
+
+.bullet {
+  color: var(--ap-marquee-accent, #ffffff);
+  /* spacing on both sides so it reads as a separator between repetitions */
+  margin-left: 1.1em;
+  margin-right: 1.1em;
+  font-size: 0.7em;
+  line-height: 1;
+}
+
+@keyframes ap-marquee-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* Respect users who don't want motion: stop the loop, show one static,
+   centered row of the slogan. */
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    animation: none;
+    width: 100%;
+    justify-content: center;
+    will-change: auto;
+  }
+  /* Hide the second (duplicate) copy; it only exists for the loop. */
+  .copy:nth-child(2) {
+    display: none;
+  }
+  /* Trim the first copy to a single, centered slogan. */
+  .copy:nth-child(1) {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .copy:nth-child(1) .copyItem:not(:first-child) {
+    display: none;
+  }
+  /* Drop the trailing separator bullet on the lone visible unit. */
+  .copy:nth-child(1) .copyItem:first-child .bullet {
+    display: none;
+  }
+}

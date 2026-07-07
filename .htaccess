@@ -6,11 +6,23 @@ DirectorySlash Off
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
+
+  # QR MarsApp: /qrcodemarsapp -> wykryj system i przekieruj
+  #   iOS (iPhone/iPad/iPod) -> App Store
+  #   Android                -> Google Play
+  #   Desktop / inne         -> homepage
+  RewriteCond %{HTTP_USER_AGENT} (iPhone|iPad|iPod) [NC]
+  RewriteRule ^qrcodemarsapp/?$ https://apps.apple.com/pl/app/marsapp/id6775477060?l=pl [R=302,L]
+  RewriteCond %{HTTP_USER_AGENT} Android [NC]
+  RewriteRule ^qrcodemarsapp/?$ https://play.google.com/store/apps/details?id=com.alverniaplanet.marsvideo [R=302,L]
+  RewriteRule ^qrcodemarsapp/?$ https://www.alverniaplanet.com/ [R=302,L]
+
   # Serve existing files as-is
   RewriteCond %{REQUEST_FILENAME} -f
   RewriteRule ^ - [L]
   # Map clean URLs (even if a folder with assets exists) to matching exported .html
-  RewriteCond %{REQUEST_URI} !\.[^/]+$  # skip if request already has an extension
+  # skip if request already has an extension
+  RewriteCond %{REQUEST_URI} !\.[^/]+$
   RewriteRule ^(.+?)/?$ /$1.html [L]
   # All other requests fall through to Apache (will 404 if missing)
 </IfModule>

@@ -36,18 +36,18 @@ export const NEWS_COPY: Record<Locale, NewsSection> = {
     items: [
       {
         badge: "Gazeta Krakowska",
-        title: "Otwarcie Projektu: MARS — nakręć własny film science-fiction",
+        title: "Otwarcie MARS, nakręć własny film science-fiction",
         description:
-          "Gazeta Krakowska zapowiada otwarcie nowej immersyjnej wystawy w Alvernia Planet, na której zwiedzający lądują na Marsie i nagrywają własny krótki film science-fiction. To debiut Projektu: MARS — interaktywnej atrakcji łączącej kino, scenografię i aplikację mobilną.",
+          "Gazeta Krakowska zapowiada otwarcie nowej immersyjnej wystawy w Alvernia Planet, na której zwiedzający lądują na Marsie i nagrywają własny krótki film science-fiction. To debiut MARS, interaktywnej atrakcji łączącej kino, scenografię i aplikację mobilną.",
         cta: "Czytaj w Gazecie Krakowskiej",
         href: "https://gazetakrakowska.pl/nakrec-swoj-wlasny-film-science-fiction-ladowanie-na-marsie-30-maja-otwarcie-nowej-wystawy-immersyjnej-w-alvernia-planet/ar/c13p2-29037615",
         external: true,
       },
       {
         badge: "Gazeta Krakowska",
-        title: "Projekt: MARS przyciąga rodziny — jak zostać astronautą w jeden dzień",
+        title: "MARS przyciąga rodziny, jak zostać astronautą w jeden dzień",
         description:
-          "Gazeta Krakowska odwiedza Projekt: MARS po otwarciu i opisuje, jak nowa atrakcja Alvernia Planet pod Krakowem porywa rodziny. Materiał pokazuje przebieg kosmicznej misji — od briefingu po nagrywanie scen na marsjańskim planie i gotowy film do zabrania ze sobą.",
+          "Gazeta Krakowska odwiedza MARS po otwarciu i opisuje, jak nowa atrakcja Alvernia Planet pod Krakowem porywa rodziny. Materiał pokazuje przebieg kosmicznej misji: od briefingu po nagrywanie scen na marsjańskim planie i gotowy film do zabrania ze sobą.",
         cta: "Czytaj w Gazecie Krakowskiej",
         href: "https://gazetakrakowska.pl/kosmiczna-misja-i-wlasny-film-nowa-atrakcja-alvernia-planet-pod-krakowem-przyciaga-rodziny-czyli-jak-zostac-astronauta-w-jeden-dzien/ar/c13p2-29047243",
         external: true,
@@ -58,15 +58,15 @@ export const NEWS_COPY: Record<Locale, NewsSection> = {
         description:
           "Od początku stycznia rozwijamy ścieżki edukacyjne tak, by jeszcze mocniej łączyły film, naukę i nowoczesną narrację. To oznacza bardziej angażujące przystanki, lepszy rytm zwiedzania i jeszcze więcej efektu wow dla grup i rodzin.",
         cta: "Zobacz ścieżkę edukacyjną",
-        href: "/atrakcje/sciezka-filmowa",
+        href: "/grupy",
       },
       {
         badge: "K360",
         title: "K360, największa przestrzeń fulldome w Europie, jest już dostępna",
         description:
           "Po kwietniowym otwarciu zapraszamy do K360, przestrzeni stworzonej do pełnego zanurzenia w obrazie, dźwięku i skali kopuły. Premierowy repertuar prowadzi widzów w stronę kosmosu i pokazuje, jak inaczej może działać kino bez klasycznego ekranu.",
-        cta: "Poznaj Kino K360",
-        href: "/atrakcje/k360",
+        cta: "Poznaj Kino 360",
+        href: "/atrakcje/kino-360",
       },
       {
         badge: "Przełom",
@@ -134,18 +134,18 @@ export const NEWS_COPY: Record<Locale, NewsSection> = {
     items: [
       {
         badge: "Gazeta Krakowska",
-        title: "Mars Project opens — film your own sci-fi short",
+        title: "MARS opens: film your own sci-fi short",
         description:
-          "Gazeta Krakowska covers the opening of the new immersive exhibition at Alvernia Planet, where visitors land on Mars and record their own short sci-fi film. It marks the debut of the Mars Project — an interactive attraction blending cinema, scenography and a mobile app.",
+          "Gazeta Krakowska covers the opening of the new immersive exhibition at Alvernia Planet, where visitors land on Mars and record their own short sci-fi film. It marks the debut of MARS, an interactive attraction blending cinema, scenography and a mobile app.",
         cta: "Read in Gazeta Krakowska",
         href: "https://gazetakrakowska.pl/nakrec-swoj-wlasny-film-science-fiction-ladowanie-na-marsie-30-maja-otwarcie-nowej-wystawy-immersyjnej-w-alvernia-planet/ar/c13p2-29037615",
         external: true,
       },
       {
         badge: "Gazeta Krakowska",
-        title: "Families flock to the Mars Project — become an astronaut in a day",
+        title: "Families flock to MARS: become an astronaut in a day",
         description:
-          "Gazeta Krakowska visits the Mars Project after its launch and shows how the new attraction near Kraków captivates families. The piece walks through the cosmic mission — from the briefing to filming scenes on the Martian set, ending with a ready-made short to take home.",
+          "Gazeta Krakowska visits MARS after its launch and shows how the new attraction near Kraków captivates families. The piece walks through the cosmic mission: from the briefing to filming scenes on the Martian set, ending with a ready-made short to take home.",
         cta: "Read in Gazeta Krakowska",
         href: "https://gazetakrakowska.pl/kosmiczna-misja-i-wlasny-film-nowa-atrakcja-alvernia-planet-pod-krakowem-przyciaga-rodziny-czyli-jak-zostac-astronauta-w-jeden-dzien/ar/c13p2-29047243",
         external: true,
@@ -156,7 +156,7 @@ export const NEWS_COPY: Record<Locale, NewsSection> = {
         description:
           "Since January, we have been enhancing the educational paths to create a stronger blend of film, science, and contemporary storytelling. The result is a more engaging route, sharper pacing, and a more memorable visit for both families and organized groups.",
         cta: "Explore the educational path",
-        href: "/atrakcje/sciezka-filmowa",
+        href: "/grupy",
       },
       {
         badge: "K360",
@@ -164,7 +164,7 @@ export const NEWS_COPY: Record<Locale, NewsSection> = {
         description:
           "After the April opening, K360 is welcoming visitors into an experience built around full immersion in image, sound, and the scale of the dome. The opening programme looks toward space and shows how cinema can feel when there is no conventional front screen.",
         cta: "Discover the K360 Cinema",
-        href: "/atrakcje/k360",
+        href: "/atrakcje/kino-360",
       },
       {
         badge: "Przełom",
@@ -232,18 +232,18 @@ export const NEWS_COPY: Record<Locale, NewsSection> = {
     items: [
       {
         badge: "Gazeta Krakowska",
-        title: "Abertura do Projeto MARS — filma a tua curta de ficção científica",
+        title: "Abertura do MARS: filma a tua curta de ficção científica",
         description:
-          "A Gazeta Krakowska anuncia a abertura da nova exposição imersiva na Alvernia Planet, onde os visitantes aterram em Marte e gravam a sua própria curta de ficção científica. Marca a estreia do Projeto MARS — uma atração interativa que combina cinema, cenografia e uma aplicação móvel.",
+          "A Gazeta Krakowska anuncia a abertura da nova exposição imersiva na Alvernia Planet, onde os visitantes aterram em Marte e gravam a sua própria curta de ficção científica. Marca a estreia do MARS, uma atração interativa que combina cinema, cenografia e uma aplicação móvel.",
         cta: "Ler na Gazeta Krakowska",
         href: "https://gazetakrakowska.pl/nakrec-swoj-wlasny-film-science-fiction-ladowanie-na-marsie-30-maja-otwarcie-nowej-wystawy-immersyjnej-w-alvernia-planet/ar/c13p2-29037615",
         external: true,
       },
       {
         badge: "Gazeta Krakowska",
-        title: "Projeto MARS atrai famílias — torna-te astronauta num só dia",
+        title: "MARS atrai famílias: torna-te astronauta num só dia",
         description:
-          "A Gazeta Krakowska visita o Projeto MARS após a abertura e mostra como a nova atração da Alvernia Planet, perto de Cracóvia, conquista as famílias. O artigo descreve toda a missão cósmica — desde o briefing até à gravação das cenas no plano marciano, terminando com uma curta pronta para levar para casa.",
+          "A Gazeta Krakowska visita o MARS após a abertura e mostra como a nova atração da Alvernia Planet, perto de Cracóvia, conquista as famílias. O artigo descreve toda a missão cósmica: desde o briefing até à gravação das cenas no plano marciano, terminando com uma curta pronta para levar para casa.",
         cta: "Ler na Gazeta Krakowska",
         href: "https://gazetakrakowska.pl/kosmiczna-misja-i-wlasny-film-nowa-atrakcja-alvernia-planet-pod-krakowem-przyciaga-rodziny-czyli-jak-zostac-astronauta-w-jeden-dzien/ar/c13p2-29047243",
         external: true,
@@ -254,7 +254,7 @@ export const NEWS_COPY: Record<Locale, NewsSection> = {
         description:
           "Desde janeiro, estamos a aperfeiçoar os percursos educativos para reforçar a ligação entre audiovisual, ciência e narrativa contemporânea. O objetivo é oferecer uma visita mais envolvente, mais fluida e ainda mais memorável para famílias e grupos.",
         cta: "Ver o percurso educativo",
-        href: "/atrakcje/sciezka-filmowa",
+        href: "/grupy",
       },
       {
         badge: "K360",
@@ -262,7 +262,7 @@ export const NEWS_COPY: Record<Locale, NewsSection> = {
         description:
           "Após a abertura em abril, o K360 recebe visitantes numa experiência criada para imersão total em imagem, som e escala. A programação de estreia olha para o espaço e mostra como o cinema pode funcionar sem um ecrã frontal tradicional.",
         cta: "Descobrir a cinema K360",
-        href: "/atrakcje/k360",
+        href: "/atrakcje/kino-360",
       },
       {
         badge: "Przełom",

@@ -14,3 +14,6 @@ out.zip
 firebase-debug.log
 tsconfig.tsbuildinfo
 .DS_Store
+
+# Raw video/media sources (transcoded into public/ — never deployed)
+media-src/

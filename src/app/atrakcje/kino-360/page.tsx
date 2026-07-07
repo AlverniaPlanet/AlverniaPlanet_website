@@ -1,19 +1,12 @@
 import type { Metadata } from "next";
-import LegacyK360RedirectContent from "./LegacyK360RedirectContent";
-
-const TARGET_PATH = "/atrakcje/k360";
+import K360Content from "./K360Content";
 
 export const metadata: Metadata = {
-  title: "Kino K360 — Alvernia Planet",
-  alternates: {
-    canonical: TARGET_PATH,
-  },
-  robots: {
-    index: false,
-    follow: true,
-  },
+  title: "Kino 360, Alvernia Planet",
+  description:
+    "Kino 360 w Alvernia Planet, największe kino fulldome w Europie. Kopuła 48 m, obraz 360° dookoła widza, seans ok. 30 minut. Bilety od 39 zł.",
 };
 
-export default function LegacyK360PageRedirect() {
-  return <LegacyK360RedirectContent targetPath={TARGET_PATH} />;
+export default function Kino360Page() {
+  return <K360Content />;
 }

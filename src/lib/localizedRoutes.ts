@@ -6,11 +6,13 @@ const PL_TO_INTL_COMMON: Record<string, string> = {
   "/wydarzenia/vr": "/events/vr",
   "/galeria": "/gallery",
   "/jak-dojechac": "/getting-there",
+  "/grupy": "/groups",
   "/o-alvernia-planet": "/about",
   "/kontakt": "/contact",
-  "/atrakcje/wystawa": "/attractions/exhibition",
+  "/harry-potter-the-exhibition": "/harry-potter-the-exhibition",
   "/atrakcje/sciezka-filmowa": "/attractions/film-path",
-  "/atrakcje/k360": "/attractions/k360",
+  "/atrakcje/filmworld": "/attractions/under-the-dome",
+  "/atrakcje/kino-360": "/attractions/k360",
 };
 
 const INTL_TO_PL_COMMON: Record<string, string> = Object.entries(PL_TO_INTL_COMMON).reduce(
@@ -33,6 +35,7 @@ const BASE_PREFETCH_PATHS = [
   "/wydarzenia",
   "/galeria",
   "/jak-dojechac",
+  "/grupy",
   "/runmageddon",
   "/kontakt",
   "/rezerwuj",
@@ -73,8 +76,8 @@ export function mapToPolishRoute(path: string): string {
   if (normalized.startsWith("/legal/")) return normalized;
 
   const withoutPrefix = stripLocalePrefix(normalized);
-  if (withoutPrefix === "/atrakcje/kino-360") {
-    return "/atrakcje/k360";
+  if (withoutPrefix === "/atrakcje/k360") {
+    return "/atrakcje/kino-360";
   }
   if (withoutPrefix === "/reserve" || withoutPrefix === "/reservar") {
     return "/rezerwuj";
@@ -112,15 +115,17 @@ export function getSitePaths(locale: Locale) {
     vrTour: getLocalizedPath("/wydarzenia/vr", locale),
     gallery: getLocalizedPath("/galeria", locale),
     gettingThere: getLocalizedPath("/jak-dojechac", locale),
+    groups: getLocalizedPath("/grupy", locale),
     runmageddon: getLocalizedPath("/runmageddon", locale),
     booking: getLocalizedPath("/rezerwuj", locale),
     about: getLocalizedPath("/o-alvernia-planet", locale),
     faq: getLocalizedPath("/faq", locale),
     contact: getLocalizedPath("/kontakt", locale),
     attractions: {
-      exhibition: getLocalizedPath("/atrakcje/wystawa", locale),
-      filmPath: getLocalizedPath("/atrakcje/sciezka-filmowa", locale),
-      k360: getLocalizedPath("/atrakcje/k360", locale),
+      exhibition: getLocalizedPath("/harry-potter-the-exhibition", locale),
+      // Indywidualna atrakcja "Wejdź pod kopułę" (dawniej Ścieżka filmowa).
+      filmPath: getLocalizedPath("/atrakcje/filmworld", locale),
+      k360: getLocalizedPath("/atrakcje/kino-360", locale),
       mars: "/atrakcje/mars",
     },
   };
@@ -128,4 +133,12 @@ export function getSitePaths(locale: Locale) {
 
 export function getPrefetchTargets(locale: Locale): string[] {
   return BASE_PREFETCH_PATHS.map((path) => getLocalizedPath(path, locale));
+}
+
+// Trasy renderowane bez chrome'u serwisu (navbar / stopka / pływające CTA),
+// np. kioskowa aplikacja leadowa /aplikacje/identyfikacja oraz brief /aplikacje/mars-brief.
+const BARE_CHROME_ROUTES = ["/aplikacje/identyfikacja", "/aplikacje/mars-brief"];
+export function isBareChromeRoute(path: string | null | undefined): boolean {
+  const canonical = mapToPolishRoute(normalizePathname(path ?? "/"));
+  return BARE_CHROME_ROUTES.some((route) => canonical === route || canonical.startsWith(`${route}/`));
 }

@@ -17,11 +17,12 @@ const DICTS: Record<Locale, Record<string, string>> = {
     "nav.about_alvernia": "O Alvernia Planet",
     "nav.virtual_walk": "Wirtualny spacer",
     "nav.getting_there": "Jak dojechać",
+    "nav.groups": "Grupy",
     "nav.tickets": "Bilety",
     "menu.attractions.exhibition": "Harry Potter: The Exhibition",
-    "menu.attractions.film_path": "Ścieżka filmowa",
-    "menu.attractions.k360": "Kino K360",
-    "menu.attractions.mars": "Projekt: MARS",
+    "menu.attractions.film_path": "FILMWORLD",
+    "menu.attractions.k360": "Kino 360",
+    "menu.attractions.mars": "MARS",
     "nav.faq": "Najczęściej zadawane pytania",
     "nav.events": "Wydarzenia",
   },
@@ -37,9 +38,10 @@ const DICTS: Record<Locale, Record<string, string>> = {
     "nav.about_alvernia": "About Alvernia Planet",
     "nav.virtual_walk": "Virtual tour",
     "nav.getting_there": "Getting here",
+    "nav.groups": "Groups",
     "nav.tickets": "Tickets",
     "menu.attractions.exhibition": "Harry Potter: The Exhibition",
-    "menu.attractions.film_path": "Film trail",
+    "menu.attractions.film_path": "FILMWORLD",
     "menu.attractions.k360": "K360 Cinema",
     "menu.attractions.mars": "Mars mission",
     "nav.faq": "Frequently asked questions",
@@ -57,9 +59,10 @@ const DICTS: Record<Locale, Record<string, string>> = {
     "nav.about_alvernia": "Sobre a Alvernia Planet",
     "nav.virtual_walk": "Passeio virtual",
     "nav.getting_there": "Como chegar",
+    "nav.groups": "Grupos",
     "nav.tickets": "Bilhetes",
     "menu.attractions.exhibition": "Harry Potter: The Exhibition",
-    "menu.attractions.film_path": "Percurso de filmagem",
+    "menu.attractions.film_path": "FILMWORLD",
     "menu.attractions.k360": "Cinema K360",
     "menu.attractions.mars": "Missão Marte",
     "nav.faq": "Perguntas mais frequentes",
@@ -109,36 +112,4 @@ export function I18nProvider({ children, initialLocale }: { children: React.Reac
 
 export function useI18n() {
   return useContext(I18nCtx);
-}
-
-export function LanguageSwitcher() {
-  const { locale, setLocale } = useI18n();
-  return (
-    <div className="flex gap-1">
-      <button
-        onClick={() => setLocale("pl")}
-        className={`px-2 py-1 rounded text-sm font-medium ${
-          locale === "pl" ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700"
-        }`}
-      >
-        PL
-      </button>
-      <button
-        onClick={() => setLocale("en")}
-        className={`px-2 py-1 rounded text-sm font-medium ${
-          locale === "en" ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700"
-        }`}
-      >
-        EN
-      </button>
-      <button
-        onClick={() => setLocale("pt")}
-        className={`px-2 py-1 rounded text-sm font-medium ${
-          locale === "pt" ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700"
-        }`}
-      >
-        PT
-      </button>
-    </div>
-  );
 }

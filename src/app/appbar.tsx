@@ -10,6 +10,7 @@ import { useTheme } from "@/app/theme-provider";
 import BrandLogo from "@/app/components/BrandLogo";
 import {
   getSitePaths,
+  isBareChromeRoute,
   mapToPolishRoute,
   normalizePathname,
   type Locale,
@@ -33,6 +34,8 @@ export function AppBar() {
   const loc: Locale = (locale as Locale) ?? "pl";
   const paths = getSitePaths(loc);
   const canonicalPath = mapToPolishRoute(normalizePathname(pathname));
+  // Trasy bez chrome'u serwisu (samodzielna aplikacja leadowa), bez headera.
+  const hideChrome = isBareChromeRoute(pathname);
   const logoFrameClass = "inline-flex items-center justify-center rounded-2xl px-0 py-0";
 
   const isCurrentPath = (...targets: string[]) =>
@@ -43,12 +46,13 @@ export function AppBar() {
   const isAttractionsActive = isCurrentSection("/atrakcje");
   const isEventsActive = isCurrentPath("/wydarzenia");
   const isGettingThereActive = isCurrentPath("/jak-dojechac");
+  const isGroupsActive = isCurrentPath("/grupy");
   const isAboutActive = isCurrentPath("/o-alvernia-planet", "/galeria", "/wydarzenia/vr", "/aktualnosci", "/faq");
   const isContactActive = isCurrentPath("/kontakt");
   const isBookingActive = isCurrentPath("/rezerwuj");
-  const isExhibitionActive = isCurrentPath("/atrakcje/wystawa");
-  const isFilmPathActive = isCurrentPath("/atrakcje/sciezka-filmowa");
-  const isK360Active = isCurrentPath("/atrakcje/k360");
+  const isExhibitionActive = isCurrentPath("/harry-potter-the-exhibition");
+  const isFilmPathActive = isCurrentPath("/atrakcje/filmworld");
+  const isK360Active = isCurrentPath("/atrakcje/kino-360");
   const isMarsActive = isCurrentPath("/atrakcje/mars");
   const isAboutPageActive = isCurrentPath("/o-alvernia-planet");
   const isGalleryActive = isCurrentPath("/galeria");
@@ -104,6 +108,9 @@ export function AppBar() {
   useEffect(() => {
     if (open) setHidden(false);
   }, [open]);
+
+  // Bez headera na trasach bare (np. /aplikacje/identyfikacja).
+  if (hideChrome) return null;
 
   return (
     <>
@@ -247,6 +254,15 @@ export function AppBar() {
                 suppressHydrationWarning
               >
                 {t("nav.getting_there")}
+              </Link>
+              <span className="ap-nav-separator text-white/40">|</span>
+              <Link
+                href={paths.groups}
+                className={cx("ap-nav-link", isGroupsActive && "is-active")}
+                aria-current={isGroupsActive ? "page" : undefined}
+                suppressHydrationWarning
+              >
+                {t("nav.groups")}
               </Link>
             </nav>
           </div>
@@ -531,6 +547,19 @@ export function AppBar() {
                   suppressHydrationWarning
                 >
                   {t("nav.getting_there")}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href={paths.groups}
+                  className={cx(
+                    "ap-mobile-link block rounded-md px-3 py-2 text-gray-200",
+                    isGroupsActive && "is-active",
+                  )}
+                  aria-current={isGroupsActive ? "page" : undefined}
+                  suppressHydrationWarning
+                >
+                  {t("nav.groups")}
                 </Link>
               </li>
               <li className="ml-3">

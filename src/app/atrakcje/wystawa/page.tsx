@@ -1,11 +1,21 @@
 import type { Metadata } from "next";
-import WystawaContent from "./WystawaContent";
+import LegacyRedirectContent from "@/app/components/LegacyRedirectContent";
+
+// Stary adres /atrakcje/wystawa. Kanoniczny jest teraz /harry-potter-the-exhibition.
+// Statyczny eksport (output: "export") → przekierowanie po stronie klienta.
+const TARGET_PATH = "/harry-potter-the-exhibition";
 
 export const metadata: Metadata = {
-  title: "Harry Potter: The Exhibition — Alvernia Planet",
-  description: "Harry Potter: The Exhibition w Alvernia Planet — wystawa, która gościła u nas od 11 kwietnia do 17 sierpnia 2025.",
+  title: "Harry Potter: The Exhibition, Alvernia Planet",
+  alternates: {
+    canonical: TARGET_PATH,
+  },
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
-export default function WystawaPage() {
-  return <WystawaContent />;
+export default function LegacyWystawaPageRedirect() {
+  return <LegacyRedirectContent targetPath={TARGET_PATH} label="Harry Potter: The Exhibition" />;
 }

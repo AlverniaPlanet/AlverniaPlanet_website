@@ -25,16 +25,16 @@ const COPY: Record<
   }
 > = {
   pl: {
-    heroTag: "Atrakcje",
+    heroTag: "Wystawa",
     heroTitle: "Harry Potter: The Exhibition",
     heroLead:
       "Wystawa zakończona 17 sierpnia 2025. Dziękujemy za odwiedziny i czekamy na kolejną.",
     videoFallback: "Twój browser nie wspiera elementu video.",
     sectionTitle: "Harry Potter: The Exhibition",
     paragraphs: [
-      "Pierwszym projektem B2C, który zrealizowaliśmy w Alvernia Planet, była wystawa Harry Potter: The Exhibition. Otwarto ją 11 kwietnia 2025 roku — dokładnie w 25. rocznicę premiery pierwszej opowieści o młodym czarodzieju, „Harry Potter i Kamień Filozoficzny”. Ekspozycja trwała do 17 sierpnia 2025, czyli 129 dni (około 18 tygodni).",
+      "Pierwszym projektem B2C, który zrealizowaliśmy w Alvernia Planet, była wystawa Harry Potter: The Exhibition. Otwarto ją 11 kwietnia 2025 roku, dokładnie w 25. rocznicę premiery pierwszej opowieści o młodym czarodzieju, „Harry Potter i Kamień Filozoficzny”. Ekspozycja trwała do 17 sierpnia 2025, czyli 129 dni (około 18 tygodni).",
       "Saga o Harrym Potterze to najpopularniejsza młodzieżowa seria książek na świecie. Opowiada o sierocie i outsiderze, który odkrywa, że jest czarodziejem, a jego przyjaciele i odwaga kształtują magię tej historii. Książki o Harrym Potterze nazywane są bestsellerami wszech czasów i wciąż przyciągają nowe pokolenia czytelników.",
-      "Wystawę odwiedziło około 450 000 gości — dziękujemy za obecność i zapraszamy na kolejne wydarzenia.",
+      "Wystawę odwiedziło około 450 000 gości. Dziękujemy za obecność i zapraszamy na kolejne wydarzenia.",
     ],
     galleryTitle: "Wspomnienia",
     galleryItems: [
@@ -71,16 +71,16 @@ const COPY: Record<
     ],
   },
   en: {
-    heroTag: "Attractions",
+    heroTag: "Exhibition",
     heroTitle: "Harry Potter: The Exhibition",
     heroLead:
       "Exhibition closed on August 17, 2025. Thank you for visiting; stay tuned for the next one.",
     videoFallback: "Your browser does not support the video element.",
     sectionTitle: "Harry Potter: The Exhibition",
     paragraphs: [
-      "Harry Potter: The Exhibition was the first B2C project we hosted at Alvernia Planet. It opened on April 11, 2025—exactly on the 25th anniversary of the release of the first story about the young wizard, “Harry Potter and the Philosopher’s Stone”. The exhibition ran until August 17, 2025, which is 129 days (around 18 weeks).",
+      "Harry Potter: The Exhibition was the first B2C project we hosted at Alvernia Planet. It opened on April 11, 2025, exactly on the 25th anniversary of the release of the first story about the young wizard, “Harry Potter and the Philosopher’s Stone”. The exhibition ran until August 17, 2025, which is 129 days (around 18 weeks).",
       "The Harry Potter saga is the world’s most popular young adult book series. It tells the story of an orphan and outsider who discovers he is a wizard, with friends and courage shaping the magic of the tale. The books are bestsellers of all time and keep attracting new generations of readers.",
-      "The exhibition welcomed about 450,000 guests — thank you for joining us and see you at the next events.",
+      "The exhibition welcomed about 450,000 guests. Thank you for joining us and see you at the next events.",
     ],
     galleryTitle: "Memories",
     galleryItems: [
@@ -117,16 +117,16 @@ const COPY: Record<
     ],
   },
   pt: {
-    heroTag: "Atrações",
+    heroTag: "Exposição",
     heroTitle: "Harry Potter: The Exhibition",
     heroLead:
       "Exposição encerrada a 17 de agosto de 2025. Obrigado pela visita; aguardem a próxima.",
     videoFallback: "O seu navegador não suporta o elemento de vídeo.",
     sectionTitle: "Harry Potter: The Exhibition",
     paragraphs: [
-      "O primeiro projeto B2C realizado na Alvernia Planet foi a exposição Harry Potter: The Exhibition. Abriu a 11 de abril de 2025 — exatamente no 25.º aniversário do lançamento da primeira história do jovem feiticeiro, “Harry Potter e a Pedra Filosofal”. A exposição esteve patente até 17 de agosto de 2025, ou seja, 129 dias (cerca de 18 semanas).",
+      "O primeiro projeto B2C realizado na Alvernia Planet foi a exposição Harry Potter: The Exhibition. Abriu a 11 de abril de 2025, exatamente no 25.º aniversário do lançamento da primeira história do jovem feiticeiro, “Harry Potter e a Pedra Filosofal”. A exposição esteve patente até 17 de agosto de 2025, ou seja, 129 dias (cerca de 18 semanas).",
       "A saga de Harry Potter é a série de livros juvenis mais popular do mundo. Conta a história de um órfão e outsider que descobre ser feiticeiro, com amigos e coragem a moldarem a magia deste universo. Os livros são best-sellers de todos os tempos e continuam a atrair novas gerações de leitores.",
-      "A exposição recebeu cerca de 450 000 visitantes — obrigado por terem estado connosco e até aos próximos eventos.",
+      "A exposição recebeu cerca de 450 000 visitantes. Obrigado por terem estado connosco e até aos próximos eventos.",
     ],
     galleryTitle: "Memórias",
     galleryItems: [

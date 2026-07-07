@@ -22,7 +22,7 @@ const FORMAT_SHOWCASE_IMAGES = [
 ];
 const FORMAT_SHOWCASE_WAVE_DELAYS_MS = [1000, 1000, 1000, 3000] as const;
 const FORMAT_SHOWCASE_FADE_MS = 2400;
-type DomeKey = "k3" | "k4" | "k7" | "k10" | "k12";
+type DomeKey = "k3" | "k7" | "k10" | "k12";
 type DomeMapHotspot = {
   id: string;
   dome: DomeKey;
@@ -34,7 +34,6 @@ type DomeMapHotspot = {
 
 const DOME_IMAGE_BY_KEY: Record<DomeKey, string> = {
   k3: "/wydarzenia/dome-k3-thumb.webp",
-  k4: "/wydarzenia/dome-k4-thumb.jpg",
   k7: "/wydarzenia/dome-k7-thumb.webp",
   k10: "/wydarzenia/dome-k10k12-thumb.webp",
   k12: "/wydarzenia/dome-k10k12-thumb.webp",
@@ -42,7 +41,6 @@ const DOME_IMAGE_BY_KEY: Record<DomeKey, string> = {
 
 const DOME_MAP_HOTSPOTS: DomeMapHotspot[] = [
   { id: "k3", dome: "k3", label: "K3", x: 59.1, y: 18.8, size: 15.1 },
-  { id: "k4", dome: "k4", label: "K4", x: 78.0, y: 27.6, size: 15.1 },
   { id: "k7", dome: "k7", label: "K7", x: 52.0, y: 50.68, size: 8.8 },
   { id: "k10", dome: "k10", label: "K10", x: 73.5, y: 48.3, size: 7.5 },
   { id: "k12", dome: "k12", label: "K12", x: 69.8, y: 60.5, size: 7.5 },
@@ -52,7 +50,6 @@ const SHOW_ALL_DOME_AREAS = true;
 
 const EVENT_DOME_TO_VR_KEY: Record<DomeKey, VrDomeKey> = {
   k3: "k3",
-  k4: "k4",
   k7: "k7",
   k10: "k10",
   k12: "k12",
@@ -389,7 +386,6 @@ const DOMES: Record<
   Locale,
   {
     k3: DomeContent;
-    k4: DomeContent;
     k7: DomeContent;
     k10: DomeContent;
     k12: DomeContent;
@@ -404,19 +400,6 @@ const DOMES: Record<
         "Przyłącza elektryczne do 1 MW",
         "Klimatyzowane garderoby z prysznicami",
         "Klimatyzacja",
-        "Dwie bramy 4m × 4,5m (swobodny przejazd TIR)",
-        "Dopuszczalne obciążenie posadzki dla form scenograficznych",
-      ],
-    },
-    k4: {
-      title: "Kopuła K4",
-      bullets: [
-        "Powierzchnia 2 000 m²",
-        "Wysokość 15 m",
-        "Przyłącza elektryczne do 1 MW",
-        "Stanowiska do charakteryzacji",
-        "Klimatyzacja",
-        "Kratownica o udźwigu do 2 ton",
         "Dwie bramy 4m × 4,5m (swobodny przejazd TIR)",
         "Dopuszczalne obciążenie posadzki dla form scenograficznych",
       ],
@@ -452,19 +435,6 @@ const DOMES: Record<
         "Floor load capacity suitable for scenic structures",
       ],
     },
-    k4: {
-      title: "Dome K4",
-      bullets: [
-        "Floor area 2,000 m²",
-        "Height 15 m",
-        "Electrical connections up to 1 MW",
-        "Make-up stations",
-        "Air conditioning",
-        "Truss with up to 2-ton capacity",
-        "Two gates 4 m × 4.5 m (truck drive-through)",
-        "Floor load capacity suitable for scenic structures",
-      ],
-    },
     k7: {
       title: "Dome K7",
       bullets: [
@@ -492,19 +462,6 @@ const DOMES: Record<
         "Ligações elétricas até 1 MW",
         "Camarins climatizados com chuveiros",
         "Ar condicionado",
-        "Duas portas 4 m × 4,5 m (passagem de camiões)",
-        "Capacidade de carga do piso adequada a estruturas cenográficas",
-      ],
-    },
-    k4: {
-      title: "Cúpula K4",
-      bullets: [
-        "Área 2 000 m²",
-        "Altura 15 m",
-        "Ligações elétricas até 1 MW",
-        "Postos de maquilhagem",
-        "Ar condicionado",
-        "Treliça com capacidade até 2 toneladas",
         "Duas portas 4 m × 4,5 m (passagem de camiões)",
         "Capacidade de carga do piso adequada a estruturas cenográficas",
       ],

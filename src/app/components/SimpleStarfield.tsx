@@ -29,13 +29,13 @@ export function SimpleStarfield({
 }: Props) {
   const rootRef = useRef<HTMLDivElement | null>(null);
 
-  // Ustawienia intensywności — mocniejsze gradienty vs. delikatniejsze
+  // Ustawienia intensywności: mocniejsze gradienty vs. delikatniejsze
   const cloud =
     intensity === "high"
       ? { min: 0.3, max: 0.5, dur: 24 }
       : intensity === "low"
       ? { min: 0.14, max: 0.26, dur: 30 }
-      : { min: 0.22, max: 0.38, dur: 28 }; // medium — mocniejszy start, ale wciąż wygaszony
+      : { min: 0.22, max: 0.38, dur: 28 }; // medium: mocniejszy start, ale wciąż wygaszony
 
   const starsFar =
     intensity === "high"

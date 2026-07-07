@@ -17,6 +17,8 @@ const HIDDEN_PATHS = new Set([
   "/rezerwuj",
   "/en/reserve",
   "/pt/reservar",
+  "/aplikacje/identyfikacja",
+  "/aplikacje/mars-brief",
 ]);
 
 const COPY: Record<Locale, { buy: string; alt: string }> = {

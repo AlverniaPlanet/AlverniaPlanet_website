@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "404 — Strona nie znaleziona | Alvernia Planet",
+  title: "404: Strona nie znaleziona | Alvernia Planet",
   description: "Strona, której szukasz, nie istnieje.",
 };
 

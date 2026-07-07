@@ -23,59 +23,71 @@ export const FAQ_COPY: Record<Locale, FaqCopy> = {
     subtitle: "Szybkie odpowiedzi przed wizytą i rezerwacją.",
     items: [
       {
-        question: "Ile trwa zwiedzanie?",
+        question: "Dla kogo są bilety ulgowe?",
         answer:
-          "Sama Ścieżka filmowa trwa około 2,5 godziny. Kino K360 trwa około 30 minut, więc pakiet Ścieżka + Kino K360 to około 3 godziny łącznie.",
+          "Bilet ulgowy przysługuje po okazaniu ważnego dokumentu:\n• dzieci i młodzież szkolna do ukończenia 19. roku życia (ważna legitymacja szkolna);\n• studenci i doktoranci do ukończenia 26. roku życia (legitymacja studencka lub doktorancka);\n• emeryci i renciści (legitymacja ze zdjęciem; przy legitymacji bez zdjęcia dodatkowo dokument tożsamości ze zdjęciem);\n• osoby z niepełnosprawnością (orzeczenie o niepełnosprawności lub legitymacja osoby z niepełnosprawnością);\n• jeden opiekun lub asystent osoby z niepełnosprawnością towarzyszący jej podczas zwiedzania.\n\nWstęp bezpłatny mają dzieci do ukończenia 3. roku życia oraz opiekun lub asystent osoby z niepełnosprawnością, która nie ukończyła 16. roku życia. Uprawnienie do ulgi może zostać zweryfikowane przy wejściu; brak odpowiedniego dokumentu może wiązać się z dopłatą do biletu normalnego. Szczegóły znajdują się w Regulaminie.",
       },
       {
-        question: "W jakim języku odbywa się oprowadzanie i seans?",
+        question: "W jakiej kolejności należy zwiedzać obiekt, posiadając bilet na wszystkie atrakcje?",
         answer:
-          "Oprowadzanie Ścieżki filmowej oraz projekcje K360 odbywają się w języku polskim.",
+          "Atrakcje można odwiedzać w dowolnej kolejności. Z naszej strony rekomendujemy trasę „Poznaj – Przeżyj – Zagraj”, która rozpoczyna się od Ścieżki Filmowej, następnie prowadzi do Kina 360, a kończy się na projekcie Mars.",
       },
       {
-        question: "Ile kosztuje zwiedzanie?",
-        answer:
-          "Bilet normalny kosztuje 79 zł za osobę, a bilet ulgowy 69 zł za osobę. W cenie jest zwiedzanie przestrzeni Alvernia Planet z przewodnikiem oraz część edukacyjna.",
+        question: "Ile czasu zajmuje skorzystanie ze wszystkich atrakcji?",
+        answer: "Zwiedzanie wszystkich atrakcji we własnym tempie zajmuje średnio od 2 do 3 godzin.",
       },
       {
-        question: "Czy jest strefa gastro?",
-        answer:
-          "Na miejscu nie ma restauracji, natomiast działa sklepik z pamiątkami, w którym można kupić drobne przekąski i napoje.",
+        question: "Czy można zmienić termin rezerwacji?",
+        answer: "Tak, zmiana terminu rezerwacji jest możliwa po wcześniejszym kontakcie z naszą infolinią.",
       },
       {
-        question: "Czy mają państwo dostępne jakieś warsztaty?",
+        question: "Ile osób może jednocześnie korzystać z poszczególnych atrakcji?",
         answer:
-          "Standardowa wizyta obejmuje zwiedzanie z przewodnikiem oraz część edukacyjną o produkcji filmowej. Oddzielne warsztaty nie są obecnie prowadzone w ramach standardowego zwiedzania.",
+          "Kino 360 – do 150 osób, Ścieżka Filmowa – do 50 osób, MARS – do 25 osób podczas jednej tury.",
       },
       {
-        question: "Czy można wejść bez wcześniejszej rezerwacji biletów?",
-        answer:
-          "Nie - obowiązuje wcześniejsza rezerwacja biletów, ponieważ zwiedzanie odbywa się w określonych godzinach i z przewodnikiem.",
+        question: "Ile kopuł obejmuje zwiedzanie?",
+        answer: "Podczas wizyty odwiedzą Państwo 5 kopuł znajdujących się na terenie naszego obiektu.",
       },
       {
-        question: "Jakie są godziny otwarcia?",
+        question: "Czy trasa jest dostępna dla osób poruszających się na wózkach?",
         answer:
-          "Infolinia działa od poniedziałku do piątku w godz. 9:00-16:00. Kino K360 jest otwarta od poniedziałku do czwartku 11:00-17:00, w piątki 11:00-18:00, a w soboty i niedziele 11:00-19:30. Ścieżka filmowa działa od poniedziałku do soboty 8:00-17:00, a w niedziele jest zamknięta.",
+          "Tak. Większość trasy jest w pełni dostępna dla osób poruszających się na wózkach. Na trasie znajduje się jedno miejsce ze schodami, które można ominąć alternatywnym przejściem.",
       },
       {
-        question: "Kiedy otrzymam zwrot po anulowaniu rezerwacji?",
+        question: "Czy małe dzieci znajdą u nas coś dla siebie?",
         answer:
-          "W przypadku anulowania rezerwacji zwrot środków wraca do 14 dni roboczych na numer konta podany podczas zakładania rezerwacji.",
+          "Oczywiście. Nasze atrakcje zostały przygotowane w taki sposób, aby każdy uczestnik – niezależnie od wieku – znalazł coś interesującego i angażującego.",
       },
       {
-        question: "Czy można przyjechać z rodziną lub przyjaciółmi czy tylko grupy?",
+        question: "Kiedy otwarta jest Wioska Barbarzyńców?",
         answer:
-          "Oczywiście można przyjechać zarówno indywidualnie, na przykład z rodziną lub znajomymi, jak i w grupie zorganizowanej.",
+          "Wioska Barbarzyńców to atrakcja sezonowa, uruchamiana podczas wybranych wydarzeń, eventów oraz specjalnych okazji.",
       },
       {
-        question: "Jaka produkcja była tu realizowana ostatnio?",
+        question: "Czy osoby starsze poradzą sobie podczas wizyty na Marsie?",
         answer:
-          "W Alvernia Planet powstawało wiele produkcji filmowych, serialowych i reklamowych - między innymi Akademia Pana Kleksa, 99 Gra o wszystko oraz inne liczne międzynarodowe projekty.",
+          "Tak. Na terenie MARS obecny jest kierownik planu, który służy pomocą i odpowiada na wszelkie pytania uczestników.",
       },
       {
-        question: "Czy wejdziemy na plan zdjęciowy jakiejś produkcji?",
+        question: "Jak dotrzeć do poszczególnych atrakcji?",
         answer:
-          "Nie - hale zdjęciowe są miejscem pracy ekip filmowych, dlatego podczas zwiedzania nie ma możliwości wejścia na aktywny plan zdjęciowy.",
+          "Na terenie obiektu dostępne są mapy, które ułatwiają poruszanie się między atrakcjami. Dodatkowo pracownicy recepcji chętnie wskażą drogę i udzielą wszelkich informacji.",
+      },
+      {
+        question: "Kim są Alver i Alvenia?",
+        answer:
+          "Alver i Alvenia to maskotki naszego obiektu. Ich wizerunki można spotkać w mediach społecznościowych, na pamiątkach oraz podczas zwiedzania Ścieżki Filmowej.",
+      },
+      {
+        question: "Czy repertuar Kina 360 będzie się zmieniał?",
+        answer:
+          "Tak. Projekcje prezentowane w Kinie 360° będą regularnie aktualizowane i zmieniane w określonych odstępach czasu.",
+      },
+      {
+        question: "Czy można wejść na teren obiektu z psem?",
+        answer:
+          "Psy są mile widziane na terenie naszego obiektu, jednak mogą przebywać wyłącznie w strefach zewnętrznych. Ze względu na intensywne efekty dźwiękowe i multimedialne wewnątrz kopuł, nie zalecamy wprowadzania zwierząt do atrakcji, aby zapewnić im komfort i bezpieczeństwo.",
       },
     ],
   },
@@ -85,59 +97,71 @@ export const FAQ_COPY: Record<Locale, FaqCopy> = {
     subtitle: "Quick answers before your visit and booking.",
     items: [
       {
-        question: "How long does the tour take?",
+        question: "Who is eligible for a reduced-price ticket?",
         answer:
-          "The Film Path visit itself lasts about 2.5 hours. The K360 Cinema lasts about 30 minutes, so the Film Path + K360 Cinema package takes about 3 hours in total.",
+          "A reduced (concession) ticket is available, on presentation of a valid document, to:\n• children and school pupils up to the age of 19 (valid school ID);\n• students and doctoral candidates up to the age of 26 (valid student or doctoral ID);\n• pensioners and retirees (a photo ID card, or a non-photo card together with a photo identity document);\n• people with disabilities (a disability certificate or a disability ID card);\n• one carer or assistant accompanying a person with a disability during the visit.\n\nFree entry applies to children under 3 years of age and to the carer or assistant of a person with a disability who is under 16. Eligibility may be checked at the entrance; without the required document you may need to pay the difference up to a standard ticket. Full details are set out in the Regulations.",
       },
       {
-        question: "What language are the tour and screening in?",
+        question: "In what order should I visit the venue with an all-attractions ticket?",
         answer:
-          "The Film Path guided tour and K360 Cinema screenings are available in Polish.",
+          "You can visit the attractions in any order. We recommend the “Discover – Experience – Play” route, starting with the Film Path, then the 360° Cinema, and finishing with MARS.",
       },
       {
-        question: "How much does the tour cost?",
-        answer:
-          "The standard ticket costs 79 PLN per person and the reduced ticket costs 69 PLN per person. The price includes a guided tour of the Alvernia Planet spaces and the educational part.",
+        question: "How long does it take to enjoy all the attractions?",
+        answer: "Visiting all the attractions at your own pace takes on average 2 to 3 hours.",
       },
       {
-        question: "Is there a food zone?",
-        answer:
-          "There is no restaurant on site, but there is a souvenir shop where you can buy small snacks and drinks.",
+        question: "Can I change my booking date?",
+        answer: "Yes, you can change your booking date after contacting our info line in advance.",
       },
       {
-        question: "Do you offer any workshops?",
+        question: "How many people can use each attraction at the same time?",
         answer:
-          "The standard visit includes a guided tour and an educational segment about film production. Separate workshops are not currently offered as part of the standard visit.",
+          "360° Cinema – up to 150 people, Film Path – up to 50 people, MARS – up to 25 people per session.",
       },
       {
-        question: "Can you enter without booking tickets in advance?",
-        answer:
-          "No. Advance ticket booking is required because visits take place at scheduled times and with a guide.",
+        question: "How many domes does the tour cover?",
+        answer: "During your visit you'll explore 5 domes located on our site.",
       },
       {
-        question: "What are the opening hours?",
+        question: "Is the route accessible for wheelchair users?",
         answer:
-          "The info line is open Monday to Friday from 9:00 to 16:00. The K360 Cinema is open Monday to Thursday 11:00-17:00, Friday 11:00-18:00, and Saturday to Sunday 11:00-19:30. The Film Path is open Monday to Saturday 8:00-17:00 and closed on Sunday.",
+          "Yes. Most of the route is fully accessible for wheelchair users. There is one spot with stairs, which can be bypassed via an alternative passage.",
       },
       {
-        question: "When will I receive the refund after cancelling a booking?",
+        question: "Will small children find something for them here?",
         answer:
-          "If a booking is cancelled, the refund is returned within 14 business days to the account number provided when the reservation was created.",
+          "Absolutely. Our attractions are designed so that every guest – regardless of age – finds something interesting and engaging.",
       },
       {
-        question: "Can I come with family or friends, or is it only for groups?",
+        question: "When is the Barbarians' Village open?",
         answer:
-          "Of course. You can visit both individually, for example with family or friends, and as part of an organized group.",
+          "The Barbarians' Village is a seasonal attraction, opened during selected events and special occasions.",
       },
       {
-        question: "What production was made here most recently?",
+        question: "Will older guests manage during the Mars visit?",
         answer:
-          "Many film, TV and commercial productions have been created at Alvernia Planet, including Akademia Pana Kleksa, 99 Gra o wszystko and many other international projects.",
+          "Yes. A set manager is present at MARS to assist and answer any questions from participants.",
       },
       {
-        question: "Will we enter an active film set during the visit?",
+        question: "How do I get to each attraction?",
         answer:
-          "No. Sound stages are workplaces for film crews, so there is no access to an active set during the visit.",
+          "Maps are available on site to help you move between attractions. Our reception staff will also gladly point the way and provide any information.",
+      },
+      {
+        question: "Who are Alver and Alvenia?",
+        answer:
+          "Alver and Alvenia are our venue's mascots. You can meet them on social media, on souvenirs, and during the Film Path tour.",
+      },
+      {
+        question: "Will the 360° Cinema repertoire change?",
+        answer:
+          "Yes. The screenings shown in the 360° Cinema will be regularly updated and rotated at set intervals.",
+      },
+      {
+        question: "Can I enter the venue with a dog?",
+        answer:
+          "Dogs are welcome on our site, but only in the outdoor areas. Due to the intense sound and multimedia effects inside the domes, we don't recommend bringing animals into the attractions, for their comfort and safety.",
       },
     ],
   },
@@ -147,116 +171,135 @@ export const FAQ_COPY: Record<Locale, FaqCopy> = {
     subtitle: "Respostas rápidas antes da visita e da reserva.",
     items: [
       {
-        question: "Quanto tempo dura a visita?",
+        question: "Quem tem direito a bilhete com desconto?",
         answer:
-          "O Percurso de filmagem por si só dura cerca de 2,5 horas. A cinema K360 dura cerca de 30 minutos, por isso o pacote Percurso + Cinema K360 dura cerca de 3 horas no total.",
+          "O bilhete com desconto está disponível, mediante apresentação de documento válido, para:\n• crianças e alunos até aos 19 anos (cartão de estudante escolar válido);\n• estudantes e doutorandos até aos 26 anos (cartão de estudante ou de doutorando válido);\n• reformados e pensionistas (cartão com fotografia, ou cartão sem fotografia acompanhado de documento de identificação com fotografia);\n• pessoas com deficiência (atestado de incapacidade ou cartão de pessoa com deficiência);\n• um acompanhante ou assistente que acompanhe a pessoa com deficiência durante a visita.\n\nA entrada gratuita aplica-se a crianças com menos de 3 anos e ao acompanhante ou assistente de pessoa com deficiência com menos de 16 anos. O direito ao desconto pode ser verificado à entrada; sem o documento exigido poderá ter de pagar a diferença para o bilhete normal. Os detalhes constam do Regulamento.",
       },
       {
-        question: "Em que idioma decorrem a visita e a sessão?",
+        question: "Em que ordem devo visitar o espaço com o bilhete para todas as atrações?",
         answer:
-          "A visita guiada do Percurso de filmagem e as sessões da cinema K360 decorrem em polaco.",
+          "Pode visitar as atrações em qualquer ordem. Recomendamos o percurso “Conhece – Vive – Joga”, que começa no Percurso de Filmagem, segue para o Cinema 360° e termina no MARS.",
       },
       {
-        question: "Quanto custa a visita?",
-        answer:
-          "O bilhete normal custa 79 PLN por pessoa e o bilhete reduzido custa 69 PLN por pessoa. O preço inclui a visita guiada aos espaços da Alvernia Planet e a parte educativa.",
+        question: "Quanto tempo demora a desfrutar de todas as atrações?",
+        answer: "Visitar todas as atrações ao teu ritmo demora, em média, 2 a 3 horas.",
       },
       {
-        question: "Existe zona de restauração?",
-        answer:
-          "No local não existe restaurante, mas há uma loja de recordações onde é possível comprar pequenos snacks e bebidas.",
+        question: "É possível alterar a data da reserva?",
+        answer: "Sim, a alteração da data da reserva é possível após contacto prévio com a nossa linha de informação.",
       },
       {
-        question: "Têm workshops disponíveis?",
+        question: "Quantas pessoas podem usar cada atração ao mesmo tempo?",
         answer:
-          "A visita standard inclui uma visita guiada e uma parte educativa sobre produção audiovisual. Workshops separados não são atualmente realizados no formato standard da visita.",
+          "Cinema 360° – até 150 pessoas, Percurso de Filmagem – até 50 pessoas, MARS – até 25 pessoas por sessão.",
       },
       {
-        question: "É possível entrar sem reservar bilhetes antecipadamente?",
-        answer:
-          "Não. É obrigatória a reserva prévia, porque as visitas decorrem em horários definidos e com guia.",
+        question: "Quantas cúpulas inclui a visita?",
+        answer: "Durante a visita irá conhecer 5 cúpulas existentes no nosso espaço.",
       },
       {
-        question: "Quais são os horários de funcionamento?",
+        question: "O percurso é acessível para pessoas em cadeira de rodas?",
         answer:
-          "A linha de informação funciona de segunda a sexta das 9:00 às 16:00. A cinema K360 abre de segunda a quinta das 11:00 às 17:00, à sexta das 11:00 às 18:00, e ao sábado e domingo das 11:00 às 19:30. O Percurso de filmagem funciona de segunda a sábado das 8:00 às 17:00 e está encerrado ao domingo.",
+          "Sim. A maior parte do percurso é totalmente acessível a pessoas em cadeira de rodas. Existe um ponto com escadas, que pode ser contornado por uma passagem alternativa.",
       },
       {
-        question: "Quando recebo o reembolso após cancelar a reserva?",
+        question: "As crianças pequenas vão encontrar algo para elas?",
         answer:
-          "Em caso de cancelamento da reserva, o reembolso regressa no prazo de até 14 dias úteis para o número de conta indicado durante a criação da reserva.",
+          "Claro. As nossas atrações foram preparadas para que cada visitante – independentemente da idade – encontre algo interessante e envolvente.",
       },
       {
-        question: "Posso visitar com família ou amigos ou é só para grupos?",
+        question: "Quando está aberta a Aldeia dos Bárbaros?",
         answer:
-          "Claro. Pode visitar individualmente, por exemplo com família ou amigos, e também em grupo organizado.",
+          "A Aldeia dos Bárbaros é uma atração sazonal, ativada durante eventos selecionados e ocasiões especiais.",
       },
       {
-        question: "Que produção foi realizada aqui mais recentemente?",
+        question: "As pessoas mais velhas vão conseguir durante a visita ao Mars?",
         answer:
-          "Na Alvernia Planet foram realizadas muitas produções audiovisuais, séries e publicidade, incluindo Akademia Pana Kleksa, 99 Gra o wszystko e muitos outros projetos internacionais.",
+          "Sim. No MARS está presente um chefe de set que ajuda e responde a todas as perguntas dos participantes.",
       },
       {
-        question: "Vamos entrar num set de filmagem ativo?",
+        question: "Como chegar a cada atração?",
         answer:
-          "Não. Os estúdios são locais de trabalho das equipas de filmagem, por isso não existe acesso a um set ativo durante a visita.",
+          "No espaço existem mapas que facilitam a deslocação entre atrações. Além disso, a equipa da receção indica o caminho e presta todas as informações.",
+      },
+      {
+        question: "Quem são o Alver e a Alvenia?",
+        answer:
+          "O Alver e a Alvenia são as mascotes do nosso espaço. Podes encontrá-los nas redes sociais, em recordações e durante a visita ao Percurso de Filmagem.",
+      },
+      {
+        question: "O repertório do Cinema 360° vai mudar?",
+        answer:
+          "Sim. As sessões apresentadas no Cinema 360° serão regularmente atualizadas e alteradas em intervalos definidos.",
+      },
+      {
+        question: "É possível entrar no espaço com um cão?",
+        answer:
+          "Os cães são bem-vindos no nosso espaço, mas apenas nas zonas exteriores. Devido aos intensos efeitos sonoros e multimédia dentro das cúpulas, não recomendamos levar animais para as atrações, para o seu conforto e segurança.",
       },
     ],
   },
 };
 
-export default function FaqContent({ copy }: { copy: FaqCopy }) {
+// Sam akordeon FAQ (Card + lista), reużywalny na podstronie /faq oraz na home.
+export function FaqAccordion({ copy }: { copy: FaqCopy }) {
   const [openIndex, setOpenIndex] = useState<number>(0);
 
   return (
+    <Card title={copy.title} titleCentered titleDivider dense motion="off">
+      <p className="ap-type-section-body mx-auto max-w-2xl text-center">{copy.subtitle}</p>
+
+      <ul className="mt-8 space-y-3">
+        {copy.items.map((item, index) => {
+          const isOpen = openIndex === index;
+          return (
+            <li key={item.question}>
+              <div className={`ap-tile ap-tile-interactive ${isOpen ? "is-active" : ""}`}>
+                <button
+                  type="button"
+                  onClick={() => setOpenIndex(isOpen ? -1 : index)}
+                  aria-expanded={isOpen}
+                  className="flex w-full items-center gap-4 px-5 py-4 text-left sm:px-6 sm:py-5"
+                >
+                  <span className="text-xs font-semibold uppercase tracking-[0.22em] text-[#7ef6ff]/76">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span className="flex-1 text-base font-semibold leading-snug text-white sm:text-lg">
+                    {item.question}
+                  </span>
+                  <span
+                    aria-hidden
+                    className={`text-white/60 transition-transform duration-300 ${isOpen ? "rotate-180" : "rotate-0"}`}
+                  >
+                    <svg viewBox="0 0 20 20" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M5.5 7.5 10 12l4.5-4.5" />
+                    </svg>
+                  </span>
+                </button>
+                <div
+                  className="grid overflow-hidden transition-[grid-template-rows,opacity] duration-300"
+                  style={{ gridTemplateRows: isOpen ? "1fr" : "0fr", opacity: isOpen ? 1 : 0 }}
+                >
+                  <div className="min-h-0">
+                    <p className="whitespace-pre-line px-5 pb-5 text-sm leading-7 text-white/74 sm:px-6 sm:pb-6 sm:text-base">
+                      {item.answer}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    </Card>
+  );
+}
+
+export default function FaqContent({ copy }: { copy: FaqCopy }) {
+  return (
     <main className="relative min-h-screen px-4 py-16 text-white sm:py-20">
       <div className="mx-auto max-w-[56rem]">
-        <Card title={copy.title} titleCentered titleDivider dense motion="off">
-          <p className="ap-type-section-body mx-auto max-w-2xl text-center">{copy.subtitle}</p>
-
-          <ul className="mt-8 space-y-3">
-            {copy.items.map((item, index) => {
-              const isOpen = openIndex === index;
-              return (
-                <li key={item.question}>
-                  <div className={`ap-tile ap-tile-interactive ${isOpen ? "is-active" : ""}`}>
-                    <button
-                      type="button"
-                      onClick={() => setOpenIndex(isOpen ? -1 : index)}
-                      aria-expanded={isOpen}
-                      className="flex w-full items-center gap-4 px-5 py-4 text-left sm:px-6 sm:py-5"
-                    >
-                      <span className="text-xs font-semibold uppercase tracking-[0.22em] text-[#7ef6ff]/76">
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
-                      <span className="flex-1 text-base font-semibold leading-snug text-white sm:text-lg">
-                        {item.question}
-                      </span>
-                      <span
-                        aria-hidden
-                        className={`text-white/60 transition-transform duration-300 ${isOpen ? "rotate-180" : "rotate-0"}`}
-                      >
-                        <svg viewBox="0 0 20 20" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M5.5 7.5 10 12l4.5-4.5" />
-                        </svg>
-                      </span>
-                    </button>
-                    <div
-                      className="grid overflow-hidden transition-[grid-template-rows,opacity] duration-300"
-                      style={{ gridTemplateRows: isOpen ? "1fr" : "0fr", opacity: isOpen ? 1 : 0 }}
-                    >
-                      <div className="min-h-0">
-                        <p className="px-5 pb-5 text-sm leading-7 text-white/74 sm:px-6 sm:pb-6 sm:text-base">
-                          {item.answer}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        </Card>
+        <FaqAccordion copy={copy} />
       </div>
     </main>
   );

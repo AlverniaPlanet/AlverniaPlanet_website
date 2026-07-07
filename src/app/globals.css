@@ -247,6 +247,59 @@ body.film-path-route-active .ticket-pill {
   --tw-ring-color: rgba(79, 207, 222, 0.55) !important;
 }
 
+/* Pakietowy bilet „Wszystkie atrakcje" (.home-ticket-promo) wygląda 1:1 jak na
+   home, niezależnie od motywu podstrony — motyw nie przemalowuje jego badge'a
+   ani przycisku. */
+body.k360-route-active .home-ticket-promo .ticket-card-badge,
+body.mars-route-active .home-ticket-promo .ticket-card-badge,
+body.film-path-route-active .home-ticket-promo .ticket-card-badge {
+  background: linear-gradient(135deg, #4fcfde, #a5e6f0) !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 22px rgba(79, 207, 222, 0.28) !important;
+}
+
+body.film-path-route-active .home-ticket-promo .ticket-pill {
+  background: linear-gradient(135deg, #1ea6b7, #4fcfde, #7ef6ff) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  box-shadow:
+    0 10px 30px rgba(79, 207, 222, 0.45),
+    0 0 24px rgba(79, 207, 222, 0.35) !important;
+  --tw-ring-color: rgba(79, 207, 222, 0.6) !important;
+}
+
+/* Korona „spadająca" z góry na znacznik „Największe w Europie" (hero K360) */
+@keyframes ap-crown-drop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -2.4rem) rotate(-14deg);
+  }
+  55% {
+    opacity: 1;
+    transform: translate(-50%, 0.2rem) rotate(4deg);
+  }
+  75% {
+    transform: translate(-50%, -0.12rem) rotate(-2deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0) rotate(0deg);
+  }
+}
+
+.ap-crown-drop {
+  transform-origin: 50% 100%;
+  animation: ap-crown-drop 0.85s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ap-crown-drop {
+    animation: none;
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
 ::selection {
   background: rgba(79, 207, 222, 0.28);
   color: var(--ap-text-strong);
@@ -1278,6 +1331,16 @@ p {
   letter-spacing: 0.26em;
   text-transform: uppercase;
   box-shadow: 0 8px 22px rgba(79, 207, 222, 0.28);
+}
+
+/* Na mobile „podłużne stopy" (badge'y biletów) ~50% węższe */
+@media (max-width: 639px) {
+  .ticket-card-badge {
+    min-width: 6.25rem;
+    padding: 0.4rem 0.85rem;
+    font-size: 0.64rem;
+    letter-spacing: 0.16em;
+  }
 }
 
 .ticket-card-content {
@@ -2713,6 +2776,28 @@ p {
   animation-delay: 560ms;
 }
 
+/* Scroll-reveal — podstrona „Wejdź pod kopułę" (i ogólne użycie) */
+.wpk-reveal {
+  opacity: 0;
+  transform: translate3d(0, 34px, 0);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--wpk-reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+.wpk-reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wpk-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
 .ticket-pill::after {
   content: "";
   position: absolute;
@@ -3680,5 +3765,92 @@ body :is(#bookero, #bookero-plugin[data-mode="standard"], #bookero-plugin[data-m
   .runmageddon-pixel-runner,
   .runmageddon-pixel-runner::before {
     animation: none !important;
+  }
+}
+
+/* ============================================================
+   LIQUID GLASS — matowe „szkło" z połyskiem (jak na grafikach).
+   Drop-in: dodaj `ap-glass` / `ap-glass-pill` i USUŃ zastępowane
+   bg-*/backdrop-blur-*/ring/border/shadow. Zmienia TYLKO powierzchnię
+   (tło, blur, obrys, cień, połysk) — nigdy padding/margin/radius/układ.
+   ============================================================ */
+:root {
+  --ap-glass-accent: 126, 246, 255; /* #7ef6ff — home/default (lodowy cyan) */
+  --ap-glass-tint-alpha: 0.1;
+  --ap-glass-bg: 10, 14, 22;
+}
+/* Tint per motyw — wpina się w istniejące body.*-route-active */
+body.k360-route-active {
+  --ap-glass-accent: 247, 72, 108;
+}
+body.mars-route-active {
+  --ap-glass-accent: 247, 120, 40;
+}
+body.film-path-route-active {
+  --ap-glass-accent: 79, 207, 222;
+}
+
+.ap-glass {
+  position: relative;
+  isolation: isolate;
+  background-image:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 38%, rgba(255, 255, 255, 0) 100%),
+    linear-gradient(135deg, rgba(var(--ap-glass-accent), var(--ap-glass-tint-alpha)) 0%, rgba(var(--ap-glass-accent), 0) 60%);
+  background-color: rgba(var(--ap-glass-bg), 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  -webkit-backdrop-filter: blur(16px) saturate(1.5);
+  backdrop-filter: blur(16px) saturate(1.5);
+  box-shadow:
+    0 18px 48px rgba(0, 0, 0, 0.45),
+    0 0 24px -6px rgba(var(--ap-glass-accent), 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.18);
+}
+/* Połysk pod treścią (z-index:-1 + isolation) — nie rusza dzieci (też absolute). */
+.ap-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(115deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 22%);
+  opacity: 0.7;
+}
+
+.ap-glass-pill {
+  position: relative;
+  background-image:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0) 70%),
+    linear-gradient(135deg, rgba(var(--ap-glass-accent), 0.14) 0%, rgba(var(--ap-glass-accent), 0) 70%);
+  background-color: rgba(var(--ap-glass-bg), 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  -webkit-backdrop-filter: blur(10px) saturate(1.4);
+  backdrop-filter: blur(10px) saturate(1.4);
+  box-shadow:
+    0 8px 22px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+/* Fallback bez backdrop-filter → bardziej kryjące tło */
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .ap-glass {
+    background-color: rgba(var(--ap-glass-bg), 0.82);
+  }
+  .ap-glass-pill {
+    background-color: rgba(var(--ap-glass-bg), 0.8);
+  }
+}
+
+/* Szanuj prefers-reduced-transparency */
+@media (prefers-reduced-transparency: reduce) {
+  .ap-glass,
+  .ap-glass-pill {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background-color: rgba(var(--ap-glass-bg), 0.92);
+  }
+  .ap-glass::before {
+    display: none;
   }
 }

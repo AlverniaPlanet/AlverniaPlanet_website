@@ -41,7 +41,7 @@ export default function GalleryPage() {
                     <li key={category.slug}>
                       <Link
                         href={`/galeria/${category.slug}`}
-                        aria-label={`${title} — ${labels.morePhotos}`}
+                        aria-label={`${title}, ${labels.morePhotos}`}
                         className="ap-interactive-surface group relative flex h-full flex-col overflow-hidden rounded-2xl bg-white/5 ring-1 ring-white/10 transition hover:bg-white/10"
                       >
                         <div className="relative aspect-[4/3] overflow-hidden">
@@ -59,10 +59,10 @@ export default function GalleryPage() {
                             className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/65 via-black/15 to-transparent"
                             aria-hidden="true"
                           />
-                          <span className="absolute left-3 top-3 inline-flex items-center rounded-full bg-black/55 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/85 ring-1 ring-white/15 backdrop-blur">
+                          <span className="ap-glass-pill absolute left-3 top-3 inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/85">
                             {eyebrow}
                           </span>
-                          <span className="absolute right-3 top-3 inline-flex items-center rounded-full bg-black/55 px-2.5 py-1 text-[10px] font-semibold text-white/85 ring-1 ring-white/15 backdrop-blur">
+                          <span className="ap-glass-pill absolute right-3 top-3 inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-semibold text-white/85">
                             {labels.photoCountLabel(count)}
                           </span>
                         </div>

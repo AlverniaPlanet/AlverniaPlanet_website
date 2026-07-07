@@ -3,19 +3,87 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import AdaptiveVideo from "@/app/components/AdaptiveVideo";
+import BookeroEmbed from "@/app/components/BookeroEmbed";
 import Card from "@/app/components/Card";
 import { PrimaryButton } from "@/app/components/PrimaryButton";
 import TourLineGalleryRow from "@/app/components/TourLineGalleryRow";
 import { useI18n } from "@/app/i18n-provider";
 import {
   buildBookingPath,
-  COMBINED_PROMO_BOOKING_CATEGORY,
   FILM_PATH_BOOKING_CATEGORY,
   FILM_PATH_BOOKING_SERVICES,
+  GROUP_BOOKING_CATEGORY,
 } from "@/lib/booking";
 import { PROMO_PACKAGES } from "@/lib/promoPackages";
+import { AllAttractionsPromoCard } from "@/app/components/AllAttractionsPromoCard";
 
 type Locale = "pl" | "en" | "pt";
+
+// Ta sama treść obsługuje dwie podstrony:
+//  - "groups"     → /grupy: pełny program "Ścieżka filmowa" dla grup + formularz
+//                    rezerwacji z preselekcją kategorii "Bilet grupowy".
+//  - "individual" → /atrakcje/wejdz-pod-kopule: ta sama trasa pod nazwą
+//                    "FILMWORLD", bez biletu grupowego i bez formularza.
+type Audience = "groups" | "individual";
+
+const BOOKERO_PLUGIN_ID = "8iWKMAEWtI0P";
+
+// Nazwa indywidualnej atrakcji (grupowa wersja zostaje "Ścieżką filmową").
+const INDIVIDUAL_HERO_TITLE: Record<Locale, string> = {
+  pl: "FILMWORLD",
+  en: "FILMWORLD",
+  pt: "FILMWORLD",
+};
+
+const GROUP_FORM_COPY: Record<Locale, { title: string; intro: string }> = {
+  pl: {
+    title: "Zarezerwuj bilet grupowy",
+    intro: "Wybierz termin i bilet grupowy w kalendarzu poniżej. Rezerwację zrobisz od ręki.",
+  },
+  en: {
+    title: "Book a group ticket",
+    intro: "Pick a date and a group ticket in the calendar below. You can complete it right away.",
+  },
+  pt: {
+    title: "Reserva um bilhete de grupo",
+    intro: "Escolhe a data e o bilhete de grupo no calendário abaixo. Podes concluir de imediato.",
+  },
+};
+
+// Strona grupowa nie pokazuje kart biletów, tylko krótka informacja o
+// wielkości grupy i kontakcie powyżej 50 osób (rezerwacja jest w formularzu).
+const GROUP_TICKETS_COPY: Record<
+  Locale,
+  { title: string; lead: string; bullets: string[]; contactLabel: string }
+> = {
+  pl: {
+    title: "Bilety grupowe",
+    lead: "Oferta dla grup zorganizowanych i szkolnych.",
+    bullets: [
+      "Grupy liczą od 30 do 50 osób w jednej rezerwacji.",
+      "Powyżej 50 osób prosimy o indywidualny kontakt. Pomożemy dobrać termin i podzielić grupę.",
+    ],
+    contactLabel: "Kontakt dla grup 50+",
+  },
+  en: {
+    title: "Group tickets",
+    lead: "For organized and school groups.",
+    bullets: [
+      "Groups of 30 to 50 people on a single booking.",
+      "Over 50 people? Please contact us individually and we'll help arrange dates and split the group.",
+    ],
+    contactLabel: "Contact for 50+ groups",
+  },
+  pt: {
+    title: "Bilhetes de grupo",
+    lead: "Para grupos organizados e escolares.",
+    bullets: [
+      "Grupos de 30 a 50 pessoas por reserva.",
+      "Acima de 50 pessoas: contacta-nos individualmente e ajudamos a marcar datas e dividir o grupo.",
+    ],
+    contactLabel: "Contacto para grupos 50+",
+  },
+};
 
 type TicketOption = {
   badge: string;
@@ -290,7 +358,7 @@ const COPY: Record<
     ticketsButton: "Kup bilet",
     promoTicket: {
       badge: "Pakiet",
-      title: "Ścieżka + Kino K360",
+      title: "Ścieżka + Kino 360",
       subtitle:
         "Jeden duży pakiet promocyjny, który łączy zwiedzanie Ścieżki filmowej z projekcją K360.",
       details: ["Około 3 godzin łącznie ze zwiedzaniem i seansem"],
@@ -1034,10 +1102,21 @@ function RouteStepCard({
   );
 }
 
-export default function FilmPathContent() {
+export default function DomeJourneyContent({ audience = "groups" }: { audience?: Audience }) {
   const { locale } = useI18n();
   const loc: Locale = (locale as Locale) ?? "pl";
   const t = COPY[loc];
+  const isGroups = audience === "groups";
+
+  // Indywidualna podstrona nazywa się "FILMWORLD"; grupowa zostaje
+  // "Ścieżką filmową". Bilet grupowy/szkolny pokazujemy tylko grupom.
+  const heroTitle = isGroups ? t.heroTitle : INDIVIDUAL_HERO_TITLE[loc];
+  const ticketsOptions = isGroups
+    ? t.ticketsOptions
+    : t.ticketsOptions.filter((option) => option.bookingQuantity === undefined);
+  const bookeroLang = loc === "en" ? "en" : "pl";
+  const groupForm = GROUP_FORM_COPY[loc];
+  const groupTickets = GROUP_TICKETS_COPY[loc];
 
   const [flippedSteps, setFlippedSteps] = useState<Record<string, boolean>>({});
   const toggleStep = (key: string) =>
@@ -1073,7 +1152,7 @@ export default function FilmPathContent() {
                 <div className="space-y-2 ap-page-intro-stagger">
                   <p className="ap-type-kicker force-overlay-muted">{t.heroTag}</p>
                   <h1 className="ap-type-hero-title force-overlay drop-shadow-[0_0_24px_rgba(0,0,0,0.55)]">
-                    {t.heroTitle}
+                    {heroTitle}
                   </h1>
                   <p className="ap-type-hero-subtitle mx-auto max-w-3xl force-overlay-dim text-sm sm:text-base lg:text-lg">
                     {t.heroLead}
@@ -1174,7 +1253,7 @@ export default function FilmPathContent() {
                     key={step.number}
                     className="ap-tile ap-tile-sm ap-tile-interactive group relative h-full min-h-[6.5rem] overflow-hidden rounded-2xl sm:min-h-[11rem]"
                   >
-                    {/* Front — tylko tytuł */}
+                    {/* Front: tylko tytuł */}
                     <div
                       className={`absolute inset-0 flex flex-col px-3.5 py-3 transition-opacity duration-300 ease-out sm:px-5 sm:py-5 ${
                         isFlipped ? "pointer-events-none opacity-0" : "opacity-100"
@@ -1210,7 +1289,7 @@ export default function FilmPathContent() {
                         </span>
                     </div>
 
-                    {/* Back — opis */}
+                    {/* Back: opis */}
                     <div
                       className={`absolute inset-0 flex flex-col px-3.5 py-3 transition-opacity duration-300 ease-out sm:px-5 sm:py-5 ${
                         isFlipped ? "opacity-100" : "pointer-events-none opacity-0"
@@ -1263,83 +1342,51 @@ export default function FilmPathContent() {
             </div>
           </Card>
 
-          <Card id="film-path-tickets" title={t.ticketsTitle} titleCentered titleDivider dense motion="off">
+          <Card
+            id="film-path-tickets"
+            title={isGroups ? groupTickets.title : t.ticketsTitle}
+            titleCentered
+            titleDivider
+            dense
+            motion="off"
+          >
             <div className="mt-2 space-y-6 sm:space-y-8">
-              {PROMO_PACKAGES[loc]
-                .filter((promo) => promo.category === COMBINED_PROMO_BOOKING_CATEGORY)
-                .map((promo) => (
-                <article
-                  key={promo.title}
-                  className="ap-tile ap-tile-lg ap-tile-accent relative overflow-hidden px-4 py-5 sm:px-7 sm:py-7"
-                >
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(79,207,222,0.18),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(79,207,222,0.10),transparent_32%)]" />
-                  <div className="relative grid gap-5 sm:gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-8">
-                    <div className="space-y-4 sm:space-y-5 text-center lg:text-left">
-                      <span className="ticket-card-badge mx-auto lg:mx-0">{promo.badge}</span>
-                      <div className="space-y-2 sm:space-y-3">
-                        <h3 className="text-2xl font-semibold leading-tight tracking-[-0.03em] text-white sm:text-3xl lg:text-4xl">
-                          {promo.title}
-                        </h3>
-                        <p className="mx-auto max-w-3xl text-sm leading-relaxed text-white/76 sm:text-base lg:mx-0 lg:text-lg">
-                          {promo.subtitle}
-                        </p>
-                      </div>
-                      <div className="flex flex-wrap justify-center gap-2 sm:gap-3 lg:justify-start">
-                        {promo.details.map((detail) => (
-                          <div
-                            key={detail}
-                            className="rounded-full border border-white/12 bg-white/[0.05] px-3 py-1.5 text-xs text-white/72 sm:px-4 sm:py-2 sm:text-sm"
-                          >
-                            {detail}
-                          </div>
+              {isGroups ? (
+                <div className="mx-auto max-w-3xl">
+                  <div className="ap-tile ap-tile-lg ap-tile-accent relative overflow-hidden px-5 py-6 text-center sm:px-8 sm:py-8">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(79,207,222,0.16),transparent_45%)]" />
+                    <div className="relative space-y-5">
+                      <p className="text-base leading-relaxed text-white/80 sm:text-lg">
+                        {groupTickets.lead}
+                      </p>
+                      <ul className="mx-auto max-w-xl space-y-3 text-left">
+                        {groupTickets.bullets.map((bullet) => (
+                          <li key={bullet} className="flex gap-3 text-sm leading-relaxed text-white/85 sm:text-base">
+                            <span className="ticket-detail-dot mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#4fcfde]" />
+                            <span>{bullet}</span>
+                          </li>
                         ))}
+                      </ul>
+                      <div className="pt-1">
+                        <PrimaryButton
+                          href="/kontakt"
+                          size="lg"
+                          className="ticket-pill whitespace-nowrap ring-[color:rgba(79,207,222,0.55)]"
+                        >
+                          {groupTickets.contactLabel}
+                        </PrimaryButton>
                       </div>
-                    </div>
-
-                    <div className="flex w-full flex-col items-center gap-3 sm:gap-4 lg:w-auto lg:items-end">
-                      <div className="ap-tile ap-tile-sm w-full max-w-[24rem] px-4 py-3.5 text-center sm:px-5 sm:py-4 lg:text-right">
-                        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:text-right">
-                          <div>
-                            <p className="text-[0.65rem] uppercase tracking-[0.18em] text-white/55 sm:text-xs">
-                              {promo.priceLabel}
-                            </p>
-                            <p className="mt-1 text-xl font-semibold leading-none tracking-[-0.03em] text-white sm:text-2xl lg:text-[1.75rem]">
-                              {promo.price}
-                            </p>
-                            <p className="mt-1.5 inline-flex flex-wrap items-center gap-1.5 text-[0.65rem] font-semibold leading-tight text-[#8ff3ff] sm:text-[0.72rem]">
-                              <span>−{promo.savingsPercent}</span>
-                              <span className="text-white/55">{promo.savings}</span>
-                            </p>
-                          </div>
-                          <div className="border-l border-white/10 pl-3 sm:pl-4">
-                            <p className="text-[0.65rem] uppercase tracking-[0.18em] text-white/55 sm:text-xs">
-                              {promo.reducedPriceLabel}
-                            </p>
-                            <p className="mt-1 text-xl font-semibold leading-none tracking-[-0.03em] text-white sm:text-2xl lg:text-[1.75rem]">
-                              {promo.reducedPrice}
-                            </p>
-                            <p className="mt-1.5 inline-flex flex-wrap items-center gap-1.5 text-[0.65rem] font-semibold leading-tight text-[#8ff3ff] sm:text-[0.72rem]">
-                              <span>−{promo.reducedSavingsPercent}</span>
-                              <span className="text-white/55">{promo.reducedSavings}</span>
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <PrimaryButton
-                        href={buildBookingPath(loc, { category: promo.category })}
-                        size="lg"
-                        className="ticket-pill w-full whitespace-nowrap ring-[color:rgba(79,207,222,0.55)] sm:w-auto sm:min-w-[13rem]"
-                      >
-                        {promo.button}
-                      </PrimaryButton>
                     </div>
                   </div>
-                </article>
+                </div>
+              ) : (
+                <>
+              {PROMO_PACKAGES[loc].map((promo) => (
+                <AllAttractionsPromoCard key={promo.title} promo={promo} locale={loc} />
               ))}
 
               <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-3">
-                {t.ticketsOptions.map((option) => (
+                {ticketsOptions.map((option) => (
                   <article
                     key={option.title}
                     className="ap-tile ap-tile-lg relative flex flex-col overflow-hidden px-4 py-5 sm:px-6 sm:py-6"
@@ -1390,8 +1437,40 @@ export default function FilmPathContent() {
                   </article>
                 ))}
               </div>
+                </>
+              )}
             </div>
           </Card>
+
+          {isGroups ? (
+            <div id="grupy-booking" className="space-y-5 sm:space-y-7">
+              <div className="space-y-3 text-center">
+                <h2 className="mx-auto max-w-4xl text-pretty text-[clamp(1.85rem,6vw,3.4rem)] font-bold leading-[1.05] tracking-[-0.035em] text-white">
+                  {groupForm.title}
+                </h2>
+                <p className="mx-auto max-w-2xl text-base leading-relaxed text-white/72 sm:text-lg">
+                  {groupForm.intro}
+                </p>
+              </div>
+              <Card
+                id="bookero-form"
+                variant="solid"
+                motion="off"
+                className="relative overflow-hidden !bg-white !ring-black/10"
+              >
+                <BookeroEmbed
+                  pluginId={BOOKERO_PLUGIN_ID}
+                  containerId="bookero"
+                  type="calendar"
+                  position=""
+                  pluginCss
+                  lang={bookeroLang}
+                  preselectCategory={GROUP_BOOKING_CATEGORY}
+                  className="w-full min-h-[980px] overflow-hidden rounded-2xl bg-white ring-1 ring-black/10"
+                />
+              </Card>
+            </div>
+          ) : null}
         </div>
       </section>
     </main>

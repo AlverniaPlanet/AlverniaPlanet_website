@@ -1,4 +1,4 @@
-// Dane mapy interaktywnej — pozycje kopuł w układzie współrzędnych obrazu
+// Dane mapy interaktywnej: pozycje kopuł w układzie współrzędnych obrazu
 // /public/mapa_wycieczki.png (1393 x 1129 px). Współrzędne (x, y) to środek
 // kopuły, r to promień strefy klikalnej. Wszystko w pikselach obrazu.
 
@@ -27,7 +27,7 @@ export const KOPULY: Kopula[] = [
     r: 40,
     stop: 1,
     stopLabel: "Start",
-    title: "Kopuła K5 — Strefa startowa",
+    title: "Kopuła K5: Strefa startowa",
     desc:
       "Tutaj rozpoczyna się przygoda. Grupa zbiera się przed wejściem, odbiera bilety i wita się z przewodnikiem. To miejsce zbiórki przed wyruszeniem w głąb Alvernia Planet.",
   },
@@ -38,7 +38,7 @@ export const KOPULY: Kopula[] = [
     r: 37,
     stop: 1,
     stopLabel: "Start",
-    title: "Kopuła K6 — Strefa startowa",
+    title: "Kopuła K6: Strefa startowa",
     desc:
       "Druga kopuła punktu startowego. Tu odbywa się krótkie wprowadzenie i instruktaż bezpieczeństwa przed rozpoczęciem zwiedzania.",
   },

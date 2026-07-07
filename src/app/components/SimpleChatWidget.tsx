@@ -83,7 +83,7 @@ const CHAT_COPY: Record<
     },
     answers: {
       hours:
-        "Infolinia działa od poniedziałku do piątku w godz. 9:00-16:00. Kino K360: pon.-czw. 11:00-17:00, pt. 11:00-18:00, sob.-niedz. 11:00-19:30. Ścieżka filmowa: pon.-sob. 8:00-17:00, niedziela: zamknięte.",
+        "Infolinia działa od poniedziałku do piątku w godz. 9:00-16:00. Kino 360: pon.-czw. 11:00-17:00, pt. 11:00-18:00, sob.-niedz. 11:00-19:30. FILMWORLD: pon.-sob. 8:00-17:00, niedziela: zamknięte.",
       prices:
         "Na stronie: bilet normalny na ścieżkę edukacyjną to 79 zł/os., ulgowy 69 zł/os., a dla grup szkolnych 30-50 osób: 2 070-3 450 zł/grupa.",
       directions: "Szczegółowy dojazd i mapa są na podstronie „Jak dojechać”.",
@@ -92,7 +92,7 @@ const CHAT_COPY: Record<
       events:
         "Informacje o wynajmie przestrzeni i eventach znajdziesz na podstronie „Wydarzenia”.",
       attractions:
-        "Najważniejsze atrakcje to: Kino K360, Projekt: MARS i Ścieżka filmowa.",
+        "Najważniejsze atrakcje to: Kino 360, MARS i FILMWORLD.",
       gallery: "Pełna galeria zdjęć jest dostępna na osobnej podstronie „Galeria”.",
       booking: "Rezerwację najwygodniej zrobić bezpośrednio przez system Bookero.",
     },
@@ -118,7 +118,7 @@ const CHAT_COPY: Record<
     },
     answers: {
       hours:
-        "The info line is open Monday to Friday from 9:00 to 16:00. K360 Cinema: Mon-Thu 11:00-17:00, Fri 11:00-18:00, Sat-Sun 11:00-19:30. Film Path: Mon-Sat 8:00-17:00, Sunday closed.",
+        "The info line is open Monday to Friday from 9:00 to 16:00. K360 Cinema: Mon-Thu 11:00-17:00, Fri 11:00-18:00, Sat-Sun 11:00-19:30. FILMWORLD: Mon-Sat 8:00-17:00, Sunday closed.",
       prices:
         "On the website: the standard educational path ticket is 79 PLN/person, the reduced ticket is 69 PLN/person, and school groups (30-50 people) cost 2,070-3,450 PLN/group.",
       directions: "Detailed directions and map are available on the “Getting there” page.",
@@ -126,7 +126,7 @@ const CHAT_COPY: Record<
         "Contact: +48 12 344 40 00, rezerwacje@alverniaplanet.com. You can also use the contact form.",
       events: "Venue rental and event details are on the “Events” page.",
       attractions:
-        "Main attractions: K360 Cinema, Mars Project and Film Path.",
+        "Main attractions: K360 Cinema, MARS and FILMWORLD.",
       gallery: "The full photo gallery is available on the separate “Gallery” page.",
       booking: "The easiest way to book is via Bookero.",
     },
@@ -152,7 +152,7 @@ const CHAT_COPY: Record<
     },
     answers: {
       hours:
-        "A linha de informação funciona de segunda a sexta das 9:00 às 16:00. Cinema K360: seg.-qui. 11:00-17:00, sex. 11:00-18:00, sáb.-dom. 11:00-19:30. Percurso de filmagem: seg.-sáb. 8:00-17:00, domingo encerrado.",
+        "A linha de informação funciona de segunda a sexta das 9:00 às 16:00. Cinema K360: seg.-qui. 11:00-17:00, sex. 11:00-18:00, sáb.-dom. 11:00-19:30. FILMWORLD: seg.-sáb. 8:00-17:00, domingo encerrado.",
       prices:
         "No site: o bilhete normal do percurso educativo custa 79 PLN/pessoa, o bilhete reduzido 69 PLN/pessoa, e os grupos escolares (30-50 pessoas) custam 2 070-3 450 PLN/grupo.",
       directions: "As indicações e o mapa estão na página “Como chegar”.",
@@ -161,7 +161,7 @@ const CHAT_COPY: Record<
       events:
         "Informações sobre aluguer de espaço e eventos estão na página “Eventos”.",
       attractions:
-        "Atrações principais: Cinema K360, Projeto MARS e Percurso de filmagem.",
+        "Atrações principais: Cinema K360, MARS e FILMWORLD.",
       gallery: "A galeria completa está disponível na página “Galeria”.",
       booking: "A forma mais rápida de reservar é pelo Bookero.",
     },
@@ -213,7 +213,7 @@ export default function SimpleChatWidget() {
       tickets: prefix + (loc === "pl" ? "/rezerwuj" : loc === "en" ? "/reserve" : "/reservar"),
       events: prefix + (loc === "pl" ? "/wydarzenia" : "/events"),
       gallery: prefix + (loc === "pl" ? "/galeria" : "/gallery"),
-      attractions: prefix + (loc === "pl" ? "/atrakcje/wystawa" : "/attractions/exhibition"),
+      attractions: prefix + "/harry-potter-the-exhibition",
     }),
     [loc, prefix],
   );

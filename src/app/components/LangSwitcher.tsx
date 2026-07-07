@@ -124,7 +124,7 @@ export default function LangSwitcher() {
           className="ap-lang-pill is-active inline-flex items-center gap-1.5 rounded-full ring-1 bg-[color:var(--ap-surface-contrast)] ring-[color:var(--ap-border)] px-2.5 py-1.5 transition"
           aria-haspopup="listbox"
           aria-expanded={open}
-          aria-label={`${active.label} — zmień język`}
+          aria-label={`${active.label}, zmień język`}
           title={active.label}
         >
           <Flag code={active.code} />

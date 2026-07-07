@@ -1,1 +1,1 @@
-export { metadata, default } from "../../../atrakcje/k360/page";
+export { metadata, default } from "../../../atrakcje/kino-360/page";

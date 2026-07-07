@@ -13,7 +13,7 @@ import {
 
 type Locale = "pl" | "en" | "pt";
 
-// Pakiet przedpremierowy dostępny tylko w weekend 23–24.05.2026 — po niedzieli baner znika sam.
+// Pakiet przedpremierowy dostępny tylko w weekend 23–24.05.2026. Po niedzieli baner znika sam.
 const PROMO_END = new Date("2026-05-25T00:00:00+02:00").getTime();
 const MARS_PATH = "/atrakcje/mars";
 
@@ -21,6 +21,8 @@ const HIDDEN_PATHS = new Set([
   "/rezerwuj",
   "/en/reserve",
   "/pt/reservar",
+  "/aplikacje/identyfikacja",
+  "/aplikacje/mars-brief",
 ]);
 
 const COPY: Record<
@@ -40,8 +42,8 @@ const COPY: Record<
     live: "W trakcie",
     eyebrow: "Pakiet przedpremierowy",
     tagline: "Bądź pierwszy na Marsie!",
-    pkg: "K360 + Projekt: MARS",
-    desc: "Wersja przedpremierowa dostępna tylko w ten weekend — sobota i niedziela.",
+    pkg: "K360 + MARS",
+    desc: "Wersja przedpremierowa dostępna tylko w ten weekend: sobota i niedziela.",
     price: "od 64 zł",
     ctaBook: "Rezerwuj",
     ctaMore: "Dowiedz się więcej",
@@ -50,8 +52,8 @@ const COPY: Record<
     live: "Live now",
     eyebrow: "Pre-release package",
     tagline: "Be the first on Mars!",
-    pkg: "K360 + Mars Project",
-    desc: "The pre-release version is available this weekend only — Saturday and Sunday.",
+    pkg: "K360 + MARS",
+    desc: "The pre-release version is available this weekend only: Saturday and Sunday.",
     price: "from 64 PLN",
     ctaBook: "Book now",
     ctaMore: "Learn more",
@@ -60,8 +62,8 @@ const COPY: Record<
     live: "A decorrer",
     eyebrow: "Pacote de pré-estreia",
     tagline: "Sê o primeiro em Marte!",
-    pkg: "K360 + Projeto MARS",
-    desc: "A versão de pré-estreia está disponível apenas neste fim de semana — sábado e domingo.",
+    pkg: "K360 + MARS",
+    desc: "A versão de pré-estreia está disponível apenas neste fim de semana: sábado e domingo.",
     price: "desde 64 PLN",
     ctaBook: "Reservar",
     ctaMore: "Saber mais",
@@ -103,7 +105,7 @@ export default function FloatingDemoPromo() {
         enter ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
       }`}
     >
-      <div className="pointer-events-auto relative origin-bottom scale-75 overflow-hidden rounded-2xl border border-[#7ef6ff]/30 bg-[#0a1622]/95 p-4 shadow-[0_18px_50px_rgba(0,0,0,0.5)] backdrop-blur-md sm:p-5 lg:scale-100 lg:rounded-3xl lg:p-7">
+      <div className="ap-glass pointer-events-auto relative origin-bottom scale-75 overflow-hidden rounded-2xl p-4 sm:p-5 lg:scale-100 lg:rounded-3xl lg:p-7">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(247,120,40,0.18),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(247,72,108,0.10),transparent_32%)]" />
 
         {/* Grafika Marsa */}
