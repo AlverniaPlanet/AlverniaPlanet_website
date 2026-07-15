@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { useI18n } from "@/app/i18n-provider";
 import { useTheme } from "@/app/theme-provider";
 import { trackEvent } from "@/lib/analytics";
+import { openCookieSettings } from "@/lib/consent";
 import { getLocalizedPath, isBareChromeRoute, type Locale } from "@/lib/localizedRoutes";
 type LinkItem = { label: string; href: string };
 type Section = { title: string; links: LinkItem[] };
@@ -408,6 +409,18 @@ const Footer = memo(function Footer() {
               ) : null}
             </span>
           ))}
+          <span className="flex items-center gap-3">
+            <span className="text-white/30" aria-hidden="true">
+              •
+            </span>
+            <button
+              type="button"
+              onClick={openCookieSettings}
+              className="underline underline-offset-4 decoration-white/30 text-white/80 transition hover:decoration-white hover:text-white"
+            >
+              {{ pl: "Ustawienia cookies", en: "Cookie settings", pt: "Definições de cookies" }[loc]}
+            </button>
+          </span>
         </div>
 
         {/* CTA */}

@@ -14,8 +14,8 @@ import {
 import { PROMO_PACKAGES } from "@/lib/promoPackages";
 import { AllAttractionsPromoCard } from "@/app/components/AllAttractionsPromoCard";
 import { HeroMarquee } from "@/app/components/HeroMarquee";
-
-type Locale = "pl" | "en" | "pt";
+import { type Locale } from "./films";
+import RepertoireSection from "./RepertoireSection";
 
 type Highlight = { title: string; body: string };
 
@@ -25,9 +25,6 @@ const HERO_IMAGES = [
   "/galeria/K360/K360_2.webp",
   "/galeria/K360/K360_1.webp",
 ];
-
-// Aktualnie wyświetlany seans (zmieniać przy zmianie repertuaru).
-const NOW_SHOWING_TITLE = "One Step Beyond: A Journey to Mars";
 
 const GALLERY_IMAGES = [
   "/galeria/K360/1.webp",
@@ -69,6 +66,13 @@ type Copy = {
   nowShowingKicker: string;
   nowShowingNote: string;
 
+  heroRepertoire: string;
+  repertoireKicker: string;
+  repertoireTitle: string;
+  repertoireIntro: string;
+  filmCta: string;
+  filmMore: string;
+
   highlightsTitle: string;
   highlights: Highlight[];
 
@@ -90,10 +94,10 @@ const COPY: Record<Locale, Copy> = {
   pl: {
     heroKicker: "Fulldome 360° • Największe kino kopułowe w Europie",
     heroTitle: "Kino 360",
-    heroTagline: "Obraz wypełnia kopułę 360° dookoła i nad głową.",
+    heroTagline: "Przeżyj film, który dzieje się wokół Ciebie.",
     heroCtaPrimary: "Kup bilet",
     heroCtaSecondary: "Zobacz szczegóły",
-    europeBadge: "Największe w Europie",
+    europeBadge: "Największe Kino 360 w Europie",
     experienceBadge: "Przeżyj",
 
     infoBar: ["Kopuła 48 m", "Wysokość 15 m", "Seans ~30 min"],
@@ -107,6 +111,12 @@ const COPY: Record<Locale, Copy> = {
 
     nowShowingKicker: "Teraz w kopule",
     nowShowingNote: "Aktualny seans trwa około 30 minut i odbywa się w języku polskim.",
+    heroRepertoire: "4 filmy fulldome w repertuarze",
+    repertoireKicker: "Repertuar",
+    repertoireTitle: "Repertuar Kina 360",
+    repertoireIntro: "Cztery filmy fulldome 360°: każdy wypełnia całą kopułę dookoła i nad głową.",
+    filmCta: "Kup bilet",
+    filmMore: "Dowiedz się więcej",
 
     highlightsTitle: "Dlaczego Kino 360",
     highlights: [
@@ -146,10 +156,10 @@ const COPY: Record<Locale, Copy> = {
   en: {
     heroKicker: "Fulldome 360° • Europe's largest dome cinema",
     heroTitle: "K360 Cinema",
-    heroTagline: "The image fills the dome 360° around you and overhead.",
+    heroTagline: "Experience a film that happens all around you.",
     heroCtaPrimary: "Buy a ticket",
     heroCtaSecondary: "See details",
-    europeBadge: "Largest in Europe",
+    europeBadge: "Europe's largest 360° cinema",
     experienceBadge: "Experience",
 
     infoBar: ["48 m dome", "15 m high", "~30 min screening"],
@@ -163,6 +173,12 @@ const COPY: Record<Locale, Copy> = {
 
     nowShowingKicker: "Now showing",
     nowShowingNote: "The current screening runs about 30 minutes and is shown in Polish.",
+    heroRepertoire: "4 fulldome films in the repertoire",
+    repertoireKicker: "Repertoire",
+    repertoireTitle: "K360 repertoire",
+    repertoireIntro: "Four fulldome 360° films: each one fills the entire dome all around and overhead.",
+    filmCta: "Buy a ticket",
+    filmMore: "Learn more",
 
     highlightsTitle: "Why K360",
     highlights: [
@@ -202,10 +218,10 @@ const COPY: Record<Locale, Copy> = {
   pt: {
     heroKicker: "Fulldome 360° • O maior cinema em cúpula da Europa",
     heroTitle: "Cinema K360",
-    heroTagline: "A imagem preenche a cúpula 360° à tua volta e por cima.",
+    heroTagline: "Vive um filme que acontece à tua volta.",
     heroCtaPrimary: "Comprar bilhete",
     heroCtaSecondary: "Ver detalhes",
-    europeBadge: "O maior da Europa",
+    europeBadge: "O maior cinema 360° da Europa",
     experienceBadge: "Vive",
 
     infoBar: ["Cúpula 48 m", "15 m de altura", "Sessão ~30 min"],
@@ -219,6 +235,12 @@ const COPY: Record<Locale, Copy> = {
 
     nowShowingKicker: "Em exibição",
     nowShowingNote: "A sessão atual dura cerca de 30 minutos e é apresentada em polaco.",
+    heroRepertoire: "4 filmes fulldome no repertório",
+    repertoireKicker: "Repertório",
+    repertoireTitle: "Repertório do K360",
+    repertoireIntro: "Quatro filmes fulldome 360°: cada um preenche toda a cúpula à volta e por cima.",
+    filmCta: "Comprar bilhete",
+    filmMore: "Saber mais",
 
     highlightsTitle: "Porquê o K360",
     highlights: [
@@ -369,17 +391,10 @@ export default function K360Content() {
             >
               <path d="M1.5 5.2 4.4 7l1.9-4.6L8 5l1.7-2.6L11.6 7l2.9-1.8L13 12.7H3L1.5 5.2zM3 14h10v1.2H3V14z" />
             </svg>
-            <span className="inline-flex items-center whitespace-nowrap rounded-full bg-[linear-gradient(135deg,#f5b301,#fcd34d)] px-3.5 py-1.5 text-[0.68rem] font-extrabold uppercase tracking-[0.18em] text-[#231903] shadow-[0_6px_18px_rgba(251,191,36,0.45)] ring-1 ring-black/10 sm:px-5 sm:py-2 sm:text-[0.82rem] sm:tracking-[0.22em]">
+            <span className="inline-flex items-center whitespace-nowrap rounded-full bg-[linear-gradient(135deg,#f5b301,#fcd34d)] px-3.5 py-1.5 text-[0.62rem] font-extrabold uppercase tracking-[0.1em] text-[#231903] shadow-[0_6px_18px_rgba(251,191,36,0.45)] ring-1 ring-black/10 sm:px-6 sm:py-2.5 sm:text-[0.95rem] sm:tracking-[0.2em]">
               {t.europeBadge}
             </span>
           </div>
-          {/* Znacznik „Przeżyj", nad tytułem */}
-          <span
-            className="mb-4 inline-flex items-center rounded-full px-3.5 py-1.5 text-[0.62rem] font-extrabold uppercase tracking-[0.22em] text-white ring-1 ring-white/30 sm:text-[0.72rem] sm:tracking-[0.24em]"
-            style={{ backgroundColor: "#f7486c", boxShadow: "0 6px 18px rgba(247,72,108,0.45), 0 0 16px rgba(247,72,108,0.45)" }}
-          >
-            {t.experienceBadge}
-          </span>
           <h1 className="ap-type-hero-title force-overlay drop-shadow-[0_0_30px_rgba(0,0,0,0.65)] [text-shadow:0_3px_16px_rgba(0,0,0,0.55)] !text-[clamp(3.2rem,12vw,4.6rem)] lg:!text-[clamp(5.5rem,3rem+5vw,8rem)]">
             {t.heroTitle}
           </h1>
@@ -397,12 +412,22 @@ export default function K360Content() {
             </PrimaryButton>
             <a
               href="#kino-360"
-              className="inline-flex items-center justify-center gap-1.5 rounded-full border border-white/25 bg-white/[0.06] px-3.5 py-1.5 text-xs font-semibold text-white backdrop-blur-md transition hover:border-[#ff96aa]/60 hover:bg-white/12 sm:gap-2 sm:px-6 sm:py-2.5 sm:text-sm"
+              className="inline-flex items-center justify-center gap-1.5 rounded-[var(--ap-btn-radius)] border border-white/25 bg-white/[0.06] px-3.5 py-1.5 text-xs font-semibold text-white backdrop-blur-md transition hover:border-[#ff96aa]/60 hover:bg-white/12 sm:gap-2 sm:px-6 sm:py-2.5 sm:text-sm"
             >
               {t.heroCtaSecondary}
               <span aria-hidden="true">↓</span>
             </a>
           </div>
+
+          {/* Wzmianka o repertuarze — prowadzi do sekcji z 4 filmami */}
+          <a
+            href="#repertuar"
+            className="group mt-4 inline-flex items-center gap-2 text-[0.66rem] font-semibold uppercase tracking-[0.18em] text-white/75 [text-shadow:0_2px_10px_rgba(0,0,0,0.6)] transition hover:text-[#ff96aa] sm:mt-6 sm:text-sm sm:tracking-[0.2em]"
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-[#f7486c] shadow-[0_0_10px_rgba(247,72,108,0.75)]" />
+            {t.heroRepertoire}
+            <span aria-hidden="true" className="transition-transform group-hover:translate-y-0.5">↓</span>
+          </a>
         </div>
 
         {/* Kropki slideshow, pokazują liczbę zdjęć i aktywne (klikalne) */}
@@ -466,35 +491,9 @@ export default function K360Content() {
           </section>
         </ScrollMotionItem>
 
-        {/* ===== AKTUALNY SEANS ===== */}
+        {/* ===== REPERTUAR ===== */}
         <ScrollMotionItem strength="soft" delay={30} float={false} className="wpk-reveal">
-          <section className="ap-shell">
-            <div className="relative overflow-hidden rounded-[1.75rem] border border-[#f7486c]/35 bg-[linear-gradient(120deg,rgba(247,72,108,0.14),rgba(10,6,18,0.5))] px-6 py-7 sm:px-9 sm:py-8">
-              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(247,72,108,0.2),transparent_46%)]" />
-              <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
-                <div className="space-y-2.5">
-                  <p className="inline-flex items-center gap-2.5 text-[0.7rem] font-bold uppercase tracking-[0.24em] text-[#ff96aa]">
-                    <span className="relative inline-flex h-2.5 w-2.5">
-                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#f7486c] opacity-75" />
-                      <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#f7486c] shadow-[0_0_12px_rgba(247,72,108,0.9)]" />
-                    </span>
-                    {t.nowShowingKicker}
-                  </p>
-                  <h3 className="text-2xl font-black leading-[1.1] tracking-[-0.02em] text-white sm:text-3xl lg:text-[2.4rem]">
-                    {NOW_SHOWING_TITLE}
-                  </h3>
-                  <p className="max-w-xl text-sm text-white/72 sm:text-base">{t.nowShowingNote}</p>
-                </div>
-                <PrimaryButton
-                  href={bookingHref}
-                  size="lg"
-                  className="ticket-pill shrink-0 whitespace-nowrap !bg-[linear-gradient(135deg,#f03c64,#f7486c,#ff96aa)] !text-white !font-extrabold [text-shadow:0_1px_2px_rgba(0,0,0,0.55)] ring-[color:rgba(240,60,100,0.6)] hover:!brightness-110"
-                >
-                  {t.heroCtaPrimary}
-                </PrimaryButton>
-              </div>
-            </div>
-          </section>
+          <RepertoireSection />
         </ScrollMotionItem>
 
         {/* ===== 3 KLUCZOWE ATUTY ===== */}

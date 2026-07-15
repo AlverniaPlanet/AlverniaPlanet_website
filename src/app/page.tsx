@@ -1,17 +1,15 @@
 "use client";
 
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, memo, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useI18n } from "@/app/i18n-provider";
 import AdaptiveVideo from "@/app/components/AdaptiveVideo";
-import Card from "@/app/components/Card";
 import { PrimaryButton } from "@/app/components/PrimaryButton";
-import { AttractionCard } from "@/app/components/AttractionCard";
-import { FaFilm, FaRocket, FaStar, FaTicket } from "react-icons/fa6";
-import { NEWS_COPY, NewsSectionBlock, type NewsSection } from "@/app/components/newsContent";
+import { SolarIcon } from "./components/SolarIcon";
+import { NEWS_COPY, type NewsSection } from "@/app/components/newsContent";
 import ScrollMotionItem from "@/app/components/ScrollMotionItem";
-import { FaqAccordion, FAQ_COPY } from "@/app/components/faqContent";
+import { FAQ_COPY, type FaqCopy } from "@/app/components/faqContent";
 import { waitForImagesReady } from "@/app/components/waitForImagesReady";
 import {
   ALL_ATTRACTIONS_BOOKING_CATEGORY,
@@ -25,7 +23,9 @@ import {
   MARS_BOOKING_SERVICES,
 } from "@/lib/booking";
 import { PROMO_PACKAGES } from "@/lib/promoPackages";
-import { getSitePaths } from "@/lib/localizedRoutes";
+import { getSitePaths, getLocalizedPath } from "@/lib/localizedRoutes";
+import RepertoireSection from "./atrakcje/kino-360/RepertoireSection";
+import HomeSectionHeader from "./components/HomeSectionHeader";
 
 type Locale = "pl" | "en" | "pt";
 
@@ -86,6 +86,15 @@ type TicketSection = {
   ctaHref: string;
   promoTicket: PromoTicketOption;
   options: TicketOption[];
+  // Nowa sekcja „Bilety" (portale + panel pakietowy).
+  heading: string;
+  subheading: string;
+  chooseLabel: string;
+  reducedPrefix: string;
+  bestPriceLabel: string;
+  bundleTitle: string;
+  bundleTagline: string;
+  packageCta: string;
 };
 
 type PromoTile = {
@@ -180,6 +189,14 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       title: "Bilety",
       intro:
         "Wybierz atrakcję i kup bilet bezpośrednio na jej podstronie.",
+      heading: "Wybierz swoją przygodę",
+      subheading: "Jedna atrakcja czy cały filmowy dzień?",
+      chooseLabel: "Wybieram",
+      reducedPrefix: "ulgowy",
+      bestPriceLabel: "Najlepsza cena",
+      bundleTitle: "Zgarnij całą trójkę!",
+      bundleTagline: "jeden dzień • jeden bilet",
+      packageCta: "Kup pakiet",
       headerCta: "Trzy atrakcje, jeden krok do rezerwacji",
       headerCtaSub: "K360, MARS i FILMWORLD. Każda ma własną sprzedaż biletów.",
       priceLabel: "Cena za osobę",
@@ -313,6 +330,14 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
     tickets: {
       title: "Tickets",
       intro: "Pick an attraction and buy tickets directly on its page.",
+      heading: "Choose your adventure",
+      subheading: "One attraction or a full day of cinema?",
+      chooseLabel: "I choose this",
+      reducedPrefix: "reduced",
+      bestPriceLabel: "Best price",
+      bundleTitle: "Get all three!",
+      bundleTagline: "one day • one ticket",
+      packageCta: "Buy the bundle",
       headerCta: "Three attractions, one step to booking",
       headerCtaSub: "K360, MARS and FILMWORLD. Each has its own ticket flow.",
       priceLabel: "Price per person",
@@ -446,6 +471,14 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
     tickets: {
       title: "Bilhetes",
       intro: "Escolhe uma atração e compra o bilhete diretamente na sua página.",
+      heading: "Escolhe a tua aventura",
+      subheading: "Uma atração ou um dia inteiro de cinema?",
+      chooseLabel: "Escolho",
+      reducedPrefix: "reduzido",
+      bestPriceLabel: "Melhor preço",
+      bundleTitle: "Leva as três!",
+      bundleTagline: "um dia • um bilhete",
+      packageCta: "Comprar pacote",
       headerCta: "Três atrações, um passo até à reserva",
       headerCtaSub: "K360, MARS e FILMWORLD, cada um com a sua venda.",
       priceLabel: "Preço por pessoa",
@@ -623,10 +656,9 @@ export default function Page() {
         heroWelcomeVisible={heroWelcomeVisible}
         locale={loc}
       />
-      <div className="relative z-10 -mt-10 rounded-t-[2rem] bg-[var(--ap-bg)] px-4 pt-16 pb-10 shadow-[0_-28px_60px_rgba(0,0,0,0.55)] sm:-mt-14 sm:rounded-t-[2.75rem] sm:pt-20 sm:pb-14 lg:-mt-16 lg:pt-24 lg:pb-12">
+      <div className="relative z-10 -mt-10 overflow-x-clip rounded-t-[2rem] bg-[var(--ap-bg)] px-4 pt-16 pb-10 shadow-[0_-28px_60px_rgba(0,0,0,0.55)] sm:-mt-14 sm:rounded-t-[2.75rem] sm:pt-20 sm:pb-14 lg:-mt-16 lg:pt-24 lg:pb-12">
         <HomeContent
           introReady={introReady}
-          attractions={copy.attractions}
           tickets={copy.tickets}
           eventsPromo={copy.eventsPromo}
           news={copy.news}
@@ -777,6 +809,9 @@ const HeroSection = memo(function HeroSection({
       if (parallaxRef.current) {
         parallaxRef.current.style.transform = `translate3d(0, ${(eased * 80).toFixed(2)}px, 0)`;
         parallaxRef.current.style.opacity = Math.max(1 - progress * 1.4, 0).toFixed(3);
+        // Gdy warstwa hero (z backdrop-blur) i tak jest już wygaszona, chowamy ją,
+        // by nie przeliczać kosztownego backdrop-filter przy dalszym przewijaniu.
+        parallaxRef.current.style.visibility = progress >= 0.75 ? "hidden" : "visible";
       }
     };
 
@@ -800,7 +835,7 @@ const HeroSection = memo(function HeroSection({
     <section className="relative z-0 -mt-24 h-[calc(100svh+6rem)] min-h-[calc(100dvh+6rem)] w-full md:-mt-28 md:h-[calc(100svh+7rem)] md:min-h-[calc(100dvh+7rem)]">
       <div
         ref={pinRef}
-        className={`fixed inset-0 z-0 overflow-hidden bg-black transition-opacity duration-[1300ms] will-change-[opacity] ${
+        className={`fixed inset-0 z-0 overflow-hidden bg-black transition-opacity duration-[1300ms] ${
           introReady ? "opacity-100" : "opacity-0"
         }`}
         style={{
@@ -809,9 +844,8 @@ const HeroSection = memo(function HeroSection({
       >
         <div ref={zoomRef} className="absolute inset-0 will-change-transform">
           <AdaptiveVideo
-            mp4Src="/home/HOME.mp4"
-            webmSrc="/home/HOME.webm"
-            poster="/home/HOME_poster.webp"
+            mp4Src="/home/hero.mp4"
+            poster="/home/hero.poster.webp"
             className="absolute inset-0 h-full w-full object-cover pointer-events-none"
             sizes="100vw"
             fallbackText={heroVideoFallback}
@@ -821,6 +855,15 @@ const HeroSection = memo(function HeroSection({
             active={videoActive}
           />
         </div>
+        {/* Stałe przyciemnienie tła pod napisami hero — kontrast białego tekstu na jaśniejszym wideo */}
+        <div
+          className="pointer-events-none absolute inset-0 z-[5]"
+          style={{
+            background:
+              "radial-gradient(135% 100% at 50% 44%, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.44) 38%, rgba(0,0,0,0.2) 72%, rgba(0,0,0,0.06) 100%), linear-gradient(180deg, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0) 26%, rgba(0,0,0,0) 58%, rgba(0,0,0,0.55) 100%)",
+          }}
+          aria-hidden
+        />
         <div
           className={`pointer-events-none absolute inset-0 z-[6] bg-black transition-opacity ${
             heroWelcomeVisible ? "opacity-30" : "opacity-0"
@@ -867,7 +910,7 @@ const HeroSection = memo(function HeroSection({
         {/* Kup bilet + Dowiedz się więcej, dwa przyciski obok siebie, jak na podstronie Kina.
             Na wąskich ekranach zawijają się (flex-wrap), na większych rosną. */}
         <div
-          className={`mt-6 flex w-full flex-row flex-wrap items-center justify-center gap-2.5 transition-[opacity,transform] duration-[1000ms] will-change-[opacity,transform] sm:mt-8 sm:gap-3.5 lg:mt-10 lg:gap-4 ${
+          className={`mt-6 flex w-full flex-row flex-wrap items-center justify-center gap-2.5 transition-[opacity,transform] duration-[1000ms] sm:mt-8 sm:gap-3.5 lg:mt-10 lg:gap-4 ${
             introReady ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
           }`}
           style={{ transitionDelay: "450ms", transitionTimingFunction: "cubic-bezier(0.33, 1, 0.68, 1)" }}
@@ -876,15 +919,7 @@ const HeroSection = memo(function HeroSection({
             href={heroBookingHref}
             className="pointer-events-auto inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-br from-[#ff7a3c] via-[#ff5544] to-[#ff3960] px-5 py-2.5 text-xs font-bold uppercase tracking-[0.18em] !text-white shadow-[0_20px_50px_rgba(255,90,60,0.45),0_0_30px_rgba(255,90,60,0.35)] transition hover:scale-[1.02] hover:brightness-110 sm:gap-3 sm:px-9 sm:py-4 sm:text-sm sm:tracking-[0.2em] lg:px-11 lg:py-5 lg:text-base"
           >
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="h-[18px] w-[18px] sm:h-5 sm:w-5">
-              <path
-                d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7Z"
-                stroke="currentColor"
-                strokeWidth="1.6"
-                strokeLinejoin="round"
-              />
-              <path d="M9 5v14" stroke="currentColor" strokeWidth="1.6" strokeDasharray="2 2" />
-            </svg>
+            <SolarIcon name="ticket" size="1.35em" />
             {navLabels.buy}
           </Link>
           <Link
@@ -892,62 +927,37 @@ const HeroSection = memo(function HeroSection({
             className="pointer-events-auto inline-flex items-center justify-center gap-1.5 rounded-full border-2 border-[#7ef6ff]/70 bg-black/40 px-4 py-2.5 text-xs font-semibold !text-white shadow-[0_8px_28px_rgba(0,0,0,0.55),0_0_22px_rgba(126,246,255,0.3)] backdrop-blur-md transition hover:border-[#7ef6ff] hover:bg-black/60 hover:shadow-[0_8px_30px_rgba(0,0,0,0.6),0_0_34px_rgba(126,246,255,0.5)] sm:gap-2 sm:px-7 sm:py-4 sm:text-sm lg:px-8 lg:py-5 lg:text-base"
           >
             {navLabels.learnMore}
-            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" className="h-3.5 w-3.5 sm:h-4 sm:w-4">
-              <path d="M3 8h9M8.5 4l4 4-4 4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+            <SolarIcon name="arrow-right" size="1.15em" />
           </Link>
         </div>
         <div
-          className={`mt-6 flex justify-center transition-[opacity,transform] duration-[1000ms] will-change-[opacity,transform] sm:mt-8 lg:mt-10 ${
+          className={`mt-6 flex justify-center transition-[opacity,transform] duration-[1000ms] sm:mt-8 lg:mt-10 ${
             introReady ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
           }`}
           style={{ transitionDelay: "750ms", transitionTimingFunction: "cubic-bezier(0.33, 1, 0.68, 1)" }}
         >
-          <div className="pointer-events-auto inline-flex flex-col items-stretch justify-center gap-2.5 sm:flex-row sm:items-center sm:gap-5 sm:rounded-full sm:border sm:border-[#7ef6ff]/25 sm:bg-black/65 sm:px-7 sm:py-3 sm:shadow-[0_18px_50px_rgba(0,0,0,0.6),0_0_22px_rgba(126,246,255,0.18)] sm:backdrop-blur-xl sm:supports-[backdrop-filter]:bg-black/55 lg:gap-8 lg:px-9 lg:py-3.5">
+          <div className="pointer-events-auto inline-flex flex-col items-stretch justify-center gap-2.5 sm:flex-row sm:items-center sm:gap-5 sm:rounded-full sm:border sm:border-[#7ef6ff]/25 sm:bg-black/65 sm:px-7 sm:py-3 sm:shadow-[0_18px_50px_rgba(0,0,0,0.6),0_0_22px_rgba(126,246,255,0.18)] sm:backdrop-blur-md sm:supports-[backdrop-filter]:bg-black/55 lg:gap-8 lg:px-9 lg:py-3.5">
             <Link
               href="#content-start"
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-[#7ef6ff]/25 bg-black/65 px-5 py-2.5 text-[0.7rem] font-semibold uppercase tracking-[0.22em] !text-white/90 shadow-[0_12px_30px_rgba(0,0,0,0.5),0_0_18px_rgba(126,246,255,0.15)] backdrop-blur-xl transition hover:text-[#7ef6ff] supports-[backdrop-filter]:bg-black/55 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0 sm:text-xs sm:shadow-none sm:backdrop-blur-none sm:supports-[backdrop-filter]:bg-transparent"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-[#7ef6ff]/25 bg-black/65 px-5 py-2.5 text-[0.7rem] font-semibold uppercase tracking-[0.22em] !text-white/90 shadow-[0_12px_30px_rgba(0,0,0,0.5),0_0_18px_rgba(126,246,255,0.15)] backdrop-blur-md transition hover:text-[#7ef6ff] supports-[backdrop-filter]:bg-black/55 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0 sm:text-xs sm:shadow-none sm:backdrop-blur-none sm:supports-[backdrop-filter]:bg-transparent"
             >
               {navLabels.attractions}
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                <path
-                  d="M7 2v9M3 7l4 4 4-4"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <SolarIcon name="arrow-down" size="1.2em" />
             </Link>
             <span className="hidden h-4 w-px bg-[#7ef6ff]/25 sm:inline-block" aria-hidden="true" />
             <Link
               href={paths.about}
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-[#7ef6ff]/25 bg-black/65 px-5 py-2.5 text-[0.7rem] font-semibold uppercase tracking-[0.22em] !text-white/90 shadow-[0_12px_30px_rgba(0,0,0,0.5),0_0_18px_rgba(126,246,255,0.15)] backdrop-blur-xl transition hover:text-[#7ef6ff] supports-[backdrop-filter]:bg-black/55 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0 sm:text-xs sm:shadow-none sm:backdrop-blur-none sm:supports-[backdrop-filter]:bg-transparent"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-[#7ef6ff]/25 bg-black/65 px-5 py-2.5 text-[0.7rem] font-semibold uppercase tracking-[0.22em] !text-white/90 shadow-[0_12px_30px_rgba(0,0,0,0.5),0_0_18px_rgba(126,246,255,0.15)] backdrop-blur-md transition hover:text-[#7ef6ff] supports-[backdrop-filter]:bg-black/55 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0 sm:text-xs sm:shadow-none sm:backdrop-blur-none sm:supports-[backdrop-filter]:bg-transparent"
             >
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                <circle cx="7" cy="7" r="5.5" stroke="currentColor" strokeWidth="1.4" />
-                <path
-                  d="M7 6v3.5M7 4v.01"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                  strokeLinecap="round"
-                />
-              </svg>
+              <SolarIcon name="info" size="1.2em" />
               {navLabels.about}
             </Link>
             <span className="hidden h-4 w-px bg-[#7ef6ff]/25 sm:inline-block" aria-hidden="true" />
             <Link
               href={paths.gettingThere}
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-[#7ef6ff]/25 bg-black/65 px-5 py-2.5 text-[0.7rem] font-semibold uppercase tracking-[0.22em] !text-white/90 shadow-[0_12px_30px_rgba(0,0,0,0.5),0_0_18px_rgba(126,246,255,0.15)] backdrop-blur-xl transition hover:text-[#7ef6ff] supports-[backdrop-filter]:bg-black/55 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0 sm:text-xs sm:shadow-none sm:backdrop-blur-none sm:supports-[backdrop-filter]:bg-transparent"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-[#7ef6ff]/25 bg-black/65 px-5 py-2.5 text-[0.7rem] font-semibold uppercase tracking-[0.22em] !text-white/90 shadow-[0_12px_30px_rgba(0,0,0,0.5),0_0_18px_rgba(126,246,255,0.15)] backdrop-blur-md transition hover:text-[#7ef6ff] supports-[backdrop-filter]:bg-black/55 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0 sm:text-xs sm:shadow-none sm:backdrop-blur-none sm:supports-[backdrop-filter]:bg-transparent"
             >
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                <path
-                  d="M12 2 6.5 13 5 8 0 6.5 12 2Z"
-                  stroke="currentColor"
-                  strokeWidth="1.4"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <SolarIcon name="route" size="1.2em" />
               {navLabels.route}
             </Link>
           </div>
@@ -961,7 +971,6 @@ const HeroSection = memo(function HeroSection({
 
 const HomeContent = memo(function HomeContent({
   introReady,
-  attractions,
   tickets,
   eventsPromo,
   news,
@@ -969,7 +978,6 @@ const HomeContent = memo(function HomeContent({
   locale,
 }: {
   introReady: boolean;
-  attractions: HomeCopy["attractions"];
   tickets: TicketSection;
   eventsPromo: PromoTile;
   news: NewsSection;
@@ -979,7 +987,7 @@ const HomeContent = memo(function HomeContent({
   return (
     <section
       id="content-start"
-      className={`relative z-10 mt-10 sm:mt-12 transition-[opacity,transform] duration-[1200ms] will-change-[opacity,transform] ${
+      className={`relative z-10 mt-10 sm:mt-12 transition-[opacity,transform] duration-[1200ms] ${
         introReady ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
       }`}
       style={{
@@ -987,326 +995,316 @@ const HomeContent = memo(function HomeContent({
         transitionDelay: "180ms",
       }}
     >
-      <div className="flex flex-col gap-20 sm:gap-28">
-        <AttractionsSection attractions={attractions} animate={secondaryAnimationsReady} />
+      <div className="flex flex-col gap-12 sm:gap-16">
+        {/* Zdjęcie w tle regionu Repertuaru (od pod hero do czarnego pasa Biletów), full-bleed */}
+        <div
+          className="relative isolate py-8 sm:py-12"
+          style={{ marginLeft: "calc(50% - 50vw)", marginRight: "calc(50% - 50vw)" }}
+        >
+          <div className="pointer-events-none absolute inset-x-0 -bottom-[8rem] -top-[7rem] -z-10 overflow-hidden sm:-top-[9rem] sm:-bottom-[10rem]">
+            <Image
+              src="/home/repertoire-bg.webp"
+              alt=""
+              aria-hidden="true"
+              fill
+              sizes="100vw"
+              quality={68}
+              loading="lazy"
+              className="object-cover"
+            />
+            {/* Lekki czarny fade u góry (miękkie wejście), zdjęcie w środku, dół od razu w czerń */}
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(180deg, #000 0%, #000 8%, rgba(7,4,12,0.62) 21%, rgba(7,4,12,0.5) 42%, rgba(7,4,12,0.62) 64%, #000 100%)",
+              }}
+            />
+          </div>
+          <div className="px-4">
+            <RepertoireSection />
+          </div>
+        </div>
         <div className="mx-auto w-full max-w-[72rem] 2xl:max-w-[92rem] min-[1800px]:max-w-[104rem]">
           <TicketsSection tickets={tickets} locale={locale} />
         </div>
-        <div className="mx-auto w-full max-w-[72rem] 2xl:max-w-[92rem] min-[1800px]:max-w-[104rem]">
-          <FaqAccordion copy={FAQ_COPY[locale]} />
-        </div>
-        <EventsPromoSection promo={eventsPromo} />
-        <div className="mx-auto w-full max-w-[72rem] 2xl:max-w-[92rem] min-[1800px]:max-w-[104rem]">
-          <NewsSectionBlock news={news} teaser />
+        <FaqPreviewSection faq={FAQ_COPY[locale]} locale={locale} />
+        {/* Wspólne czarne tło (full-bleed, jak sekcja Biletów) dla Wydarzeń i Aktualności */}
+        <div
+          className="relative isolate py-16 sm:py-24 lg:py-28"
+          style={{
+            marginLeft: "calc(50% - 50vw)",
+            marginRight: "calc(50% - 50vw)",
+            background:
+              "linear-gradient(180deg, var(--ap-bg) 0%, #000 14%, #000 86%, var(--ap-bg) 100%)",
+          }}
+        >
+          <div className="flex flex-col gap-20 px-4 sm:gap-28">
+            <EventsPromoSection promo={eventsPromo} />
+            <NewsRailSection news={news} locale={locale} />
+          </div>
         </div>
       </div>
     </section>
   );
 });
 
-const AttractionsSection = memo(function AttractionsSection({
-  attractions,
-  animate,
-}: {
-  attractions: HomeCopy["attractions"];
-  animate: boolean;
-}) {
-  // Reveal na scroll: Kino (środek) wjeżdża pierwsze, Filmworld z lewej, Mars z prawej.
-  const gridRef = useRef<HTMLDivElement | null>(null);
+// Etykiety i podtytuły nowego układu strony głównej (edytorialne szyny sekcji).
+const HOME_UI: Record<
+  Locale,
+  {
+    learnMore: string;
+    readMore: string;
+    seeAllAttractions: string;
+    seeRepertoire: string;
+    seeAllFaq: string;
+    seeAllNews: string;
+    subAttractions: string;
+    subRepertoire: string;
+  }
+> = {
+  pl: {
+    learnMore: "Dowiedz się więcej",
+    readMore: "Czytaj więcej",
+    seeAllAttractions: "Zobacz wszystkie atrakcje",
+    seeRepertoire: "Zobacz repertuar",
+    seeAllFaq: "Zobacz wszystkie",
+    seeAllNews: "Zobacz wszystkie",
+    subAttractions: "Trzy światy. Niezliczone emocje. Wybierz swoją misję.",
+    subRepertoire: "Sprawdź, co gramy i wybierz swoją przygodę.",
+  },
+  en: {
+    learnMore: "Learn more",
+    readMore: "Read more",
+    seeAllAttractions: "See all attractions",
+    seeRepertoire: "See repertoire",
+    seeAllFaq: "See all",
+    seeAllNews: "See all",
+    subAttractions: "Three worlds. Endless emotions. Choose your mission.",
+    subRepertoire: "See what's playing and pick your adventure.",
+  },
+  pt: {
+    learnMore: "Saber mais",
+    readMore: "Ler mais",
+    seeAllAttractions: "Ver todas as atrações",
+    seeRepertoire: "Ver repertório",
+    seeAllFaq: "Ver tudo",
+    seeAllNews: "Ver tudo",
+    subAttractions: "Três mundos. Emoções infinitas. Escolhe a tua missão.",
+    subRepertoire: "Vê o que está em cartaz e escolhe a tua aventura.",
+  },
+};
+
+function FaqPreviewSection({ faq, locale }: { faq: FaqCopy; locale: Locale }) {
+  const ui = HOME_UI[locale];
+  const faqHref = getSitePaths(locale).faq;
+  const items = faq.items.slice(0, 9);
+  const [openIdx, setOpenIdx] = useState<number | null>(null);
+
+  // Ten sam lekki reveal wjazdowy co w innych sekcjach (stan Reacta, GPU, bez bibliotek).
+  const sectionRef = useRef<HTMLDivElement>(null);
   const [revealed, setRevealed] = useState(false);
+  const [settled, setSettled] = useState(false);
   useEffect(() => {
-    const el = gridRef.current;
-    if (!el) return;
-    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setRevealed(true);
+      setSettled(true);
       return;
     }
+    const root = sectionRef.current;
+    if (!root) return;
     const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) {
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
           setRevealed(true);
           io.disconnect();
         }
       },
-      { threshold: 0.25, rootMargin: "0px 0px -8% 0px" },
+      { threshold: 0.08, rootMargin: "0px 0px -8% 0px" },
     );
-    io.observe(el);
+    io.observe(root);
     return () => io.disconnect();
   }, []);
-  const featuredIndex = attractions.items.findIndex((item) => item.featured);
+  useEffect(() => {
+    if (!revealed || settled) return;
+    const id = window.setTimeout(() => setSettled(true), 1500);
+    return () => window.clearTimeout(id);
+  }, [revealed, settled]);
+  const revealCls = settled ? "" : `wpk-reveal${revealed ? " is-visible" : ""}`;
 
   return (
-    <ScrollMotionItem strength="strong" delay={40}>
-      <div className="mx-auto w-full max-w-[92rem] lg:max-w-[80rem] 2xl:max-w-[92rem]">
-        <div className="text-center">
-          <h2 className="ap-type-section-title !text-[clamp(2.6rem,2rem+2.6vw,4.6rem)] !leading-[1.05]">{attractions.title}</h2>
-          <div className="mx-auto mt-4 h-[3px] w-28 rounded-full bg-gradient-to-r from-[#4fcfde] via-[#f7486c] to-[#f77828]" />
-          <p className="ap-type-section-body mx-auto mt-6 max-w-2xl !text-[clamp(1.15rem,1rem+0.7vw,1.6rem)] !leading-[1.5] lg:max-w-none lg:whitespace-nowrap">{attractions.intro}</p>
-        </div>
-
-        {/* Mobile + tablet: roller (Kino wyróżnione na środku) */}
-        <div className="lg:hidden">
-          <AttractionsScroller items={attractions.items} animate={animate} />
-        </div>
-
-        {/* Desktop (lg+): siatka 3 kolumn: Kino wjeżdża pierwsze (środek), Filmworld z lewej, Mars z prawej */}
-        <div
-          ref={gridRef}
-          className="mt-14 hidden gap-8 overflow-x-clip lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)_minmax(0,1fr)] lg:items-center"
-        >
-          {attractions.items.map((item, i) => {
-            const dir = item.featured ? "center" : i < featuredIndex ? "left" : "right";
-            const hiddenTransform =
-              dir === "left"
-                ? "-translate-x-24"
-                : dir === "right"
-                ? "translate-x-24"
-                : "translate-y-10 scale-[0.97]";
-            return (
-              <div
-                key={item.title}
-                className={`transition-[opacity,transform] duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-[opacity,transform] ${
-                  revealed
-                    ? "translate-x-0 translate-y-0 scale-100 opacity-100"
-                    : `opacity-0 ${hiddenTransform}`
-                }`}
-                style={{ transitionDelay: revealed && !item.featured ? "240ms" : "0ms" }}
-              >
-                <AttractionCard
-                  {...item}
-                  {...(item.featured
-                    ? {
-                        videoMp4: "/home/Cinema360_home.mp4",
-                        videoWebm: "/home/Cinema360_home.webm",
-                        videoPoster: "/home/Cinema360_home_poster.webp",
-                      }
-                    : {})}
-                />
-              </div>
-            );
-          })}
+    <ScrollMotionItem strength="soft" delay={40}>
+      <div ref={sectionRef} className="mx-auto w-full max-w-[86rem] 2xl:max-w-[96rem]">
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,2.5fr)] lg:items-start lg:gap-12">
+          <div className={revealCls}>
+            <HomeSectionHeader
+              title={faq.badge}
+              subtitle={faq.title}
+              cta={{ label: ui.seeAllFaq, href: faqHref }}
+            />
+          </div>
+          <div className="grid gap-x-8 gap-y-1 sm:grid-cols-2 lg:grid-cols-3 lg:items-start">
+            {items.map((item, i) => {
+              const isOpen = openIdx === i;
+              return (
+                <div
+                  key={item.question}
+                  style={{ "--wpk-reveal-delay": `${120 + i * 55}ms` } as CSSProperties}
+                  className={`${revealCls} border-t border-white/10`}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setOpenIdx(isOpen ? null : i)}
+                    aria-expanded={isOpen}
+                    className="group flex w-full items-start gap-3 py-4 text-left"
+                  >
+                    <span
+                      className={`flex-1 text-[0.9rem] font-medium leading-snug transition-colors ${
+                        isOpen ? "text-white" : "text-white/75 group-hover:text-white"
+                      }`}
+                    >
+                      {item.question}
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className={`mt-0.5 shrink-0 text-[#f7486c] transition-transform duration-300 ${
+                        isOpen ? "rotate-180" : ""
+                      }`}
+                    >
+                      <SolarIcon name="chevron-down" size="0.9em" />
+                    </span>
+                  </button>
+                  {/* Płynne rozwijanie bez mierzenia wysokości (grid-rows 0fr→1fr) */}
+                  <div
+                    className="grid transition-[grid-template-rows] duration-300 ease-out"
+                    style={{ gridTemplateRows: isOpen ? "1fr" : "0fr" }}
+                  >
+                    <div className="overflow-hidden">
+                      <p className="pb-4 pr-2 text-[0.82rem] leading-relaxed text-white/60">
+                        {item.answer}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </ScrollMotionItem>
   );
-});
+}
 
-const TICKET_ACCENT_TOKENS: Record<
+function NewsRailSection({ news, locale }: { news: NewsSection; locale: Locale }) {
+  const ui = HOME_UI[locale];
+  const newsHref = getSitePaths(locale).news;
+  const featured = news.items[0];
+  if (!featured) return null;
+  const featuredHref = featured.external ? featured.href : getLocalizedPath(featured.href, locale);
+  return (
+    <ScrollMotionItem strength="soft" delay={40}>
+      <div className="mx-auto w-full max-w-[86rem] 2xl:max-w-[96rem]">
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.85fr)] lg:items-center lg:gap-12">
+          <HomeSectionHeader title={news.title} cta={{ label: ui.seeAllNews, href: newsHref }} className="lg:justify-center" />
+          <Link
+            href={featuredHref}
+            target={featured.external ? "_blank" : undefined}
+            rel={featured.external ? "noopener noreferrer" : undefined}
+            className="group grid overflow-hidden rounded-2xl bg-white/[0.03] ring-1 ring-white/10 transition hover:ring-white/25 sm:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]"
+          >
+            <div className="flex flex-col justify-center p-6 sm:p-8">
+              <span className="text-[0.64rem] font-bold uppercase tracking-[0.16em] text-[#4fcfde]">
+                {featured.badge}
+              </span>
+              <h3 className="mt-2 text-pretty text-xl font-black leading-tight tracking-[-0.01em] text-white sm:text-2xl">
+                {featured.title}
+              </h3>
+              <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-white/60">
+                {featured.description}
+              </p>
+              <span className="mt-4 inline-flex items-center gap-2 text-[0.72rem] font-bold uppercase tracking-[0.14em] text-white transition-colors group-hover:text-[#ff96aa]">
+                {ui.readMore}
+                <span aria-hidden="true" className="text-[#f7486c]">→</span>
+              </span>
+            </div>
+            <div className="relative min-h-[11rem] overflow-hidden max-sm:order-first">
+              <Image
+                src="/galeria/Projekt_MARS/webp/MARS_1.webp"
+                alt=""
+                aria-hidden="true"
+                fill
+                sizes="(min-width:640px) 32vw, 100vw"
+                quality={70}
+                loading="lazy"
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(10,6,18,0.6),transparent_45%)] sm:bg-[linear-gradient(to_right,rgba(10,6,18,0.85),transparent_40%)]" />
+            </div>
+          </Link>
+        </div>
+        {/* Więcej aktualności — kompaktowa siatka pozostałych pozycji */}
+        {news.items.length > 1 ? (
+          <div className="mt-6 grid gap-x-8 gap-y-1 sm:grid-cols-2 lg:grid-cols-3">
+            {news.items.slice(1, 7).map((item) => {
+              const href = item.external ? item.href : getLocalizedPath(item.href, locale);
+              return (
+                <Link
+                  key={item.title}
+                  href={href}
+                  target={item.external ? "_blank" : undefined}
+                  rel={item.external ? "noopener noreferrer" : undefined}
+                  className="group flex flex-col border-t border-white/10 py-4 transition-colors hover:border-[#f7486c]/50"
+                >
+                  <span className="text-[0.6rem] font-bold uppercase tracking-[0.16em] text-[#4fcfde]">
+                    {item.badge}
+                  </span>
+                  <h4 className="mt-1.5 line-clamp-2 text-[0.9rem] font-bold leading-snug text-white/80 transition-colors group-hover:text-white">
+                    {item.title}
+                  </h4>
+                </Link>
+              );
+            })}
+          </div>
+        ) : null}
+      </div>
+    </ScrollMotionItem>
+  );
+}
+
+// Kolory akcentów sekcji „Bilety" (dokładnie wg referencji).
+const TICKET_ACCENTS: Record<NonNullable<TicketOption["accent"]>, string> = {
+  red: "#ff4773",
+  orange: "#ff843d",
+  cyan: "#56ddea",
+};
+
+// Grafika portalu (wideo) + ikona wg akcentu atrakcji (K360 = red, MARS = orange, FILMWORLD = cyan).
+const TICKET_PORTALS: Record<
   NonNullable<TicketOption["accent"]>,
-  {
-    badgeBg: string;
-    badgeColor: string;
-    badgeShadow: string;
-    divider: string;
-    dot: string;
-    glow: string;
-    border: string;
-    accentHex: string;
-    shadowGlow: string;
-    priceColor: string;
-    buttonClass: string;
-  }
+  { video: { mp4: string; webm: string; poster: string }; icon: ReactNode }
 > = {
   red: {
-    badgeBg: "linear-gradient(135deg, #f7486c, #ff96aa)",
-    badgeColor: "#ffffff",
-    badgeShadow: "0 8px 22px rgba(247, 72, 108, 0.45)",
-    divider:
-      "linear-gradient(90deg, rgba(247,72,108,0) 0%, rgba(247,72,108,0.55) 50%, rgba(247,72,108,0) 100%)",
-    dot: "#ff7a92",
-    glow: "radial-gradient(circle at top left, rgba(247,72,108,0.22), transparent 40%), radial-gradient(circle at bottom right, rgba(247,72,108,0.1), transparent 32%)",
-    border: "border-[rgba(247,72,108,0.32)]",
-    accentHex: "#f7486c",
-    shadowGlow: "0 24px 60px rgba(0,0,0,0.45), 0 0 24px rgba(247,72,108,0.35)",
-    priceColor: "text-[#ff96aa]",
-    buttonClass:
-      "ticket-pill w-full !bg-[#f7486c] !text-white !font-extrabold [text-shadow:0_1px_2px_rgba(0,0,0,0.55)] ring-[color:rgba(247,72,108,0.55)] hover:!brightness-110",
+    video: { mp4: "/home/Bilet/kino360.mp4", webm: "/home/Bilet/kino360.webm", poster: "/home/Bilet/kino360.poster.webp" },
+    icon: <SolarIcon name="clapperboard" />,
   },
   orange: {
-    badgeBg: "linear-gradient(135deg, #f77828, #ffb585)",
-    badgeColor: "#ffffff",
-    badgeShadow: "0 8px 22px rgba(247, 120, 40, 0.45)",
-    divider:
-      "linear-gradient(90deg, rgba(247,120,40,0) 0%, rgba(247,120,40,0.55) 50%, rgba(247,120,40,0) 100%)",
-    dot: "#ff9357",
-    glow: "radial-gradient(circle at top left, rgba(247,120,40,0.22), transparent 40%), radial-gradient(circle at bottom right, rgba(247,120,40,0.1), transparent 32%)",
-    border: "border-[rgba(247,120,40,0.32)]",
-    accentHex: "#f77828",
-    shadowGlow: "0 24px 60px rgba(0,0,0,0.45), 0 0 24px rgba(247,120,40,0.35)",
-    priceColor: "text-[#ffb585]",
-    buttonClass:
-      "ticket-pill w-full !bg-[linear-gradient(135deg,#e2580c,#f59044)] !text-white !font-extrabold [text-shadow:0_1px_2px_rgba(0,0,0,0.55)] !shadow-[0_8px_18px_rgba(247,120,40,0.45)] ring-[color:rgba(247,120,40,0.6)] hover:!brightness-110",
+    video: { mp4: "/home/Bilet/mars.mp4", webm: "/home/Bilet/mars.webm", poster: "/home/Bilet/mars.poster.webp" },
+    icon: <SolarIcon name="rocket" />,
   },
   cyan: {
-    badgeBg: "linear-gradient(135deg, #4fcfde, #a5e6f0)",
-    badgeColor: "#ffffff",
-    badgeShadow: "0 8px 22px rgba(79, 207, 222, 0.45)",
-    divider:
-      "linear-gradient(90deg, rgba(79,207,222,0) 0%, rgba(79,207,222,0.55) 50%, rgba(79,207,222,0) 100%)",
-    dot: "#7ef6ff",
-    glow: "radial-gradient(circle at top left, rgba(79,207,222,0.22), transparent 40%), radial-gradient(circle at bottom right, rgba(79,207,222,0.1), transparent 32%)",
-    border: "border-[rgba(79,207,222,0.32)]",
-    accentHex: "#4fcfde",
-    shadowGlow: "0 24px 60px rgba(0,0,0,0.45), 0 0 24px rgba(79,207,222,0.35)",
-    priceColor: "text-[#7ef6ff]",
-    buttonClass:
-      "ticket-pill w-full !bg-[linear-gradient(135deg,#1ea6b7,#4fcfde)] !text-white !font-extrabold [text-shadow:0_1px_2px_rgba(0,0,0,0.55)] !shadow-[0_8px_18px_rgba(79,207,222,0.45)] ring-[color:rgba(79,207,222,0.6)] hover:!brightness-110",
+    video: { mp4: "/home/Bilet/filmworld.mp4", webm: "/home/Bilet/filmworld.webm", poster: "/home/Bilet/filmworld.poster.webp" },
+    icon: <SolarIcon name="videocamera" />,
   },
 };
 
-// Stałe wyniesione poza komponenty (czyste, bez zależności od props/stanu),
-// żeby nie były realokowane przy ewentualnym re-renderze. Identyczne wartości.
-const promoButtonClass =
-  "ticket-pill w-full !bg-[linear-gradient(90deg,#4fcfde,#a855f7,#f7486c,#f77828)] !text-white !font-extrabold [text-shadow:0_1px_2px_rgba(0,0,0,0.55)] ring-[color:rgba(168,85,247,0.5)] hover:!brightness-110";
-const attractionIcons = [
-  <FaFilm key="kino" aria-hidden="true" />,
-  <FaRocket key="mars" aria-hidden="true" />,
-  <svg key="dome" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
-    <path d="M3.5 13a8.5 8.5 0 0 1 17 0" />
-    <path d="M3.5 13h17M12 4.5V13M7 6 9.4 13M17 6 14.6 13" />
-  </svg>,
-];
-const rowDescriptions = [
-  "Seans w kinie sferycznym 360°",
-  "Marsjańska misja i łazik w akcji",
-  "Futurystyczna przestrzeń pełna wrażeń",
-];
+// Podstrona atrakcji dla przycisku „Dowiedz się więcej" wg akcentu.
+const TICKET_ATTRACTION_PAGE: Record<NonNullable<TicketOption["accent"]>, string> = {
+  red: "/atrakcje/kino-360",
+  orange: "/atrakcje/mars",
+  cyan: "/atrakcje/filmworld",
+};
 
-const TicketOptionCard = memo(function TicketOptionCard({
-  option,
-  defaultPriceLabel,
-  defaultPrice,
-  cta,
-  ctaHref,
-}: {
-  option: TicketOption;
-  defaultPriceLabel: string;
-  defaultPrice: string;
-  cta: string;
-  ctaHref: string;
-}) {
-  const accent = option.accent ?? "cyan";
-  const tokens = TICKET_ACCENT_TOKENS[accent];
-  const linkHref = option.href ?? ctaHref;
-  const buttonLabel = option.ctaLabel ?? cta;
-  const isComingSoon = Boolean(option.comingSoon);
-  // Kafelek pakietu „Wszystkie atrakcje" (bgColor ustawiony), czarny z tęczowym
-  // akcentem, żeby NIE wyglądał jak cyjanowy kafelek „FILMWORLD".
-  const isPromo = Boolean(option.bgColor);
-
-  return (
-    <div
-      className={`ticket-card group relative flex h-full flex-col overflow-hidden rounded-[1.75rem] text-white/90 transition-transform duration-300 hover:-translate-y-1`}
-      style={{
-        backgroundColor: option.bgColor ?? "#0a0d18",
-        border: `2px solid ${isPromo ? "rgba(255,255,255,0.16)" : tokens.accentHex}`,
-        boxShadow: isPromo
-          ? "0 24px 60px rgba(0,0,0,0.55), 0 0 22px rgba(168,85,247,0.25)"
-          : tokens.shadowGlow,
-        WebkitMask:
-          "radial-gradient(circle 12px at 0 65%, transparent 12px, #000 12.5px) left center / 100% 100% no-repeat, radial-gradient(circle 12px at 100% 65%, transparent 12px, #000 12.5px) right center / 100% 100% no-repeat",
-        WebkitMaskComposite: "source-in",
-        maskComposite: "intersect",
-      }}
-    >
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          backgroundImage: isPromo
-            ? "radial-gradient(circle at top left, rgba(79,207,222,0.16), transparent 42%), radial-gradient(circle at bottom right, rgba(247,72,108,0.14), transparent 40%)"
-            : tokens.glow,
-        }}
-        aria-hidden="true"
-      />
-      <div className="ticket-card-top relative !px-2 !pt-2.5 !pb-1 sm:!px-5 sm:!pt-4 sm:!pb-[0.3rem]">
-        <span
-          className="ticket-card-badge !min-w-0 !w-full !px-1.5 !py-1 !text-[0.5rem] !tracking-[0.12em] sm:!min-w-[12.5rem] sm:!w-auto sm:!px-4 sm:!py-[0.45rem] sm:!text-[0.72rem] sm:!tracking-[0.26em]"
-          style={{
-            background: isPromo ? "linear-gradient(90deg,#4fcfde,#a855f7,#f7486c,#f77828)" : tokens.badgeBg,
-            color: isPromo ? "#ffffff" : tokens.badgeColor,
-            boxShadow: isPromo ? "0 8px 22px rgba(168,85,247,0.35)" : tokens.badgeShadow,
-          }}
-        >
-          {option.badge}
-        </span>
-      </div>
-      <div className="ticket-card-content relative flex h-full flex-col p-2 text-center sm:p-6">
-        <h3 className="ticket-card-title text-[0.95rem] font-extrabold leading-tight tracking-[-0.02em] text-white sm:text-[2.4rem]">
-          {option.titleHighlight ? (
-            <>
-              {option.titleLead}{" "}
-              <span
-                className="block bg-[linear-gradient(90deg,#4fcfde_0%,#a855f7_45%,#f7486c_65%,#f77828_100%)] bg-clip-text uppercase text-transparent"
-                style={{ WebkitBackgroundClip: "text" }}
-              >
-                {option.titleHighlight}
-              </span>
-            </>
-          ) : (
-            option.title
-          )}
-        </h3>
-        <p className="ticket-card-subtitle mt-1.5 hidden text-xs text-white/75 sm:mt-2.5 sm:block sm:text-lg">
-          {option.subtitle}
-        </p>
-        <div className="mt-2.5 h-px w-full sm:mt-6" style={{ background: tokens.divider }} />
-        <ul className="ticket-list-panel mx-auto mb-6 mt-4 hidden max-w-sm space-y-2.5 text-left text-xs text-white/75 sm:mb-6 sm:mt-6 sm:block sm:space-y-3.5 sm:text-base">
-          {option.details.map((detail) => (
-            <li key={detail} className="ticket-detail flex gap-2.5 sm:gap-3">
-              <span
-                className="ticket-detail-dot mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full sm:mt-2"
-                style={{ background: tokens.dot }}
-              />
-              <span>{detail}</span>
-            </li>
-          ))}
-        </ul>
-        <div
-          className="ticket-price-block mt-auto !p-2.5 pt-2.5 sm:!p-4 sm:pt-7"
-          style={option.bgColor ? { background: "transparent", borderColor: "rgba(255,255,255,0.1)" } : undefined}
-        >
-          <p className="ticket-price-label text-[0.5rem] uppercase tracking-[0.12em] text-white/60 sm:text-[0.7rem] sm:tracking-[0.25em]">
-            {option.priceLabel ?? defaultPriceLabel}
-          </p>
-          <p className={`ticket-price mt-1 text-base font-bold sm:mt-2 sm:text-[2.3rem] ${tokens.priceColor}`}>
-            {option.price ?? defaultPrice}
-          </p>
-          {option.reducedPrice ? (
-            <div className="mt-2 flex flex-col items-center gap-0.5 border-t border-white/10 pt-2 sm:mt-3 sm:pt-3">
-              <p className="text-[0.46rem] uppercase tracking-[0.12em] text-white/45 sm:text-[0.65rem] sm:tracking-[0.22em]">
-                {option.reducedPriceLabel}
-              </p>
-              <p className="text-[0.7rem] font-semibold text-white/80 sm:text-base">
-                {option.reducedPrice}
-              </p>
-            </div>
-          ) : null}
-          <div className="mt-2.5 flex justify-center sm:mt-6">
-            {isComingSoon ? (
-              <button
-                type="button"
-                disabled
-                aria-disabled="true"
-                className="ticket-pill w-full cursor-not-allowed whitespace-normal rounded-full bg-white/10 !px-2 !py-1.5 !text-[0.6rem] font-semibold leading-tight text-white/55 ring-1 ring-white/10 sm:whitespace-nowrap sm:!px-6 sm:!py-3 sm:!text-sm"
-              >
-                {buttonLabel}
-              </button>
-            ) : (
-              <PrimaryButton
-                href={linkHref}
-                size="md"
-                className={`!w-1/2 sm:!w-full !px-2 !py-1.5 !text-[0.6rem] whitespace-normal leading-tight sm:!px-5 sm:!py-2 sm:!text-base sm:whitespace-nowrap ${isPromo ? promoButtonClass : tokens.buttonClass}`}
-              >
-                {buttonLabel}
-              </PrimaryButton>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-});
-
+// „Bilety" — trzy portale (łuki) połączone znakami „+" i szeroki panel pakietowy.
 const TicketsSection = memo(function TicketsSection({
   tickets,
   locale,
@@ -1314,335 +1312,334 @@ const TicketsSection = memo(function TicketsSection({
   tickets: TicketSection;
   locale: Locale;
 }) {
-  // Na mobile/tablet (< lg) pokazujemy 4 równe kafelki w siatce 2x2,
-  // pakiet „Wszystkie atrakcje" w tym samym kompaktowym formacie co reszta.
-  const firstPromo = PROMO_PACKAGES[locale][0];
-  const promoOption: TicketOption = {
-    badge: firstPromo.badge,
-    title: firstPromo.title,
-    titleLead: firstPromo.heroLead,
-    titleHighlight: firstPromo.heroHighlight,
-    bgColor: "#000000",
-    subtitle: firstPromo.subtitle,
-    details: firstPromo.details,
-    priceLabel: firstPromo.priceLabel,
-    price: firstPromo.price,
-    reducedPriceLabel: firstPromo.reducedPriceLabel,
-    reducedPrice: firstPromo.reducedPrice,
-    bookingCategory: firstPromo.category,
-    bookingServiceName: firstPromo.service,
-    accent: "cyan",
-    ctaLabel: firstPromo.button,
-  };
-  const promoHref = buildBookingPath(locale, {
-    category: firstPromo.category,
-    service: firstPromo.service,
-    autopick: firstPromo.autopick,
+  const options = tickets.options;
+  const ui = HOME_UI[locale];
+  const promo = PROMO_PACKAGES[locale][0];
+
+  // Skróć końcówki ",00"/".00" (np. „119,00 zł" → „119 zł").
+  const shorten = (s: string) => s.replace(/[.,]00/g, "");
+  // Sufiks „za osobę" pobrany z ceny pierwszej atrakcji (/os., /person, /pessoa).
+  const perUnit = `/${options[0]?.price?.split("/")[1]?.trim() ?? "os."}`;
+
+  const bookingHrefFor = (o: TicketOption) =>
+    o.bookingServiceName
+      ? buildBookingPath(locale, {
+          category: o.bookingCategory ?? FILM_PATH_BOOKING_CATEGORY,
+          service: o.bookingServiceName,
+          quantity: o.bookingQuantity,
+        })
+      : o.href ?? tickets.ctaHref;
+
+  const packageHref = buildBookingPath(locale, {
+    category: promo.category,
+    service: promo.service,
+    autopick: promo.autopick,
   });
-  const promoPriceParts = firstPromo.price.split(",");
-  // Bilet KINO 360, rozbudowana karta na mobile, nad pakietem (dane z options[0]).
-  const kino = tickets.options[0];
-  const kinoHref = kino.bookingServiceName
-    ? buildBookingPath(locale, {
-        category: kino.bookingCategory ?? FILM_PATH_BOOKING_CATEGORY,
-        service: kino.bookingServiceName,
-        quantity: kino.bookingQuantity,
-      })
-    : tickets.ctaHref;
+
+  const [promoNum, ...promoCurRest] = shorten(promo.reducedPrice).split(" "); // „99", „zł"
+  const promoCur = promoCurRest.join(" ");
+  // Cena kupując osobno = suma cen normalnych 3 atrakcji (49+69+79); oszczędność względem pakietu.
+  const individualSum = options.reduce((sum, o) => sum + (parseInt(o.price ?? "0", 10) || 0), 0);
+  const savingsVsIndividual = individualSum - (parseInt(promoNum, 10) || 0);
+  const oldStruck = `${individualSum} ${promoCur}`.trim(); // np. „197 zł" (osobno)
+  const normalPrice = shorten(promo.price); // np. „119 zł" — normalna cena pakietu (99 to ulgowy)
+  const savingsPrefix = shorten(promo.savings).replace(/[\d.,].*/, "").trim(); // „Oszczędzasz"
+  const savingsText = `${savingsPrefix} ${savingsVsIndividual} ${promoCur}`.trim(); // „Oszczędzasz 98 zł"
+
+  // Lekki reveal wjazdowy — ta sama, sprawdzona metoda co w repertuarze: sterowana
+  // STANEM Reacta (nie classList), transform+opacity na GPU, po animacji zdejmujemy
+  // klasę (i will-change). Bez bibliotek i nowych zasobów.
+  const sectionRef = useRef<HTMLElement>(null);
+  const [revealed, setRevealed] = useState(false);
+  const [settled, setSettled] = useState(false);
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setRevealed(true);
+      setSettled(true);
+      return;
+    }
+    const root = sectionRef.current;
+    if (!root) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setRevealed(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.08, rootMargin: "0px 0px -8% 0px" },
+    );
+    io.observe(root);
+    return () => io.disconnect();
+  }, []);
+  useEffect(() => {
+    if (!revealed || settled) return;
+    const id = window.setTimeout(() => setSettled(true), 1500);
+    return () => window.clearTimeout(id);
+  }, [revealed, settled]);
+  const revealCls = settled ? "" : `wpk-reveal${revealed ? " is-visible" : ""}`;
 
   return (
     <ScrollMotionItem strength="soft" delay={30} float={false} className="home-deferred-block">
-      <Card
-        title={tickets.title}
-        titleCentered
-        titleDivider
-        dense
-        motion="off"
-        titleClassName="!text-[clamp(2.6rem,2rem+2.6vw,4.6rem)] !leading-[1.05]"
+      <section
+        ref={sectionRef}
+        aria-labelledby="tickets-heading"
+        className="relative isolate py-16 sm:py-24 lg:py-28"
+        style={{
+          marginLeft: "calc(50% - 50vw)",
+          marginRight: "calc(50% - 50vw)",
+          // Góra od razu czarna (styka się z czernią zdjęcia nad sekcją); dół wtapia w granat pod FAQ
+          background:
+            "linear-gradient(180deg, #000 0%, #000 86%, var(--ap-bg) 100%)",
+        }}
       >
-        <div className="mt-1 text-center">
-          <p className="ap-type-cta-title !text-[clamp(1.25rem,1.05rem+0.8vw,1.9rem)] !leading-[1.3]">{tickets.headerCta}</p>
+        <div className="mx-auto w-full max-w-[72rem] px-4 sm:px-8 lg:px-12 2xl:max-w-[92rem] min-[1800px]:max-w-[104rem]">
+          {/* Nagłówek — wyśrodkowany */}
+          <div className={`mx-auto max-w-2xl text-center ${revealCls}`}>
+          <p className="text-[0.72rem] font-bold uppercase tracking-[0.3em] text-[#ff4773]">
+            {tickets.title}
+          </p>
+          <h2
+            id="tickets-heading"
+            className="mt-2.5 text-[clamp(2.1rem,1.3rem+3.2vw,3.9rem)] font-black leading-[1.02] tracking-[-0.03em] text-white"
+          >
+            {tickets.heading}
+          </h2>
+          <p className="mt-3 text-base text-white/55 sm:text-lg">{tickets.subheading}</p>
         </div>
-        <div className="mt-8">
-          {/* MOBILE / tablet (< lg): hero pakiet + „lub pojedyncza" + rzędy atrakcji + zaufanie */}
-          <div className="lg:hidden">
-            {/* HERO: bilet KINO 360 (czerwony, w stylu pakietu, nad pakietem) */}
-            <article className="relative overflow-hidden rounded-[1.9rem] border-2 border-[#f7486c] bg-[#05060c] px-5 py-6 shadow-[0_0_38px_rgba(247,72,108,0.32),0_30px_60px_rgba(0,0,0,0.6)]">
-              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_88%_22%,rgba(247,72,108,0.24),transparent_46%),radial-gradient(circle_at_78%_88%,rgba(255,107,133,0.16),transparent_46%),radial-gradient(circle_at_60%_58%,rgba(247,120,40,0.1),transparent_52%)]" />
-              <div className="relative">
-                <div className="flex justify-center">
-                  <span className="inline-flex items-center whitespace-nowrap rounded-full bg-[linear-gradient(135deg,#f5b301,#fcd34d)] px-3.5 py-1.5 text-[0.6rem] font-extrabold uppercase tracking-[0.18em] text-[#231903] shadow-[0_6px_18px_rgba(251,191,36,0.45)] ring-1 ring-black/10">
-                    Największe w Europie
-                  </span>
-                </div>
-                <h3 className="mt-4 text-[1.85rem] font-black leading-[1.05] tracking-[-0.02em] text-white">
-                  <span className="block uppercase">{kino.title}</span>
-                </h3>
-                <div className="mt-3 h-px w-16 bg-white/15" />
-                <div className="mt-4 flex items-center justify-between gap-4">
-                  <p className="max-w-[8rem] text-[0.82rem] leading-snug text-white/65">
-                    Obraz dookoła w kopule 48 m
-                  </p>
-                  <div className="shrink-0 text-right leading-none">
-                    <p className="text-[1.7rem] font-black text-white">
-                      {(kino.price ?? "").split("/")[0].trim()}
-                      <span className="text-sm font-bold">/{(kino.price ?? "").split("/")[1] ?? "os."}</span>
-                    </p>
-                    <p className="mt-1.5 text-[0.66rem] text-white/55">
-                      ulgowy <span className="font-extrabold text-[#ff8da3]">{kino.reducedPrice}</span>
-                    </p>
-                  </div>
-                </div>
-                <PrimaryButton
-                  href={kinoHref}
-                  size="lg"
-                  className="ticket-pill mt-5 !flex !w-full !items-center !justify-center !gap-2 !bg-[linear-gradient(135deg,#e2580c,#f7486c,#ff6b85)] !text-white !font-extrabold [text-shadow:0_1px_2px_rgba(0,0,0,0.5)] !shadow-[0_0_26px_rgba(247,72,108,0.5)] ring-[color:rgba(247,72,108,0.6)]"
-                >
-                  <FaTicket aria-hidden="true" /> {kino.ctaLabel ?? tickets.cta}
-                </PrimaryButton>
-              </div>
-            </article>
 
-            {/* HERO: pakiet „Wszystkie atrakcje" */}
-            <article className="relative mt-6 overflow-hidden rounded-[1.9rem] border-2 border-[#4fcfde] bg-[#05060c] px-5 py-6 shadow-[0_0_38px_rgba(79,207,222,0.32),0_30px_60px_rgba(0,0,0,0.6)]">
-              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_88%_22%,rgba(79,207,222,0.22),transparent_46%),radial-gradient(circle_at_78%_88%,rgba(247,72,108,0.18),transparent_46%),radial-gradient(circle_at_60%_58%,rgba(168,85,247,0.12),transparent_52%)]" />
-              <div className="relative">
-                <div className="flex justify-center">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[#4fcfde]/12 px-3.5 py-1.5 text-[0.6rem] font-bold uppercase tracking-[0.2em] text-[#7ef6ff] ring-1 ring-[#4fcfde]/40">
-                    <FaStar className="text-[0.7rem]" aria-hidden="true" /> Najlepszy wybór
-                  </span>
-                </div>
-                <h3 className="mt-4 text-[1.85rem] font-black leading-[1.05] tracking-[-0.02em] text-white">
-                  {firstPromo.heroLead}
-                  <span
-                    className="block bg-[linear-gradient(90deg,#4fcfde,#a855f7,#f7486c,#f77828)] bg-clip-text uppercase text-transparent"
-                    style={{ WebkitBackgroundClip: "text" }}
+        {/* Portale (łuki) połączone znakami „+" */}
+        <div className="mt-12 flex flex-col items-center gap-10 sm:mt-16 sm:flex-row sm:items-start sm:justify-center sm:gap-0">
+          {options.map((option, i) => {
+            const accent = option.accent ?? "cyan";
+            const hex = TICKET_ACCENTS[accent];
+            const portal = TICKET_PORTALS[accent];
+            const [priceNum, ...unitRest] = (option.price ?? "").split(" ");
+            const priceUnit = unitRest.join(" ");
+            const reducedShort = (option.reducedPrice ?? "").split("/")[0].trim();
+            const href = bookingHrefFor(option);
+            const attractionHref = getLocalizedPath(TICKET_ATTRACTION_PAGE[accent], locale);
+            const isLast = i === options.length - 1;
+            const linkColor = i === 0 ? "#ff4773" : "#56ddea";
+            return (
+              <Fragment key={option.title}>
+                <div
+                  style={{ "--wpk-reveal-delay": `${140 + i * 120}ms` } as CSSProperties}
+                  className={`${revealCls} flex flex-1 flex-col items-center px-2 text-center sm:max-w-[21rem]`}
+                >
+                  {/* Portal (łuk) — klikalny, ale poza kolejnością tab (dubluje przycisk „Wybieram") */}
+                  <Link
+                    href={href}
+                    tabIndex={-1}
+                    aria-hidden="true"
+                    className="group relative block w-full max-w-[17rem] overflow-hidden"
+                    style={{
+                      aspectRatio: "4 / 5",
+                      borderRadius: "48% 48% 16px 16px / 34% 34% 10px 10px",
+                      boxShadow: `inset 0 0 0 2px ${hex}, 0 0 34px ${hex}44`,
+                    }}
                   >
-                    {firstPromo.heroHighlight}
-                  </span>
-                </h3>
-                <div className="mt-3 h-px w-16 bg-white/15" />
-                <div className="mt-4 flex items-center justify-between gap-4">
-                  <p className="max-w-[8rem] text-[0.82rem] leading-snug text-white/65">
-                    Pełne doświadczenie w najlepszej cenie
+                    <video
+                      className="absolute inset-0 h-full w-full object-cover"
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      preload="none"
+                      poster={portal.video.poster}
+                      aria-hidden="true"
+                      tabIndex={-1}
+                    >
+                      <source src={portal.video.mp4} type="video/mp4" />
+                      <source src={portal.video.webm} type="video/webm" />
+                    </video>
+                    <div
+                      className="pointer-events-none absolute inset-0"
+                      style={{
+                        background: `linear-gradient(to top, rgba(7,10,22,0.9) 3%, rgba(7,10,22,0.15) 42%, transparent 62%), radial-gradient(115% 75% at 50% 0%, ${hex}26, transparent 62%)`,
+                      }}
+                    />
+                    <span
+                      className="absolute bottom-3.5 left-1/2 flex h-14 w-14 -translate-x-1/2 items-center justify-center text-2xl"
+                      style={{ color: hex, filter: `drop-shadow(0 0 7px ${hex}99)` }}
+                    >
+                      {/* Ramka „viewfinder" (frame.svg) w kolorze akcentu — zamiast kółka */}
+                      <span
+                        className="absolute inset-0"
+                        style={{
+                          backgroundColor: "currentColor",
+                          WebkitMask: "url(/icon/frame.svg) center / contain no-repeat",
+                          mask: "url(/icon/frame.svg) center / contain no-repeat",
+                        }}
+                        aria-hidden
+                      />
+                      {portal.icon}
+                    </span>
+                  </Link>
+
+                  {/* Opis */}
+                  <h3 className="mt-5 text-[1.6rem] font-black tracking-[-0.02em] text-white">
+                    {option.title}
+                  </h3>
+                  <p className="mt-2 max-w-[18rem] text-[0.98rem] leading-snug text-white/75">
+                    {option.subtitle}
                   </p>
-                  <div className="shrink-0 text-right leading-none">
-                    <p className="text-[1.7rem] font-black text-white">
-                      {promoPriceParts[0]}
-                      <span className="text-sm font-bold">,{promoPriceParts[1] ?? "00 zł"}</span>
-                    </p>
-                    <p className="mt-1.5 text-[0.66rem] text-white/55">
-                      ulgowy <span className="font-extrabold text-[#7ef6ff]">{firstPromo.reducedPrice}</span>
-                    </p>
-                  </div>
+
+                  {/* Cena */}
+                  <p className="mt-4 flex items-baseline justify-center gap-1.5">
+                    <span className="text-[2.6rem] font-black leading-none" style={{ color: hex }}>
+                      {priceNum}
+                    </span>
+                    <span className="text-base font-bold text-white/85">{priceUnit}</span>
+                  </p>
+                  <p className="mt-1 text-[0.82rem] text-white/45">
+                    {tickets.reducedPrefix}{" "}
+                    <span className="font-semibold text-white/70">{reducedShort}</span>
+                  </p>
+
+                  {/* Przycisk „Wybieram" */}
+                  <Link
+                    href={href}
+                    aria-label={`${tickets.chooseLabel}: ${option.title}`}
+                    className="ticket-pill mt-4 inline-flex w-full max-w-[13rem] items-center justify-center rounded-[var(--ap-btn-radius)] px-6 py-2.5 text-sm font-extrabold text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45)] transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#05030a]"
+                    style={{ backgroundColor: hex, boxShadow: `0 10px 26px ${hex}55` }}
+                  >
+                    {tickets.chooseLabel}
+                  </Link>
+                  <Link
+                    href={attractionHref}
+                    className="mt-2.5 inline-flex items-center gap-1.5 rounded text-[0.78rem] font-semibold text-white/70 transition hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+                  >
+                    {ui.learnMore}
+                    <span aria-hidden="true" className="inline-flex" style={{ color: hex }}>
+                      <SolarIcon name="arrow-right" size="0.9em" />
+                    </span>
+                  </Link>
                 </div>
-                <p className="mt-2 text-[0.7rem] text-white/45">zamiast osobno drożej</p>
-                <PrimaryButton
-                  href={promoHref}
-                  size="lg"
-                  className="ticket-pill mt-5 !flex !w-full !items-center !justify-center !gap-2 !bg-[linear-gradient(135deg,#1ea6b7,#4fcfde,#7ef6ff)] !text-white !font-extrabold [text-shadow:0_1px_2px_rgba(0,0,0,0.5)] !shadow-[0_0_26px_rgba(79,207,222,0.5)] ring-[color:rgba(79,207,222,0.6)]"
-                >
-                  <FaTicket aria-hidden="true" /> {firstPromo.button}
-                </PrimaryButton>
-              </div>
-            </article>
 
-            {/* separator */}
-            <div className="my-6 flex items-center gap-3">
-              <span className="h-px flex-1 bg-white/10" />
-              <span className="whitespace-nowrap text-[0.56rem] font-semibold uppercase tracking-[0.16em] text-white/45">
-                Lub wybierz pojedynczą atrakcję
-              </span>
-              <span className="h-px flex-1 bg-white/10" />
-            </div>
-
-            {/* rzędy pojedynczych atrakcji */}
-            <div className="space-y-3">
-              {tickets.options.map((option, i) => {
-                if (i === 0) return null; // Kino jest teraz osobną kartą na górze
-                const tk = TICKET_ACCENT_TOKENS[option.accent ?? "cyan"];
-                const href = option.bookingServiceName
-                  ? buildBookingPath(locale, {
-                      category: option.bookingCategory ?? FILM_PATH_BOOKING_CATEGORY,
-                      service: option.bookingServiceName,
-                      quantity: option.bookingQuantity,
-                    })
-                  : tickets.ctaHref;
-                return (
+                {/* Łącznik „+" (nie po ostatnim portalu) */}
+                {!isLast && (
                   <div
-                    key={option.title}
-                    className="flex items-center gap-3 rounded-2xl border bg-white/[0.03] p-2.5"
-                    style={{ borderColor: `${tk.accentHex}3d` }}
+                    aria-hidden="true"
+                    className="flex items-center justify-center px-1 py-1 sm:items-start sm:px-2 sm:py-0 lg:px-4"
                   >
                     <span
-                      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-lg"
-                      style={{ border: `1.5px solid ${tk.accentHex}`, color: tk.accentHex, boxShadow: `0 0 14px ${tk.accentHex}40` }}
+                      className="text-3xl font-thin leading-none sm:mt-[min(13vw,8.5rem)] sm:text-[2.6rem]"
+                      style={{ color: linkColor, textShadow: `0 0 16px ${linkColor}88` }}
                     >
-                      {attractionIcons[i] ?? attractionIcons[0]}
+                      +
                     </span>
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-bold text-white">{option.title}</p>
-                      <p className="line-clamp-2 text-[0.72rem] leading-snug text-white/55">{rowDescriptions[i] ?? option.subtitle}</p>
-                    </div>
-                    <div className="shrink-0 border-l border-white/10 pl-2.5 text-right">
-                      <p className="whitespace-nowrap text-sm font-extrabold leading-none text-white">
-                        {(option.price ?? "").split("/")[0].trim()}
-                        <span className="text-[0.6rem] font-medium text-white/50">/{(option.price ?? "").split("/")[1] ?? "os."}</span>
-                      </p>
-                    </div>
-                    <a
-                      href={href}
-                      className="shrink-0 whitespace-nowrap rounded-full px-3 py-2 text-[0.64rem] font-bold text-white transition hover:brightness-110"
-                      style={{ background: tk.accentHex, boxShadow: `0 0 16px ${tk.accentHex}55` }}
-                    >
-                      {option.ctaLabel ?? tickets.cta}
-                    </a>
                   </div>
-                );
-              })}
-            </div>
-          </div>
+                )}
+              </Fragment>
+            );
+          })}
+        </div>
 
-          {/* lg+: bogaty pakiet na całą szerokość + 3 bilety w rzędzie */}
-          <div className="hidden space-y-8 lg:block">
-          {PROMO_PACKAGES[locale].map((promo) => (
-            <article
-              key={promo.title}
-              className="home-ticket-promo relative overflow-hidden rounded-[1.75rem] border-2 border-[#4fcfde] px-4 py-5 shadow-[0_30px_80px_rgba(0,0,0,0.55),0_0_28px_rgba(79,207,222,0.35)] sm:px-7 sm:py-7"
+        {/* Panel pakietowy — szeroki, niski, z gradientową obwódką koral→fiolet→turkus */}
+        <div
+          className={`mt-12 rounded-[1.6rem] p-px sm:mt-16 ${revealCls}`}
+          style={{
+            background: "linear-gradient(100deg,#ff4773 0%,#a855f7 50%,#56ddea 100%)",
+            boxShadow: "0 26px 60px rgba(0,0,0,0.5)",
+            "--wpk-reveal-delay": "520ms",
+          } as CSSProperties}
+        >
+          <div className="relative overflow-hidden rounded-[calc(1.6rem-1px)] bg-[#0b1022] px-5 py-6 sm:px-8 sm:py-7">
+            <div
+              className="pointer-events-none absolute inset-0"
               style={{
-                backgroundColor: "#0a0d18",
-                WebkitMask:
-                  "radial-gradient(circle 14px at 0 50%, transparent 14px, #000 14.5px) left center / 100% 100% no-repeat, radial-gradient(circle 14px at 100% 50%, transparent 14px, #000 14.5px) right center / 100% 100% no-repeat",
-                WebkitMaskComposite: "source-in",
-                maskComposite: "intersect",
+                background:
+                  "radial-gradient(60% 130% at 0% 50%, rgba(255,71,115,0.12), transparent 62%), radial-gradient(60% 130% at 100% 50%, rgba(86,221,234,0.12), transparent 62%)",
               }}
-            >
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(79,207,222,0.18),transparent_38%),radial-gradient(circle_at_top_right,rgba(247,120,40,0.16),transparent_38%),radial-gradient(circle_at_bottom_center,rgba(247,72,108,0.14),transparent_42%)]" />
-
-              {/* Pionowa „dziurkowana" linia w środku, jak na bilecie */}
-              <div
-                className="pointer-events-none absolute top-6 bottom-6 hidden lg:block"
-                style={{
-                  left: "calc(100% - 23rem)",
-                  width: "1px",
-                  backgroundImage:
-                    "repeating-linear-gradient(to bottom, rgba(255,255,255,0.28) 0 6px, transparent 6px 12px)",
-                }}
-                aria-hidden="true"
-              />
-
-              <div className="relative grid gap-5 sm:gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-8">
-                <div className="space-y-4 sm:space-y-5 text-center lg:text-left">
+            />
+            <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:gap-8">
+              {/* Info: etykieta + tytuł | skład + tagline */}
+              <div className="flex min-w-0 flex-col gap-4 lg:flex-1 lg:flex-row lg:items-center lg:gap-7">
+                <div className="lg:shrink-0">
                   <span
-                    className="ticket-card-badge mx-auto lg:mx-0 !text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.6)]"
+                    className="inline-flex items-center rounded-full px-3 py-1 text-[0.6rem] font-bold uppercase tracking-[0.18em]"
+                    style={{
+                      color: "#ff8da3",
+                      border: "1px solid rgba(255,71,115,0.4)",
+                      background: "rgba(255,71,115,0.08)",
+                    }}
                   >
-                    {promo.badge}
+                    {tickets.bestPriceLabel}
                   </span>
-                  <div className="space-y-2 sm:space-y-3">
-                    <h3 className="text-2xl font-extrabold leading-[1.02] tracking-[-0.03em] text-[color:var(--ap-text-strong)] sm:text-3xl lg:text-4xl">
-                      {promo.heroLead}{" "}
-                      <span
-                        className="block whitespace-nowrap bg-[linear-gradient(90deg,#4fcfde_0%,#a855f7_45%,#f7486c_65%,#f77828_100%)] bg-clip-text uppercase font-black text-transparent sm:inline"
-                        style={{ WebkitBackgroundClip: "text" }}
-                      >
-                        {promo.heroHighlight}
-                      </span>
-                    </h3>
-                    <p className="mx-auto max-w-3xl text-sm leading-relaxed text-[color:var(--ap-text-dim)] sm:text-base lg:mx-0 lg:text-lg">
-                      {promo.subtitle}
-                    </p>
-                  </div>
-                  <div className="flex flex-wrap justify-center gap-2 sm:gap-3 lg:justify-start">
-                    {promo.details.map((detail) => (
-                      <div
-                        key={detail}
-                        className="home-ticket-promo-detail rounded-full border border-[color:var(--ap-border)] bg-[color:var(--ap-surface-strong)] px-3 py-1.5 text-xs text-[color:var(--ap-text-dim)] sm:px-4 sm:py-2 sm:text-sm"
-                      >
-                        {detail}
-                      </div>
-                    ))}
-                  </div>
+                  <h3 className="mt-3 text-[1.55rem] font-black uppercase leading-[0.98] tracking-[-0.02em] text-white sm:text-[1.7rem] md:whitespace-nowrap">
+                    {tickets.bundleTitle}
+                  </h3>
                 </div>
 
-                {/* Pozioma perforacja, tylko mobile/tablet (pod lg) */}
-                <div
-                  className="h-px w-full lg:hidden"
-                  style={{
-                    backgroundImage:
-                      "repeating-linear-gradient(to right, rgba(255,255,255,0.32) 0 6px, transparent 6px 12px)",
-                  }}
-                  aria-hidden="true"
-                />
-
-                <div className="flex w-full flex-col items-center gap-3 sm:gap-4 lg:w-[20rem] lg:items-stretch">
-                  {/* Dwie ceny: normalna + ulgowa */}
-                  <div className="home-ticket-promo-price ap-tile ap-tile-sm w-full px-3 py-3.5 text-center sm:px-5 sm:py-4">
-                    <p className="text-[0.56rem] font-bold uppercase tracking-[0.18em] text-[color:var(--ap-text-muted)] sm:text-[0.64rem] sm:tracking-[0.22em]">
-                      {promo.promoStripLabel}
-                    </p>
-                    <div className="mt-2 grid grid-cols-2 gap-0">
-                      <div className="pr-2 sm:pr-4">
-                        <p className="text-[0.54rem] uppercase tracking-[0.12em] text-[color:var(--ap-text-muted)] sm:text-[0.66rem] sm:tracking-[0.18em]">
-                          {promo.priceLabel}
-                        </p>
-                        <p className="mt-1 text-lg font-extrabold leading-none tracking-[-0.03em] text-[color:var(--ap-text-strong)] sm:text-2xl">
-                          {promo.price}
-                        </p>
-                        <p className="mt-1.5 inline-flex flex-wrap items-center justify-center gap-1.5 text-[0.55rem] font-semibold leading-tight text-[color:var(--ap-breeze-strong)] sm:text-[0.68rem]">
-                          <span>−{promo.savingsPercent}</span>
-                          <span className="text-[color:var(--ap-text-muted)]">{promo.savings}</span>
-                        </p>
-                      </div>
-                      <div className="border-l border-[color:var(--ap-border)] pl-2 sm:pl-4">
-                        <p className="text-[0.54rem] uppercase tracking-[0.12em] text-[color:var(--ap-text-muted)] sm:text-[0.66rem] sm:tracking-[0.18em]">
-                          {promo.reducedPriceLabel}
-                        </p>
-                        <p className="mt-1 text-lg font-extrabold leading-none tracking-[-0.03em] text-[color:var(--ap-text-strong)] sm:text-2xl">
-                          {promo.reducedPrice}
-                        </p>
-                        <p className="mt-1.5 inline-flex flex-wrap items-center justify-center gap-1.5 text-[0.55rem] font-semibold leading-tight text-[color:var(--ap-breeze-strong)] sm:text-[0.68rem]">
-                          <span>−{promo.reducedSavingsPercent}</span>
-                          <span className="text-[color:var(--ap-text-muted)]">{promo.reducedSavings}</span>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <PrimaryButton
-                    href={buildBookingPath(locale, { category: promo.category, service: promo.service, autopick: promo.autopick })}
-                    size="lg"
-                    className="ticket-pill w-full whitespace-nowrap !bg-[linear-gradient(135deg,#1ea6b7,#4fcfde,#7ef6ff)] !text-white !font-extrabold [text-shadow:0_1px_2px_rgba(0,0,0,0.55)] !shadow-[0_10px_30px_rgba(79,207,222,0.45),0_0_24px_rgba(79,207,222,0.35)] ring-[color:rgba(79,207,222,0.6)] hover:!brightness-110"
-                  >
-                    {promo.button}
-                  </PrimaryButton>
+                <div className="min-w-0 lg:border-l lg:border-white/10 lg:pl-7">
+                  <p className="text-lg font-black tracking-[-0.01em] sm:text-xl">
+                    {options.map((o, i) => (
+                      <Fragment key={o.title}>
+                        {i > 0 && <span className="text-white/35"> + </span>}
+                        <span style={{ color: TICKET_ACCENTS[o.accent ?? "cyan"] }}>
+                          {o.title.toUpperCase()}
+                        </span>
+                      </Fragment>
+                    ))}
+                  </p>
+                  <p className="mt-1 text-sm text-white/50">{tickets.bundleTagline}</p>
                 </div>
               </div>
-            </article>
-          ))}
 
-          <div className="grid grid-cols-3 gap-2 sm:gap-4 lg:grid-cols-2 lg:gap-x-6 lg:gap-y-10 xl:grid-cols-3">
-            {tickets.options.map((option) => (
-              <TicketOptionCard
-                key={option.title}
-                option={option}
-                defaultPriceLabel={tickets.priceLabel}
-                defaultPrice={tickets.price}
-                cta={tickets.cta}
-                ctaHref={
-                  option.bookingServiceName
-                    ? buildBookingPath(locale, {
-                        category: option.bookingCategory ?? FILM_PATH_BOOKING_CATEGORY,
-                        service: option.bookingServiceName,
-                        quantity: option.bookingQuantity,
-                      })
-                    : tickets.ctaHref
-                }
-              />
-            ))}
-          </div>
+              {/* Akcje: ceny + oszczędność + przycisk */}
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-4 lg:shrink-0 lg:justify-end">
+                {/* Ceny: osobno (przekreślone) + pakiet ulgowy z ceną normalną */}
+                <div className="flex items-end gap-3 lg:flex-col lg:items-end lg:gap-1">
+                  <span className="text-lg font-semibold text-white/35 line-through">{oldStruck}</span>
+                  <div className="flex flex-col lg:items-end">
+                    <span className="flex items-baseline gap-1.5">
+                      <span className="text-[2.4rem] font-black leading-none text-white">{promoNum}</span>
+                      <span className="text-base font-bold text-white/80">
+                        {promoCur}
+                        {perUnit}
+                      </span>
+                      <span className="self-center rounded-full border border-white/20 px-2 py-0.5 text-[0.52rem] font-bold uppercase tracking-[0.12em] text-white/70">
+                        {tickets.reducedPrefix}
+                      </span>
+                    </span>
+                    <span className="mt-0.5 text-[0.72rem] text-white/45">
+                      {promo.priceLabel}{" "}
+                      <span className="font-semibold text-white/60">{normalPrice}</span>
+                    </span>
+                  </div>
+                </div>
+
+                {/* Oszczędność */}
+                <span
+                  className="inline-flex shrink-0 items-center rounded-full px-3 py-1.5 text-xs font-semibold"
+                  style={{
+                    color: "#7fe9f2",
+                    border: "1px solid rgba(86,221,234,0.4)",
+                    background: "rgba(86,221,234,0.08)",
+                  }}
+                >
+                  {savingsText}
+                </span>
+
+                {/* Przycisk „Kup pakiet" */}
+                <Link
+                  href={packageHref}
+                  className="ticket-pill inline-flex w-full shrink-0 items-center justify-center rounded-full px-7 py-3 text-sm font-extrabold transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b1022] sm:w-auto"
+                  style={{
+                    backgroundColor: "#56ddea",
+                    color: "#04222a",
+                    boxShadow: "0 12px 30px rgba(86,221,234,0.4)",
+                  }}
+                >
+                  {tickets.packageCta}
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
-      </Card>
+        </div>
+      </section>
     </ScrollMotionItem>
   );
 });
@@ -1769,7 +1766,7 @@ const EventsPromoSection = memo(function EventsPromoSection({
                 className={`object-cover transition-opacity duration-[2400ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
                   isCrossfading ? "opacity-0" : "opacity-100"
                 }`}
-                loading="eager"
+                loading="lazy"
                 decoding="async"
               />
             ) : null}
@@ -1783,7 +1780,7 @@ const EventsPromoSection = memo(function EventsPromoSection({
                 className={`object-cover transition-opacity duration-[2400ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
                   previousImageSrc ? (isCrossfading ? "opacity-100" : "opacity-0") : "opacity-100"
                 }`}
-                loading="eager"
+                loading="lazy"
                 decoding="async"
               />
             ) : null}
@@ -1797,7 +1794,11 @@ const EventsPromoSection = memo(function EventsPromoSection({
             <h2 className="ap-type-section-title text-balance">{promo.title}</h2>
             <p className="ap-type-section-body mx-auto max-w-2xl lg:mx-0">{promo.description}</p>
             <div className="mt-4 flex justify-center lg:justify-start">
-              <PrimaryButton href={promo.href} size="md">
+              <PrimaryButton
+                href={promo.href}
+                size="md"
+                className="!bg-[linear-gradient(135deg,#2fb9cc,#5ad7e8)] !font-extrabold !text-[#04222a] !shadow-[0_8px_22px_rgba(79,207,222,0.4)] ring-[color:rgba(79,207,222,0.6)] hover:!brightness-110"
+              >
                 {promo.cta}
               </PrimaryButton>
             </div>
@@ -1805,388 +1806,5 @@ const EventsPromoSection = memo(function EventsPromoSection({
         </div>
       </div>
     </ScrollMotionItem>
-  );
-});
-
-const AttractionsScroller = memo(function AttractionsScroller({
-  items,
-  animate: shouldAnimate = true,
-}: {
-  items: AttractionItem[];
-  animate?: boolean;
-}) {
-  const loopItems = useMemo(() => [...items, ...items], [items]);
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const trackRef = useRef<HTMLDivElement | null>(null);
-  const [canAnimate, setCanAnimate] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === "undefined" || !shouldAnimate) {
-      setCanAnimate(false);
-      return;
-    }
-
-    const nav = navigator as Navigator & {
-      connection?: {
-        saveData?: boolean;
-        effectiveType?: string;
-      };
-      deviceMemory?: number;
-    };
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
-    const narrowViewport = window.matchMedia("(max-width: 767px)").matches;
-    const saveData = Boolean(nav.connection?.saveData);
-    const effectiveType = nav.connection?.effectiveType ?? "";
-    const constrainedNetwork = /(^|-)2g$|3g/.test(effectiveType);
-    const deviceMemory = nav.deviceMemory;
-    const lowMemory = typeof deviceMemory === "number" && deviceMemory <= 4;
-    const lowCpu = (nav.hardwareConcurrency ?? 8) <= 4;
-
-    setCanAnimate(
-      !reducedMotion &&
-        !saveData &&
-        !constrainedNetwork &&
-        !coarsePointer &&
-        !(narrowViewport && (lowMemory || lowCpu)),
-    );
-  }, [shouldAnimate]);
-
-  useEffect(() => {
-    if (!canAnimate) {
-      return;
-    }
-    const container = containerRef.current;
-    const track = trackRef.current;
-    if (!container || !track) {
-      return;
-    }
-
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    if (prefersReduced) {
-      track.style.transform = "translate3d(0, 0, 0)";
-      return;
-    }
-
-    let frameId: number | null = null;
-    let halfWidth = 0;
-    let offset = 0;
-    let boostVelocity = 0;
-    let lastTime = 0;
-    let lastPaintTime = 0;
-    let isVisible = false;
-    let touchMode: "idle" | "pending" | "horizontal" | "vertical" = "idle";
-    let touchStartX = 0;
-    let touchStartY = 0;
-    let touchLastX = 0;
-    let touchLastTime = 0;
-    const baseSpeed = window.matchMedia("(max-width: 640px)").matches ? 18 : 14;
-    const minFrameMs = 1000 / 24;
-
-    const clamp = (value: number, min: number, max: number) =>
-      Math.min(max, Math.max(min, value));
-
-    const normalizeOffset = () => {
-      if (halfWidth <= 0) {
-        return;
-      }
-      offset = ((offset % halfWidth) + halfWidth) % halfWidth;
-    };
-
-    const recalculateWidth = () => {
-      halfWidth = track.scrollWidth / 2;
-      normalizeOffset();
-    };
-
-    const applyTrackTransform = () => {
-      track.style.transform = `translate3d(${-offset.toFixed(2)}px, 0, 0)`;
-    };
-
-    const tick = (time: number) => {
-      if (!isVisible) {
-        frameId = null;
-        return;
-      }
-
-      if (lastPaintTime && time - lastPaintTime < minFrameMs) {
-        frameId = window.requestAnimationFrame(tick);
-        return;
-      }
-      lastPaintTime = time;
-
-      if (!lastTime) {
-        lastTime = time;
-      }
-      const deltaSeconds = Math.min((time - lastTime) / 1000, 0.05);
-      lastTime = time;
-
-      offset += (baseSpeed + boostVelocity) * deltaSeconds;
-      normalizeOffset();
-      applyTrackTransform();
-
-      boostVelocity *= Math.pow(0.94, deltaSeconds * 60);
-      if (Math.abs(boostVelocity) < 0.2) {
-        boostVelocity = 0;
-      }
-
-      frameId = window.requestAnimationFrame(tick);
-    };
-
-    const startAnimation = () => {
-      if (frameId !== null || !isVisible) return;
-      lastTime = 0;
-      lastPaintTime = 0;
-      frameId = window.requestAnimationFrame(tick);
-    };
-
-    const stopAnimation = () => {
-      if (frameId !== null) {
-        window.cancelAnimationFrame(frameId);
-        frameId = null;
-      }
-    };
-
-    const handleWheel = (event: WheelEvent) => {
-      if (!isVisible) return;
-
-      const horizontalDelta = event.deltaX;
-      const absX = Math.abs(horizontalDelta);
-      const absY = Math.abs(event.deltaY);
-
-      // React only to near-pure horizontal gestures; never block normal page scroll.
-      if (absX < 1.2 || absY > 0.6 || absX <= absY * 2) {
-        return;
-      }
-
-      boostVelocity = clamp(boostVelocity + horizontalDelta * 0.48, -640, 640);
-    };
-
-    const handleTouchStart = (event: TouchEvent) => {
-      if (!isVisible || event.touches.length !== 1) {
-        return;
-      }
-      const touch = event.touches[0];
-      touchMode = "pending";
-      touchStartX = touch.clientX;
-      touchStartY = touch.clientY;
-      touchLastX = touch.clientX;
-      touchLastTime = performance.now();
-      boostVelocity = 0;
-    };
-
-    const handleTouchMove = (event: TouchEvent) => {
-      if (touchMode === "idle" || event.touches.length !== 1) {
-        return;
-      }
-
-      const touch = event.touches[0];
-
-      if (touchMode === "pending") {
-        const totalX = touch.clientX - touchStartX;
-        const totalY = touch.clientY - touchStartY;
-        if (Math.abs(totalX) < 8 && Math.abs(totalY) < 8) {
-          return;
-        }
-        if (Math.abs(totalX) <= Math.abs(totalY)) {
-          touchMode = "vertical";
-          return;
-        }
-        touchMode = "horizontal";
-        stopAnimation();
-      }
-
-      if (touchMode !== "horizontal") {
-        return;
-      }
-
-      event.preventDefault();
-      const now = performance.now();
-      const deltaX = touch.clientX - touchLastX;
-      const deltaSeconds = Math.max((now - touchLastTime) / 1000, 1 / 120);
-
-      offset -= deltaX;
-      normalizeOffset();
-      applyTrackTransform();
-
-      boostVelocity = clamp((-deltaX / deltaSeconds) * 0.18, -640, 640);
-      touchLastX = touch.clientX;
-      touchLastTime = now;
-    };
-
-    const handleTouchEnd = () => {
-      if (touchMode === "horizontal" && isVisible) {
-        startAnimation();
-      }
-      touchMode = "idle";
-    };
-
-    recalculateWidth();
-    const resizeObserver = new ResizeObserver(recalculateWidth);
-    resizeObserver.observe(track);
-    resizeObserver.observe(container);
-    const visibilityObserver = new IntersectionObserver(
-      ([entry]) => {
-        isVisible = Boolean(entry?.isIntersecting);
-        if (isVisible) {
-          startAnimation();
-        } else {
-          stopAnimation();
-        }
-      },
-      {
-        threshold: 0.05,
-        rootMargin: "80px 0px",
-      },
-    );
-    visibilityObserver.observe(container);
-
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        stopAnimation();
-        return;
-      }
-
-      if (isVisible) {
-        startAnimation();
-      }
-    };
-
-    container.addEventListener("wheel", handleWheel, { passive: true });
-    container.addEventListener("touchstart", handleTouchStart, { passive: true });
-    container.addEventListener("touchmove", handleTouchMove, { passive: false });
-    container.addEventListener("touchend", handleTouchEnd, { passive: true });
-    container.addEventListener("touchcancel", handleTouchEnd, { passive: true });
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    return () => {
-      resizeObserver.disconnect();
-      visibilityObserver.disconnect();
-      container.removeEventListener("wheel", handleWheel);
-      container.removeEventListener("touchstart", handleTouchStart);
-      container.removeEventListener("touchmove", handleTouchMove);
-      container.removeEventListener("touchend", handleTouchEnd);
-      container.removeEventListener("touchcancel", handleTouchEnd);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-      stopAnimation();
-    };
-  }, [canAnimate, items.length]);
-
-  // W trybie przesuwania (mobile/tablet) ustaw start na środkowej (wyróżnionej)
-  // atrakcji. K360 pojawia się pierwsze, a Ścieżkę / MARS odsłania się w lewo/prawo.
-  useEffect(() => {
-    if (canAnimate) {
-      return;
-    }
-    const container = containerRef.current;
-    const track = trackRef.current;
-    if (!container || !track) {
-      return;
-    }
-
-    const featuredIndex = items.findIndex((item) => item.featured);
-    const index = featuredIndex >= 0 ? featuredIndex : Math.floor(items.length / 2);
-
-    const frameId = window.requestAnimationFrame(() => {
-      const cardEl = track.children[index] as HTMLElement | undefined;
-      if (!cardEl) {
-        return;
-      }
-      const target = cardEl.offsetLeft + cardEl.offsetWidth / 2 - container.clientWidth / 2;
-      container.scrollLeft = Math.max(0, target);
-    });
-
-    return () => window.cancelAnimationFrame(frameId);
-  }, [canAnimate, items]);
-
-  const renderItems = canAnimate ? loopItems : items;
-
-  const scrollByCard = (direction: "left" | "right") => {
-    const container = containerRef.current;
-    if (!container) return;
-    const isWider = window.matchMedia("(min-width: 640px)").matches;
-    const cardWidth = isWider ? 352 : 316;
-    container.scrollBy({
-      left: direction === "right" ? cardWidth : -cardWidth,
-      behavior: "smooth",
-    });
-  };
-
-  return (
-    <>
-      <div
-        ref={containerRef}
-        className={`attractions-carousel relative mt-8 rounded-2xl ${
-          canAnimate ? "overflow-hidden touch-pan-y" : "overflow-x-auto pb-2 snap-x snap-mandatory touch-auto"
-        }`}
-        style={canAnimate ? undefined : { scrollbarWidth: "none" }}
-      >
-        {/* Krawędziowy fade usunięty na życzenie. Powodował przyciemnienie/ucięcie kart. */}
-
-        <div
-          ref={trackRef}
-          className={`attractions-track flex min-w-max gap-4 py-2 sm:gap-5 ${
-            canAnimate
-              ? "will-change-transform"
-              : "px-[max(1rem,calc(50%_-_150px))] sm:px-[max(1rem,calc(50%_-_166px))]"
-          }`}
-        >
-          {renderItems.map((item, index) => (
-            <div
-              key={`${item.title}-${index}`}
-              className={`w-[300px] shrink-0 sm:w-[332px] lg:w-[352px] ${
-                canAnimate ? "" : "snap-center"
-              }`}
-            >
-              <AttractionCard {...item} />
-            </div>
-          ))}
-        </div>
-      </div>
-      {!canAnimate && items.length > 1 ? (
-        <div className="mt-3 flex items-center justify-center gap-3 md:hidden">
-          <button
-            type="button"
-            onClick={() => scrollByCard("left")}
-            aria-label="Poprzednia atrakcja"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/[0.06] text-white/80 backdrop-blur-md transition active:scale-95 hover:bg-white/12 hover:text-white"
-          >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path
-                d="M10 3 5 8l5 5"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-          <span className="inline-flex h-1.5 items-center gap-1" aria-hidden="true">
-            {items.map((_, index) => (
-              <span
-                key={index}
-                className="h-1.5 w-1.5 rounded-full bg-white/25"
-              />
-            ))}
-          </span>
-          <button
-            type="button"
-            onClick={() => scrollByCard("right")}
-            aria-label="Następna atrakcja"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/[0.06] text-white/80 backdrop-blur-md transition active:scale-95 hover:bg-white/12 hover:text-white"
-          >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path
-                d="M6 3l5 5-5 5"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-        </div>
-      ) : null}
-    </>
   );
 });

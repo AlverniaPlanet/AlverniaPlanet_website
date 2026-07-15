@@ -1083,7 +1083,7 @@ function RouteStepCard({
               </h4>
             </div>
           </div>
-          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/72 sm:mt-4 sm:text-base lg:text-lg">{step.summary}</p>
+          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/80 sm:mt-4 sm:text-base lg:text-lg">{step.summary}</p>
           <div className="mt-4 grid gap-2.5 sm:mt-6 sm:gap-3 sm:grid-cols-2">
             {step.highlights.map((highlight) => (
               <div
@@ -1149,12 +1149,12 @@ export default function DomeJourneyContent({ audience = "groups" }: { audience?:
               />
               <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/35 to-black/80" />
               <div className="relative flex h-full items-center justify-center p-4 text-center sm:p-8 lg:p-10 force-overlay">
-                <div className="space-y-2 ap-page-intro-stagger">
-                  <p className="ap-type-kicker force-overlay-muted">{t.heroTag}</p>
-                  <h1 className="ap-type-hero-title force-overlay drop-shadow-[0_0_24px_rgba(0,0,0,0.55)]">
+                <div className="space-y-3 sm:space-y-4 ap-page-intro-stagger">
+                  <p className="ap-type-kicker text-[#8af3ff] drop-shadow-[0_1px_10px_rgba(0,0,0,0.7)]">{t.heroTag}</p>
+                  <h1 className="ap-type-hero-title force-overlay drop-shadow-[0_2px_28px_rgba(0,0,0,0.6)]">
                     {heroTitle}
                   </h1>
-                  <p className="ap-type-hero-subtitle mx-auto max-w-3xl force-overlay-dim text-sm sm:text-base lg:text-lg">
+                  <p className="ap-type-hero-subtitle mx-auto max-w-2xl force-overlay text-sm sm:text-base lg:text-lg">
                     {t.heroLead}
                   </p>
                 </div>
@@ -1165,7 +1165,7 @@ export default function DomeJourneyContent({ audience = "groups" }: { audience?:
       </section>
 
       <section className="px-3 pb-12 sm:px-6 sm:pb-16 lg:px-12 lg:pb-20">
-        <div className="ap-shell space-y-10 sm:space-y-14 lg:space-y-16">
+        <div className="ap-shell space-y-12 sm:space-y-16 lg:space-y-20">
           <Card dense motion="off" className="!py-8 sm:!py-12 lg:!py-16">
             <div className="space-y-4 sm:space-y-6 text-center">
               {(() => {
@@ -1174,13 +1174,13 @@ export default function DomeJourneyContent({ audience = "groups" }: { audience?:
                 const accent = firstSpace > 0 ? trimmed.slice(0, firstSpace) : trimmed;
                 const rest = firstSpace > 0 ? trimmed.slice(firstSpace) : "";
                 return (
-                  <h2 className="mx-auto max-w-5xl text-pretty text-[clamp(1.85rem,7vw,4.4rem)] font-bold leading-[1.02] tracking-[-0.035em] sm:tracking-[-0.04em] text-white">
+                  <h2 className="mx-auto max-w-5xl text-pretty text-[clamp(1.7rem,1.15rem+2.4vw,3rem)] font-bold leading-[1.07] tracking-[-0.03em] text-white">
                     <span className="text-[#7ef6ff]">{accent}</span>
                     {rest}
                   </h2>
                 );
               })()}
-              <p className="mx-auto max-w-4xl text-base sm:text-lg leading-relaxed text-white/72">{t.planBody}</p>
+              <p className="mx-auto max-w-4xl text-base sm:text-lg leading-relaxed text-white/80">{t.planBody}</p>
             </div>
 
             <div className="mt-8 grid gap-3 sm:mt-12 lg:mt-16 sm:grid-cols-3">
@@ -1192,7 +1192,7 @@ export default function DomeJourneyContent({ audience = "groups" }: { audience?:
                   <p className={`whitespace-nowrap font-semibold text-white ${getIntroStatValueClasses(stat.value)}`}>
                     {stat.value}
                   </p>
-                  <p className="mt-1.5 text-xs leading-relaxed text-white/60 sm:mt-2 sm:text-sm">{stat.label}</p>
+                  <p className="mt-1.5 text-xs leading-relaxed text-white/70 sm:mt-2 sm:text-sm">{stat.label}</p>
                 </div>
               ))}
             </div>
@@ -1236,7 +1236,7 @@ export default function DomeJourneyContent({ audience = "groups" }: { audience?:
                 const accent = firstSpace > 0 ? trimmed.slice(0, firstSpace) : trimmed;
                 const rest = firstSpace > 0 ? trimmed.slice(firstSpace) : "";
                 return (
-                  <h3 className="mx-auto max-w-5xl text-pretty text-[clamp(1.85rem,7vw,4.4rem)] font-bold leading-[1.02] tracking-[-0.035em] sm:tracking-[-0.04em] text-white">
+                  <h3 className="mx-auto max-w-5xl text-pretty text-[clamp(1.7rem,1.15rem+2.4vw,3rem)] font-bold leading-[1.07] tracking-[-0.03em] text-white">
                     <span className="text-[#7ef6ff]">{accent}</span>
                     {rest}
                   </h3>
@@ -1265,7 +1265,7 @@ export default function DomeJourneyContent({ audience = "groups" }: { audience?:
                             <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#7ef6ff]/40 bg-[#7ef6ff]/14 text-xs font-bold text-[#7ef6ff] shadow-[0_0_16px_rgba(126,246,255,0.25)] sm:h-10 sm:w-10 sm:text-base">
                               {step.number}
                             </span>
-                            <span className="text-[0.6rem] font-semibold uppercase tracking-[0.22em] text-white/28 sm:text-[0.68rem] sm:tracking-[0.24em]">
+                            <span className="text-[0.6rem] font-semibold uppercase tracking-[0.22em] text-white/45 sm:text-[0.68rem] sm:tracking-[0.24em]">
                               {counter}
                             </span>
                           </div>
@@ -1303,7 +1303,7 @@ export default function DomeJourneyContent({ audience = "groups" }: { audience?:
                           <h4 className="mt-1 text-[1rem] font-semibold leading-[1.2] tracking-[-0.015em] text-white sm:mt-1.5 sm:text-[1.05rem]">
                             {step.title}
                           </h4>
-                          <p className="mt-1.5 pr-8 text-[0.88rem] leading-[1.45] text-white/75 sm:mt-2 sm:text-[0.88rem]">
+                          <p className="mt-1.5 pr-8 text-[0.88rem] leading-[1.45] text-white/80 sm:mt-2 sm:text-[0.88rem]">
                             {step.summary}
                           </p>
                         </div>
@@ -1398,11 +1398,11 @@ export default function DomeJourneyContent({ audience = "groups" }: { audience?:
                         <h3 className="text-pretty text-lg font-semibold leading-tight tracking-[-0.03em] text-white sm:text-xl lg:text-2xl">
                           {option.title}
                         </h3>
-                        <p className="mx-auto max-w-3xl text-sm leading-relaxed text-white/76 sm:text-base">
+                        <p className="mx-auto max-w-3xl text-sm leading-relaxed text-white/82 sm:text-base">
                           {option.subtitle}
                         </p>
                       </div>
-                      <ul className="ticket-list-panel mx-auto w-full max-w-sm space-y-2.5 text-left text-xs text-white/75 sm:space-y-3 sm:text-sm">
+                      <ul className="ticket-list-panel mx-auto w-full max-w-sm space-y-2.5 text-left text-xs text-white/80 sm:space-y-3 sm:text-sm">
                         {option.details.map((detail) => (
                           <li key={detail} className="ticket-detail flex gap-2.5 sm:gap-3">
                             <span className="ticket-detail-dot mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#4fcfde] sm:mt-2" />
@@ -1413,7 +1413,7 @@ export default function DomeJourneyContent({ audience = "groups" }: { audience?:
 
                       <div className="mt-auto flex flex-col items-center gap-3 pt-2 sm:gap-4">
                         <div className="ap-tile ap-tile-sm w-full px-4 py-3 text-center sm:px-5 sm:py-4">
-                          <p className="text-[0.65rem] uppercase tracking-[0.22em] text-white/60 sm:text-[0.7rem] sm:tracking-[0.25em]">
+                          <p className="text-[0.65rem] uppercase tracking-[0.22em] text-white/70 sm:text-[0.7rem] sm:tracking-[0.25em]">
                             {option.priceLabel ?? t.ticketsPriceLabel}
                           </p>
                           <p className="mt-1 text-2xl font-semibold leading-none tracking-[-0.04em] text-white sm:text-[1.9rem] lg:text-[2.1rem]">
@@ -1445,10 +1445,10 @@ export default function DomeJourneyContent({ audience = "groups" }: { audience?:
           {isGroups ? (
             <div id="grupy-booking" className="space-y-5 sm:space-y-7">
               <div className="space-y-3 text-center">
-                <h2 className="mx-auto max-w-4xl text-pretty text-[clamp(1.85rem,6vw,3.4rem)] font-bold leading-[1.05] tracking-[-0.035em] text-white">
+                <h2 className="mx-auto max-w-4xl text-pretty text-[clamp(1.7rem,1.15rem+2.4vw,3rem)] font-bold leading-[1.07] tracking-[-0.03em] text-white">
                   {groupForm.title}
                 </h2>
-                <p className="mx-auto max-w-2xl text-base leading-relaxed text-white/72 sm:text-lg">
+                <p className="mx-auto max-w-2xl text-base leading-relaxed text-white/80 sm:text-lg">
                   {groupForm.intro}
                 </p>
               </div>

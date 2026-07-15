@@ -653,10 +653,13 @@ export default function AboutAlverniaPage() {
             <div className="ap-tile ap-tile-lg p-4 sm:p-5">
               <div className="grid gap-3 sm:grid-cols-2">
                 {[
-                  "/Alvernia VR/K03_PIC_2017_10_14_21_57_24_20171014221828.jpg",
-                  "/Alvernia VR/K10_PIC_2017_10_14_23_47_39_20171015114654.jpg",
-                  "/Alvernia VR/K02_Recepcja_PIC_2017_10_15_12_58_45_20171015145007.jpg",
-                  "/Alvernia VR/Laboratorium_PIC_2017_10_15_04_41_47_20171015114041.jpg",
+                  // Zoptymalizowane podglądy (resize + webp) — wizualnie identyczne
+                  // przy wyświetlaniu ~600 px. Oryginały pełnej rozdzielczości
+                  // zostają w /Alvernia VR/ dla właściwego touru VR.
+                  "/vr-preview/vr1.webp",
+                  "/vr-preview/vr2.webp",
+                  "/vr-preview/vr3.webp",
+                  "/vr-preview/vr4.webp",
                 ].map((src, index) => (
                   <div
                     key={src}

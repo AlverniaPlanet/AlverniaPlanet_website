@@ -7,6 +7,9 @@ import AppBar from "@/app/appbar";
 import Footer from "@/app/components/Footer";
 import FloatingDemoPromo from "@/app/components/FloatingDemoPromo";
 import FloatingMascotCta from "@/app/components/FloatingMascotCta";
+import ConsentTrackers from "@/app/components/ConsentTrackers";
+import CookieConsent from "@/app/components/CookieConsent";
+import { CONSENT_VERSION } from "@/lib/consent";
 import { I18nProvider } from "./i18n-provider";
 import { ThemeProvider } from "./theme-provider";
 
@@ -21,7 +24,7 @@ const MetaPixelPageViewTracker = dynamic(
 );
 const poppins = Poppins({
   subsets: ["latin", "latin-ext"],
-  weight: ["300", "400", "500", "600", "700", "800"],
+  weight: ["400", "500", "600", "700", "800"],
   display: "swap",
   variable: "--font-ap-sans",
 });
@@ -39,6 +42,7 @@ const schemaGraph = {
   "@graph": [
     {
       "@type": "Organization",
+      "@id": `${siteUrl}#organization`,
       name: "Alvernia Planet",
       url: siteUrl,
       logo: brandLogoUrl,
@@ -46,8 +50,30 @@ const schemaGraph = {
     },
     {
       "@type": "WebSite",
+      "@id": `${siteUrl}#website`,
       name: "Alvernia Planet",
       url: siteUrl,
+      publisher: { "@id": `${siteUrl}#organization` },
+    },
+    {
+      // NAP spójne z Footer.tsx — bez współrzędnych/godzin, których nie ma w źródle.
+      "@type": ["TouristAttraction", "MovieTheater", "LocalBusiness"],
+      "@id": `${siteUrl}#place`,
+      name: "Alvernia Planet",
+      url: siteUrl,
+      image: brandLogoUrl,
+      logo: brandLogoUrl,
+      telephone: "+48 12 344 40 00",
+      priceRange: "49-79 PLN",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "ul. Ferdynanda Wspaniałego 1",
+        postalCode: "32-566",
+        addressLocality: "Nieporaz",
+        addressCountry: "PL",
+      },
+      sameAs: orgSameAs,
+      parentOrganization: { "@id": `${siteUrl}#organization` },
     },
   ],
 };
@@ -55,7 +81,8 @@ const schemaGraph = {
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: "Alvernia Planet: Film World - Poznaj świat filmu!",
-  description: "Wycieczki i warsztaty edukacyjne. Rezerwuj online.",
+  description:
+    "Największe kino 360° w Europie (kopuła 48 m), Projekt MARS i FILMWORLD pod Krakowem. Cztery filmy fulldome, warsztaty i eventy dla całej rodziny. Rezerwuj bilety online.",
   icons: {
     icon: [
       { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
@@ -68,7 +95,8 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Alvernia Planet: Film World - Poznaj świat filmu!",
-    description: "Wycieczki i warsztaty edukacyjne. Rezerwuj online.",
+    description:
+      "Największe kino 360° w Europie (kopuła 48 m), Projekt MARS i FILMWORLD pod Krakowem. Cztery filmy fulldome, warsztaty i eventy dla całej rodziny. Rezerwuj bilety online.",
     url: siteUrl,
     siteName: "Alvernia Planet",
     locale: "pl_PL",
@@ -78,6 +106,7 @@ export const metadata: Metadata = {
         url: "/logo_alvernia_planet_neg_RGB.png",
         width: 1920,
         height: 1080,
+        type: "image/png",
         alt: "Alvernia Planet logo",
       },
     ],
@@ -85,7 +114,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Alvernia Planet: Film World - Poznaj świat filmu!",
-    description: "Wycieczki i warsztaty edukacyjne. Rezerwuj online.",
+    description:
+      "Największe kino 360° w Europie (kopuła 48 m), Projekt MARS i FILMWORLD pod Krakowem. Cztery filmy fulldome, warsztaty i eventy dla całej rodziny. Rezerwuj bilety online.",
     images: ["/logo_alvernia_planet_neg_RGB.png"],
   },
 };
@@ -107,65 +137,42 @@ export default function RootLayout({
       className={`${poppins.variable} theme-dark`}
     >
       <head>
-        <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="" />
-        <link rel="preconnect" href="https://www.google-analytics.com" crossOrigin="" />
-        <link rel="preconnect" href="https://connect.facebook.net" crossOrigin="" />
-        <link rel="dns-prefetch" href="https://www.facebook.com" />
+        {/* Preconnecty do Google/Meta świadomie usunięte — łączymy się z nimi
+            dopiero po zgodzie użytkownika (patrz ConsentTrackers). */}
         <link rel="dns-prefetch" href="https://i.ytimg.com" />
       </head>
       <body className="min-h-screen bg-[var(--ap-bg)] text-[color:var(--ap-text)] transition-colors duration-300">
-        <Script id="meta-pixel-init" strategy="lazyOnload">
-          {`
-            !function(f,b,e,v,n,t,s)
-            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-            n.queue=[];t=b.createElement(e);t.async=!0;
-            t.src=v;s=b.getElementsByTagName(e)[0];
-            s.parentNode.insertBefore(t,s)}(window, document,'script',
-            'https://connect.facebook.net/en_US/fbevents.js');
-            fbq('init', '${metaPixelId}');
-          `}
-        </Script>
-        <noscript>
-          <img
-            height="1"
-            width="1"
-            style={{ display: "none" }}
-            src={`https://www.facebook.com/tr?id=${metaPixelId}&ev=PageView&noscript=1`}
-            alt=""
-          />
-        </noscript>
-        <Script
-          strategy="lazyOnload"
-          src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}
-        />
-        <Script id="ga4-init" strategy="lazyOnload">
+        {/* Google Consent Mode v2 — domyślnie wszystko poza necessary = "denied".
+            Ustawiane PRZED jakimkolwiek trackerem. Jeśli użytkownik już wcześniej
+            wyraził zgodę, odczytujemy ją i od razu podnosimy do "granted".
+            Same trackery (GA/GTM/Meta) ładuje dopiero <ConsentTrackers/> po zgodzie. */}
+        <Script id="ap-consent-default" strategy="beforeInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${gaMeasurementId}');
+            window.gtag = window.gtag || gtag;
+            var an='denied', ad='denied';
+            try {
+              var raw = window.localStorage.getItem('ap-cookie-consent');
+              if (raw) {
+                var c = JSON.parse(raw);
+                if (c && c.v === ${CONSENT_VERSION}) {
+                  an = c.analytics ? 'granted' : 'denied';
+                  ad = c.marketing ? 'granted' : 'denied';
+                }
+              }
+            } catch (e) {}
+            gtag('consent','default',{
+              ad_storage: ad,
+              ad_user_data: ad,
+              ad_personalization: ad,
+              analytics_storage: an,
+              functionality_storage: 'granted',
+              security_storage: 'granted',
+              wait_for_update: 500
+            });
           `}
         </Script>
-        <Script id="gtm-script" strategy="lazyOnload">
-          {`
-            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-            })(window,document,'script','dataLayer','${gtmId}');
-          `}
-        </Script>
-        <noscript>
-          <iframe
-            src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
-            height="0"
-            width="0"
-            style={{ display: "none", visibility: "hidden" }}
-            title="Google Tag Manager"
-          />
-        </noscript>
         <ThemeProvider>
           <I18nProvider initialLocale={initialLocale}>
             <div className="relative z-10 min-h-screen flex flex-col">
@@ -175,6 +182,7 @@ export default function RootLayout({
             </div>
             <FloatingDemoPromo />
             <FloatingMascotCta />
+            <CookieConsent />
           </I18nProvider>
         </ThemeProvider>
         <script
@@ -183,6 +191,7 @@ export default function RootLayout({
         />
         <AnalyticsTracker />
         <MetaPixelPageViewTracker />
+        <ConsentTrackers gaId={gaMeasurementId} gtmId={gtmId} metaPixelId={metaPixelId} />
       </body>
     </html>
   );

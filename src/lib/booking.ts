@@ -43,9 +43,44 @@ export const K360_MARS_PREMIERE_BOOKING_SERVICES = {
 // Etykiety dokładnie jak w panelu Bookero (nazwa atrakcji najpierw, myślnik, typ
 // biletu). BookeroEmbed dopasowuje usługę przez równość po normalizacji, więc
 // kolejność słów musi się zgadzać 1:1.
+
+// Kino 360 — od teraz KAŻDY film ma osobną usługę (osobny bilet) w panelu Bookero.
+// Normalny jest w kategorii "Bilet indywidualny", ulgowy w "Bilet indywidualny - ulgowy".
+// Klucz = slug filmu (dokładnie jak w films.ts). Nazwy 1:1 z panelem Bookero.
+export const K360_FILM_BOOKING_SERVICES: Record<string, { normal: string; reduced: string }> = {
+  "one-step-beyond": {
+    normal: "Kino 360 - One Step Beyond (49,00 zł)",
+    reduced: "Kino 360 - One Step Beyond (39,00 zł)",
+  },
+  "the-stellars": {
+    normal: "Kino 360 - The Stellars (49,00 zł)",
+    reduced: "Kino 360 - The Stellars (39,00 zł)",
+  },
+  explore: {
+    normal: "Kino 360 - Explore (49,00 zł)",
+    reduced: "Kino 360 - Explore (39,00 zł)",
+  },
+  time: {
+    normal: "Kino 360 - Time (49,00 zł)",
+    reduced: "Kino 360 - Time (39,00 zł)",
+  },
+};
+
+// Domyślny film dla OGÓLNYCH wejść „Kino 360" (portal na stronie głównej, hero
+// strony kina) — nie ma już wspólnego biletu K360, więc kierujemy na film grany.
+export const K360_DEFAULT_FILM_SLUG = "one-step-beyond";
+
+// Pomocnik: nazwa usługi (service) biletu K360 dla danego filmu; fallback na film grany.
+export function k360FilmService(slug: string, reduced = false): string {
+  const svc = K360_FILM_BOOKING_SERVICES[slug] ?? K360_FILM_BOOKING_SERVICES[K360_DEFAULT_FILM_SLUG];
+  if (!svc) return "Kino 360 - One Step Beyond (49,00 zł)";
+  return reduced ? svc.reduced : svc.normal;
+}
+
+// Alias zgodności — ogólne wejścia „Kino 360" domyślnie kierują na film grany.
 export const K360_BOOKING_SERVICES = {
-  normal: "Kino 360° - Bilet normalny (49,00 zł)",
-  reduced: "Kino 360° - Bilet ulgowy (39,00 zł)",
+  normal: "Kino 360 - One Step Beyond (49,00 zł)",
+  reduced: "Kino 360 - One Step Beyond (39,00 zł)",
   // ⚠️ Bilet grupowy K360 jest pod kategorią "Bilet grupowy" w panelu Bookero.
   //    zweryfikuj dokładną nazwę usługi jeśli będzie używana.
   group: "Kino 360° - Bilet grupowy (39,00 zł)",

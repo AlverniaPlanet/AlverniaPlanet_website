@@ -37,7 +37,7 @@ const sizeMap: Record<Size, string> = {
 };
 
 const baseClass =
-  "ap-primary-button inline-flex items-center justify-center rounded-full font-semibold text-[color:var(--ap-accent-contrast)] bg-[color:var(--ap-accent)] ring-1 ring-[color:var(--ap-accent-ring)] shadow-[var(--ap-accent-shadow)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ap-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ap-bg)] transition";
+  "ap-primary-button inline-flex items-center justify-center rounded-[var(--ap-btn-radius)] font-semibold text-[color:var(--ap-accent-contrast)] bg-[color:var(--ap-accent)] ring-1 ring-[color:var(--ap-accent-ring)] shadow-[var(--ap-accent-shadow)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ap-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ap-bg)] transition";
 
 export function PrimaryButton(props: PrimaryButtonProps) {
   const { locale } = useI18n();

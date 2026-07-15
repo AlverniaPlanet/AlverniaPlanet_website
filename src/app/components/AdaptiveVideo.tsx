@@ -58,7 +58,7 @@ export default function AdaptiveVideo({
 }: AdaptiveVideoProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [shouldLoadVideo, setShouldLoadVideo] = useState(priority);
+  const [shouldLoadVideo, setShouldLoadVideo] = useState(false);
   const [isVisible, setIsVisible] = useState(priority);
   const [isLoaded, setIsLoaded] = useState(false);
   const [posterOnly, setPosterOnly] = useState(false);
@@ -70,6 +70,21 @@ export default function AdaptiveVideo({
 
     setPosterOnly(shouldPreferPosterOnly());
   }, [preferPosterOnLowPower]);
+
+  // Dla priority (np. hero) NIE renderujemy <video> w pierwszym renderze/SSR, aby
+  // źródło wideo nie konkurowało z posterem (LCP) w skanerze preload. Montujemy je
+  // po pierwszej klatce (podwójny rAF) — poster pod spodem jest identyczny, brak mrugnięcia.
+  useEffect(() => {
+    if (!priority || posterOnly) return;
+    let raf2 = 0;
+    const raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => setShouldLoadVideo(true));
+    });
+    return () => {
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
+    };
+  }, [priority, posterOnly]);
 
   useEffect(() => {
     if (posterOnly) {

@@ -2,6 +2,7 @@
 
 import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { FaArrowDown, FaChevronDown, FaChevronRight, FaFilm, FaLocationDot, FaMobileScreen, FaRocket, FaTriangleExclamation } from "react-icons/fa6";
 import Card from "@/app/components/Card";
 import { PrimaryButton } from "@/app/components/PrimaryButton";
@@ -9,8 +10,6 @@ import TourLineAccentTitle from "@/app/components/TourLineAccentTitle";
 import TourLineGalleryRow from "@/app/components/TourLineGalleryRow";
 import styles from "./MarsLandingContent.module.css";
 import {
-  ALL_ATTRACTIONS_BOOKING_CATEGORY,
-  ALL_ATTRACTIONS_BOOKING_SERVICES,
   buildBookingPath,
   MARS_BOOKING_CATEGORY,
   MARS_BOOKING_SERVICES,
@@ -30,34 +29,6 @@ const MARS_HERO_INFOBAR = [
   "Interaktywna misja",
   "Pełnoskalowy plan filmowy",
 ];
-
-const MARS_PROMO_TICKET = {
-  badge: "Pakiet",
-  title: "K360 + MARS",
-  subtitle:
-    "Pakiet promocyjny łączący MARS z projekcją K360: dwie atrakcje w jednej cenie.",
-  details: ["Dwie atrakcje w jednym dniu"],
-  priceLabel: "Cena normalna",
-  price: "89,00 zł",
-  savings: "Oszczędzasz 29,00 zł",
-  savingsPercent: "25%",
-  reducedPriceLabel: "Cena ulgowa",
-  reducedPrice: "79,00 zł",
-  reducedSavings: "Oszczędzasz 19,00 zł",
-  reducedSavingsPercent: "19%",
-  button: "Wybierz pakiet",
-};
-
-type MarsTicketOption = {
-  badge: string;
-  title: string;
-  subtitle: string;
-  details: string[];
-  price: string;
-  priceLabel: string;
-  bookingServiceName: string;
-  bookingQuantity?: number;
-};
 
 const MARS_GALLERY_ITEMS = [
   {
@@ -94,37 +65,6 @@ const MARS_GALLERY_ITEMS = [
     title: "Kadr z filmu",
     body: "Twój gotowy ujęcie z misji, do zabrania ze sobą.",
     image: "/galeria/Projekt_MARS/webp/MARS_7.webp",
-  },
-];
-
-const MARS_TICKET_OPTIONS: MarsTicketOption[] = [
-  {
-    badge: "Normalny",
-    title: "Bilet normalny",
-    subtitle: "1-10 osób na jednym bilecie",
-    details: ["Dla osób indywidualnych i rodzin", "Cena regularna za osobę"],
-    price: "69 zł/os.",
-    priceLabel: "Cena za osobę",
-    bookingServiceName: MARS_BOOKING_SERVICES.normal,
-  },
-  {
-    badge: "Ulgowy",
-    title: "Bilet ulgowy",
-    subtitle: "1-10 osób na jednym bilecie",
-    details: ["Dla osób indywidualnych i rodzin", "Cena ulgowa za osobę"],
-    price: "59 zł/os.",
-    priceLabel: "Cena za osobę",
-    bookingServiceName: MARS_BOOKING_SERVICES.reduced,
-  },
-  {
-    badge: "Grupowy",
-    title: "Bilet grupowy/szkolny",
-    subtitle: "30-50 osób w grupie",
-    details: ["Dla szkół i grup zorganizowanych", "59 zł za każdą osobę"],
-    price: "1 770 - 2 950 zł",
-    priceLabel: "Cena grupowa",
-    bookingServiceName: MARS_BOOKING_SERVICES.group,
-    bookingQuantity: 30,
   },
 ];
 
@@ -210,12 +150,6 @@ function clamp(value: number, min: number, max: number) {
 
 function lerp(start: number, end: number, progress: number) {
   return start + (end - start) * progress;
-}
-
-function easeInOutCubic(value: number) {
-  return value < 0.5
-    ? 4 * value * value * value
-    : 1 - Math.pow(-2 * value + 2, 3) / 2;
 }
 
 function smoothstep(start: number, end: number, value: number) {
@@ -856,13 +790,13 @@ export default function MarsLandingContent({
                 ))}
               </div>
               <div className="flex justify-center pt-1" data-reveal data-reveal-glow style={ri(3)}>
-                <a
+                <Link
                   href="/mars/konkurs-wyladuj-na-marsie"
                   className="inline-flex items-center gap-2 rounded-full bg-gradient-to-br from-[#f77828] to-[#ff9357] px-6 py-3 text-sm font-bold uppercase tracking-[0.18em] text-[#170a04] shadow-[0_12px_30px_rgba(247,120,40,0.4)] transition hover:scale-[1.03] hover:brightness-110"
                 >
                   <FaFilm aria-hidden="true" />
                   Poznaj konkurs i zasady
-                </a>
+                </Link>
               </div>
             </div>
           </Card>
@@ -887,6 +821,8 @@ export default function MarsLandingContent({
                 <img
                   src="/mars/Mapka_mars_na_strone.webp"
                   alt="Mapa scenografii MARS"
+                  width={1414}
+                  height={2000}
                   loading="lazy"
                   decoding="async"
                   className="h-auto w-full object-contain transition-transform duration-500 group-hover:scale-[1.02]"

@@ -98,13 +98,13 @@ export const DOME_VR_SCENES_BY_KEY: Record<VrDomeKey, DomeVrScene[]> = {
     {
       id: "k1-1",
       title: "K01 · 01",
-      src: "/Alvernia VR/K01_PIC_2017_10_15_02_24_50_20171015051715.jpg",
+      src: "/Alvernia VR/K01_PIC_2017_10_15_02_24_50_20171015051715.webp",
       initialYaw: 48,
     },
     {
       id: "k1-2",
       title: "K01 · 02",
-      src: "/Alvernia VR/K01_PIC_2017_10_15_13_31_30_20171015145032.jpg",
+      src: "/Alvernia VR/K01_PIC_2017_10_15_13_31_30_20171015145032.webp",
       initialYaw: 54,
     },
   ],
@@ -112,7 +112,7 @@ export const DOME_VR_SCENES_BY_KEY: Record<VrDomeKey, DomeVrScene[]> = {
     {
       id: "k2-1",
       title: "K02 · Recepcja",
-      src: "/Alvernia VR/K02_Recepcja_PIC_2017_10_15_12_58_45_20171015145007.jpg",
+      src: "/Alvernia VR/K02_Recepcja_PIC_2017_10_15_12_58_45_20171015145007.webp",
       initialYaw: 50,
     },
   ],
@@ -120,13 +120,13 @@ export const DOME_VR_SCENES_BY_KEY: Record<VrDomeKey, DomeVrScene[]> = {
     {
       id: "k3-1",
       title: "K03 · 01",
-      src: "/Alvernia VR/K03_PIC_2017_10_14_21_57_24_20171014221828.jpg",
+      src: "/Alvernia VR/K03_PIC_2017_10_14_21_57_24_20171014221828.webp",
       initialYaw: 48,
     },
     {
       id: "k3-2",
       title: "K03 · 02",
-      src: "/Alvernia VR/K03_PIC_2017_10_14_22_43_37_20171015105733.jpg",
+      src: "/Alvernia VR/K03_PIC_2017_10_14_22_43_37_20171015105733.webp",
       initialYaw: 54,
     },
   ],
@@ -134,7 +134,7 @@ export const DOME_VR_SCENES_BY_KEY: Record<VrDomeKey, DomeVrScene[]> = {
     {
       id: "k4-1",
       title: "K04 · 01",
-      src: "/Alvernia VR/K04_PIC_2017_10_14_23_01_08_20171015112456.jpg",
+      src: "/Alvernia VR/K04_PIC_2017_10_14_23_01_08_20171015112456.webp",
       initialYaw: 52,
     },
   ],
@@ -142,7 +142,7 @@ export const DOME_VR_SCENES_BY_KEY: Record<VrDomeKey, DomeVrScene[]> = {
     {
       id: "k5-1",
       title: "K05 · 01",
-      src: "/Alvernia VR/K05_PIC_2017_10_15_13_18_52_20171015145032.jpg",
+      src: "/Alvernia VR/K05_PIC_2017_10_15_13_18_52_20171015145032.webp",
       initialYaw: 50,
     },
   ],
@@ -150,7 +150,7 @@ export const DOME_VR_SCENES_BY_KEY: Record<VrDomeKey, DomeVrScene[]> = {
     {
       id: "k6-1",
       title: "K06 · 01",
-      src: "/Alvernia VR/K06_PIC_2017_10_15_13_10_26_20171015145032.jpg",
+      src: "/Alvernia VR/K06_PIC_2017_10_15_13_10_26_20171015145032.webp",
       initialYaw: 50,
     },
   ],
@@ -158,19 +158,19 @@ export const DOME_VR_SCENES_BY_KEY: Record<VrDomeKey, DomeVrScene[]> = {
     {
       id: "k7-1",
       title: "K07 · 01",
-      src: "/Alvernia VR/K07_PIC_2017_10_15_02_01_19_20171015101723.jpg",
+      src: "/Alvernia VR/K07_PIC_2017_10_15_02_01_19_20171015101723.webp",
       initialYaw: 50,
     },
     {
       id: "k7-2",
       title: "K07 · 02",
-      src: "/Alvernia VR/K07_PIC_2017_10_15_02_07_54_20171018191514.jpg",
+      src: "/Alvernia VR/K07_PIC_2017_10_15_02_07_54_20171018191514.webp",
       initialYaw: 50,
     },
     {
       id: "k7-3",
       title: "K07 · 03",
-      src: "/Alvernia VR/K07_PIC_2017_10_15_02_12_39_20171015051715.jpg",
+      src: "/Alvernia VR/K07_PIC_2017_10_15_02_12_39_20171015051715.webp",
       initialYaw: 50,
     },
   ],
@@ -178,7 +178,7 @@ export const DOME_VR_SCENES_BY_KEY: Record<VrDomeKey, DomeVrScene[]> = {
     {
       id: "k8-1",
       title: "K08 · 01",
-      src: "/Alvernia VR/K08_PIC_2017_10_15_03_10_45_20171015051715.jpg",
+      src: "/Alvernia VR/K08_PIC_2017_10_15_03_10_45_20171015051715.webp",
       initialYaw: 50,
     },
   ],
@@ -186,13 +186,13 @@ export const DOME_VR_SCENES_BY_KEY: Record<VrDomeKey, DomeVrScene[]> = {
     {
       id: "k9-1",
       title: "K09 · 01",
-      src: "/Alvernia VR/K09_PIC_2017_10_15_00_47_34_20171015051715.jpg",
+      src: "/Alvernia VR/K09_PIC_2017_10_15_00_47_34_20171015051715.webp",
       initialYaw: 48,
     },
     {
       id: "k9-2",
       title: "K09 · 02",
-      src: "/Alvernia VR/K09_PIC_2017_10_15_01_04_07_20171018180144.jpg",
+      src: "/Alvernia VR/K09_PIC_2017_10_15_01_04_07_20171018180144.webp",
       initialYaw: 54,
     },
   ],
@@ -200,7 +200,7 @@ export const DOME_VR_SCENES_BY_KEY: Record<VrDomeKey, DomeVrScene[]> = {
     {
       id: "k10-1",
       title: "K10 · 01",
-      src: "/Alvernia VR/K10_PIC_2017_10_14_23_47_39_20171015114654.jpg",
+      src: "/Alvernia VR/K10_PIC_2017_10_14_23_47_39_20171015114654.webp",
       initialYaw: 48,
     },
   ],
@@ -208,13 +208,13 @@ export const DOME_VR_SCENES_BY_KEY: Record<VrDomeKey, DomeVrScene[]> = {
     {
       id: "k11-1",
       title: "K11 · 01",
-      src: "/Alvernia VR/K11_PIC_2017_10_15_12_31_22_20171015151818.jpg",
+      src: "/Alvernia VR/K11_PIC_2017_10_15_12_31_22_20171015151818.webp",
       initialYaw: 50,
     },
     {
       id: "k11-2",
       title: "K11 · 02",
-      src: "/Alvernia VR/K11_PIC_2017_10_15_12_38_35_20171015152347_20171015152547.jpg",
+      src: "/Alvernia VR/K11_PIC_2017_10_15_12_38_35_20171015152347_20171015152547.webp",
       initialYaw: 55,
     },
   ],
@@ -222,7 +222,7 @@ export const DOME_VR_SCENES_BY_KEY: Record<VrDomeKey, DomeVrScene[]> = {
     {
       id: "k12-1",
       title: "K12 · 01",
-      src: "/Alvernia VR/K12_PIC_2017_10_15_00_01_43_20171015051715.jpg",
+      src: "/Alvernia VR/K12_PIC_2017_10_15_00_01_43_20171015051715.webp",
       initialYaw: 52,
     },
   ],
@@ -230,7 +230,7 @@ export const DOME_VR_SCENES_BY_KEY: Record<VrDomeKey, DomeVrScene[]> = {
     {
       id: "k13-1",
       title: "K13 · 01",
-      src: "/Alvernia VR/K13_PIC_2017_10_15_03_28_51_20171015101325.jpg",
+      src: "/Alvernia VR/K13_PIC_2017_10_15_03_28_51_20171015101325.webp",
       initialYaw: 50,
     },
   ],
@@ -238,7 +238,7 @@ export const DOME_VR_SCENES_BY_KEY: Record<VrDomeKey, DomeVrScene[]> = {
     {
       id: "laboratorium-1",
       title: "Laboratorium · 01",
-      src: "/Alvernia VR/Laboratorium_PIC_2017_10_15_04_41_47_20171015114041.jpg",
+      src: "/Alvernia VR/Laboratorium_PIC_2017_10_15_04_41_47_20171015114041.webp",
       initialYaw: 50,
     },
   ],
@@ -246,13 +246,13 @@ export const DOME_VR_SCENES_BY_KEY: Record<VrDomeKey, DomeVrScene[]> = {
     {
       id: "silos-1",
       title: "Silos · 01",
-      src: "/Alvernia VR/Silos_PIC_2017_10_15_04_06_44_20171015113251.jpg",
+      src: "/Alvernia VR/Silos_PIC_2017_10_15_04_06_44_20171015113251.webp",
       initialYaw: 49,
     },
     {
       id: "silos-2",
       title: "Silos · 02",
-      src: "/Alvernia VR/Silos_PIC_2017_10_15_04_24_52_20171015051715.jpg",
+      src: "/Alvernia VR/Silos_PIC_2017_10_15_04_24_52_20171015051715.webp",
       initialYaw: 53,
     },
   ],
@@ -260,7 +260,7 @@ export const DOME_VR_SCENES_BY_KEY: Record<VrDomeKey, DomeVrScene[]> = {
     {
       id: "taras-1",
       title: "Taras · 01",
-      src: "/Alvernia VR/Taras_PIC_2017_10_15_12_16_56_20171018192450.jpg",
+      src: "/Alvernia VR/Taras_PIC_2017_10_15_12_16_56_20171018192450.webp",
       initialYaw: 50,
     },
   ],
@@ -268,7 +268,7 @@ export const DOME_VR_SCENES_BY_KEY: Record<VrDomeKey, DomeVrScene[]> = {
     {
       id: "warsztaty-1",
       title: "Warsztaty · 01",
-      src: "/Alvernia VR/Warsztaty_PIC_2017_10_14_23_08_23_20171015112844.jpg",
+      src: "/Alvernia VR/Warsztaty_PIC_2017_10_14_23_08_23_20171015112844.webp",
       initialYaw: 50,
     },
   ],
@@ -276,7 +276,7 @@ export const DOME_VR_SCENES_BY_KEY: Record<VrDomeKey, DomeVrScene[]> = {
     {
       id: "lacznik-1",
       title: "Łącznik · 01",
-      src: "/Alvernia VR/Łącznik_PIC_2017_10_15_13_24_38_20171015145032.jpg",
+      src: "/Alvernia VR/Łącznik_PIC_2017_10_15_13_24_38_20171015145032.webp",
       initialYaw: 50,
     },
   ],

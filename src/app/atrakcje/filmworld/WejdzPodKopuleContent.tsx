@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import Image from "next/image";
-import Card from "@/app/components/Card";
 import ScrollMotionItem from "@/app/components/ScrollMotionItem";
 import { PrimaryButton } from "@/app/components/PrimaryButton";
 import { useI18n } from "@/app/i18n-provider";

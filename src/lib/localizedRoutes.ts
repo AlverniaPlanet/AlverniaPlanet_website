@@ -13,6 +13,11 @@ const PL_TO_INTL_COMMON: Record<string, string> = {
   "/atrakcje/sciezka-filmowa": "/attractions/film-path",
   "/atrakcje/filmworld": "/attractions/under-the-dome",
   "/atrakcje/kino-360": "/attractions/k360",
+  // Podstrony filmów Kina 360 (repertuar).
+  "/atrakcje/kino-360/one-step-beyond": "/attractions/k360/one-step-beyond",
+  "/atrakcje/kino-360/time": "/attractions/k360/time",
+  "/atrakcje/kino-360/explore": "/attractions/k360/explore",
+  "/atrakcje/kino-360/the-stellars": "/attractions/k360/the-stellars",
 };
 
 const INTL_TO_PL_COMMON: Record<string, string> = Object.entries(PL_TO_INTL_COMMON).reduce(
@@ -137,7 +142,11 @@ export function getPrefetchTargets(locale: Locale): string[] {
 
 // Trasy renderowane bez chrome'u serwisu (navbar / stopka / pływające CTA),
 // np. kioskowa aplikacja leadowa /aplikacje/identyfikacja oraz brief /aplikacje/mars-brief.
-const BARE_CHROME_ROUTES = ["/aplikacje/identyfikacja", "/aplikacje/mars-brief"];
+const BARE_CHROME_ROUTES = [
+  "/aplikacje/identyfikacja",
+  "/aplikacje/identyfikacja-online",
+  "/aplikacje/mars-brief",
+];
 export function isBareChromeRoute(path: string | null | undefined): boolean {
   const canonical = mapToPolishRoute(normalizePathname(path ?? "/"));
   return BARE_CHROME_ROUTES.some((route) => canonical === route || canonical.startsWith(`${route}/`));

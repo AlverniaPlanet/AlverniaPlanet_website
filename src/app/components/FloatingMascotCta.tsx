@@ -22,9 +22,9 @@ const HIDDEN_PATHS = new Set([
 ]);
 
 const COPY: Record<Locale, { buy: string; alt: string }> = {
-  pl: { buy: "Kup bilet", alt: "Maskotki Alver i Avlernia" },
-  en: { buy: "Buy ticket", alt: "Mascots Alver and Avlernia" },
-  pt: { buy: "Comprar bilhete", alt: "Mascotes Alver e Avlernia" },
+  pl: { buy: "Rozpocznij przygodę", alt: "Maskotki Alver i Avlernia" },
+  en: { buy: "Start the adventure", alt: "Mascots Alver and Avlernia" },
+  pt: { buy: "Começa a aventura", alt: "Mascotes Alver e Avlernia" },
 };
 
 export default function FloatingMascotCta() {
@@ -81,7 +81,7 @@ export default function FloatingMascotCta() {
         </Link>
         <Link
           href={bookingHref}
-          className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-br from-[#ff7a3c] via-[#ff5544] to-[#ff3960] px-3 py-1.5 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-white shadow-[0_12px_28px_rgba(255,90,60,0.45),0_0_18px_rgba(255,90,60,0.35)] transition hover:scale-[1.04] hover:brightness-110 sm:gap-2 sm:px-4 sm:py-2 sm:text-[0.72rem] lg:px-5 lg:py-2.5 lg:text-xs"
+          className="inline-flex items-center gap-1.5 rounded-[var(--ap-btn-radius)] bg-gradient-to-br from-[#ff7a3c] via-[#ff5544] to-[#ff3960] px-3 py-1.5 text-[0.65rem] font-bold uppercase leading-tight tracking-[0.11em] text-white shadow-[0_12px_28px_rgba(255,90,60,0.45),0_0_18px_rgba(255,90,60,0.35)] transition hover:scale-[1.04] hover:brightness-110 sm:gap-2 sm:px-4 sm:py-2 sm:text-[0.72rem] lg:px-4 lg:py-2.5 lg:text-xs"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path
@@ -92,7 +92,7 @@ export default function FloatingMascotCta() {
             />
             <path d="M9 5v14" stroke="currentColor" strokeWidth="1.6" strokeDasharray="2 2" />
           </svg>
-          {t.buy}
+          <span className="max-w-[5.5rem] text-center">{t.buy}</span>
         </Link>
       </div>
     </aside>
