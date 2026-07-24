@@ -4,7 +4,9 @@ import { useEffect } from "react";
 
 const IOS_URL = "https://apps.apple.com/pl/app/marsapp/id6775477060?l=pl";
 const ANDROID_URL = "https://play.google.com/store/apps/details?id=com.alverniaplanet.marsvideo";
-const HOME_URL = "https://www.alverniaplanet.com/";
+// Ścieżka względna, nie pełny adres z www: .htaccess przekierowuje www -> bez www
+// (301), więc twardy link z www robiłby zbędny dodatkowy skok.
+const HOME_URL = "/";
 
 // Wykrycie systemu i natychmiastowe przekierowanie, odpala się jeszcze PRZED
 // hydracją Reacta (inline <script>), więc QR działa praktycznie bez mignięcia.

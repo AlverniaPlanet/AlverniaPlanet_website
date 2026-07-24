@@ -9,7 +9,9 @@ import FloatingDemoPromo from "@/app/components/FloatingDemoPromo";
 import FloatingMascotCta from "@/app/components/FloatingMascotCta";
 import ConsentTrackers from "@/app/components/ConsentTrackers";
 import CookieConsent from "@/app/components/CookieConsent";
-import { CONSENT_VERSION } from "@/lib/consent";
+// Import z modułu bez "use client" — inaczej w statycznym HTML zamiast liczby
+// ląduje proxy klienckie i warunek zgody jest zawsze fałszywy.
+import { CONSENT_VERSION } from "@/lib/consentVersion";
 import { I18nProvider } from "./i18n-provider";
 import { ThemeProvider } from "./theme-provider";
 
@@ -140,6 +142,10 @@ export default function RootLayout({
         {/* Preconnecty do Google/Meta świadomie usunięte — łączymy się z nimi
             dopiero po zgodzie użytkownika (patrz ConsentTrackers). */}
         <link rel="dns-prefetch" href="https://i.ytimg.com" />
+        {/* Bookero (silnik rezerwacji) — samo wstępne rozwiązanie DNS jest tanie i
+            statyczne; pełne połączenie (preconnect) robimy dopiero na stronach
+            z widżetem, wewnątrz BookeroEmbed, żeby nie łączyć się bez potrzeby. */}
+        <link rel="dns-prefetch" href="https://cdn.bookero.pl" />
       </head>
       <body className="min-h-screen bg-[var(--ap-bg)] text-[color:var(--ap-text)] transition-colors duration-300">
         {/* Google Consent Mode v2 — domyślnie wszystko poza necessary = "denied".

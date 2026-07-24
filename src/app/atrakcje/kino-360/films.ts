@@ -14,10 +14,21 @@ export type FilmMeta = {
 
 export const FILMS: readonly FilmMeta[] = [
   { slug: "one-step-beyond", title: "One Step Beyond: A Journey to Mars", poster: "/k360/Seanse/one-step-beyond.webp", badges: ["Fulldome 360°", "~30 min"], nowShowing: true },
-  { slug: "the-stellars", title: "The Stellars", poster: "/k360/Seanse/the-stellars.webp", badges: ["Fulldome 8K 3D", "~30 min"] },
-  { slug: "time", title: "TIME", poster: "/k360/Seanse/time.webp", badges: ["Fulldome 8K 3D", "~30 min"] },
-  { slug: "explore", title: "Explore", poster: "/k360/Seanse/explore.webp", badges: ["Fulldome 8K 3D", "27 min"] },
+  { slug: "the-stellars", title: "The Stellars", poster: "/k360/Seanse/the-stellars.webp", badges: ["Fulldome 4K 3D", "~30 min"] },
+  { slug: "time", title: "TIME", poster: "/k360/Seanse/time.webp", badges: ["Fulldome 4K 3D", "~30 min"] },
+  { slug: "explore", title: "Explore", poster: "/k360/Seanse/explore.webp", badges: ["Fulldome 4K 3D", "27 min"] },
 ];
+
+// --- Język seansów ---
+// Wszystkie filmy w kopule lecą z polską ścieżką dźwiękową. Dla widza z zagranicy
+// to informacja krytyczna przed kupnem biletu, dla polskiego widza potwierdzenie,
+// że nie trafi na wersję obcojęzyczną. Pokazujemy ją jako plakietkę z flagą
+// (patrz LanguageBadge) na kartach repertuaru i na podstronach filmów.
+export const FILM_LANGUAGE_COPY: Record<Locale, { badge: string; note: string }> = {
+  pl: { badge: "Wersja polska", note: "Seans w wersji polskiej." },
+  en: { badge: "Polish audio", note: "The film is screened with Polish audio." },
+  pt: { badge: "Áudio em polaco", note: "A sessão é exibida com áudio em polaco." },
+};
 
 export const FILM_SLUGS = FILMS.map((f) => f.slug);
 export function findFilm(slug: string): FilmMeta | undefined {
@@ -115,7 +126,7 @@ const galleryOf = (dir: string) =>
 
 export const FILM_DETAILS: Record<string, FilmDetailMeta> = {
   "one-step-beyond": { accent: "#ff6a3d", accentSoft: "#ff9a6a", gallery: galleryOf("One_step_beyond"), posterPos: "50% 22%", trailer: "https://www.youtube.com/embed/M4TkXrFogNw" },
-  time: { accent: "#a855f7", accentSoft: "#c99bf5", gallery: galleryOf("Time"), studio: "Creative Planet", trailer: "https://player.vimeo.com/video/244831817?h=d08e20aecd" },
+  time: { accent: "#a855f7", accentSoft: "#c99bf5", gallery: galleryOf("Time"), studio: "Creative Planet", trailer: "https://player.vimeo.com/video/1205912482?h=151f317e30" },
   explore: { accent: "#4f8bff", accentSoft: "#8fb4ff", gallery: galleryOf("Explore"), studio: "Creative Planet", trailer: "https://player.vimeo.com/video/244831817?h=d08e20aecd" },
   "the-stellars": { accent: "#14c4b0", accentSoft: "#6fe0d2", gallery: galleryOf("The_Stellars"), studio: "Creative Planet", trailer: "https://player.vimeo.com/video/937348940?h=05121cc81a" },
 };

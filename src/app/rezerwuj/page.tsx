@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import Card from "@/app/components/Card";
 import BookeroEmbed from "@/app/components/BookeroEmbed";
 import ScrollMotionItem from "@/app/components/ScrollMotionItem";
@@ -86,17 +87,47 @@ const COPY: Record<
 
 const noteIcons = [FaClock, FaLanguage, FaRoute];
 
-export default function BookingPage() {
-  const { locale } = useI18n();
-  const loc: Locale = (locale as Locale) ?? "pl";
-  const bookeroLang = loc === "en" ? "en" : "pl";
-  const copy = COPY[loc];
+// Wydzielone, bo useSearchParams() bez granicy <Suspense> wyłączał prerender
+// CAŁEJ strony (CSR bailout) — statyczny HTML /rezerwuj był pusty (bez H1
+// i treści), co szkodziło indeksowaniu najważniejszej strony sprzedażowej.
+// Teraz nagłówek i informacje prerenderują się, a tylko widżet czeka na parametry.
+function BookingWidget({ bookeroLang }: { bookeroLang: string }) {
   const searchParams = useSearchParams();
   const preselectCategory = searchParams.get(BOOKING_CATEGORY_PARAM) ?? "";
   const preselectService = searchParams.get(BOOKING_SERVICE_PARAM) ?? "";
   const preselectQuantityValue = Number.parseInt(searchParams.get(BOOKING_QUANTITY_PARAM) ?? "", 10);
   const preselectQuantity = Number.isFinite(preselectQuantityValue) ? preselectQuantityValue : undefined;
   const autoPickEarliestSlot = searchParams.get(BOOKING_AUTOPICK_PARAM) === "1";
+
+  return (
+    <Card
+      id="bookero-form"
+      variant="solid"
+      className="relative overflow-hidden !bg-white !ring-black/10"
+      motion="off"
+    >
+      <BookeroEmbed
+        pluginId={BOOKERO_PLUGIN_ID}
+        containerId="bookero"
+        type="calendar"
+        position=""
+        pluginCss
+        lang={bookeroLang}
+        preselectCategory={preselectCategory}
+        preselectService={preselectService}
+        preselectQuantity={preselectQuantity}
+        autoPickEarliestSlot={autoPickEarliestSlot}
+        className="w-full min-h-[980px] overflow-hidden rounded-2xl bg-white ring-1 ring-black/10"
+      />
+    </Card>
+  );
+}
+
+export default function BookingPage() {
+  const { locale } = useI18n();
+  const loc: Locale = (locale as Locale) ?? "pl";
+  const bookeroLang = loc === "en" ? "en" : "pl";
+  const copy = COPY[loc];
 
   return (
     <main className="relative min-h-screen text-white px-4 py-12 sm:py-16 ap-page-intro-stagger">
@@ -111,26 +142,9 @@ export default function BookingPage() {
         </header>
 
         <ScrollMotionItem strength="soft" delay={40} className="ap-deferred-section" float={false}>
-          <Card
-            id="bookero-form"
-            variant="solid"
-            className="relative overflow-hidden !bg-white !ring-black/10"
-            motion="off"
-          >
-            <BookeroEmbed
-              pluginId={BOOKERO_PLUGIN_ID}
-              containerId="bookero"
-              type="calendar"
-              position=""
-              pluginCss
-              lang={bookeroLang}
-              preselectCategory={preselectCategory}
-              preselectService={preselectService}
-              preselectQuantity={preselectQuantity}
-              autoPickEarliestSlot={autoPickEarliestSlot}
-              className="w-full min-h-[980px] overflow-hidden rounded-2xl bg-white ring-1 ring-black/10"
-            />
-          </Card>
+          <Suspense fallback={null}>
+            <BookingWidget bookeroLang={bookeroLang} />
+          </Suspense>
         </ScrollMotionItem>
 
         <ScrollMotionItem strength="soft" delay={90} className="ap-deferred-section" float={false}>

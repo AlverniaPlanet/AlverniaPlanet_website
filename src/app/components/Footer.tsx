@@ -427,7 +427,10 @@ const Footer = memo(function Footer() {
         <div className={`grid gap-6 rounded-3xl px-5 py-6 sm:px-8 sm:py-8 ${ctaSurface}`}>
           <div className="space-y-2">
             <p className="text-xs uppercase tracking-[0.3em] text-white/60">{copy.contact}</p>
-            <h2 className="text-2xl sm:text-3xl font-semibold">{copy.ctaTitle}</h2>
+            {/* Celowo <p>, nie nagłówek: to baner kontaktowy w stopce (globalny
+                element UI), nie sekcja treści — jako <h2> zaśmiecał strukturę
+                nagłówków każdej strony w oczach Google. */}
+            <p className="text-2xl sm:text-3xl font-semibold">{copy.ctaTitle}</p>
             <p className="text-white/70 text-sm sm:text-base leading-relaxed max-w-3xl">
               {copy.ctaSubtitle}
             </p>

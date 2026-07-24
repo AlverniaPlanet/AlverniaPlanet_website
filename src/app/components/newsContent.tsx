@@ -386,7 +386,9 @@ export const NewsSectionBlock = memo(function NewsSectionBlock({
 
   return (
     <ScrollMotionItem strength="soft" delay={90} float={false} className="home-deferred-block">
-      <Card title={news.title} titleCentered titleDivider dense motion="off">
+      {/* titleAs="h1": wariant pełny renderuje się tylko na /aktualnosci,
+          gdzie "Aktualności" to główny nagłówek strony (brakowało H1). */}
+      <Card title={news.title} titleAs="h1" titleCentered titleDivider dense motion="off">
         <p className="ap-type-section-body mx-auto max-w-3xl text-center">{news.intro}</p>
 
         {spotlightItem ? (

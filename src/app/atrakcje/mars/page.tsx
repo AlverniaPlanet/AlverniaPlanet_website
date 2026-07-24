@@ -69,13 +69,13 @@ function getMarsAssets() {
   }
 }
 
+// Uwaga: do lipca 2026 strona miała tu robots: noindex — relikt z fazy
+// koncepcji, przez który publiczna atrakcja była niewidoczna dla Google.
 export const metadata: Metadata = {
-  title: "MARS - Alvernia Planet",
-  description: "Niepubliczny podglad koncepcji strony Mars w Alvernia Planet.",
-  robots: {
-    index: false,
-    follow: false,
-  },
+  title: "Projekt MARS, Alvernia Planet",
+  description:
+    "Projekt MARS w Alvernia Planet: wciel się w astronautę i przeżyj misję marsjańską pod kopułami pod Krakowem. Bilety online.",
+  alternates: { canonical: "/atrakcje/mars" },
 };
 
 export default function MarsPage() {

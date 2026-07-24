@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { GALLERY_CATEGORIES } from "./galeria/galleryData";
+import { FILM_SLUGS } from "./atrakcje/kino-360/films";
 
 export const dynamic = "force-static";
 
@@ -8,6 +9,13 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://alverniaplanet.com"
 const galleryCategoryRoutes = GALLERY_CATEGORIES.map(
   (category) => `/galeria/${category.slug}`,
 );
+
+// Podstrony filmów Kina 360 we wszystkich trzech językach.
+const filmRoutes = FILM_SLUGS.flatMap((slug) => [
+  `/atrakcje/kino-360/${slug}`,
+  `/en/attractions/k360/${slug}`,
+  `/pt/attractions/k360/${slug}`,
+]);
 
 const routes = [
   "/",
@@ -49,6 +57,15 @@ const routes = [
   "/atrakcje/kino-360",
   "/en/attractions/k360",
   "/pt/attractions/k360",
+  "/atrakcje/mars",
+  "/faq",
+  "/en/faq",
+  "/pt/faq",
+  "/wydarzenia/vr",
+  "/en/events/vr",
+  "/pt/events/vr",
+  "/mars/konkurs-wyladuj-na-marsie",
+  ...filmRoutes,
   ...galleryCategoryRoutes,
 ];
 

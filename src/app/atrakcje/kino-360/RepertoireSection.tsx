@@ -11,6 +11,7 @@ import {
 } from "@/lib/booking";
 import { getLocalizedPath } from "@/lib/localizedRoutes";
 import { SolarIcon, type SolarIconName } from "@/app/components/SolarIcon";
+import LanguageBadge from "./LanguageBadge";
 import {
   FILMS,
   FILMS_COPY,
@@ -241,6 +242,9 @@ export default function RepertoireSection({ className = "" }: { className?: stri
                           {b}
                         </span>
                       ))}
+                      {/* Seanse mają polską ścieżkę dźwiękową — mówimy o tym od razu
+                          na karcie, nie dopiero na podstronie. */}
+                      <LanguageBadge locale={loc} size="sm" />
                     </div>
                     <h3 className="mt-2.5 text-pretty text-2xl font-black leading-[1.05] tracking-[-0.02em] text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.75)] sm:text-3xl">
                       {film.title}

@@ -408,7 +408,7 @@ export default function WejdzPodKopuleContent() {
             </PrimaryButton>
             <a
               href="#trasa"
-              className="inline-flex items-center justify-center gap-1.5 rounded-full border border-white/25 bg-white/[0.06] px-3.5 py-1.5 text-xs font-semibold text-white backdrop-blur-md transition hover:border-[#7ef6ff]/60 hover:bg-white/12 sm:gap-2 sm:px-6 sm:py-2.5 sm:text-sm"
+              className="inline-flex items-center justify-center gap-1.5 rounded-[var(--ap-btn-radius)] border border-white/25 bg-white/[0.06] px-3.5 py-1.5 text-xs font-semibold text-white backdrop-blur-md transition hover:border-[#7ef6ff]/60 hover:bg-white/12 sm:gap-2 sm:px-6 sm:py-2.5 sm:text-sm"
             >
               {t.heroCtaSecondary}
               <span aria-hidden="true">↓</span>

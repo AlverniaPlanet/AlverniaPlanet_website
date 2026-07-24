@@ -67,9 +67,11 @@ export default function GalleryPage() {
                           </span>
                         </div>
                         <div className="flex flex-1 flex-col gap-2 p-4 sm:p-5">
-                          <h2 className="text-lg font-semibold tracking-tight text-white sm:text-xl">
+                          {/* h3, nie h2: tytuł karty kategorii, podrzędny
+                              wobec H1 "Galeria" — oszczędne użycie nagłówków. */}
+                          <h3 className="text-lg font-semibold tracking-tight text-white sm:text-xl">
                             {title}
-                          </h2>
+                          </h3>
                           <p className="text-sm leading-relaxed text-white/72">{intro}</p>
                           <span className="mt-auto inline-flex items-center gap-1.5 pt-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#7ef6ff] transition group-hover:text-white">
                             {labels.morePhotos}

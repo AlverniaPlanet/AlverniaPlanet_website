@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { languageAlternates } from "@/lib/seo";
 import FilmContent from "./FilmContent";
 import { FILM_SLUGS, findFilm, FILMS_COPY } from "../films";
 
@@ -23,7 +24,7 @@ export async function generateMetadata({
   return {
     title: `${film.title}: Kino 360, Alvernia Planet`,
     description: desc,
-    alternates: { canonical },
+    alternates: languageAlternates(canonical, "pl"),
     openGraph: {
       title: `${film.title}: Kino 360, Alvernia Planet`,
       description: desc,

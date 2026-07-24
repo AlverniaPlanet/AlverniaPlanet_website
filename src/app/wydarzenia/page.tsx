@@ -332,50 +332,50 @@ type ContactItem = {
 const CONTACTS: Record<Locale, ContactItem[]> = {
   pl: [
     {
+      name: "BARTEK JACOŃ",
+      role: "Starszy specjalista ds. sprzedaży",
+      phone: "+48 723 999 099",
+      email: "b.jacon@gremi.pl",
+      accentClass: "text-[#f77828] hover:text-[#f03c64]",
+    },
+    {
       name: "PIOTR KOZOŁUB",
       role: "Specjalista ds. sprzedaży",
       phone: "+48 452 432 315",
       email: "p.kozolub@gremi.pl",
       accentClass: "text-[#f03c64] hover:text-[#f77828]",
-    },
-    {
-      name: "BARTEK JACOŃ",
-      role: "Specjalista ds. sprzedaży",
-      phone: "+48 723 999 099",
-      email: "b.jacon@gremi.pl",
-      accentClass: "text-[#f77828] hover:text-[#f03c64]",
     },
   ],
   en: [
     {
+      name: "BARTEK JACOŃ",
+      role: "Senior sales specialist",
+      phone: "+48 723 999 099",
+      email: "b.jacon@gremi.pl",
+      accentClass: "text-[#f77828] hover:text-[#f03c64]",
+    },
+    {
       name: "PIOTR KOZOŁUB",
       role: "Sales specialist",
       phone: "+48 452 432 315",
       email: "p.kozolub@gremi.pl",
       accentClass: "text-[#f03c64] hover:text-[#f77828]",
-    },
-    {
-      name: "BARTEK JACOŃ",
-      role: "Sales specialist",
-      phone: "+48 723 999 099",
-      email: "b.jacon@gremi.pl",
-      accentClass: "text-[#f77828] hover:text-[#f03c64]",
     },
   ],
   pt: [
     {
+      name: "BARTEK JACOŃ",
+      role: "Especialista sénior de vendas",
+      phone: "+48 723 999 099",
+      email: "b.jacon@gremi.pl",
+      accentClass: "text-[#f77828] hover:text-[#f03c64]",
+    },
+    {
       name: "PIOTR KOZOŁUB",
       role: "Especialista de vendas",
       phone: "+48 452 432 315",
       email: "p.kozolub@gremi.pl",
       accentClass: "text-[#f03c64] hover:text-[#f77828]",
-    },
-    {
-      name: "BARTEK JACOŃ",
-      role: "Especialista de vendas",
-      phone: "+48 723 999 099",
-      email: "b.jacon@gremi.pl",
-      accentClass: "text-[#f77828] hover:text-[#f03c64]",
     },
   ],
 };
@@ -1315,11 +1315,14 @@ export default function EventsPage() {
                         {contacts.slice(0, 2).map((person) => (
                           <article
                             key={`event-card-${person.email}`}
-                            className="events-contact-card ap-interactive-surface rounded-xl border p-3 sm:p-4"
+                            className="events-contact-card ap-interactive-surface flex h-full flex-col rounded-xl border p-3 sm:p-4"
                           >
                             <p className="text-base font-semibold text-white">{person.name}</p>
                             <p className="mt-1 text-xs sm:text-sm text-white/70">{person.role}</p>
-                            <p className="mt-2 text-sm">
+                            {/* mt-auto: stanowiska mają różną długość („Starszy specjalista…”
+                                zawija się na 2 linie w układzie 2-kolumnowym), więc numery
+                                dociskamy do dołu, żeby zostały wyrównane między kartami. */}
+                            <p className="mt-auto pt-2 text-sm">
                               <a
                                 href={`tel:${person.phone.replace(/\s+/g, "")}`}
                                 className="events-contact-link"

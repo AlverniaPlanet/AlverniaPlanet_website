@@ -31,6 +31,7 @@ const COPY: Record<
       phoneLabel: string;
       hoursLabel: string;
       hotlineHours: string[];
+      altContactLabel: string;
       emailLabel: string;
     };
     booking: {
@@ -73,6 +74,7 @@ const COPY: Record<
       phoneLabel: "Telefon",
       hoursLabel: "Godziny infolinii",
       hotlineHours: ["Poniedziałek - piątek: 9:00 - 16:00"],
+      altContactLabel: "Kontakt dodatkowy",
       emailLabel: "Email",
     },
     booking: {
@@ -114,6 +116,7 @@ const COPY: Record<
       phoneLabel: "Phone",
       hoursLabel: "Info line hours",
       hotlineHours: ["Monday - Friday: 9:00 - 16:00"],
+      altContactLabel: "Additional contact",
       emailLabel: "Email",
     },
     booking: {
@@ -155,6 +158,7 @@ const COPY: Record<
       phoneLabel: "Telefone",
       hoursLabel: "Horário da linha de informação",
       hotlineHours: ["Segunda - sexta: 9:00 - 16:00"],
+      altContactLabel: "Contacto adicional",
       emailLabel: "Email",
     },
     booking: {
@@ -264,7 +268,7 @@ export default function KontaktPage() {
                   {copy.info.description}
                 </p>
                 <div className="w-full space-y-5">
-                  <div className="ap-tile ap-tile-sm space-y-2 p-4">
+                  <div className="ap-tile ap-tile-sm space-y-4 p-4">
                     <div className="space-y-1">
                       <p className="text-sm uppercase tracking-[0.2em] text-white/60">{copy.info.phoneLabel}</p>
                       <p className="text-lg font-semibold">{formatPhone(PHONE_INFO)}</p>
@@ -276,6 +280,14 @@ export default function KontaktPage() {
                           <li key={line}>{line}</li>
                         ))}
                       </ul>
+                    </div>
+                    {/* Numer Szymona Sambora powielony z karty „Rezerwacje i grupy".
+                        Celowo POD godzinami infolinii — inaczej wyglądałoby, jakby
+                        godziny 9:00-16:00 dotyczyły także jego numeru. */}
+                    <div className="space-y-1 border-t border-white/10 pt-3">
+                      <p className="text-xs uppercase tracking-[0.2em] text-white/60">{copy.info.altContactLabel}</p>
+                      <p className="text-sm text-gray-300">Szymon Sambor</p>
+                      <p className="text-base font-semibold">{formatPhone(PHONE_BOOKING_SECOND)}</p>
                     </div>
                   </div>
                   <div className="ap-tile ap-tile-sm w-full space-y-2 p-4">
@@ -335,15 +347,16 @@ export default function KontaktPage() {
                 </p>
                 <div className="ap-tile ap-tile-sm w-full space-y-3 p-4">
                   <p className="text-sm uppercase tracking-[0.2em] text-white/60">{copy.events.contactLabel}</p>
-                  <div className="space-y-1">
-                    <p className="font-semibold">Piotr Kozołub</p>
-                    <p className="text-gray-300">{formatPhone(PHONE_EVENTS_SECOND)}</p>
-                    <p className="text-[#f03c64]">{MAIL_EVENTS_SECOND}</p>
-                  </div>
+                  {/* Bartłomiej Jacoń jako pierwszy kontakt eventowy. */}
                   <div className="space-y-1">
                     <p className="font-semibold">{copy.events.primaryName}</p>
                     <p className="text-gray-300">{formatPhone(PHONE_BOOKING)}</p>
                     <p className="text-[#f77828]">{MAIL_EVENTS}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="font-semibold">Piotr Kozołub</p>
+                    <p className="text-gray-300">{formatPhone(PHONE_EVENTS_SECOND)}</p>
+                    <p className="text-[#f03c64]">{MAIL_EVENTS_SECOND}</p>
                   </div>
                 </div>
               </Card>

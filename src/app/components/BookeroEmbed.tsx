@@ -1126,22 +1126,33 @@ export default function BookeroEmbed({
     };
 
     const intervalId = window.setInterval(syncSelection, PRESELECT_POLL_INTERVAL_MS);
-    const observer = new MutationObserver(() => {
-      stableAttempts = 0;
-      syncSelection();
-    });
+    // Zbieramy serie mutacji widżetu w JEDNĄ klatkę (rAF) zamiast odpalać ciężki
+    // sweep querySelectorAll na KAŻDĄ mutację. Kalendarz Bookero mutuje bez przerwy,
+    // więc bez tego dławienia wątek główny się zalewa i strona zacina przy wyborze
+    // terminu na telefonie. Zawężamy też obserwowane atrybuty (bez characterData).
+    let observerRaf = 0;
+    const scheduleSync = () => {
+      if (observerRaf) return;
+      observerRaf = window.requestAnimationFrame(() => {
+        observerRaf = 0;
+        stableAttempts = 0;
+        syncSelection();
+      });
+    };
+    const observer = new MutationObserver(scheduleSync);
 
     observer.observe(document.body, {
       childList: true,
       subtree: true,
       attributes: true,
-      characterData: true,
+      attributeFilter: ["class", "disabled", "value"],
     });
 
     syncSelection();
 
     return () => {
       window.clearInterval(intervalId);
+      if (observerRaf) window.cancelAnimationFrame(observerRaf);
       observer.disconnect();
     };
   }, [preselectCategory, preselectQuantity, preselectService, type]);
@@ -1204,9 +1215,17 @@ export default function BookeroEmbed({
       }
     }, PRESELECT_POLL_INTERVAL_MS);
 
-    const observer = new MutationObserver(() => {
-      trySync();
-    });
+    // Dławienie przez rAF — zbieramy serie mutacji kalendarza w jedną klatkę,
+    // zamiast odpalać trySync (querySelectorAll) na każdą mutację (jank na telefonie).
+    let observerRaf = 0;
+    const scheduleTry = () => {
+      if (observerRaf) return;
+      observerRaf = window.requestAnimationFrame(() => {
+        observerRaf = 0;
+        trySync();
+      });
+    };
+    const observer = new MutationObserver(scheduleTry);
 
     observer.observe(document.body, {
       childList: true,
@@ -1219,6 +1238,7 @@ export default function BookeroEmbed({
 
     return () => {
       window.clearInterval(intervalId);
+      if (observerRaf) window.cancelAnimationFrame(observerRaf);
       observer.disconnect();
     };
   }, [autoPickEarliestSlot, preselectCategory, preselectService, type]);
@@ -1228,6 +1248,12 @@ export default function BookeroEmbed({
 
   return (
     <div className="relative overflow-hidden" aria-busy={isLoading}>
+      {/* Wcześniejsze nawiązanie połączenia z CDN Bookero (DNS+TLS) — widżet to
+          zależność FUNKCJONALNA (silnik rezerwacji), nie tracker, więc nie podlega
+          bramce zgód. React 19 hoistuje te <link> do <head>; są renderowane tylko
+          na stronach z widżetem (rezerwuj/kontakt/grupy), nie globalnie. */}
+      <link rel="preconnect" href="https://cdn.bookero.pl" />
+      <link rel="dns-prefetch" href="https://cdn.bookero.pl" />
       <div
         ref={containerRef}
         id={containerId}

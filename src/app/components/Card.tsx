@@ -12,6 +12,8 @@ type CardProps = {
   /** Jaki element ma zostać wyrenderowany (domyślnie <article>) */
   as?: React.ElementType;
   title?: React.ReactNode;
+  /** Poziom nagłówka tytułu — "h1" na stronach, których to jest główny tytuł. */
+  titleAs?: "h1" | "h2" | "h3";
   titleClassName?: string;
   titleCentered?: boolean;
   titleDivider?: boolean;
@@ -34,6 +36,7 @@ type CardProps = {
 export default function Card({
   as = "article",
   title,
+  titleAs = "h2",
   titleClassName,
   titleCentered = false,
   titleDivider = false,
@@ -82,15 +85,20 @@ export default function Card({
       <div>
         {title != null && (
           <>
-            <h2
-              className={cx(
-                "text-2xl sm:text-3xl md:text-4xl font-bold leading-tight text-balance mb-2",
-                titleCentered && "text-center",
-                titleClassName,
-              )}
-            >
-              {title}
-            </h2>
+            {(() => {
+              const TitleTag = titleAs;
+              return (
+                <TitleTag
+                  className={cx(
+                    "text-2xl sm:text-3xl md:text-4xl font-bold leading-tight text-balance mb-2",
+                    titleCentered && "text-center",
+                    titleClassName,
+                  )}
+                >
+                  {title}
+                </TitleTag>
+              );
+            })()}
             {titleDivider && (
               <div
                 className={cx(

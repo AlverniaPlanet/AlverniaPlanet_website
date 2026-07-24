@@ -242,11 +242,13 @@ export const FAQ_COPY: Record<Locale, FaqCopy> = {
 };
 
 // Sam akordeon FAQ (Card + lista), reużywalny na podstronie /faq oraz na home.
-export function FaqAccordion({ copy }: { copy: FaqCopy }) {
+// titleAs: na /faq tytuł jest głównym nagłówkiem strony (h1); przy osadzeniu
+// w innej stronie (np. home) zostaje domyślne h2.
+export function FaqAccordion({ copy, titleAs = "h2" }: { copy: FaqCopy; titleAs?: "h1" | "h2" }) {
   const [openIndex, setOpenIndex] = useState<number>(0);
 
   return (
-    <Card title={copy.title} titleCentered titleDivider dense motion="off">
+    <Card title={copy.title} titleAs={titleAs} titleCentered titleDivider dense motion="off">
       <p className="ap-type-section-body mx-auto max-w-2xl text-center">{copy.subtitle}</p>
 
       <ul className="mt-8 space-y-3">
@@ -299,7 +301,7 @@ export default function FaqContent({ copy }: { copy: FaqCopy }) {
   return (
     <main className="relative min-h-screen px-4 py-16 text-white sm:py-20">
       <div className="mx-auto max-w-[56rem]">
-        <FaqAccordion copy={copy} />
+        <FaqAccordion copy={copy} titleAs="h1" />
       </div>
     </main>
   );

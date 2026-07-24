@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { languageAlternates } from "@/lib/seo";
 
 // Zlokalizowane meta dla /en (dotąd dziedziczyło polskie title/description/og:locale).
 const title = "Alvernia Planet: Film World - Explore the world of film!";
@@ -8,7 +9,7 @@ const description =
 export const metadata: Metadata = {
   title,
   description,
-  alternates: { canonical: "/en" },
+  alternates: languageAlternates("/", "en"),
   openGraph: {
     title,
     description,

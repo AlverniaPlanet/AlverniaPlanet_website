@@ -792,7 +792,7 @@ export default function MarsLandingContent({
               <div className="flex justify-center pt-1" data-reveal data-reveal-glow style={ri(3)}>
                 <Link
                   href="/mars/konkurs-wyladuj-na-marsie"
-                  className="inline-flex items-center gap-2 rounded-full bg-gradient-to-br from-[#f77828] to-[#ff9357] px-6 py-3 text-sm font-bold uppercase tracking-[0.18em] text-[#170a04] shadow-[0_12px_30px_rgba(247,120,40,0.4)] transition hover:scale-[1.03] hover:brightness-110"
+                  className="inline-flex items-center gap-2 rounded-[var(--ap-btn-radius)] bg-gradient-to-br from-[#f77828] to-[#ff9357] px-6 py-3 text-sm font-bold uppercase tracking-[0.18em] text-[#170a04] shadow-[0_12px_30px_rgba(247,120,40,0.4)] transition hover:scale-[1.03] hover:brightness-110"
                 >
                   <FaFilm aria-hidden="true" />
                   Poznaj konkurs i zasady
@@ -841,7 +841,7 @@ export default function MarsLandingContent({
                     href="/mars/Mapka_mars_na_strone.webp"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-full bg-gradient-to-br from-[#f77828] to-[#ff9357] px-6 py-3 text-sm font-bold uppercase tracking-[0.18em] text-[#170a04] shadow-[0_12px_30px_rgba(247,120,40,0.4)] transition hover:scale-[1.03] hover:brightness-110"
+                    className="inline-flex items-center gap-2 rounded-[var(--ap-btn-radius)] bg-gradient-to-br from-[#f77828] to-[#ff9357] px-6 py-3 text-sm font-bold uppercase tracking-[0.18em] text-[#170a04] shadow-[0_12px_30px_rgba(247,120,40,0.4)] transition hover:scale-[1.03] hover:brightness-110"
                   >
                     <FaLocationDot aria-hidden="true" />
                     Otwórz pełną mapę

@@ -1,5 +1,7 @@
 "use client";
 
+import { CONSENT_VERSION } from "./consentVersion";
+
 // ---------------------------------------------------------------------------
 // Zgoda na cookies (RODO / ePrivacy). Model + trwałe zapamiętanie wyboru
 // + zdarzenia do synchronizacji banera z ładowaniem trackerów.
@@ -26,8 +28,11 @@ export type ConsentState = {
   ts: number;
 };
 
-// Podbij, jeśli zmienią się kategorie/zakres — wymusi ponowne pytanie o zgodę.
-export const CONSENT_VERSION = 1;
+// UWAGA: CONSENT_VERSION celowo NIE jest tu re-eksportowany. Ten moduł ma
+// "use client", więc import stałej z niego w komponencie serwerowym cicho
+// podstawia proxy klienckie (to był realny bug w RootLayout). Importuj zawsze
+// bezpośrednio z "@/lib/consentVersion" — brak re-eksportu sprawia, że pomyłka
+// wywali się na etapie kompilacji zamiast po cichu zepsuć zgody na produkcji.
 const STORAGE_KEY = "ap-cookie-consent";
 
 export const CONSENT_CHANGE_EVENT = "ap:consent-change";

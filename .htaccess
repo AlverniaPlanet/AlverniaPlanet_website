@@ -7,15 +7,56 @@ DirectorySlash Off
   RewriteEngine On
   RewriteBase /
 
-  # QR MarsApp: /qrcodemarsapp -> wykryj system i przekieruj
+  # --- Kanoniczny host: https + bez www (301) -------------------------------
+  # Google indeksował www i http jako osobne duplikaty całej strony.
+  # www -> bez www (dowolny protokół, jeden skok od razu na https)
+  RewriteCond %{HTTP_HOST} ^www\.alverniaplanet\.com$ [NC]
+  RewriteRule ^(.*)$ https://alverniaplanet.com/$1 [R=301,L]
+  # http -> https (tylko na docelowej domenie, żeby nie psuć środowisk testowych)
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP_HOST} ^alverniaplanet\.com$ [NC]
+  RewriteRule ^(.*)$ https://alverniaplanet.com/$1 [R=301,L]
+
+  # --- Stare adresy (Joomla + poprzednie wersje serwisu) -> 301 --------------
+  # Lista z raportu 404 w Google Search Console (lipiec 2026).
+  # Joomla: /index.php, /index.php/pl/..., /index.php/en/... (+ parametry)
+  RewriteRule ^index\.php/en(/.*)?$ /en [R=301,L,QSD]
+  RewriteRule ^index\.php(/.*)?$ / [R=301,L,QSD]
+  # Stary podserwis eventowy: /events, /events/index.php/...
+  RewriteRule ^events(/.*)?$ /wydarzenia [R=301,L,QSD]
+  # Stara strona biletów
+  RewriteRule ^bilety/?$ /rezerwuj [R=301,L]
+  RewriteRule ^en/tickets/?$ /en/reserve [R=301,L]
+  RewriteRule ^pt/tickets/?$ /pt/reservar [R=301,L]
+  # Stara nazwa Kina 360: cinema-360 -> k360
+  RewriteRule ^(en|pt)/attractions/cinema-360/?$ /$1/attractions/k360 [R=301,L]
+  # Mieszane ścieżki (prefiks językowy + polski adres) z czasów starego routingu
+  # (ścieżka filmowa -> oferta grupowa, spójnie ze stubami w aplikacji)
+  RewriteRule ^(en|pt)/atrakcje/sciezka-filmowa/?$ /$1/groups [R=301,L]
+  RewriteRule ^(en|pt)/atrakcje/(k360|kino-360)/?$ /$1/attractions/k360 [R=301,L]
+  RewriteRule ^(en|pt)/atrakcje/(.+)$ /atrakcje/$2 [R=301,L]
+  # Stara gra bingo Runmageddonu -> archiwalna strona wydarzenia
+  RewriteRule ^runnmageddon-bingo/?$ /runmageddon [R=301,L]
+  # Materiały PDF ze starego Joomla nie istnieją -> 410 Gone (Google usuwa szybciej niż 404)
+  RewriteRule ^images/pdf/ - [G]
+
+  # QR MarsApp: /qrcodemarsapp oraz krótszy alias /qrcode -> wykryj system i przekieruj
   #   iOS (iPhone/iPad/iPod) -> App Store
   #   Android                -> Google Play
   #   Desktop / inne         -> homepage
+  # [NC] także na ścieżce — generatory QR bywają kapryśne z wielkością liter.
   RewriteCond %{HTTP_USER_AGENT} (iPhone|iPad|iPod) [NC]
-  RewriteRule ^qrcodemarsapp/?$ https://apps.apple.com/pl/app/marsapp/id6775477060?l=pl [R=302,L]
+  RewriteRule ^qrcode(marsapp)?/?$ https://apps.apple.com/pl/app/marsapp/id6775477060?l=pl [R=302,L,NC]
   RewriteCond %{HTTP_USER_AGENT} Android [NC]
-  RewriteRule ^qrcodemarsapp/?$ https://play.google.com/store/apps/details?id=com.alverniaplanet.marsvideo [R=302,L]
-  RewriteRule ^qrcodemarsapp/?$ https://www.alverniaplanet.com/ [R=302,L]
+  RewriteRule ^qrcode(marsapp)?/?$ https://play.google.com/store/apps/details?id=com.alverniaplanet.marsvideo [R=302,L,NC]
+  # UWAGA: iPad z iPadOS 13+ przedstawia się jako "Macintosh" (Safari domyślnie
+  # prosi o wersję desktopową), więc po UA nie da się go odróżnić od prawdziwego
+  # Maca. Takich żądań celowo NIE przekierowujemy tutaj — spadają na stronę
+  # /qrcode, której skrypt rozpoznaje iPada po obsłudze dotyku
+  # (navigator.maxTouchPoints) i kieruje go do App Store, a Maca na stronę główną.
+  RewriteCond %{HTTP_USER_AGENT} !Macintosh [NC]
+  # (bez www — po dodaniu kanonicznego hosta www robiłoby drugi skok)
+  RewriteRule ^qrcode(marsapp)?/?$ https://alverniaplanet.com/ [R=302,L,NC]
 
   # Serve existing files as-is
   RewriteCond %{REQUEST_FILENAME} -f
@@ -41,6 +82,11 @@ ErrorDocument 404 /404.html
 # Caching static assets
 <IfModule mod_expires.c>
   ExpiresActive On
+  # HTML musi być zawsze świeży. Wcześniej łapał go ExpiresDefault (3 dni), więc
+  # po wdrożeniu wracający użytkownik przez maksymalnie 3 dni dostawał z cache
+  # STARY dokument, który odwołuje się do skasowanych już plików /_next/static/**
+  # (hashowane nazwy) — strona się nie hydratowała, a poprawki treści nie docierały.
+  ExpiresByType text/html "access plus 0 seconds"
   ExpiresByType text/css "access plus 1 month"
   ExpiresByType application/javascript "access plus 1 month"
   ExpiresByType text/javascript "access plus 1 month"
@@ -65,6 +111,13 @@ ErrorDocument 404 /404.html
     SetEnvIf Request_URI "^/_next/static/" NEXT_IMMUTABLE=1
     Header set Cache-Control "public, max-age=31536000, immutable" env=NEXT_IMMUTABLE
   </IfModule>
+
+  # HTML: cache dozwolony, ale zawsze z rewalidacją (serwer odpowie 304, jeśli
+  # dokument się nie zmienił). Dzięki temu wdrożenie jest widoczne natychmiast,
+  # a transfer i tak pozostaje minimalny.
+  <FilesMatch "\.html$">
+    Header set Cache-Control "public, max-age=0, must-revalidate"
+  </FilesMatch>
 </IfModule>
 
 # Basic security headers

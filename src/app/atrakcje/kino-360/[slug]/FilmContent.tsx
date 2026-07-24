@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useI18n } from "@/app/i18n-provider";
 import { PrimaryButton } from "@/app/components/PrimaryButton";
 import ScrollMotionItem from "@/app/components/ScrollMotionItem";
+import LanguageBadge from "../LanguageBadge";
 import {
   buildBookingPath,
   K360_BOOKING_CATEGORY,
@@ -191,6 +192,7 @@ export default function FilmContent({ slug }: { slug: string }) {
                   <span className="rounded-full border border-white/15 bg-white/[0.06] px-3 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.1em] text-white/70">
                     {fc.audience}
                   </span>
+                  <LanguageBadge locale={loc} size="md" />
                 </div>
 
                 {/* Produkcja + nagrody */}
@@ -422,9 +424,11 @@ export default function FilmContent({ slug }: { slug: string }) {
               background: `radial-gradient(120% 130% at 50% 0%, ${accent}26, rgba(10,6,18,0.5) 60%)`,
             }}
           >
-            <h2 className="text-pretty text-2xl font-black tracking-[-0.02em] text-white sm:text-3xl">
+            {/* <p>, nie <h2>: tytuł filmu jest już H1 tej strony — powtórka
+                w banerze CTA zaśmiecała strukturę nagłówków. */}
+            <p className="text-pretty text-2xl font-black tracking-[-0.02em] text-white sm:text-3xl">
               {film.title}
-            </h2>
+            </p>
             <p className="mx-auto mt-2 max-w-xl text-sm text-white/72 sm:text-base">
               {fc.tagline}
             </p>
