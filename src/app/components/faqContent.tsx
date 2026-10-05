@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Card from "@/app/components/Card";
 import type { Locale } from "@/lib/localizedRoutes";
+import { SolarIcon } from "./SolarIcon";
 
 export type FaqItem = {
   question: string;
@@ -34,7 +35,7 @@ export const FAQ_COPY: Record<Locale, FaqCopy> = {
       },
       {
         question: "Ile czasu zajmuje skorzystanie ze wszystkich atrakcji?",
-        answer: "Zwiedzanie wszystkich atrakcji we własnym tempie zajmuje średnio od 2 do 3 godzin.",
+        answer: "Zwiedzanie wszystkich atrakcji zajmuje średnio od 2 do 3 godzin. FILMWORLD zwiedzasz z przewodnikiem (1 godz. 15 min), a seans w Kinie 360 trwa około 30 minut.",
       },
       {
         question: "Czy można zmienić termin rezerwacji?",
@@ -108,7 +109,7 @@ export const FAQ_COPY: Record<Locale, FaqCopy> = {
       },
       {
         question: "How long does it take to enjoy all the attractions?",
-        answer: "Visiting all the attractions at your own pace takes on average 2 to 3 hours.",
+        answer: "Visiting all the attractions takes on average 2 to 3 hours. FILMWORLD is a guided visit (1 h 15 min) and the K360 Cinema screening lasts about 30 minutes.",
       },
       {
         question: "Can I change my booking date?",
@@ -182,7 +183,7 @@ export const FAQ_COPY: Record<Locale, FaqCopy> = {
       },
       {
         question: "Quanto tempo demora a desfrutar de todas as atrações?",
-        answer: "Visitar todas as atrações ao teu ritmo demora, em média, 2 a 3 horas.",
+        answer: "Visitar todas as atrações demora, em média, 2 a 3 horas. O FILMWORLD é uma visita guiada (1 h 15 min) e a sessão no cinema K360 dura cerca de 30 minutos.",
       },
       {
         question: "É possível alterar a data da reserva?",
@@ -239,6 +240,154 @@ export const FAQ_COPY: Record<Locale, FaqCopy> = {
       },
     ],
   },
+  de: {
+    badge: "FAQ",
+    title: "Häufig gestellte Fragen",
+    subtitle: "Schnelle Antworten vor Ihrem Besuch und Ihrer Buchung.",
+    items: [
+      {
+        question: "Wer hat Anspruch auf ein ermäßigtes Ticket?",
+        answer:
+          "Ein ermäßigtes Ticket erhalten gegen Vorlage eines gültigen Nachweises:\n• Kinder und Schülerinnen und Schüler bis zum vollendeten 19. Lebensjahr (gültiger Schülerausweis);\n• Studierende und Doktorandinnen und Doktoranden bis zum vollendeten 26. Lebensjahr (gültiger Studierenden- oder Promotionsausweis);\n• Rentnerinnen und Rentner sowie Pensionärinnen und Pensionäre (Ausweis mit Lichtbild; bei einem Ausweis ohne Lichtbild zusätzlich ein amtliches Lichtbilddokument);\n• Menschen mit Behinderung (Behinderungsnachweis oder Schwerbehindertenausweis);\n• eine Begleitperson oder Assistenz, die eine Person mit Behinderung während des Besuchs begleitet.\n\nFreien Eintritt haben Kinder unter 3 Jahren sowie die Begleitperson oder Assistenz einer Person mit Behinderung unter 16 Jahren. Die Berechtigung kann am Eingang überprüft werden; ohne den erforderlichen Nachweis kann die Differenz zum regulären Ticket nachzuzahlen sein. Alle Einzelheiten finden Sie in der Besucherordnung.",
+      },
+      {
+        question: "In welcher Reihenfolge sollte ich das Gelände mit einem Ticket für alle Attraktionen besuchen?",
+        answer:
+          "Sie können die Attraktionen in beliebiger Reihenfolge besuchen. Wir empfehlen die Route „Entdecken – Erleben – Spielen“: zuerst der Filmpfad, dann das Kino 360 und zum Abschluss MARS.",
+      },
+      {
+        question: "Wie lange dauert es, alle Attraktionen zu erleben?",
+        answer: "Der Besuch aller Attraktionen dauert im Durchschnitt 2 bis 3 Stunden. FILMWORLD besichtigen Sie mit Führung (1 Std. 15 Min.), und die Vorstellung im Kino 360 dauert etwa 30 Minuten.",
+      },
+      {
+        question: "Kann ich den Termin meiner Buchung ändern?",
+        answer: "Ja, den Termin Ihrer Buchung können Sie nach vorheriger Kontaktaufnahme mit unserer Infoline ändern.",
+      },
+      {
+        question: "Wie viele Personen können eine Attraktion gleichzeitig nutzen?",
+        answer:
+          "Kino 360 – bis zu 150 Personen, Filmpfad – bis zu 50 Personen, MARS – bis zu 25 Personen pro Durchgang.",
+      },
+      {
+        question: "Wie viele Kuppeln umfasst der Rundgang?",
+        answer: "Während Ihres Besuchs erkunden Sie 5 Kuppeln auf unserem Gelände.",
+      },
+      {
+        question: "Ist die Strecke für Rollstuhlfahrerinnen und Rollstuhlfahrer zugänglich?",
+        answer:
+          "Ja. Der größte Teil der Strecke ist für Rollstuhlfahrerinnen und Rollstuhlfahrer vollständig zugänglich. An einer Stelle gibt es eine Treppe, die über einen alternativen Weg umgangen werden kann.",
+      },
+      {
+        question: "Finden auch kleine Kinder etwas für sich?",
+        answer:
+          "Selbstverständlich. Unsere Attraktionen sind so gestaltet, dass jeder Gast – unabhängig vom Alter – etwas Interessantes und Spannendes findet.",
+      },
+      {
+        question: "Wann ist das Barbarendorf geöffnet?",
+        answer:
+          "Das Barbarendorf ist eine saisonale Attraktion, die zu ausgewählten Veranstaltungen und besonderen Anlässen geöffnet wird.",
+      },
+      {
+        question: "Kommen ältere Gäste beim Besuch auf dem Mars zurecht?",
+        answer:
+          "Ja. Bei MARS ist ein Set-Manager vor Ort, der hilft und alle Fragen der Teilnehmenden beantwortet.",
+      },
+      {
+        question: "Wie finde ich zu den einzelnen Attraktionen?",
+        answer:
+          "Auf dem Gelände stehen Karten bereit, die Ihnen den Weg zwischen den Attraktionen erleichtern. Außerdem zeigt Ihnen unser Empfangsteam gerne den Weg und gibt alle nötigen Auskünfte.",
+      },
+      {
+        question: "Wer sind Alver und Alvenia?",
+        answer:
+          "Alver und Alvenia sind die Maskottchen unseres Parks. Sie begegnen ihnen in den sozialen Medien, auf Souvenirs und während des Rundgangs auf dem Filmpfad.",
+      },
+      {
+        question: "Wird sich das Programm des Kino 360 ändern?",
+        answer:
+          "Ja. Die Vorstellungen im Kino 360 werden regelmäßig aktualisiert und in festgelegten Abständen gewechselt.",
+      },
+      {
+        question: "Darf ich das Gelände mit einem Hund betreten?",
+        answer:
+          "Hunde sind auf unserem Gelände willkommen, dürfen sich jedoch nur in den Außenbereichen aufhalten. Wegen der intensiven Ton- und Multimediaeffekte in den Kuppeln empfehlen wir, Tiere zu ihrem eigenen Wohlbefinden und ihrer Sicherheit nicht mit in die Attraktionen zu nehmen.",
+      },
+    ],
+  },
+  zh: {
+    badge: "FAQ",
+    title: "常见问题",
+    subtitle: "参观与预订前的快速解答。",
+    items: [
+      {
+        question: "哪些人可以购买优惠票？",
+        answer:
+          "出示有效证件后，以下人群可购买优惠票：\n• 19 周岁以下的儿童及在校学生（有效学生证）；\n• 26 周岁以下的大学生及博士生（有效学生证或博士生证）；\n• 退休人员及领取养老金人员（带照片的证件；证件无照片时，需另出示带照片的身份证件）；\n• 残障人士（残障证明或残障人士证件）；\n• 陪同残障人士参观的一名陪同人员或助理。\n\n3 周岁以下儿童，以及 16 周岁以下残障人士的陪同人员或助理可免费入场。入口处可能核验优惠资格；未能出示相应证件时，需补足与全价票之间的差额。详细规定请见《参观规则》。",
+      },
+      {
+        question: "持全项目通票时，建议按什么顺序游览？",
+        answer:
+          "各项目可按任意顺序游览。我们推荐“探索 – 体验 – 畅玩”路线：先走电影之路，再进入 Kino 360，最后前往 MARS。",
+      },
+      {
+        question: "游览全部项目需要多长时间？",
+        answer: "游览全部项目平均需要 2 至 3 小时。FILMWORLD 由导览员带领参观（1 小时 15 分钟），Kino 360 的放映约 30 分钟。",
+      },
+      {
+        question: "可以更改预订日期吗？",
+        answer: "可以。请提前联系我们的服务热线，即可更改预订日期。",
+      },
+      {
+        question: "每个项目同时可容纳多少人？",
+        answer:
+          "Kino 360 – 最多 150 人，电影之路 – 最多 50 人，MARS – 每场最多 25 人。",
+      },
+      {
+        question: "游览包含几座穹顶？",
+        answer: "参观期间，您将走进园区内的 5 座穹顶。",
+      },
+      {
+        question: "路线方便轮椅通行吗？",
+        answer:
+          "方便。绝大部分路线可供轮椅完全通行。路线中仅有一处台阶，可通过替代通道绕行。",
+      },
+      {
+        question: "小朋友也能找到适合自己的内容吗？",
+        answer:
+          "当然。我们的项目在设计时充分考虑了不同年龄的来宾，每个人都能找到有趣又投入的体验。",
+      },
+      {
+        question: "野蛮人村庄何时开放？",
+        answer:
+          "野蛮人村庄是季节性项目，仅在特定活动和特别时段开放。",
+      },
+      {
+        question: "年长的来宾能顺利体验 Mars 吗？",
+        answer:
+          "可以。MARS 现场配有片场负责人，随时提供协助并解答参与者的问题。",
+      },
+      {
+        question: "如何前往各个项目？",
+        answer:
+          "园区内设有导览地图，方便您在各项目之间穿行。前台工作人员也乐于为您指路并提供各类信息。",
+      },
+      {
+        question: "Alver 和 Alvenia 是谁？",
+        answer:
+          "Alver 和 Alvenia 是园区的吉祥物。您可以在社交媒体上、纪念品上以及游览电影之路时与他们相遇。",
+      },
+      {
+        question: "Kino 360 的片单会更换吗？",
+        answer:
+          "会。Kino 360 放映的影片会定期更新，并按固定周期轮换。",
+      },
+      {
+        question: "可以带狗进入园区吗？",
+        answer:
+          "园区欢迎携带犬只，但仅限户外区域。穹顶内的音效和多媒体效果较为强烈，为了动物的舒适与安全，我们不建议将宠物带入项目内部。",
+      },
+    ],
+  },
 };
 
 // Sam akordeon FAQ (Card + lista), reużywalny na podstronie /faq oraz na home.
@@ -273,9 +422,7 @@ export function FaqAccordion({ copy, titleAs = "h2" }: { copy: FaqCopy; titleAs?
                     aria-hidden
                     className={`text-white/60 transition-transform duration-300 ${isOpen ? "rotate-180" : "rotate-0"}`}
                   >
-                    <svg viewBox="0 0 20 20" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M5.5 7.5 10 12l4.5-4.5" />
-                    </svg>
+                    <SolarIcon name="chevron-down" className="h-5 w-5" />
                   </span>
                 </button>
                 <div

@@ -12,6 +12,11 @@ export type LeadInput = {
   consent_contact: boolean;
   entrance?: string; // wybrana atrakcja/wejście, np. "Kino 360", "MARS", "FILMWORLD", "VIP"
   page_url?: string;
+  /** Język, w którym gość ZOBACZYŁ klauzulę zgody. Funkcja brzegowa wybiera po
+      nim zatwierdzoną treść do kolumny `consent_text` — bez tego pola do bazy
+      trafia polski oryginał niezależnie od tego, co było na ekranie.
+      Opcjonalne, bo starsze wywołania (kiosk identyfikacji) go nie wysyłają. */
+  locale?: "pl" | "en" | "de" | "pt" | "zh";
 };
 
 export type SubmitLeadResult = { ok: true } | { ok: false; error: string };

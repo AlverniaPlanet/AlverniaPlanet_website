@@ -1,73 +1,55 @@
 import type { MetadataRoute } from "next";
 import { GALLERY_CATEGORIES } from "./galeria/galleryData";
 import { FILM_SLUGS } from "./atrakcje/kino-360/films";
+import { getLocalizedPath, LOCALES } from "@/lib/localizedRoutes";
 
 export const dynamic = "force-static";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://alverniaplanet.com";
 
-const galleryCategoryRoutes = GALLERY_CATEGORIES.map(
-  (category) => `/galeria/${category.slug}`,
-);
-
-// Podstrony filmów Kina 360 we wszystkich trzech językach.
-const filmRoutes = FILM_SLUGS.flatMap((slug) => [
-  `/atrakcje/kino-360/${slug}`,
-  `/en/attractions/k360/${slug}`,
-  `/pt/attractions/k360/${slug}`,
-]);
-
-const routes = [
+/**
+ * Trasy KANONICZNE (polskie). Warianty językowe wyliczamy niżej przez
+ * getLocalizedPath — tę samą mapę, z której korzystają linki w serwisie
+ * i hreflang. Wcześniej lista była wypisana ręcznie i potrojona (pl/en/pt),
+ * więc każdy nowy język oznaczał przepisanie kilkudziesięciu linii i ryzyko
+ * rozjazdu z faktycznym routingiem.
+ */
+const TRASY_WIELOJEZYCZNE = [
   "/",
-  "/en",
-  "/pt",
   "/aktualnosci",
-  "/en/news",
-  "/pt/news",
   "/wydarzenia",
-  "/en/events",
-  "/pt/events",
-  "/galeria",
-  "/en/gallery",
-  "/pt/gallery",
-  "/jak-dojechac",
-  "/en/getting-there",
-  "/pt/getting-there",
-  "/grupy",
-  "/en/groups",
-  "/pt/groups",
-  "/runmageddon",
-  "/en/runmageddon",
-  "/pt/runmageddon",
-  "/rezerwuj",
-  "/en/reserve",
-  "/pt/reservar",
-  "/o-alvernia-planet",
-  "/en/about",
-  "/pt/about",
-  "/kontakt",
-  "/en/contact",
-  "/pt/contact",
-  "/harry-potter-the-exhibition",
-  "/en/harry-potter-the-exhibition",
-  "/pt/harry-potter-the-exhibition",
-  "/atrakcje/filmworld",
-  "/en/attractions/under-the-dome",
-  "/pt/attractions/under-the-dome",
-  "/atrakcje/kino-360",
-  "/en/attractions/k360",
-  "/pt/attractions/k360",
-  "/atrakcje/mars",
-  "/faq",
-  "/en/faq",
-  "/pt/faq",
   "/wydarzenia/vr",
-  "/en/events/vr",
-  "/pt/events/vr",
-  "/mars/konkurs-wyladuj-na-marsie",
-  ...filmRoutes,
-  ...galleryCategoryRoutes,
+  "/galeria",
+  "/jak-dojechac",
+  "/bistro",
+  "/grupy",
+  "/runmageddon",
+  "/rezerwuj",
+  "/o-alvernia-planet",
+  "/kontakt",
+  "/harry-potter-the-exhibition",
+  "/atrakcje/filmworld",
+  "/atrakcje/kino-360",
+  "/faq",
+  ...FILM_SLUGS.map((slug) => `/atrakcje/kino-360/${slug}`),
 ];
+
+/** Trasy istniejące wyłącznie po polsku — bez wariantów językowych. */
+const TRASY_TYLKO_PL = [
+  "/atrakcje/mars",
+  "/mars-colonization",
+  "/mars/konkurs-wyladuj-na-marsie",
+  ...GALLERY_CATEGORIES.map((category) => `/galeria/${category.slug}`),
+];
+
+const routes = Array.from(
+  new Set([
+    ...TRASY_WIELOJEZYCZNE.flatMap((path) =>
+      LOCALES.map((locale) => getLocalizedPath(path, locale)),
+    ),
+    ...TRASY_TYLKO_PL,
+  ]),
+);
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();

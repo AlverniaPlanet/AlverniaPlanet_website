@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { languageAlternates } from "@/lib/seo";
 
 const title = "FILMWORLD Alvernia Planet";
-const description = "FILMWORLD at Alvernia Planet: a self-guided Free Flow route through the backstage of film, music and sound. 30-60 minutes at your own pace.";
+const description = "FILMWORLD at Alvernia Planet: a guided route through the backstage of film, music and sound. 1 h 15 min across six stops near Krakow.";
 
 // Zlokalizowane metadane aliasu EN polskiej trasy /atrakcje/filmworld.
 // Treść strony jest wspólna, ale tytuł, opis, canonical i hreflang muszą być

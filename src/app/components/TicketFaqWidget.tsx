@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { SolarIcon } from "./SolarIcon";
 
 export type TicketFaqItem = {
   question: string;
@@ -24,20 +25,7 @@ type TicketFaqWidgetProps = {
 
 function ChatSparkIcon() {
   return (
-    <svg viewBox="0 0 24 24" aria-hidden className="h-4 w-4">
-      <path
-        d="M6.5 7.25A3.25 3.25 0 0 1 9.75 4h4.5a3.25 3.25 0 0 1 3.25 3.25v3.5A3.25 3.25 0 0 1 14.25 14H12l-3.55 3.05c-.49.42-1.2.07-1.2-.58V14.94A3.23 3.23 0 0 1 6.5 12.75z"
-        fill="currentColor"
-        opacity="0.92"
-      />
-      <path
-        d="M9.3 8.2h5.4M9.3 10.85h3.35"
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeWidth="1.6"
-      />
-    </svg>
+    <SolarIcon name="message" className="h-4 w-4" />
   );
 }
 
@@ -109,15 +97,7 @@ export default function TicketFaqWidget({
             aria-label={copy.mobileCloseLabel}
             onClick={() => setIsExpanded(false)}
           >
-            <svg viewBox="0 0 20 20" className="h-4 w-4" aria-hidden>
-              <path
-                d="M6 6l8 8M14 6l-8 8"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeWidth="1.8"
-              />
-            </svg>
+            <SolarIcon name="close" className="h-4 w-4" weight="bold" />
           </button>
         ) : null}
       </div>
@@ -148,16 +128,7 @@ export default function TicketFaqWidget({
                   </span>
                   <span className="ticket-faq-question-copy">{item.question}</span>
                   <span className="ticket-faq-question-chevron" aria-hidden>
-                    <svg viewBox="0 0 20 20" className="h-4 w-4">
-                      <path
-                        d="M5.5 7.5 10 12l4.5-4.5"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="1.8"
-                      />
-                    </svg>
+                    <SolarIcon name="chevron-down" className="h-4 w-4" />
                   </span>
                 </button>
 
@@ -233,15 +204,7 @@ export default function TicketFaqWidget({
       >
         <span className="ticket-faq-mobile-fab-core" aria-hidden>
           {isExpanded ? (
-            <svg viewBox="0 0 20 20" className="h-5 w-5">
-              <path
-                d="M6 6l8 8M14 6l-8 8"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeWidth="1.8"
-              />
-            </svg>
+            <SolarIcon name="close" className="h-5 w-5" weight="bold" />
           ) : (
             <span className="ticket-faq-fab-mark">?</span>
           )}

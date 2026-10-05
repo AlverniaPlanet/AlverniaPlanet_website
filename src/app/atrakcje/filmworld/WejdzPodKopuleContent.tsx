@@ -7,12 +7,14 @@ import { PrimaryButton } from "@/app/components/PrimaryButton";
 import { useI18n } from "@/app/i18n-provider";
 import {
   buildBookingPath,
-  FILM_PATH_BOOKING_CATEGORY,
   FILM_PATH_BOOKING_SERVICES,
 } from "@/lib/booking";
 import { PROMO_PACKAGES } from "@/lib/promoPackages";
-import { AllAttractionsPromoCard } from "@/app/components/AllAttractionsPromoCard";
+import { AllAttractionsBundleBar } from "@/app/components/AllAttractionsBundleBar";
+import { AttractionPortal } from "@/app/components/AttractionPortal";
 import { HeroMarquee } from "@/app/components/HeroMarquee";
+import { type Locale } from "@/lib/localizedRoutes";
+import { SolarIcon } from "@/app/components/SolarIcon";
 
 // Wspólny styl „odcinka biletu" z perforacją po bokach (maska radialna).
 const TICKET_STUB_STYLE: CSSProperties = {
@@ -24,8 +26,6 @@ const TICKET_STUB_STYLE: CSSProperties = {
   WebkitMaskComposite: "source-in",
   maskComposite: "intersect",
 };
-
-type Locale = "pl" | "en" | "pt";
 
 type Scene = { num: string; label: string; title: string; place: string; body: string };
 
@@ -91,7 +91,7 @@ type Copy = {
 
 const COPY: Record<Locale, Copy> = {
   pl: {
-    heroKicker: "Free Flow • Zwiedzanie bez przewodnika",
+    heroKicker: "Zwiedzanie z przewodnikiem • 1 godz. 15 min",
     heroTitle: "FILMWORLD",
     heroTagline: "Zwiedź tajemnicze kopuły i odkryj, co naprawdę kryją kulisy filmu i muzyki.",
     heroStart: "Start trasy",
@@ -100,20 +100,20 @@ const COPY: Record<Locale, Copy> = {
     discoverBadge: "Poznaj",
     heroScroll: "Przewiń w dół",
 
-    infoBar: ["30–60 minut", "Bez przewodnika", "Własne tempo"],
+    infoBar: ["1 godz. 15 min", "Z przewodnikiem", "6 przystanków"],
 
     discoverTitleLead: "Nie zwiedzasz.",
     discoverTitleAccent: "Odkrywasz.",
     discoverLead: "Sześć tematycznych przystanków o filmie, dźwięku i muzyce.",
     discoverBody:
-      "Na trasie poznasz historię kina, kulisy dźwięku i muzyki filmowej, techniki efektów specjalnych z blue screenem oraz twórców związanych z obiektem, w tym Jana A.P. Kaczmarka, laureata Oscara. Zwiedzasz bez przewodnika, w 30–60 minut, we własnym tempie.",
-    discoverHighlights: ["6 przystanków", "30–60 minut", "Bez przewodnika"],
+      "Na trasie poznasz historię kina, kulisy dźwięku i muzyki filmowej, techniki efektów specjalnych z blue screenem oraz twórców związanych z obiektem, w tym Jana A.P. Kaczmarka, laureata Oscara. Trasę prowadzi przewodnik, a zwiedzanie trwa 1 godzinę 15 minut.",
+    discoverHighlights: ["6 przystanków", "1 godz. 15 min", "Z przewodnikiem"],
 
-    lightTitle: "Podążaj za niebieskim światłem",
-    lightMicro: "Gdy zobaczysz niebieskie światło, idź dalej.",
+    lightTitle: "Niebieskie światło prowadzi przez trasę",
+    lightMicro: "Przez wszystkie sześć przystanków prowadzi Cię przewodnik.",
 
     mapTitle: "Przebieg trasy",
-    mapIntro: "Sześć przystanków na trasie. Zobacz, co czeka na Ciebie po drodze, i wybierz, gdzie zatrzymasz się dłużej.",
+    mapIntro: "Sześć przystanków na trasie. Zobacz, co czeka na Ciebie po drodze.",
 
     scenes: [
       {
@@ -161,13 +161,13 @@ const COPY: Record<Locale, Copy> = {
     ],
 
     ticketsTitle: "Bilety",
-    ticketsTagline: "Jeden bilet. Sześć kopuł. Własne tempo.",
+    ticketsTagline: "Jeden bilet. Sześć kopuł. Przewodnik.",
     ticketBadge: "Przepustka za kulisy",
     ticketIncludes: [
-      "Zwiedzanie bez przewodnika, we własnym tempie",
-      "Czas: 30–60 minut",
+      "Zwiedzanie z przewodnikiem",
+      "Czas: 1 godz. 15 min",
       "6 przystanków: film, dźwięk, muzyka, efekty",
-      "Trasa: numery i niebieskie światło",
+      "Trasa: sześć przystanków prowadzonych przez przewodnika",
     ],
     priceNormalLabel: "Normalny",
     priceNormalValue: "79 zł/os.",
@@ -183,7 +183,7 @@ const COPY: Record<Locale, Copy> = {
   },
 
   en: {
-    heroKicker: "Free Flow • Self-guided visit",
+    heroKicker: "Guided visit • 1 h 15 min",
     heroTitle: "FILMWORLD",
     heroTagline: "Explore the mysterious domes and discover the secrets behind film and music.",
     heroStart: "Start the route",
@@ -192,20 +192,20 @@ const COPY: Record<Locale, Copy> = {
     discoverBadge: "Discover",
     heroScroll: "Scroll down",
 
-    infoBar: ["30–60 minutes", "No guide", "Your own pace"],
+    infoBar: ["1 h 15 min", "With a guide", "6 stops"],
 
     discoverTitleLead: "You don't tour.",
     discoverTitleAccent: "You discover.",
     discoverLead: "Six themed stops on film, sound and music.",
     discoverBody:
-      "You enter when you like and stay where you really want to. The route is marked by numbers and a trail of blue light, from the first dome to the finale. 30 to 60 minutes just for you and your people.",
-    discoverHighlights: ["6 stops", "30–60 minutes", "No guide"],
+      "A guide leads you from the first dome to the finale, along a route marked by numbers and a trail of blue light. One hour and fifteen minutes across six stops on film, sound and music.",
+    discoverHighlights: ["6 stops", "1 h 15 min", "With a guide"],
 
-    lightTitle: "Follow the blue light",
-    lightMicro: "When you see the blue light, keep going.",
+    lightTitle: "Blue light marks the route",
+    lightMicro: "A guide takes you through all six stops.",
 
     mapTitle: "The route",
-    mapIntro: "Six stops on the route. See what's waiting along the way and choose where to linger.",
+    mapIntro: "Six stops on the route. See what's waiting along the way.",
 
     scenes: [
       { num: "01", label: "Scene 01", title: "Where cinema begins", place: "Corridor of Film History", body: "A cross-section of film history: from the first cameras and photographic film, through the silent and analog eras, to digital projection. See how formats, shooting technology and visual storytelling changed." },
@@ -217,13 +217,13 @@ const COPY: Record<Locale, Copy> = {
     ],
 
     ticketsTitle: "Tickets",
-    ticketsTagline: "One ticket. Six domes. Your own pace.",
+    ticketsTagline: "One ticket. Six domes. A guide.",
     ticketBadge: "Backstage pass",
     ticketIncludes: [
-      "Self-guided visit, at your own pace",
-      "Duration: 30–60 minutes",
+      "Guided visit",
+      "Duration: 1 h 15 min",
       "6 stops: film, sound, music, effects",
-      "Route: numbers and blue light",
+      "Route: six stops led by a guide",
     ],
     priceNormalLabel: "Standard",
     priceNormalValue: "79 PLN/person",
@@ -239,7 +239,7 @@ const COPY: Record<Locale, Copy> = {
   },
 
   pt: {
-    heroKicker: "Free Flow • Visita sem guia",
+    heroKicker: "Visita guiada • 1 h 15 min",
     heroTitle: "FILMWORLD",
     heroTagline: "Explora as cúpulas misteriosas e descobre os segredos do cinema e da música.",
     heroStart: "Iniciar o percurso",
@@ -248,20 +248,20 @@ const COPY: Record<Locale, Copy> = {
     discoverBadge: "Descobre",
     heroScroll: "Desliza para baixo",
 
-    infoBar: ["30–60 minutos", "Sem guia", "Ao teu ritmo"],
+    infoBar: ["1 h 15 min", "Com guia", "6 paragens"],
 
     discoverTitleLead: "Não visitas.",
     discoverTitleAccent: "Descobres.",
     discoverLead: "Seis paragens temáticas sobre cinema, som e música.",
     discoverBody:
-      "No percurso vais conhecer a história do cinema, os bastidores do som e da música de cinema, técnicas de efeitos especiais com blue screen e criadores ligados ao espaço, incluindo Jan A.P. Kaczmarek, vencedor de um Óscar. Sem guia, em 30–60 minutos, ao teu ritmo.",
-    discoverHighlights: ["6 paragens", "30–60 minutos", "Sem guia"],
+      "No percurso vais conhecer a história do cinema, os bastidores do som e da música de cinema, técnicas de efeitos especiais com blue screen e criadores ligados ao espaço, incluindo Jan A.P. Kaczmarek, vencedor de um Óscar. Com guia, ao longo de 1 hora e 15 minutos.",
+    discoverHighlights: ["6 paragens", "1 h 15 min", "Com guia"],
 
-    lightTitle: "Segue a luz azul",
-    lightMicro: "Quando vires a luz azul, continua.",
+    lightTitle: "A luz azul marca o percurso",
+    lightMicro: "Um guia leva-te pelas seis paragens.",
 
     mapTitle: "O percurso",
-    mapIntro: "Seis paragens no percurso. Vê o que te espera pelo caminho e escolhe onde ficar mais tempo.",
+    mapIntro: "Seis paragens no percurso. Vê o que te espera pelo caminho.",
 
     scenes: [
       { num: "01", label: "Cena 01", title: "Onde nasce o cinema", place: "Corredor da História do Cinema", body: "Um corte transversal pela história do cinema: das primeiras câmaras e da película fotográfica, pela era muda e analógica, até à projeção digital. Vê como mudaram os suportes, a técnica de filmagem e a forma de contar com imagem." },
@@ -273,13 +273,13 @@ const COPY: Record<Locale, Copy> = {
     ],
 
     ticketsTitle: "Bilhetes",
-    ticketsTagline: "Um bilhete. Seis cúpulas. Ao teu ritmo.",
+    ticketsTagline: "Um bilhete. Seis cúpulas. Um guia.",
     ticketBadge: "Passe de bastidores",
     ticketIncludes: [
-      "Visita sem guia, ao teu ritmo",
-      "Duração: 30–60 minutos",
+      "Visita guiada",
+      "Duração: 1 h 15 min",
       "6 paragens: cinema, som, música, efeitos",
-      "Percurso: números e luz azul",
+      "Percurso: seis paragens com guia",
     ],
     priceNormalLabel: "Normal",
     priceNormalValue: "79 PLN/pessoa",
@@ -292,6 +292,118 @@ const COPY: Record<Locale, Copy> = {
     finalBody: "O resto acontece quando avanças. A tua cena espera. Basta o primeiro passo.",
     finalCtaPrimary: "Comprar bilhete",
     finalCtaSecondary: "Como chegar",
+  },
+
+  de: {
+    heroKicker: "Führung • 1 Std. 15 Min.",
+    heroTitle: "FILMWORLD",
+    heroTagline: "Entdecken Sie die geheimnisvollen Kuppeln und die Geheimnisse hinter Film und Musik.",
+    heroStart: "Rundgang starten",
+    heroCtaPrimary: "Ticket kaufen",
+    heroCtaSecondary: "Rundgang ansehen",
+    discoverBadge: "Entdecken",
+    heroScroll: "Nach unten scrollen",
+
+    infoBar: ["1 Std. 15 Min.", "Mit Guide", "6 Stationen"],
+
+    discoverTitleLead: "Sie besichtigen nicht.",
+    discoverTitleAccent: "Sie entdecken.",
+    discoverLead: "Sechs thematische Stationen zu Film, Ton und Musik.",
+    discoverBody:
+      "Ein Guide führt Sie von der ersten Kuppel bis zum Finale, entlang einer Route, die durch Nummern und ein blaues Lichtband markiert ist. Eine Stunde und fünfzehn Minuten über sechs Stationen zu Film, Ton und Musik.",
+    discoverHighlights: ["6 Stationen", "1 Std. 15 Min.", "Mit Guide"],
+
+    lightTitle: "Blaues Licht markiert die Route",
+    lightMicro: "Ein Guide begleitet Sie durch alle sechs Stationen.",
+
+    mapTitle: "Der Rundgang",
+    mapIntro: "Sechs Stationen auf der Route. Sehen Sie, was Sie unterwegs erwartet.",
+
+    scenes: [
+      { num: "01", label: "Szene 01", title: "Wo das Kino beginnt", place: "Korridor der Filmgeschichte", body: "Ein Querschnitt durch die Filmgeschichte: von den ersten Kameras und dem lichtempfindlichen Filmmaterial über die Stumm- und Analogzeit bis zur digitalen Projektion. Sie sehen, wie sich Trägermedien, Aufnahmetechnik und visuelles Erzählen verändert haben." },
+      { num: "02", label: "Szene 02", title: "Hören Sie das Bild", place: "Studio für Tonpostproduktion", body: "Woraus Filmton besteht: Dialoge, Foley (von Hand aufgenommene Geräusche), Atmosphären und die finale Mischung. Sie sehen die Aufnahme- und Schnitttechnik und erleben, wie dieselbe Szene je nach Tonebene ihre Bedeutung ändert." },
+      { num: "03", label: "Szene 03", title: "Musik, die die Leinwand bewegt", place: "Filmmusikstudio", body: "Die Rolle von Komponist und Filmmusik: wie ein musikalisches Thema Emotionen lenkt, wie Instrumente aufgenommen werden und wie sich Musik mit dem Bild synchronisiert. Beispiele zeigen, wie ein anderes Thema den Sinn einer Szene umkehren kann." },
+      { num: "04", label: "Szene 04", title: "Eine oscarprämierte Erinnerung", place: "Jan-A.-P.-Kaczmarek-Raum", body: "Ein Raum für Jan A.P. Kaczmarek, den polnischen Komponisten, der für die Musik zu „Wenn Träume fliegen lernen“ (2005) einen Oscar erhielt. Lernen Sie seinen Weg und die wichtigsten Produktionen kennen, an denen er mitgewirkt hat." },
+      { num: "05", label: "Szene 05", title: "Die Magie der Spezialeffekte", place: "Kuppel mit Blue Screen", body: "Wie Blue-/Greenscreen und Keying funktionieren: das Freistellen eines einfarbigen Hintergrunds und sein Ersetzen durch eine beliebige Kulisse. Sie erfahren den Unterschied zwischen praktischen und digitalen Effekten und wie ein Bild Schicht für Schicht entsteht." },
+      { num: "06", label: "Szene 06", title: "Spuren großer Namen", place: "Ruhmeshalle", body: "Persönlichkeiten aus Film und Musik mit Bezug zum Ort: Kreative, die hier gearbeitet haben oder zu Gast waren, und Produktionen, die im Komplex entstanden sind. Sie sehen, wer in diesen Kuppeln wirklich gearbeitet hat und welche Titel ihre Geschichte teilen." },
+    ],
+
+    ticketsTitle: "Tickets",
+    ticketsTagline: "Ein Ticket. Sechs Kuppeln. Ein Guide.",
+    ticketBadge: "Backstage-Pass",
+    ticketIncludes: [
+      "Führung",
+      "Dauer: 1 Std. 15 Min.",
+      "6 Stationen: Film, Ton, Musik, Effekte",
+      "Route: sechs Stationen mit Guide",
+    ],
+    priceNormalLabel: "Regulär",
+    priceNormalValue: "79 PLN/Pers.",
+    priceReducedLabel: "Ermäßigt",
+    priceReducedValue: "69 PLN/Pers.",
+    ticketCta: "Ticket kaufen",
+
+    finalKicker: "Ende des Trailers",
+    finalTitle: "Das Licht führt bereits. Treten Sie unter die Kuppel.",
+    finalBody: "Der Rest passiert, sobald Sie losgehen. Ihre Szene wartet. Es braucht nur den ersten Schritt.",
+    finalCtaPrimary: "Ticket kaufen",
+    finalCtaSecondary: "Anfahrt",
+  },
+
+  zh: {
+    heroKicker: "导览参观 • 1 小时 15 分钟",
+    heroTitle: "FILMWORLD",
+    heroTagline: "走进神秘的穹顶，探寻电影与音乐幕后的秘密。",
+    heroStart: "开始路线",
+    heroCtaPrimary: "购买门票",
+    heroCtaSecondary: "查看路线",
+    discoverBadge: "探索",
+    heroScroll: "向下滚动",
+
+    infoBar: ["1 小时 15 分钟", "有导览员带领", "6 个站点"],
+
+    discoverTitleLead: "这不是参观。",
+    discoverTitleAccent: "这是探索。",
+    discoverLead: "六个主题站点，讲述电影、声音与音乐。",
+    discoverBody:
+      "导览员会带您从第一座穹顶一直走到终点，沿途以编号和蓝色光带标示路线。一小时十五分钟，六个站点，围绕电影、声音与音乐展开。",
+    discoverHighlights: ["6 个站点", "1 小时 15 分钟", "有导览员带领"],
+
+    lightTitle: "蓝色灯光标示路线",
+    lightMicro: "导览员会带您走完全部六个站点。",
+
+    mapTitle: "参观路线",
+    mapIntro: "路线上共有六个站点。看看沿途有什么在等着您。",
+
+    scenes: [
+      { num: "01", label: "场景 01", title: "电影开始的地方", place: "电影史长廊", body: "电影史的一个横切面：从最早的摄影机和感光胶片，经过默片与模拟时代，直到数字放映。您会看到载体、拍摄技术和影像叙事方式如何一步步改变。" },
+      { num: "02", label: "场景 02", title: "听见画面", place: "声音后期制作工作室", body: "电影声音由什么构成：对白、拟音（人工录制的音效）、环境声以及最终混音。您可以看到录音与剪辑设备，并体会同一场戏如何因声音层次而改变含义。" },
+      { num: "03", label: "场景 03", title: "让银幕动起来的音乐", place: "电影音乐工作室", body: "作曲家与配乐的作用：音乐主题如何牵动情绪、乐器如何录制、音乐如何与画面同步。实例会告诉您，换一个主题就可能让一场戏的含义完全反转。" },
+      { num: "04", label: "场景 04", title: "奥斯卡的记忆", place: "Jan A.P. Kaczmarek 纪念室", body: "这一空间献给波兰作曲家 Jan A.P. Kaczmarek，他凭借《寻找梦幻岛》（2005）的配乐获得奥斯卡奖。您将了解他的创作之路以及参与过的重要作品。" },
+      { num: "05", label: "场景 05", title: "特效的魔法", place: "蓝幕穹顶", body: "蓝幕、绿幕与抠像的原理：抠掉单色背景，再换上任意布景。您将了解实拍特效与数字特效的区别，以及一个镜头如何一层层合成。" },
+      { num: "06", label: "场景 06", title: "巨匠留下的痕迹", place: "名人堂", body: "与这里有渊源的电影与音乐人物：曾在此工作或做客的创作者，以及在园区内完成的作品。您会看到究竟是谁在这些穹顶中创作，哪些作品与它们共享同一段故事。" },
+    ],
+
+    ticketsTitle: "门票",
+    ticketsTagline: "一张票。六座穹顶。一位导览员。",
+    ticketBadge: "幕后通行证",
+    ticketIncludes: [
+      "导览参观",
+      "时长：1 小时 15 分钟",
+      "6 个站点：电影、声音、音乐、特效",
+      "路线：由导览员带领的六个站点",
+    ],
+    priceNormalLabel: "全价票",
+    priceNormalValue: "79 PLN/人",
+    priceReducedLabel: "优惠票",
+    priceReducedValue: "69 PLN/人",
+    ticketCta: "购买门票",
+
+    finalKicker: "预告到此结束",
+    finalTitle: "灯光已经亮起。走进穹顶。",
+    finalBody: "其余的，等您迈开脚步就会发生。您的场景正在等待。只差第一步。",
+    finalCtaPrimary: "购买门票",
+    finalCtaSecondary: "交通指南",
   },
 };
 
@@ -354,11 +466,14 @@ export default function WejdzPodKopuleContent() {
   }, [loc]);
 
   const bookingHref = buildBookingPath(loc, {
-    category: FILM_PATH_BOOKING_CATEGORY,
     service: FILM_PATH_BOOKING_SERVICES.normal,
   });
 
-  const promo = PROMO_PACKAGES[loc][0];
+  // PROMO_PACKAGES ma (na razie) wezszy zestaw jezykow niz wspolny typ Locale,
+  // wiec siegamy po pakiet defensywnie, z fallbackiem na wersje angielska.
+  const promo =
+    (PROMO_PACKAGES as Partial<Record<Locale, (typeof PROMO_PACKAGES)["en"]>>)[loc]?.[0] ??
+    PROMO_PACKAGES.en[0];
 
   const routeMapRef = useRef<HTMLDivElement | null>(null);
   const scrollRouteMap = (dir: number) => {
@@ -402,7 +517,7 @@ export default function WejdzPodKopuleContent() {
             <PrimaryButton
               href={bookingHref}
               size="lg"
-              className="ticket-pill whitespace-nowrap !px-5 !py-1.5 !text-xs !bg-[linear-gradient(135deg,#1ea6b7,#4fcfde,#7ef6ff)] !font-extrabold ring-[color:rgba(79,207,222,0.6)] hover:!brightness-110 sm:!px-6 sm:!py-2.5 sm:!text-base sm:min-w-[12rem]"
+              className="ticket-pill !text-[#04222a] whitespace-nowrap !px-5 !py-1.5 !text-xs !bg-[#56ddea] !font-extrabold ring-[color:rgba(86,221,234,0.6)] hover:!brightness-110 sm:!px-6 sm:!py-2.5 sm:!text-base sm:min-w-[12rem]"
             >
               {t.heroCtaPrimary}
             </PrimaryButton>
@@ -456,7 +571,7 @@ export default function WejdzPodKopuleContent() {
         {/* ===== NIE ZWIEDZASZ. ODKRYWASZ. ===== */}
         <ScrollMotionItem strength="soft" delay={40} float={false} className="wpk-reveal">
           <section className="ap-shell grid items-center gap-8 text-center lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-12 lg:text-left">
-            <h2 className="text-[clamp(1.85rem,5vw,4rem)] font-black leading-[1.0] tracking-[-0.04em] text-white">
+            <h2 className="text-[clamp(1.85rem,5vw,4rem)] font-extrabold leading-[1.0] tracking-[-0.04em] text-white">
               <span className="block whitespace-nowrap">{t.discoverTitleLead}</span>
               <span className="block whitespace-nowrap text-[1.3em] leading-[0.95] bg-[linear-gradient(120deg,#4fcfde,#7ef6ff)] bg-clip-text text-transparent" style={{ WebkitBackgroundClip: "text" }}>
                 {t.discoverTitleAccent}
@@ -520,9 +635,7 @@ export default function WejdzPodKopuleContent() {
               aria-label="Przewiń trasę w lewo"
               className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#7ef6ff]/35 bg-white/[0.05] text-[#7ef6ff] backdrop-blur-sm transition active:scale-95"
             >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                <path d="M10 3 5 8l5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+              <SolarIcon name="chevron-left" size={16} />
             </button>
             <span className="text-[0.58rem] font-semibold uppercase tracking-[0.22em] text-white/45">Przesuń</span>
             <button
@@ -531,9 +644,7 @@ export default function WejdzPodKopuleContent() {
               aria-label="Przewiń trasę w prawo"
               className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#7ef6ff]/35 bg-white/[0.05] text-[#7ef6ff] backdrop-blur-sm transition active:scale-95"
             >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                <path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+              <SolarIcon name="chevron-right" size={16} />
             </button>
           </div>
           </div>
@@ -570,7 +681,7 @@ export default function WejdzPodKopuleContent() {
                     <div className={`relative ${imageRight ? "lg:order-1" : ""}`}>
                       <span
                         aria-hidden="true"
-                        className="pointer-events-none absolute -top-12 left-0 select-none text-[6.5rem] font-black leading-none text-white/[0.05] sm:text-[9rem] lg:-top-16 lg:text-[11rem]"
+                        className="pointer-events-none absolute -top-12 left-0 select-none text-[6.5rem] font-extrabold leading-none text-white/[0.05] sm:text-[9rem] lg:-top-16 lg:text-[11rem]"
                       >
                         {s.num}
                       </span>
@@ -607,8 +718,10 @@ export default function WejdzPodKopuleContent() {
             <div className="relative w-full overflow-hidden rounded-[1.75rem]" style={TICKET_STUB_STYLE}>
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(79,207,222,0.2),transparent_42%),radial-gradient(circle_at_bottom_right,rgba(79,207,222,0.12),transparent_38%)]" />
               <div className="relative grid gap-6 p-6 sm:p-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-8">
-                <div className="space-y-4 text-center lg:text-left">
-                  <span className="ticket-card-badge mx-auto lg:mx-0 !text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.55)]">
+                <div className="flex flex-col items-center gap-5 text-center sm:flex-row sm:items-center sm:gap-6 sm:text-left">
+                  <AttractionPortal attraction="filmworld" className="w-36 shrink-0 sm:w-44" />
+                  <div className="space-y-4">
+                  <span className="ticket-card-badge mx-auto sm:mx-0">
                     {t.ticketBadge}
                   </span>
                   <h3 className="text-2xl font-extrabold tracking-[-0.02em] text-white sm:text-3xl">{t.heroTitle}</h3>
@@ -620,6 +733,7 @@ export default function WejdzPodKopuleContent() {
                       </li>
                     ))}
                   </ul>
+                  </div>
                 </div>
 
                 <div
@@ -651,7 +765,7 @@ export default function WejdzPodKopuleContent() {
                   <PrimaryButton
                     href={bookingHref}
                     size="lg"
-                    className="ticket-pill w-full whitespace-nowrap !bg-[linear-gradient(135deg,#1ea6b7,#4fcfde,#7ef6ff)] !text-white !font-extrabold [text-shadow:0_1px_2px_rgba(0,0,0,0.55)] ring-[color:rgba(79,207,222,0.6)] hover:!brightness-110"
+                    className="ticket-pill w-full whitespace-nowrap !bg-[#56ddea] !text-[#04222a] !font-extrabold ring-[color:rgba(86,221,234,0.6)] hover:!brightness-110"
                   >
                     {t.ticketCta}
                   </PrimaryButton>
@@ -660,7 +774,7 @@ export default function WejdzPodKopuleContent() {
             </div>
 
             {/* Bilet na wszystkie atrakcje, wspólny komponent (1:1 jak na home), pod spodem */}
-            <AllAttractionsPromoCard promo={promo} locale={loc} />
+            <AllAttractionsBundleBar promo={promo} locale={loc} />
           </div>
         </section>
       </div>

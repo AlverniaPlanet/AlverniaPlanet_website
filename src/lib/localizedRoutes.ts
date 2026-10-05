@@ -1,4 +1,11 @@
-export type Locale = "pl" | "en" | "pt";
+// Języki serwisu. Polski jest domyślny (bez prefiksu w adresie), reszta
+// dostaje prefiks /<kod>. Slugi tras są wspólne angielskie dla wszystkich
+// wersji obcojęzycznych — patrz PL_TO_INTL_COMMON.
+export const LOCALES = ["pl", "en", "pt", "de", "zh"] as const;
+export type Locale = (typeof LOCALES)[number];
+
+/** Wersje z prefiksem w adresie (wszystko poza polskim). */
+export const INTL_LOCALES = LOCALES.filter((l) => l !== "pl");
 
 const PL_TO_INTL_COMMON: Record<string, string> = {
   "/aktualnosci": "/news",
@@ -32,6 +39,8 @@ const BOOKING_PATH_BY_LOCALE: Record<Locale, string> = {
   pl: "/rezerwuj",
   en: "/en/reserve",
   pt: "/pt/reservar",
+  de: "/de/reserve",
+  zh: "/zh/reserve",
 };
 
 const BASE_PREFETCH_PATHS = [
@@ -43,7 +52,6 @@ const BASE_PREFETCH_PATHS = [
   "/grupy",
   "/runmageddon",
   "/kontakt",
-  "/rezerwuj",
 ] as const;
 
 export function normalizePathname(path: string | null | undefined): string {
@@ -57,7 +65,7 @@ export function getLocalePrefix(locale: Locale): string {
 }
 
 export function isLocalizedLocale(locale: Locale): boolean {
-  return locale === "en" || locale === "pt";
+  return locale !== "pl";
 }
 
 export function getBookingPath(locale: Locale): string {
@@ -66,11 +74,11 @@ export function getBookingPath(locale: Locale): string {
 
 export function stripLocalePrefix(path: string): string {
   const normalized = normalizePathname(path);
-  if (normalized === "/en" || normalized.startsWith("/en/")) {
-    return normalized.slice(3) || "/";
-  }
-  if (normalized === "/pt" || normalized.startsWith("/pt/")) {
-    return normalized.slice(3) || "/";
+  for (const locale of INTL_LOCALES) {
+    const prefix = `/${locale}`;
+    if (normalized === prefix || normalized.startsWith(`${prefix}/`)) {
+      return normalized.slice(prefix.length) || "/";
+    }
   }
   return normalized;
 }
@@ -78,7 +86,7 @@ export function stripLocalePrefix(path: string): string {
 export function mapToPolishRoute(path: string): string {
   const normalized = normalizePathname(path);
   if (!normalized.startsWith("/")) return normalized;
-  if (normalized.startsWith("/legal/")) return normalized;
+  if (normalized.startsWith("/stopka/")) return normalized;
 
   const withoutPrefix = stripLocalePrefix(normalized);
   if (withoutPrefix === "/atrakcje/k360") {
@@ -93,7 +101,7 @@ export function mapToPolishRoute(path: string): string {
 export function getLocalizedPath(path: string, locale: Locale): string {
   const normalized = normalizePathname(path);
   if (!normalized.startsWith("/")) return normalized;
-  if (normalized.startsWith("/legal/")) return normalized;
+  if (normalized.startsWith("/stopka/")) return normalized;
 
   const polishPath = mapToPolishRoute(normalized);
   if (locale === "pl") {
@@ -106,6 +114,29 @@ export function getLocalizedPath(path: string, locale: Locale): string {
 
   if (polishPath === "/rezerwuj") {
     return getBookingPath(locale);
+  }
+
+  /* MARS nie ma wersji obcojęzycznej — istnieje wyłącznie `/atrakcje/mars`.
+     Bez tego wyjątku funkcja doklejała sam prefiks języka i na stronach
+     głównych /de, /en, /pt i /zh powstawał odnośnik `/de/atrakcje/mars`
+     prowadzący donikąd (zmierzone: 4 x 404 przy przeglądzie eksportu
+     2026-10-01). `getSitePaths` miał już ten adres zapisany na sztywno —
+     ten warunek domyka tę samą zasadę dla wszystkich wywołań. */
+  if (polishPath === "/atrakcje/mars") {
+    return polishPath;
+  }
+
+  /* To samo dla landingu „Mars Colonization": na etapie zapowiedzi (decyzja
+     obiektu, 2026-10-02) istnieje wyłącznie po polsku. Bez tego wyjątku pozycja
+     na pasku generowałaby `/de/mars-colonization` i cztery razy 404 — dokładnie
+     ten błąd, który wystąpił wyżej przy `/atrakcje/mars`.
+     PRZY DOKŁADANIU WERSJI OBCOJĘZYCZNYCH: usunąć ten warunek, dodać cztery
+     pliki `src/app/<jezyk>/mars-colonization/page.tsx`, przenieść trasę
+     z `TRASY_TYLKO_PL` do `TRASY_WIELOJEZYCZNE` w `sitemap.ts` — i DOPIERO
+     WTEDY wdrożyć funkcję brzegową z mapą zgód per język, bo inaczej dowód
+     zgody w bazie rozjedzie się z ekranem. */
+  if (polishPath === "/mars-colonization") {
+    return polishPath;
   }
 
   const mappedPath = PL_TO_INTL_COMMON[polishPath] ?? polishPath;
@@ -132,6 +163,14 @@ export function getSitePaths(locale: Locale) {
       filmPath: getLocalizedPath("/atrakcje/filmworld", locale),
       k360: getLocalizedPath("/atrakcje/kino-360", locale),
       mars: "/atrakcje/mars",
+      // Slug „/bistro" jest ten sam we wszystkich językach (nazwa własna),
+      // więc nie ma wpisu w PL_TO_INTL_COMMON — wystarczy prefiks języka.
+      bistro: getLocalizedPath("/bistro", locale),
+      // To samo co wyżej: „Mars Colonization" jest nazwą własną produktu,
+      // więc slug nie tłumaczy się na żaden język. UWAGA: to NIE jest ta sama
+      // trasa co `mars` wyżej — tamto jest istniejąca atrakcja (plan filmowy),
+      // ta jest landingiem nowego produktu na 2027 rok.
+      marsColonization: getLocalizedPath("/mars-colonization", locale),
     },
   };
 }

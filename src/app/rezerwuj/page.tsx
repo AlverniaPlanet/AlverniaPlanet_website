@@ -1,22 +1,12 @@
 "use client";
 
-import { Suspense } from "react";
-import Card from "@/app/components/Card";
-import BookeroEmbed from "@/app/components/BookeroEmbed";
+import { SolarIcon } from "@/app/components/SolarIcon";
+import BookingLink from "@/app/components/BookingLink";
 import ScrollMotionItem from "@/app/components/ScrollMotionItem";
 import { useI18n } from "@/app/i18n-provider";
-import {
-  BOOKING_AUTOPICK_PARAM,
-  BOOKING_CATEGORY_PARAM,
-  BOOKING_QUANTITY_PARAM,
-  BOOKING_SERVICE_PARAM,
-} from "@/lib/booking";
-import { useSearchParams } from "next/navigation";
-import { FaClock, FaLanguage, FaRoute, FaRotateLeft } from "react-icons/fa6";
-
-const BOOKERO_PLUGIN_ID = "8iWKMAEWtI0P";
-
-type Locale = "pl" | "en" | "pt";
+import { bookingHomeHref } from "@/lib/booking";
+import { type Locale } from "@/lib/localizedRoutes";
+import { ArrowCounterClockwise, Clock, Translate } from "@phosphor-icons/react";
 
 const COPY: Record<
   Locale,
@@ -25,6 +15,9 @@ const COPY: Record<
     title: string;
     subtitle: string;
     intro: string;
+    multiTicketQuestion: string;
+    cta: string;
+    multiTicketHint: string;
     notesTitle: string;
     notesHeading: string;
     notes: string[];
@@ -33,100 +26,108 @@ const COPY: Record<
   }
 > = {
   pl: {
+    cta: "Kup bilet",
     tag: "Rezerwacja",
     title: "Zarezerwuj swoją filmową przygodę",
     subtitle: "Wybierz termin i zabezpiecz miejsce online.",
+    multiTicketQuestion: "Kupujesz kilka biletów?",
+    multiTicketHint: "Dodaj pierwszy, kolejne dorzucisz do koszyka w następnym kroku.",
     intro:
-      "Poniżej znajdziesz formularz Bookero z pełnym kalendarzem. Rezerwację możesz zrobić od razu, bez czekania na kontakt zwrotny.",
+      "Przycisk poniżej otwiera kasę biletową z pełnym kalendarzem terminów.",
     notesTitle: "Ważne przed rezerwacją",
     notesHeading: "Najważniejsze informacje przed wyborem terminu",
     notes: [
       "Kino 360 trwa około 30 minut.",
       "Oprowadzanie po trasie „FILMWORLD” oraz Kino 360 odbywają się w języku polskim.",
-      "Zwiedzanie trasy „FILMWORLD” trwa około 2,5 godziny.",
     ],
     refundTitle: "Anulowanie i zwroty",
     refundBody:
       "W przypadku anulowania rezerwacji zwrot środków wraca do 14 dni roboczych na numer konta podany podczas zakładania rezerwacji.",
   },
   en: {
+    cta: "Buy ticket",
     tag: "Booking",
     title: "Book your visit",
     subtitle: "Pick a date and secure your slot online.",
+    multiTicketQuestion: "Booking more than one ticket?",
+    multiTicketHint: "Add the first one, you can add the rest to the cart in the next step.",
     intro:
-      "Use the Bookero form below with the full calendar view. You can complete the reservation immediately.",
+      "The button below opens the ticket shop with the full calendar of dates.",
     notesTitle: "Before you book",
     notesHeading: "Key details before choosing a date",
     notes: [
       "The K360 Cinema lasts about 30 minutes.",
       "The FILMWORLD guided tour and K360 Cinema screenings are available in Polish.",
-      "The FILMWORLD visit lasts about 2.5 hours.",
     ],
     refundTitle: "Cancellations and refunds",
     refundBody:
       "If the booking is cancelled, the refund is returned within 14 business days to the account number provided when the reservation was created.",
   },
   pt: {
+    cta: "Comprar bilhete",
     tag: "Reserva",
     title: "Reserva a tua visita",
     subtitle: "Escolhe a data e garante o teu lugar online.",
+    multiTicketQuestion: "Vais levar mais do que um bilhete?",
+    multiTicketHint: "Adiciona o primeiro, os restantes juntas ao carrinho no passo seguinte.",
     intro:
-      "Abaixo tens o formulário Bookero com calendário completo. Podes finalizar a reserva imediatamente.",
+      "O botão abaixo abre a bilheteira com o calendário completo de datas.",
     notesTitle: "Antes de reservar",
     notesHeading: "Informações principais antes de escolher a data",
     notes: [
-      "A cinema K360 dura cerca de 30 minutos.",
-      "A visita guiada „FILMWORLD” e as sessões da cinema K360 decorrem em polaco.",
-      "A visita „FILMWORLD” dura cerca de 2,5 horas.",
+      "O cinema K360 dura cerca de 30 minutos.",
+      "A visita guiada „FILMWORLD” e as sessões do cinema K360 decorrem em polaco.",
     ],
     refundTitle: "Cancelamentos e reembolsos",
     refundBody:
       "Em caso de cancelamento da reserva, o reembolso regressa no prazo de até 14 dias úteis para o número de conta indicado durante a criação da reserva.",
   },
+  de: {
+    cta: "Ticket kaufen",
+    tag: "Buchung",
+    title: "Buchen Sie Ihren Besuch",
+    subtitle: "Wählen Sie einen Termin und sichern Sie sich Ihren Platz online.",
+    multiTicketQuestion: "Buchen Sie mehr als ein Ticket?",
+    multiTicketHint: "Fügen Sie das erste hinzu, die weiteren legen Sie im nächsten Schritt in den Warenkorb.",
+    intro:
+      "Die Schaltfläche unten öffnet den Ticketshop mit dem vollständigen Terminkalender.",
+    notesTitle: "Vor der Buchung",
+    notesHeading: "Die wichtigsten Informationen vor der Terminwahl",
+    notes: [
+      "Kino 360 dauert etwa 30 Minuten.",
+      "Die Führung durch FILMWORLD und die Vorstellungen im Kino 360 finden auf Polnisch statt.",
+    ],
+    refundTitle: "Stornierung und Rückerstattung",
+    refundBody:
+      "Bei einer Stornierung der Reservierung wird der Betrag innerhalb von bis zu 14 Werktagen auf das Konto zurückerstattet, das bei der Buchung angegeben wurde.",
+  },
+  zh: {
+    cta: "购买门票",
+    tag: "预订",
+    title: "预订您的参观",
+    subtitle: "选择日期，在线锁定您的名额。",
+    multiTicketQuestion: "需要预订多张门票？",
+    multiTicketHint: "先添加第一张，其余可在下一步加入购物车。",
+    intro:
+      "点击下方按钮进入售票页面，可查看完整的日期日历。",
+    notesTitle: "预订前须知",
+    notesHeading: "选择日期前的重要信息",
+    notes: [
+      "Kino 360 影院约 30 分钟。",
+      "FILMWORLD 导览与 Kino 360 影院放映均以波兰语进行。",
+    ],
+    refundTitle: "取消与退款",
+    refundBody:
+      "如取消预订，退款将在 14 个工作日内退回至创建预订时所提供的账号。",
+  },
 };
 
-const noteIcons = [FaClock, FaLanguage, FaRoute];
+const noteIcons = [Clock, Translate];
 
-// Wydzielone, bo useSearchParams() bez granicy <Suspense> wyłączał prerender
-// CAŁEJ strony (CSR bailout) — statyczny HTML /rezerwuj był pusty (bez H1
-// i treści), co szkodziło indeksowaniu najważniejszej strony sprzedażowej.
-// Teraz nagłówek i informacje prerenderują się, a tylko widżet czeka na parametry.
-function BookingWidget({ bookeroLang }: { bookeroLang: string }) {
-  const searchParams = useSearchParams();
-  const preselectCategory = searchParams.get(BOOKING_CATEGORY_PARAM) ?? "";
-  const preselectService = searchParams.get(BOOKING_SERVICE_PARAM) ?? "";
-  const preselectQuantityValue = Number.parseInt(searchParams.get(BOOKING_QUANTITY_PARAM) ?? "", 10);
-  const preselectQuantity = Number.isFinite(preselectQuantityValue) ? preselectQuantityValue : undefined;
-  const autoPickEarliestSlot = searchParams.get(BOOKING_AUTOPICK_PARAM) === "1";
-
-  return (
-    <Card
-      id="bookero-form"
-      variant="solid"
-      className="relative overflow-hidden !bg-white !ring-black/10"
-      motion="off"
-    >
-      <BookeroEmbed
-        pluginId={BOOKERO_PLUGIN_ID}
-        containerId="bookero"
-        type="calendar"
-        position=""
-        pluginCss
-        lang={bookeroLang}
-        preselectCategory={preselectCategory}
-        preselectService={preselectService}
-        preselectQuantity={preselectQuantity}
-        autoPickEarliestSlot={autoPickEarliestSlot}
-        className="w-full min-h-[980px] overflow-hidden rounded-2xl bg-white ring-1 ring-black/10"
-      />
-    </Card>
-  );
-}
 
 export default function BookingPage() {
   const { locale } = useI18n();
   const loc: Locale = (locale as Locale) ?? "pl";
-  const bookeroLang = loc === "en" ? "en" : "pl";
   const copy = COPY[loc];
 
   return (
@@ -139,12 +140,41 @@ export default function BookingPage() {
             {copy.subtitle} {copy.intro}
           </p>
           <div className="h-[1px] w-40 mx-auto bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+
+          {/* Wskazówka o wielu biletach — pod kreską, NAD formularzem, bo dotyczy
+              tego, co użytkownik zaraz zrobi. Wyróżniona obrysem w kolorze akcji,
+              żeby nie zginęła w akapicie, ale bez wagi ostrzeżenia. */}
+          <p className="mx-auto flex max-w-2xl items-start gap-2.5 rounded-2xl border border-[#4fcfde]/35 bg-[#4fcfde]/[0.07] px-4 py-3.5 text-left text-sm leading-relaxed text-white/85 sm:items-center">
+            <span aria-hidden="true" className="mt-0.5 shrink-0 text-[#7ef6ff] sm:mt-0">
+              <SolarIcon name="info" size="1.15em" />
+            </span>
+            <span>
+              <span className="block font-semibold text-white">{copy.multiTicketQuestion}</span>
+              <span className="block">{copy.multiTicketHint}</span>
+            </span>
+          </p>
         </header>
 
+        {/* Osadzony formularz Bookero usunięty — sprzedaż przeszła do Iksorisa
+            (bilety.alverniaplanet.com), który jest osobnym serwisem i nie da się
+            go zagnieździć. Zamiast martwego kalendarza kierujemy tam wprost,
+            tym samym przyciskiem co w nagłówku. */}
         <ScrollMotionItem strength="soft" delay={40} className="ap-deferred-section" float={false}>
-          <Suspense fallback={null}>
-            <BookingWidget bookeroLang={bookeroLang} />
-          </Suspense>
+          <div className="flex justify-center">
+            <BookingLink
+              href={bookingHomeHref(loc)}
+              className="ticket-pill inline-flex h-[3.75rem] items-center justify-center gap-2.5 rounded-[var(--ap-btn-radius)] px-10 text-sm font-extrabold uppercase tracking-[0.16em] transition hover:-translate-y-px"
+              style={{
+                backgroundColor: "#56ddea",
+                color: "#04222a",
+                boxShadow: "0 6px 22px rgba(86,221,234,0.32)",
+                borderColor: "transparent",
+              }}
+            >
+              <SolarIcon name="ticket" size="1.3em" />
+              {copy.cta}
+            </BookingLink>
+          </div>
         </ScrollMotionItem>
 
         <ScrollMotionItem strength="soft" delay={90} className="ap-deferred-section" float={false}>
@@ -161,9 +191,9 @@ export default function BookingPage() {
                 <h2 id="booking-notes-title" className="mt-2 max-w-3xl text-2xl font-bold leading-tight text-white sm:text-3xl">
                   {copy.notesHeading}
                 </h2>
-                <div className="mt-5 grid gap-3 md:grid-cols-3">
+                <div className="mt-5 grid gap-3 md:grid-cols-2">
                   {copy.notes.map((note, index) => {
-                    const NoteIcon = noteIcons[index] ?? FaClock;
+                    const NoteIcon = noteIcons[index] ?? Clock;
 
                     return (
                       <div
@@ -183,7 +213,7 @@ export default function BookingPage() {
               <aside className="relative overflow-hidden rounded-3xl border border-[#f03c64]/34 bg-[#f03c64]/12 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
                 <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-[#f03c64]/18 blur-2xl" />
                 <span className="relative mb-4 inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#f03c64]/18 text-[#ff9ab0] ring-1 ring-[#f03c64]/35">
-                  <FaRotateLeft aria-hidden="true" />
+                  <ArrowCounterClockwise aria-hidden="true" />
                 </span>
                 <p className="relative text-sm font-semibold uppercase tracking-[0.24em] text-[#ff9ab0]">
                   {copy.refundTitle}

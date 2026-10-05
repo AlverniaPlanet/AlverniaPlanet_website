@@ -1,5 +1,16 @@
 @import "tailwindcss";
 
+/* Pliki nieużywane, ale trzymane w repo (bumpery promocyjne, pływające CTA).
+   Tailwind skanuje KAŻDY plik źródłowy,
+   więc mimo że nikt ich nie importuje, generował z nich klasy do WSPÓLNEGO
+   arkusza ładowanego na 125 stronach. Zmierzone: 40 KB surowo / 4,5 KB brotli.
+   Wyłączamy je ze skanowania zamiast kasować — kod zostaje pod ręką. */
+@source not "./components/TicketFaqWidget.tsx";
+@source not "./components/AllAttractionsPromoCard.tsx";
+@source not "./components/SimpleChatWidget.tsx";
+@source not "./components/FloatingMascotCta.tsx";
+@source not "./components/RemontKinaBumper.tsx";
+
 :root {
   /* Jedno, wspólne zaokrąglenie dla wszystkich przycisków akcji (Kup bilet,
      Dowiedz się więcej, Wybieram itd.). Zmień tu, żeby zmienić wszędzie. */
@@ -36,10 +47,6 @@
   --ap-breeze: #4fcfde;
   --ap-breeze-soft: rgba(79, 207, 222, 0.28);
   --ap-breeze-strong: #35bfd2;
-  --ap-bookero-text-main: #f8fafc;
-  --ap-bookero-text-muted: rgba(248, 250, 252, 0.62);
-  --ap-bookero-field-bg: transparent;
-  --ap-bookero-field-border: rgba(248, 250, 252, 0.72);
   --ap-ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
   --ap-ease-swift: cubic-bezier(0.16, 1, 0.3, 1);
   scroll-behavior: smooth;
@@ -48,46 +55,6 @@
 
 .theme-dark {
   color-scheme: dark;
-}
-
-.theme-light {
-  color-scheme: light;
-  --ap-bg: #d7edf2;
-  --ap-nav-bg: rgba(248, 253, 255, 0.9);
-  --ap-surface: #fbfeff;
-  --ap-surface-strong: #f6fdff;
-  --ap-surface-contrast: #ffffff;
-  --ap-border: rgba(118, 203, 217, 0.46);
-  --ap-border-strong: rgba(118, 203, 217, 0.7);
-  --ap-text: #171730;
-  --ap-text-strong: #171730;
-  --ap-text-dim: rgba(23, 23, 48, 0.72);
-  --ap-text-muted: rgba(23, 23, 48, 0.56);
-  --ap-underline: #6bc6d4;
-  --ap-shadow: 0 12px 26px rgba(60, 118, 132, 0.12);
-  --ap-card-shadow: 0 18px 40px rgba(60, 118, 132, 0.16);
-  --ap-card-hover-lift: -4px;
-  --ap-card-hover-ring: rgba(108, 197, 211, 0.38);
-  --ap-card-hover-outline: rgba(108, 197, 211, 0.24);
-  --ap-card-hover-shadow: 0 16px 34px rgba(67, 135, 149, 0.14);
-  --ap-card-hover-base-shadow: 0 0 0 rgba(0, 0, 0, 0);
-  --ap-accent: #86ccd7;
-  --ap-accent-contrast: #171730;
-  --ap-accent-soft: rgba(134, 204, 215, 0.26);
-  --ap-accent-ring: rgba(108, 197, 211, 0.52);
-  --ap-accent-shadow: 0 0 24px rgba(108, 197, 211, 0.34);
-  --ap-brand-red: #f7486c;
-  --ap-coral: #f03c64;
-  --ap-orange: #f77828;
-  --ap-gray: #aab4be;
-  --ap-ice: #d5f2f7;
-  --ap-breeze: #8ccfd9;
-  --ap-breeze-soft: rgba(140, 207, 217, 0.34);
-  --ap-breeze-strong: #64bfd0;
-  --ap-bookero-text-main: #0f172a;
-  --ap-bookero-text-muted: rgba(15, 23, 42, 0.55);
-  --ap-bookero-field-bg: rgba(255, 255, 255, 0.98);
-  --ap-bookero-field-border: rgba(15, 23, 42, 0.24);
 }
 
 body {
@@ -104,10 +71,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-body.mars-route-active .ap-native-booking-fallback,
-body.mars-route-active #bookero-sticky-plugin,
-body.mars-route-active #bookero-plugin[data-mode="sticky"],
-body.mars-route-active .bookero-sticky-plugin {
+body.mars-route-active .ap-native-booking-fallback {
   display: none !important;
 }
 
@@ -125,8 +89,9 @@ body.mars-route-active [data-ap-nav] .ap-nav-banner {
 }
 
 body.mars-route-active .ticket-card-badge {
-  background: linear-gradient(135deg, #f77828, #ffb585) !important;
-  color: #2a0f04 !important;
+  background: transparent !important;
+  border-color: rgba(247, 120, 40, 0.7) !important;
+  color: #ffffff !important;
   box-shadow: 0 8px 22px rgba(247, 120, 40, 0.32) !important;
 }
 
@@ -194,8 +159,9 @@ body.k360-route-active [data-ap-nav] .ap-nav-banner {
 }
 
 body.k360-route-active .ticket-card-badge {
-  background: linear-gradient(135deg, #f7486c, #ff96aa) !important;
-  color: #2a0410 !important;
+  background: transparent !important;
+  border-color: rgba(247, 72, 108, 0.7) !important;
+  color: #ffffff !important;
   box-shadow: 0 8px 22px rgba(247, 72, 108, 0.32) !important;
 }
 
@@ -245,13 +211,11 @@ body.film-path-route-active [data-ap-nav] .ap-nav-banner {
 }
 
 body.film-path-route-active .ticket-pill {
-  background: linear-gradient(135deg, #4fcfde, #7ef6ff) !important;
-  color: #062a33 !important;
-  border-color: rgba(255, 255, 255, 0.28) !important;
-  box-shadow:
-    0 8px 18px rgba(79, 207, 222, 0.32),
-    0 0 18px rgba(79, 207, 222, 0.22) !important;
-  --tw-ring-color: rgba(79, 207, 222, 0.55) !important;
+  background: #56ddea !important;
+  color: #04222a !important;
+  border-color: transparent !important;
+  box-shadow: 0 6px 16px rgba(86, 221, 234, 0.3) !important;
+  --tw-ring-color: rgba(86, 221, 234, 0.55) !important;
 }
 
 /* Pakietowy bilet „Wszystkie atrakcje" (.home-ticket-promo) wygląda 1:1 jak na
@@ -260,9 +224,11 @@ body.film-path-route-active .ticket-pill {
 body.k360-route-active .home-ticket-promo .ticket-card-badge,
 body.mars-route-active .home-ticket-promo .ticket-card-badge,
 body.film-path-route-active .home-ticket-promo .ticket-card-badge {
-  background: linear-gradient(135deg, #4fcfde, #a5e6f0) !important;
+  background: transparent !important;
+  border-color: rgba(79, 207, 222, 0.55) !important;
   color: #ffffff !important;
-  box-shadow: 0 8px 22px rgba(79, 207, 222, 0.28) !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
 }
 
 body.film-path-route-active .home-ticket-promo .ticket-pill {
@@ -315,11 +281,6 @@ body.film-path-route-active .home-ticket-promo .ticket-pill {
 a,
 button {
   -webkit-tap-highlight-color: transparent;
-}
-
-.theme-light body {
-  background: var(--ap-bg);
-  background-color: var(--ap-bg);
 }
 
 h1,
@@ -397,17 +358,10 @@ p {
 
 /* UX polish v1 (łatwe do cofnięcia) */
 [data-ap-nav] .ap-nav-banner {
+  /* Cień ma dawać uniesienie, nie dramat — jedna warstwa zamiast trzech. */
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.09),
-    0 10px 30px rgba(4, 6, 18, 0.34),
-    0 24px 64px rgba(4, 6, 18, 0.26);
-}
-
-.theme-light [data-ap-nav] .ap-nav-banner {
-  box-shadow:
-    0 1px 0 rgba(118, 203, 217, 0.58),
-    0 14px 34px rgba(70, 145, 161, 0.18),
-    0 24px 60px rgba(70, 145, 161, 0.14);
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 14px 38px rgba(3, 5, 14, 0.42);
 }
 
 /* Kanoniczny kafelek — jeden styl powierzchni dla całej strony.
@@ -442,22 +396,11 @@ p {
   transform: translateY(-1px);
 }
 
-.theme-light .ap-tile-interactive:hover,
-.theme-light .ap-tile-interactive:focus-visible,
-.theme-light .ap-tile.is-active {
-  box-shadow: var(--ap-card-hover-shadow);
-}
-
 /* Wariant akcentowy — dla wyróżnionych kafelków (promo, CTA, spotlight). */
 .ap-tile-accent {
   border-color: var(--ap-border-strong);
   background:
     linear-gradient(135deg, rgba(79, 207, 222, 0.16) 0%, var(--ap-surface) 55%, rgba(247, 72, 108, 0.10) 100%);
-}
-
-.theme-light .ap-tile-accent {
-  background:
-    linear-gradient(135deg, rgba(79, 207, 222, 0.20) 0%, var(--ap-surface) 55%, rgba(247, 72, 108, 0.10) 100%);
 }
 
 /* "Wyciszony" wariant — np. wnętrze kafelka, pomocnicze pigułki. */
@@ -489,17 +432,6 @@ p {
   border-color: rgba(126, 246, 255, 0.15);
 }
 
-.theme-light .film-path-page .ap-card {
-  background: var(--ap-surface);
-  border-color: var(--ap-border);
-  box-shadow: var(--ap-card-shadow);
-}
-
-.theme-light .film-path-page .ap-tile:not(.ap-tile-accent):not(.ap-tile-lg) {
-  background: var(--ap-surface);
-  border-color: var(--ap-border);
-}
-
 [data-ap-nav] nav a,
 [data-ap-nav] nav button {
   transition:
@@ -527,28 +459,64 @@ p {
     opacity 180ms ease;
 }
 
+/* --- NAWIGACJA (wariant ciemny) ---------------------------------------------
+   Zasada porządkująca: w całym pasku tylko JEDEN element jest mocny wizualnie —
+   przycisk akcji. Pozycje menu to spokojna, jasna typografia; turkus pojawia
+   się wyłącznie w akcji, na stanie aktywnym i w drobnych stanach najechania.
+
+   Tokeny są LOKALNE dla paska. Globalne `--ap-border` i `--ap-surface-*`
+   zostają nietknięte, bo korzysta z nich 27 innych miejsc w serwisie. */
+[data-ap-nav] {
+  /* Bardzo ciemny granat zamiast czerni, wyraźnie przezroczysty, bo pod
+     spodem pracuje rozmycie. */
+  /* Krycie 0.78, nie 0.72: pasek jest o 20% mniej przezroczysty (przezroczystosc
+     0.28 -> 0.224). Nad jasnym zdjeciem hero /bistro przy 0.72 przebijalo przez
+     niego niebo i etykiety traciły kontrast. */
+  --ap-nav-tlo: rgba(9, 11, 24, 0.78);
+  /* Krawędź neutralna, nie turkusowa: świecąca obwódka dookoła całego
+     komponentu ciągnęła wzrok na obudowę zamiast na treść. */
+  --ap-nav-krawedz: rgba(255, 255, 255, 0.09);
+  --ap-nav-tekst: rgba(240, 244, 255, 0.82);
+  --ap-nav-tekst-mocny: #ffffff;
+  --ap-nav-akcent: #4fcfde;
+}
+
 .ap-nav-link {
   position: relative;
   display: inline-flex;
   align-items: center;
-  border-radius: 9999px;
-  padding: 0.32rem 0.48rem;
-  color: rgba(244, 246, 255, 0.88);
+  border-radius: 0.625rem;
+  /* 44 px wysokości celu przy 14 px tekstu — dolna granica z wytycznych
+     dotykowych, utrzymana także na desktopie dla spójnych hit areas. */
+  /* Dopełnienie poziome powiększone o 15% razem z tekstem — to ono, a nie
+     odstęp siatki, robi większość przerwy między pozycjami. */
+  padding: 0.6rem 0.805rem;
+  /* 0.856rem = 13,7 px: 0.744rem (14 px minus 15%) powiększone z powrotem
+     o 15%. */
+  font-size: 0.856rem;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: 0;
+  color: var(--ap-nav-tekst);
   transition:
     color 180ms var(--ap-ease-standard),
-    background-color 180ms var(--ap-ease-standard),
-    transform 180ms var(--ap-ease-standard);
+    background-color 180ms var(--ap-ease-standard);
 }
 
+/* Marker aktywnej strony: krótka turkusowa kreska pod tekstem. Celowo NIE
+   pigułka — aktywna pozycja nie może wyglądać jak drugi przycisk akcji. */
 .ap-nav-link::after {
   content: "";
   position: absolute;
-  inset: auto 0.55rem 0.12rem;
-  height: 1px;
+  left: 50%;
+  bottom: 0.3rem;
+  width: 1.15rem;
+  height: 2px;
   border-radius: 9999px;
-  background: linear-gradient(90deg, transparent, rgba(79, 207, 222, 0.82), transparent);
+  background: var(--ap-nav-akcent);
   opacity: 0;
-  transform: scaleX(0.62);
+  transform: translateX(-50%) scaleX(0.4);
+  transform-origin: center;
   transition:
     opacity 180ms var(--ap-ease-standard),
     transform 180ms var(--ap-ease-standard);
@@ -556,43 +524,297 @@ p {
 
 .ap-nav-link:hover,
 .ap-nav-link:focus-visible {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.07);
-  transform: translate3d(0, -1px, 0);
+  color: var(--ap-nav-tekst-mocny);
+  background: rgba(255, 255, 255, 0.06);
 }
 
+/* Na najechaniu marker tylko sygnalizuje, gdzie jesteśmy — jest bledszy
+   i krótszy niż stan aktywny, żeby te dwa dało się odróżnić. */
 .ap-nav-link:hover::after,
 .ap-nav-link:focus-visible::after {
-  opacity: 1;
-  transform: scaleX(1);
+  opacity: 0.45;
+  transform: translateX(-50%) scaleX(0.7);
 }
 
 .ap-nav-link.is-active {
-  color: #ffffff;
-  background: rgba(79, 207, 222, 0.12);
-  box-shadow: inset 0 0 0 1px rgba(79, 207, 222, 0.18);
+  color: var(--ap-nav-tekst-mocny);
+  background: transparent;
+  box-shadow: none;
 }
 
-.ap-nav-link.is-active::after {
+.ap-nav-link.is-active::after,
+.ap-nav-link.is-active:hover::after {
   opacity: 1;
-  transform: scaleX(1);
+  transform: translateX(-50%) scaleX(1);
+}
+
+
+/* Pozycja WYRÓŻNIONA paska: zapowiedź nowego produktu. Nie jest przyciskiem
+   akcji (tym zostaje „Kup bilety"), więc nie dostaje pełnego wypełnienia —
+   ma obrys i plakietkę, czyli o jeden stopień mocniej niż zwykły link
+   i o jeden słabiej niż kasa biletowa. Czerwień marsjańska, nie turkus:
+   turkus niesie już stan aktywny każdej innej pozycji. */
+.ap-nav-mars {
+  gap: 0.4rem;
+  border: 1px solid rgba(226, 98, 58, 0.5);
+  background: rgba(226, 98, 58, 0.12);
+  color: #ffffff;
+}
+
+.ap-nav-mars:hover,
+.ap-nav-mars:focus-visible {
+  border-color: rgba(226, 98, 58, 0.85);
+  background: rgba(226, 98, 58, 0.22);
+  color: #ffffff;
+}
+
+/* Podkreślenie stanu aktywnego byłoby tu drugim sygnałem obok ramki —
+   zamiast niego mocniejsze wypełnienie. */
+.ap-nav-mars.is-active {
+  border-color: #e1623a;
+  background: rgba(226, 98, 58, 0.3);
+}
+
+.ap-nav-mars.is-active::after {
+  opacity: 0;
+}
+
+.ap-nav-mars-plakietka {
+  padding: 0.1rem 0.4rem;
+  border-radius: 9999px;
+  background: #e1623a;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ffffff;
 }
 
 .ap-nav-link-button {
   background: transparent;
+  border: 0;
+  cursor: pointer;
+  /* Dziedziczymy TYLKO krój — skrót `font: inherit` kasował rozmiar i wagę
+     ustawione wyżej w `.ap-nav-link` i przycisk rozwijany wracał do 16 px/400. */
+  font-family: inherit;
 }
 
+/* Pasmo 1024–1279 px: pełne dopełnienie pozycji rozpycha lewą kolumnę i
+   nawigacja wchodzi na logo (zmierzone: 26 px zachodzenia przy 1024 px).
+   Zwężamy SAMO dopełnienie poziome — rozmiar tekstu zostaje 14 px, bo to on
+   odpowiada za czytelność. Blok stoi PO regule bazowej, inaczej byłby martwy. */
+/* Przycisk akcji w pasku jest o 20% mniejszy niż wcześniej — proporcjonalnie:
+   wysokość, dopełnienie, tekst i ikona. Skala liczona od zmierzonych 44 px
+   × 14 px. Reguła jest ZAWĘŻONA do paska i do desktopu: na telefonie przycisk
+   zostaje 44-piksielowy, bo to jedyny cel dotykowy prowadzący do kasy, a próg
+   44 px wynika z wytycznych, które sami postawiliśmy przy przebudowie menu.
+   Swoistość 0,3,0 bije narzędziówki Tailwinda, więc nie trzeba `!important`. */
+@media (min-width: 1024px) {
+  [data-ap-nav] .ap-nav-banner .ap-primary-button {
+    min-height: 2.2rem;
+    padding-block: 0.4rem;
+    padding-inline: 0.805rem;
+    font-size: 0.805rem;
+    gap: 0.345rem;
+  }
+
+  [data-ap-nav] .ap-nav-banner .ap-cta-ikona {
+    width: 0.805rem;
+    height: 0.805rem;
+  }
+}
+
+/* PASMO KOMPAKTOWE PASKA: 1280–1599 px (05.10.2026, decyzja obiektu: „ten bar
+   musi mieć informacje na sobie"). Od 2026-10-02 pasek poziomy pokazywał się
+   dopiero od 1600 px, bo pełny nie mieścił się niżej — prawa grupa
+   („Mars Colonization" z plakietką, „O nas", „Kontakt", język, akcja)
+   wchodziła na wyśrodkowany znak (przy 1440 px brakowało do 46 px
+   w portugalskim). Zamiast chować menu do hamburgera zagęszczamy je, a nazwa
+   produktu i plakietka zostają w pełnym brzmieniu.
+
+   Zmierzone luzy (znak ↔ najbliższa grupa, najgorszy z pięciu języków):
+   — 1440–1599 px, pismo 13 px, ciaśniejsze dopełnienia i odstępy, bez kreski
+     separatora: przy 1440 px najmniej 42 px (portugalski, prawa grupa),
+   — 1280–1439 px, do tego krótka etykieta akcji („Bilety", jak na telefonie):
+     przy 1280 px najmniej 30 px (portugalski, prawa grupa).
+   Pełne „Comprar bilhetes" przy 1366 px zostawiało 7 px, prawie styk ze
+   znakiem — stąd pasmo krótkiej etykiety aż do 1439 px. Niżej niż 1280 px się
+   nie da bez skracania nazwy produktu (przy 1240 px polski ma już 13 px).
+   PUŁAPKA POMIARU: przełącznik języka (54 px) renderuje się dopiero po
+   zamontowaniu — miernik musi na niego poczekać, inaczej prawa grupa jest
+   węższa niż naprawdę i luz wychodzi zawyżony o 54 px.
+
+   Reguły stoją PO bazowych (`.ap-nav-link`, `.ap-nav-mars*`) i poza warstwą
+   Tailwinda, więc wygrywają z klasami narzędziowymi paska bez `!important`.
+   Kreskę separatora chowa sam znacznik (`min-[1600px]:block`). */
+@media (min-width: 1280px) and (max-width: 1599.98px) {
+  [data-ap-nav] .ap-nav-banner {
+    padding-inline: 0.75rem;
+  }
+
+  [data-ap-nav] .ap-nav-lewa,
+  [data-ap-nav] .ap-nav-prawa {
+    gap: 0.5rem;
+  }
+
+  [data-ap-nav] .ap-nav-grupa {
+    gap: 0.1rem;
+  }
+
+  /* 13 px zamiast 13,7 — pismo maleje o włos, a większość miejsca odzyskuje
+     dopełnienie (0,55 rem zamiast 0,805 rem z każdej strony pozycji). */
+  [data-ap-nav] .ap-nav-link {
+    padding-inline: 0.55rem;
+    font-size: 0.8125rem;
+  }
+
+  [data-ap-nav] .ap-nav-link-button {
+    gap: 0.25rem;
+  }
+
+  [data-ap-nav] .ap-nav-mars {
+    gap: 0.3rem;
+  }
+
+  [data-ap-nav] .ap-nav-mars-plakietka {
+    padding: 0.1rem 0.32rem;
+    font-size: 0.6rem;
+    letter-spacing: 0.04em;
+  }
+
+  [data-ap-nav] .ap-nav-banner .ap-primary-button {
+    padding-inline: 0.7rem;
+  }
+}
+
+/* Najwęższe pasmo paska poziomego: akcja z krótką etykietą. Klasy siedzą na
+   dwóch wariantach etykiety w `appbar.tsx` — telefonowe `sm:` zostają bez
+   zmian, to pasmo tylko przełącza je jeszcze raz. */
+@media (min-width: 1280px) and (max-width: 1439.98px) {
+  [data-ap-nav] .ap-cta-dluga {
+    display: none;
+  }
+
+  [data-ap-nav] .ap-cta-krotka {
+    display: inline;
+  }
+}
+/* Jedyny separator, jaki zostaje: cienka kreska oddzielająca narzędzia
+   (język, akcja) od nawigacji. Między zwykłymi pozycjami grupuje sam odstęp. */
 .ap-nav-separator {
   width: 1px;
-  height: 1.05rem;
-  font-size: 0;                 /* chowa glif "|"; kreskę rysuje tło */
+  height: 1.35rem;
+  font-size: 0;
   border-radius: 9999px;
-  background: linear-gradient(180deg, transparent, rgba(126, 246, 255, 0.34), transparent);
-  opacity: 1;
+  background: rgba(255, 255, 255, 0.12);
 }
 
-.theme-light .ap-nav-separator {
-  background: linear-gradient(180deg, transparent, rgba(23, 23, 48, 0.22), transparent);
+/* Opakowanie panelu. `visibility` (a nie samo `opacity`) wypina zamknięte
+   menu z kolejności tabulatora — inaczej użytkownik klawiatury wpadał
+   w niewidoczne odnośniki. Przejście obejmuje `visibility`, więc animacja
+   nadal działa, a element znika dopiero po jej zakończeniu. */
+.ap-nav-panel-wrap {
+  position: absolute;
+  top: 100%;
+  z-index: 50;
+  margin-top: 0.5rem;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-0.25rem);
+  transition:
+    opacity 180ms var(--ap-ease-standard),
+    transform 180ms var(--ap-ease-standard),
+    visibility 0s linear 180ms;
+}
+
+.ap-nav-panel-wrap.is-otwarte {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 180ms var(--ap-ease-standard),
+    transform 180ms var(--ap-ease-standard),
+    visibility 0s;
+}
+
+/* Panel rozwijanego menu — ten sam język wizualny co pasek. */
+.ap-nav-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 15rem;
+  padding: 0.5rem;
+  border-radius: 1rem;
+  border: 1px solid var(--ap-nav-krawedz);
+  background: rgba(12, 14, 28, 0.97);
+  box-shadow: 0 18px 44px rgba(3, 5, 14, 0.5);
+  color: var(--ap-nav-tekst-mocny);
+}
+
+@supports (backdrop-filter: blur(1px)) {
+  /* Krycie 0.91, nie 0.82: panel jest o połowę mniej przezroczysty niż
+     wcześniej (przezroczystość 0.18 -> 0.09). Nad jasnym nagłówkiem /bistro
+     przebijał przez niego turkusowy tytuł i pozycje menu traciły czytelność. */
+  .ap-nav-panel {
+    background: rgba(12, 14, 28, 0.91);
+    backdrop-filter: blur(14px) saturate(1.1);
+  }
+}
+
+.ap-nav-panel-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  /* Cel dotykowy 48 px także w rozwijanym menu. */
+  min-height: 3rem;
+  padding: 0.6rem 0.7rem;
+  border-radius: 0.75rem;
+  color: var(--ap-nav-tekst-mocny);
+  transition:
+    background-color 160ms var(--ap-ease-standard),
+    color 160ms var(--ap-ease-standard);
+}
+
+/* Pozycja bez opisu to jeden wiersz — ikona ma stać w jego osi, a nie
+   przy górnej krawędzi jak przy dwuwierszowych pozycjach menu wizyty. */
+.ap-nav-panel-item.is-jednowierszowa {
+  align-items: center;
+  min-height: 2.75rem;
+}
+
+.ap-nav-panel-item.is-jednowierszowa .ap-nav-panel-ikona {
+  margin-top: 0;
+}
+
+.ap-nav-panel-item:hover,
+.ap-nav-panel-item:focus-visible {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+
+.ap-nav-panel-item.is-active {
+  background: rgba(79, 207, 222, 0.1);
+}
+
+.ap-nav-panel-ikona {
+  flex: none;
+  margin-top: 0.05rem;
+  color: rgba(126, 246, 255, 0.72);
+}
+
+.ap-nav-panel-tytul {
+  display: block;
+  font-size: 0.744rem;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.ap-nav-panel-opis {
+  display: block;
+  margin-top: 0.1rem;
+  font-size: 0.638rem;
+  line-height: 1.3;
+  color: rgba(240, 244, 255, 0.55);
 }
 
 .ap-nav-dropdown-panel {
@@ -687,10 +909,290 @@ p {
 }
 
 .ap-mobile-link {
+  /* Cel dotykowy 44 px — zmierzone: przy samym `py-2` pozycje menu miały
+     36 px, czyli poniżej progu wygodnego trafienia kciukiem. Wysokość
+     wymuszamy tutaj, żeby nie dopisywać klas przy dwudziestu odnośnikach. */
+  display: flex;
+  align-items: center;
+  min-height: 2.75rem;
+  font-size: 0.9375rem;
   transition:
     transform 180ms var(--ap-ease-standard),
     background-color 180ms var(--ap-ease-standard),
     color 180ms var(--ap-ease-standard);
+}
+
+/* --- MENU MOBILNE (przebudowa) ----------------------------------------------
+   Układ: kafelki atrakcji -> lista pozycji -> szybkie akcje -> język.
+   Wszystkie barwy z tokenów paska i systemu, bez nowych wartości na sztywno. */
+.ap-mobile-panel {
+  padding: 0.75rem 0.75rem 0.85rem;
+}
+
+.ap-mobile-naglowek {
+  margin: 0 0 0.4rem;
+  padding-inline: 0.25rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(240, 244, 255, 0.45);
+}
+
+.ap-mobile-kafelki {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ap-mobile-kafelek {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 4.5rem;
+  padding: 0.7rem 0.35rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--ap-nav-krawedz);
+  background: rgba(255, 255, 255, 0.045);
+  color: var(--ap-nav-tekst-mocny);
+  font-size: 0.78rem;
+  font-weight: 500;
+  line-height: 1.15;
+  text-align: center;
+  transition: background-color 160ms var(--ap-ease-standard);
+}
+
+.ap-mobile-kafelek img {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.ap-mobile-kafelek:hover,
+.ap-mobile-kafelek:focus-visible {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.ap-mobile-kafelek.is-active {
+  border-color: rgba(79, 207, 222, 0.45);
+}
+
+.ap-mobile-lista {
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  padding-top: 0.35rem;
+}
+
+/* Wiersz listy: 48 px wysokości, ikona po lewej, jedna miara dla linków
+   i dla przycisków akordeonu. */
+.ap-mobile-wiersz {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.7rem;
+  min-height: 3rem;
+  padding: 0.5rem 0.55rem;
+  border: 0;
+  border-radius: 0.7rem;
+  background: transparent;
+  color: var(--ap-nav-tekst-mocny);
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 160ms var(--ap-ease-standard), color 160ms var(--ap-ease-standard);
+}
+
+.ap-mobile-wiersz:hover,
+.ap-mobile-wiersz:focus-visible {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.ap-mobile-etykieta {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.ap-mobile-ikona {
+  flex: none;
+  width: 1.15rem;
+  height: 1.15rem;
+  color: rgba(126, 246, 255, 0.72);
+}
+
+/* Otwarty akordeon: nazwa w kolorze akcentu, strzałka obrócona. */
+.ap-mobile-wiersz.is-otwarta {
+  color: var(--ap-nav-akcent);
+}
+
+.ap-mobile-wiersz.is-otwarta .ap-mobile-ikona {
+  color: var(--ap-nav-akcent);
+}
+
+.ap-mobile-strzalka {
+  flex: none;
+  width: 1rem;
+  height: 1rem;
+  color: rgba(240, 244, 255, 0.5);
+  transition: transform 180ms var(--ap-ease-standard);
+}
+
+.ap-mobile-strzalka.is-otwarta {
+  transform: rotate(180deg);
+  color: var(--ap-nav-akcent);
+}
+
+.ap-mobile-plakietka {
+  flex: none;
+  padding: 0.2rem 0.5rem;
+  border-radius: 9999px;
+  background: rgba(79, 207, 222, 0.16);
+  color: var(--ap-nav-akcent);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* Rozwinięcie: `grid-template-rows` da się animować, `height: auto` nie. */
+.ap-mobile-rozwiniecie {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition:
+    grid-template-rows 200ms var(--ap-ease-standard),
+    visibility 0s linear 200ms;
+}
+
+.ap-mobile-rozwiniecie.is-otwarte {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  transition:
+    grid-template-rows 200ms var(--ap-ease-standard),
+    visibility 0s;
+}
+
+.ap-mobile-podlista {
+  margin: 0;
+  padding: 0.15rem 0 0.35rem 0.5rem;
+  list-style: none;
+}
+
+.ap-mobile-podpozycja {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  min-height: 3rem;
+  padding: 0.5rem 0.55rem;
+  border-radius: 0.7rem;
+  color: var(--ap-nav-tekst-mocny);
+  transition: background-color 160ms var(--ap-ease-standard);
+}
+
+.ap-mobile-podpozycja:hover,
+.ap-mobile-podpozycja:focus-visible {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.ap-mobile-podpozycja.is-active {
+  background: rgba(79, 207, 222, 0.1);
+}
+
+.ap-mobile-podtytul {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.ap-mobile-podopis {
+  display: block;
+  margin-top: 0.1rem;
+  font-size: 0.75rem;
+  line-height: 1.3;
+  color: rgba(240, 244, 255, 0.55);
+}
+
+.ap-mobile-akcje {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.ap-mobile-akcja {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 2.75rem;
+  border-radius: 0.7rem;
+  border: 1px solid var(--ap-nav-krawedz);
+  background: rgba(255, 255, 255, 0.045);
+  color: var(--ap-nav-tekst-mocny);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 160ms var(--ap-ease-standard);
+}
+
+.ap-mobile-akcja:hover,
+.ap-mobile-akcja:focus-visible {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.ap-mobile-jezyk {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.55rem;
+}
+
+/* Pigułka z kodem języka — bez flagi, zgodnie z układem menu. */
+.ap-lang-kod {
+  min-width: 2.75rem;
+  /* 44 px — ten sam próg, co reszta celów dotykowych w menu. */
+  min-height: 2.75rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(240, 244, 255, 0.62);
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition:
+    color 160ms var(--ap-ease-standard),
+    border-color 160ms var(--ap-ease-standard),
+    background-color 160ms var(--ap-ease-standard);
+}
+
+.ap-lang-kod:hover {
+  color: var(--ap-nav-tekst-mocny);
+}
+
+.ap-lang-kod.is-active {
+  border-color: rgba(79, 207, 222, 0.55);
+  background: rgba(79, 207, 222, 0.12);
+  color: var(--ap-nav-akcent);
+}
+
+/* Strona pod otwartym menu nie może się przewijać. */
+body.ap-menu-otwarte {
+  overflow: hidden;
+}
+
+.ap-mobile-lang .ap-lang-pill {
+  min-height: 2.75rem;
+  padding-inline: 0.9rem;
 }
 
 .ap-mobile-link:hover,
@@ -843,6 +1345,20 @@ p {
   border-color: var(--ap-card-hover-ring);
 }
 
+/* Sekcja „Skontaktuj się z nami": wewnętrzne kafle są wyłącznie informacyjne
+   (telefony, e-maile) — nie mają się unosić ani podświetlać na hover. Zakres
+   ograniczony do .ap-contact-cards, reszta serwisu bez zmian. */
+.ap-contact-cards .ap-tile:hover,
+.ap-contact-cards .ap-tile:focus-within {
+  transform: none;
+  box-shadow: var(--ap-card-shadow);
+  border-color: var(--ap-border);
+}
+.ap-contact-cards .ap-tile-accent:hover,
+.ap-contact-cards .ap-tile-accent:focus-within {
+  border-color: var(--ap-border-strong);
+}
+
 /* .home-deferred-block — content-visibility WYŁĄCZONE: powodowało puste sekcje
    na pełnym zrzucie strony (Safari „Capture Screenshot" / druk nie renderował
    sekcji poza ekranem). Klasa zostaje jako no-op. Optymalizacja will-change
@@ -891,179 +1407,157 @@ p {
   }
 }
 
-.theme-light .ap-layer,
-.theme-light .ap-stars {
-  opacity: 0;
-}
-
-.theme-light .ap-vignette {
-  opacity: 0;
-}
-
-.theme-light .bg-black {
-  background-color: var(--ap-surface-contrast) !important;
-}
-.theme-light .bg-white\/4 {
-  background-color: var(--ap-surface) !important;
-}
-.theme-light .bg-white\/5 {
-  background-color: var(--ap-surface) !important;
-}
-.theme-light .bg-white\/8 {
-  background-color: var(--ap-surface-strong) !important;
-}
-.theme-light .bg-white\/10 {
-  background-color: var(--ap-surface-strong) !important;
-}
-.theme-light .bg-white\/18 {
-  background-color: rgba(79, 207, 222, 0.12) !important;
-}
-.theme-light .h-\[1px\].bg-white\/15,
-.theme-light .h-\[1px\].bg-white\/20 {
-  background-color: rgba(79, 207, 222, 0.6) !important;
-}
-
-.theme-light header.sticky {
-  border-color: rgba(79, 207, 222, 0.6) !important;
-}
-
-.theme-light .ap-nav-link {
-  color: rgba(23, 23, 48, 0.8);
-}
-
-.theme-light .ap-nav-link:hover,
-.theme-light .ap-nav-link:focus-visible {
-  color: var(--ap-text);
-  background: rgba(108, 197, 211, 0.12);
-}
-
-.theme-light .ap-nav-link.is-active {
-  color: var(--ap-text);
-  background: rgba(108, 197, 211, 0.18);
-  box-shadow: inset 0 0 0 1px rgba(67, 135, 149, 0.18);
-}
-
-.theme-light .ap-nav-dropdown-panel {
-  box-shadow:
-    0 22px 44px rgba(67, 135, 149, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.96);
-}
-
-.theme-light .ap-nav-dropdown-link.is-active {
-  background: rgba(108, 197, 211, 0.14);
-}
-
-.theme-light .ap-icon-button:hover,
-.theme-light .ap-icon-button:focus-visible {
-  box-shadow: 0 12px 24px rgba(67, 135, 149, 0.16);
-}
-
-.theme-light .ap-mobile-section-label {
-  color: rgba(23, 23, 48, 0.48);
-}
-
-.theme-light .ap-mobile-section-label.is-active {
-  color: var(--ap-text);
-}
-
-.theme-light .ap-mobile-link:hover,
-.theme-light .ap-mobile-link:focus-visible {
-  background: rgba(108, 197, 211, 0.14);
-  color: var(--ap-text);
-}
-
-.theme-light .ap-mobile-link.is-active {
-  background: rgba(108, 197, 211, 0.16);
-  color: var(--ap-text);
-  box-shadow: inset 0 0 0 1px rgba(67, 135, 149, 0.16);
-}
-
 .force-overlay {
   color: #ffffff !important;
 }
 .force-overlay-dim {
   color: rgba(255, 255, 255, 0.8) !important;
 }
+/* Opis w hero na stronie glownej. Krycie 0.92 zamiast 0.8, bo po rozjasnieniu
+   scrimu 0.8 dawalo 4.01:1 na najjasniejszej klatce wideo — ponizej progu
+   WCAG AA 4.5:1 dla tekstu 19.4px. Osobna klasa, zeby nie zmieniac
+   .force-overlay-dim, ktore jest uzywane rowniez na stronie wystawy. */
+/* ── Placeholder pod zdjęciami ──────────────────────────────────────────
+   Zdjęcia galerii mają loading="lazy", więc przy przewijaniu na łączu
+   mobilnym po prostu nie zdążają dojść. Zmierzone: przy wolnym 4G aż 74–91%
+   zdjęć widocznych w kadrze było jeszcze pustych. Kontener miał pod spodem
+   rgba(255,255,255,0.05), czyli praktycznie przezroczystość — użytkownik
+   widział pusty prostokąt i odbierał to jako zepsutą stronę.
+
+   Tło kładziemy na SAMYM <img>, nie na rodzicu. Dzięki temu znika samo:
+   next/image renderuje te zdjęcia z object-fit:cover, więc gotowa bitmapa
+   zakrywa całe pudełko razem z tłem. Zero JavaScriptu, zero zmian w 18
+   komponentach, które te galerie renderują.
+
+   Selektor celuje wyłącznie w nieprzezroczyste FOTOGRAFIE (klasa
+   object-cover + ścieżka), żeby nie podłożyć ciemnego tła pod logotypy
+   i ikony z kanałem alfa.
+
+   data-ap-loaded ustawia skrypt z <head> (layout.tsx) w chwili, gdy zdjęcie
+   faktycznie się wczyta. Bez tego animacja chodziła w nieskończoność i
+   przemalowywała wszystkie zdjęcia strony w każdej klatce — główna przyczyna
+   mikrodrgań hero i karuzeli na telefonie. Gdy JS nie działa, zostaje
+   dotychczasowe zachowanie (poświata chodzi) — to najgorszy możliwy przypadek,
+   a nie regresja. */
+img.object-cover[src*="/galeria/"]:not([data-ap-loaded]),
+img.object-cover[src*="/atrakcje/kino-360/Seanse/"]:not([data-ap-loaded]),
+img.object-cover[src*="/wydarzenia/"]:not([data-ap-loaded]) {
+  background-color: #141a2e;
+}
+
+/* Ruchoma poświata tylko pod zdjęciem, które jeszcze się ładuje I jest blisko
+   ekranu (data-ap-near). Gdy JS nie działa, zostaje samo ciemne tło wyżej. */
+img.object-cover[src*="/galeria/"][data-ap-near]:not([data-ap-loaded]),
+img.object-cover[src*="/atrakcje/kino-360/Seanse/"][data-ap-near]:not([data-ap-loaded]),
+img.object-cover[src*="/wydarzenia/"][data-ap-near]:not([data-ap-loaded]) {
+  background-image: linear-gradient(
+    110deg,
+    #141a2e 8%,
+    #1e2642 18%,
+    #141a2e 33%
+  );
+  background-size: 220% 100%;
+  animation: ap-placeholder-shimmer 1.8s linear infinite;
+}
+
+@keyframes ap-placeholder-shimmer {
+  to {
+    background-position: -220% 0;
+  }
+}
+
+/* Bez animacji: samo tło, żeby kafelek nadal nie był przezroczysty. */
+@media (prefers-reduced-motion: reduce) {
+  /* Te same selektory co reguła z poświatą (ta sama specyficzność, reguła stoi
+     niżej), inaczej [data-ap-near] by ją przebiło. */
+  img.object-cover[src*="/galeria/"][data-ap-near]:not([data-ap-loaded]),
+  img.object-cover[src*="/atrakcje/kino-360/Seanse/"][data-ap-near]:not([data-ap-loaded]),
+  img.object-cover[src*="/wydarzenia/"][data-ap-near]:not([data-ap-loaded]),
+  img.object-cover[src*="/galeria/"],
+  img.object-cover[src*="/atrakcje/kino-360/Seanse/"],
+  img.object-cover[src*="/wydarzenia/"] {
+    animation: none;
+    background-image: none;
+  }
+}
+
+/* ── Animacje wejścia hero ──────────────────────────────────────────────
+   ⚠️ WARTOŚĆ STARTOWA TO 0.01, NIE 0 — I MUSI TAKA ZOSTAĆ.
+   Chrome TRWALE wyklucza z Largest Contentful Paint element, który przy
+   pierwszym malowaniu miał `opacity: 0`. Przy zerze nagłówek H1 (55 488 px²)
+   nigdy nie stawał się kandydatem LCP i metryka spadała na akapit banera
+   cookies (34 125 px², renderowany klientowo) — zmierzone LCP 4764 ms przy
+   FCP 1488 ms. Po zmianie na 0.01 LCP = FCP, a elementem LCP jest H1.
+   Wizualnie 0.01 jest nieodróżnialne od 0 przez jedną klatkę.
+
+   CELOWO na @keyframes, nie na transition sterowanym stanem Reacta.
+   Wcześniej tło i teksty hero miały opacity-0 w wysłanym HTML i stawały się
+   widoczne dopiero po hydracji (stan introReady). Zmierzone na produkcji:
+   przy wolnym 4G nagłówek pojawiał się po 9,2 s, przy 3G po 19,5 s — przez
+   cały ten czas użytkownik widział czarny ekran, choć poster był już pobrany.
+   Animacja CSS rusza przy pierwszym malowaniu i nie czeka na JavaScript. */
+@keyframes ap-intro-fade {
+  from { opacity: 0.01; }
+  to   { opacity: 1; }
+}
+@keyframes ap-intro-rise {
+  from { opacity: 0.01; transform: translateY(0.75rem); }
+  to   { opacity: 1; transform: none; }
+}
+.ap-intro-fade {
+  animation: ap-intro-fade 1300ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.ap-intro-rise {
+  animation: ap-intro-rise 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.ap-intro-section {
+  animation: ap-intro-rise 1200ms cubic-bezier(0.22, 1, 0.36, 1) 180ms both;
+}
+.ap-intro-d1 { animation-delay: 100ms; }
+.ap-intro-d2 { animation-delay: 200ms; }
+.ap-intro-d3 { animation-delay: 300ms; }
+.ap-intro-d4 { animation-delay: 400ms; }
+
+/* Hero podstrony MARS — te same czasy co wcześniej, ale bez czekania na JS. */
+@keyframes ap-mars-pop {
+  from { opacity: 0.01; transform: scale(0.9); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes ap-mars-rise-5 {
+  from { opacity: 0.01; transform: translateY(1.25rem); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes ap-mars-rise-4 {
+  from { opacity: 0.01; transform: translateY(1rem); }
+  to   { opacity: 1; transform: none; }
+}
+.ap-mars-badge { animation: ap-mars-pop 850ms ease-out 80ms both; }
+.ap-mars-title { animation: ap-mars-rise-5 900ms ease-out 240ms both; }
+.ap-mars-lead  { animation: ap-mars-rise-4 900ms ease-out 440ms both; }
+.ap-mars-cta   { animation: ap-mars-rise-4 900ms ease-out 620ms both; }
+.ap-mars-late  { animation: ap-intro-fade 900ms ease-out 780ms both; }
+
+/* Bez animacji: treść ma być po prostu widoczna od razu. */
+@media (prefers-reduced-motion: reduce) {
+  .ap-intro-fade,
+  .ap-intro-rise,
+  .ap-intro-section,
+  .ap-mars-badge,
+  .ap-mars-title,
+  .ap-mars-lead,
+  .ap-mars-cta,
+  .ap-mars-late {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.force-overlay-hero {
+  color: rgba(255, 255, 255, 0.92) !important;
+}
 .force-overlay-muted {
   color: rgba(255, 255, 255, 0.7) !important;
-}
-
-.theme-light .ring-white\/10,
-.theme-light .ring-white\/15,
-.theme-light .ring-white\/20,
-.theme-light .ring-white\/35 {
-  --tw-ring-color: var(--ap-border) !important;
-}
-
-.theme-light .border-white\/10,
-.theme-light .border-white\/12,
-.theme-light .border-white\/20 {
-  border-color: var(--ap-border) !important;
-}
-
-.theme-light .text-white,
-.theme-light .text-white\/90,
-.theme-light .text-white\/85,
-.theme-light .text-white\/80,
-.theme-light .text-white\/75 {
-  color: var(--ap-text) !important;
-}
-.theme-light .text-white\/78,
-.theme-light .text-white\/76,
-.theme-light .text-white\/72,
-.theme-light .text-white\/68,
-.theme-light .text-white\/65 {
-  color: var(--ap-text-dim) !important;
-}
-.theme-light .text-white\/70,
-.theme-light .text-white\/60,
-.theme-light .text-white\/55,
-.theme-light .text-white\/50,
-.theme-light .text-white\/45,
-.theme-light .text-gray-200,
-.theme-light .text-gray-300 {
-  color: var(--ap-text-muted) !important;
-}
-.theme-light .text-gray-100,
-.theme-light .text-gray-400 {
-  color: var(--ap-text-dim) !important;
-}
-.theme-light .text-white\/40 {
-  color: rgba(15, 23, 42, 0.35) !important;
-}
-.theme-light .text-amber-200 {
-  color: #f77828 !important;
-}
-.theme-light .text-violet-100 {
-  color: #f03c64 !important;
-}
-
-.theme-light .k360-page {
-  --k360-accent: #0b3c6f;
-  --k360-accent-soft: rgba(11, 60, 111, 0.18);
-  --k360-accent-softer: rgba(11, 60, 111, 0.12);
-  --k360-ring: rgba(11, 60, 111, 0.35);
-  --k360-ring-strong: rgba(11, 60, 111, 0.45);
-  --k360-glow: 0 0 18px rgba(11, 60, 111, 0.25);
-}
-.theme-light .k360-page .bg-cyan-500\/20 {
-  background-color: var(--k360-accent-soft) !important;
-}
-.theme-light .k360-page .bg-cyan-500\/15 {
-  background-color: var(--k360-accent-softer) !important;
-}
-.theme-light .k360-page .text-cyan-100 {
-  color: var(--k360-accent) !important;
-}
-.theme-light .k360-page .ring-cyan-300\/25,
-.theme-light .k360-page .ring-cyan-400\/25 {
-  --tw-ring-color: var(--k360-ring) !important;
-}
-.theme-light .k360-page .ring-cyan-300\/40 {
-  --tw-ring-color: var(--k360-ring-strong) !important;
-}
-.theme-light .k360-page .shadow-\[0_0_18px_rgba\(34\,211\,238\,0\.35\)\] {
-  box-shadow: var(--k360-glow) !important;
 }
 
 /* BaseSystem embed overrides to keep controls readable on light background. */
@@ -1078,260 +1572,20 @@ p {
   fill: currentColor !important;
 }
 
-/* Bookero inline panel (booking page): force sticky-like readability. */
-#bookero {
-  background-color: #ffffff !important;
-  border-radius: 1rem;
-}
-
-#bookero .bookero-plugin-form-wrapper {
-  background-color: #ffffff !important;
-  color: #0f172a !important;
-}
-
-#bookero .bookero-plugin-form-wrapper :where(
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6,
-    p,
-    span,
-    label,
-    small,
-    legend,
-    li,
-    dt,
-    dd,
-    a,
-    strong,
-    em,
-    b,
-    input,
-    select,
-    textarea,
-    option,
-    .multiselect,
-    .multiselect *,
-    .multiselect__single,
-    .multiselect__single *,
-    .multiselect__input,
-    .multiselect__input *,
-    .multiselect__option,
-    .multiselect__option *,
-    .multiselect__placeholder,
-    .multiselect__placeholder *,
-    .vti__input,
-    .vti__input *,
-    .vti__dropdown-list,
-    .vti__dropdown-list *,
-    .vti__dropdown-item,
-    .vti__dropdown-item *
-  ) {
-  color: #0f172a !important;
-  -webkit-text-fill-color: #0f172a !important;
-  opacity: 1 !important;
-}
-
-#bookero :where(input, select, textarea, .multiselect__single, .multiselect__input) {
-  background-color: #ffffff !important;
-  border-color: #cbd5e1 !important;
-}
-
-#bookero :where(input::placeholder, textarea::placeholder, .multiselect__placeholder) {
-  color: rgba(15, 23, 42, 0.55) !important;
-  -webkit-text-fill-color: rgba(15, 23, 42, 0.55) !important;
-  opacity: 1 !important;
-}
-
-#bookero :where(
-    .bookero-plugin-header,
-    .bookero-plugin-header *,
-    .bookero-sticky-plugin-toggle,
-    .add-to-cart-section .add-button,
-    .bookero-plugin-error-btn,
-    .calendar-days-list-cell.is-selected,
-    .calendar-days-list-cell.is-sub-selected,
-    .week-days-hour.is-selected,
-    .week-days-hour.is-sub-selected
-  ) {
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-}
-
-#bookero :where(
-    .bookero-plugin-form-heading.is-inactive,
-    .services-section .field.is-inactive,
-    .params-section:not(.is-active),
-    .add-to-cart-section:not(.is-active),
-    .submit-section:not(.is-active)
-  ) {
-  opacity: 0.72 !important;
-}
-
-/* Booking page widget (calendar/standard) renders into #bookero-plugin, which
-   can sit outside #bookero. Force it to always be a light panel — readable in
-   BOTH the dark and light site theme, matching the (correct) light look. */
-#bookero-plugin:not([data-mode="sticky"]) {
-  background-color: #ffffff !important;
-  border-radius: 1rem;
-  color: #0f172a !important;
-}
-
-#bookero-plugin:not([data-mode="sticky"]) :where(
-    h1, h2, h3, h4, h5, h6, p, span, label, small, legend, li, dt, dd, a, strong, em, b, div,
-    .bookero-plugin-form-heading,
-    .calendar-nav-month,
-    .calendar-days-heading-cell,
-    .calendar-days-list-cell,
-    .week-days-heading-day,
-    .week-days-heading-date,
-    .week-days-hour,
-    .week-days-hour-info,
-    .switcher-label,
-    input, select, textarea, option,
-    .multiselect, .multiselect *,
-    .multiselect__single, .multiselect__single *,
-    .multiselect__input, .multiselect__input *,
-    .multiselect__option, .multiselect__option *,
-    .multiselect__placeholder, .multiselect__placeholder *
-  ) {
-  color: #0f172a !important;
-  -webkit-text-fill-color: #0f172a !important;
-  opacity: 1 !important;
-}
-
-#bookero-plugin:not([data-mode="sticky"]) :where(
-    input, select, textarea, .multiselect__single, .multiselect__input
-  ) {
-  background-color: #ffffff !important;
-  border-color: #cbd5e1 !important;
-}
-
-#bookero-plugin:not([data-mode="sticky"]) :where(
-    input::placeholder, textarea::placeholder, .multiselect__placeholder
-  ) {
-  color: rgba(15, 23, 42, 0.55) !important;
-  -webkit-text-fill-color: rgba(15, 23, 42, 0.55) !important;
-}
-
-/* Selected day / hour and primary controls keep white text on their blue fill. */
-#bookero-plugin:not([data-mode="sticky"]) :where(
-    .bookero-plugin-header,
-    .bookero-plugin-header *,
-    .add-to-cart-section .add-button,
-    .add-to-cart-section .add-button *,
-    .bookero-plugin-error-btn,
-    .calendar-days-list-cell.is-selected,
-    .calendar-days-list-cell.is-selected *,
-    .calendar-days-list-cell.is-sub-selected,
-    .calendar-days-list-cell.is-sub-selected *,
-    .week-days-hour.is-selected,
-    .week-days-hour.is-selected *,
-    .week-days-hour.is-sub-selected,
-    .week-days-hour.is-sub-selected *
-  ) {
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-}
-
-#bookero-plugin:not([data-mode="sticky"]) :where(
-    .bookero-plugin-form-heading.is-inactive,
-    .services-section .field.is-inactive,
-    .params-section:not(.is-active),
-    .add-to-cart-section:not(.is-active),
-    .submit-section:not(.is-active)
-  ) {
-  opacity: 0.72 !important;
-}
-
-/* Bookero sticky readability fixes (especially Safari/iOS text fill handling). */
-#bookero-plugin[data-mode="sticky"] :where(
-    .bookero-plugin-form-heading,
-    .bookero-plugin-form .field label,
-    .bookero-plugin-form .field-note,
-    .bookero-plugin-form .field .note,
-    .bookero-plugin-form-wrapper p,
-    .bookero-plugin-form-wrapper span,
-    .bookero-plugin-form-wrapper small,
-    .bookero-plugin-form-wrapper legend,
-    .bookero-plugin-form-wrapper li,
-    .bookero-plugin-form-wrapper dt,
-    .bookero-plugin-form-wrapper dd,
-    .bookero-plugin-form-wrapper a,
-    .bookero-plugin-form-wrapper strong,
-    .bookero-plugin-form-wrapper em,
-    .bookero-plugin-form-wrapper b,
-    .calendar-nav-month,
-    .calendar-days-heading-cell,
-    .week-days-heading-day,
-    .week-days-heading-date,
-    .week-days-hour-info,
-    .switcher-label,
-    .multiselect__single,
-    .multiselect__placeholder,
-    .multiselect__option,
-    .multiselect__input
-  ) {
-  color: #0f172a !important;
-  -webkit-text-fill-color: #0f172a !important;
-  opacity: 1 !important;
-}
-
-#bookero-plugin[data-mode="sticky"] :where(input, select, textarea, .multiselect__single, .multiselect__input) {
-  color: #0f172a !important;
-  -webkit-text-fill-color: #0f172a !important;
-  background-color: #ffffff !important;
-}
-
-#bookero-plugin[data-mode="sticky"] :where(input::placeholder, textarea::placeholder, .multiselect__placeholder) {
-  color: rgba(15, 23, 42, 0.55) !important;
-  -webkit-text-fill-color: rgba(15, 23, 42, 0.55) !important;
-  opacity: 1 !important;
-}
-
-#bookero-plugin[data-mode="sticky"] :where(
-    .bookero-plugin-header,
-    .bookero-plugin-header *,
-    .bookero-sticky-plugin-toggle,
-    .add-to-cart-section .add-button,
-    .bookero-plugin-error-btn,
-    .calendar-days-list-cell.is-selected,
-    .calendar-days-list-cell.is-sub-selected,
-    .week-days-hour.is-selected,
-    .week-days-hour.is-sub-selected
-  ) {
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-}
-
-#bookero-plugin[data-mode="sticky"] :where(
-    .bookero-plugin-form-heading.is-inactive,
-    .services-section .field.is-inactive
-  ) {
-  opacity: 0.72 !important;
-}
-
-/* Sticky launcher button visual override: red "Bilety" CTA. */
-:is(.bookero-sticky-plugin-toggle, #bookero-plugin[data-mode="sticky"] .bookero-sticky-plugin-toggle) {
-  background: var(--ap-brand-red) !important;
-  border-color: rgba(255, 255, 255, 0.3) !important;
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-  box-shadow: 0 10px 24px rgba(247, 72, 108, 0.35) !important;
-}
-
-:is(.bookero-sticky-plugin-toggle, #bookero-plugin[data-mode="sticky"] .bookero-sticky-plugin-toggle):hover {
-  filter: brightness(1.06);
-}
-
 .ticket-pill {
   color: #ffffff;
-  font-weight: 700;
+  /* 800, nie 700. Ta reguła jest NIEWARSTWOWA, więc bije `font-extrabold`
+     Tailwinda — część przycisków wymuszała swoje przez `!font-extrabold`,
+     a reszta cicho zostawała na 700. Efekt: „Wybieram" i „Kup pakiet" były
+     cieńsze niż „Kup bilet" przy filmach, mimo identycznych klas w JSX.
+     Jedna wartość tutaj ujednolica wszystkie .ticket-pill w serwisie. */
+  font-weight: 800;
   background: var(--ap-brand-red);
   border: 1px solid rgba(255, 255, 255, 0.22);
-  box-shadow: 0 8px 18px rgba(247, 72, 108, 0.32), 0 0 18px rgba(247, 72, 108, 0.2);
+  /* Poświata w kolorze AKCJI (cyjan), nie w starym różu marki — inaczej pod
+     cyjanowym przyciskiem świeciło na różowo wszędzie tam, gdzie nie nadpisano
+     jej stylem inline. Mniejsza i słabsza: 6/16/0,30 zamiast 8/18 + 0/18. */
+  box-shadow: 0 6px 16px rgba(86, 221, 234, 0.3);
   position: relative;
   overflow: hidden;
   transition: transform 0.24s ease, filter 0.24s ease;
@@ -1374,13 +1628,17 @@ p {
   min-width: 12.5rem;
   padding: 0.45rem 1rem;
   border-radius: 9999px;
-  background: linear-gradient(135deg, #4fcfde, #a5e6f0);
-  color: #13263d;
+  /* Ghost, nie wypełnienie. Wcześniej biały napis leżał na jasnym gradiencie
+     i dawał 1,38:1 przy wymaganych 4,5. Teraz tekst jest na ciemnym tle strony,
+     a kolor atrakcji niesie obrys. */
+  background: transparent;
+  border: 1px solid rgba(79, 207, 222, 0.55);
+  color: #ffffff;
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.26em;
   text-transform: uppercase;
-  box-shadow: 0 8px 22px rgba(79, 207, 222, 0.28);
+  box-shadow: none;
 }
 
 /* Na mobile „podłużne stopy" (badge'y biletów) ~50% węższe */
@@ -1446,78 +1704,6 @@ p {
 .ticket-price {
   color: #ffffff;
   text-shadow: 0 0 16px rgba(255, 255, 255, 0.16);
-}
-
-.theme-light .ticket-card {
-  border-color: rgba(79, 207, 222, 0.82);
-  background: linear-gradient(158deg, #f9feff 0%, #eff8ff 54%, #e7f2fb 100%);
-  box-shadow:
-    0 18px 36px rgba(18, 38, 62, 0.16),
-    0 0 0 1px rgba(79, 207, 222, 0.34),
-    inset 0 1px 0 rgba(255, 255, 255, 0.92);
-}
-
-.theme-light .ticket-card:hover {
-  border-color: rgba(79, 207, 222, 0.95);
-  box-shadow:
-    0 24px 44px rgba(18, 38, 62, 0.2),
-    0 0 0 1px rgba(79, 207, 222, 0.46),
-    inset 0 1px 0 rgba(255, 255, 255, 0.96);
-}
-
-.theme-light .ticket-card::before {
-  background:
-    radial-gradient(circle at 14% 18%, rgba(79, 207, 222, 0.2), transparent 44%),
-    radial-gradient(circle at 84% 86%, rgba(240, 60, 100, 0.11), transparent 50%);
-  opacity: 0.84;
-}
-
-.theme-light .home-ticket-promo {
-  border-color: rgba(79, 207, 222, 0.56) !important;
-  background:
-    radial-gradient(circle at top left, rgba(79, 207, 222, 0.14), transparent 36%),
-    radial-gradient(circle at bottom right, rgba(240, 60, 100, 0.08), transparent 34%),
-    linear-gradient(158deg, #f9feff 0%, #eff8ff 54%, #e7f2fb 100%) !important;
-  box-shadow:
-    0 20px 40px rgba(18, 38, 62, 0.14),
-    0 0 0 1px rgba(79, 207, 222, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.92) !important;
-}
-
-.theme-light .home-ticket-promo-detail {
-  color: rgba(19, 38, 61, 0.8) !important;
-  background: rgba(255, 255, 255, 0.72) !important;
-  border-color: rgba(114, 148, 173, 0.26) !important;
-}
-
-.theme-light .home-ticket-promo-price {
-  background: linear-gradient(180deg, #ffffff, #edf4fb) !important;
-  border-color: rgba(114, 148, 173, 0.5) !important;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
-}
-
-.theme-light .ticket-card-title {
-  color: #10233a;
-}
-
-.theme-light .ticket-card-subtitle {
-  color: rgba(19, 38, 61, 0.72);
-}
-
-.theme-light .ticket-card-divider {
-  background: linear-gradient(
-    90deg,
-    rgba(79, 207, 222, 0) 0%,
-    rgba(79, 207, 222, 0.66) 50%,
-    rgba(79, 207, 222, 0) 100%
-  );
-}
-
-.theme-light .ticket-list-panel {
-  color: rgba(19, 38, 61, 0.84);
-  background: linear-gradient(180deg, #fbfeff, #edf6ff);
-  border-color: rgba(114, 148, 173, 0.45);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.94);
 }
 
 .ticket-faq-mobile-shell {
@@ -2058,119 +2244,6 @@ p {
   color: rgba(244, 246, 255, 0.74);
 }
 
-.theme-light .ticket-faq-launcher {
-  border-color: rgba(79, 207, 222, 0.56);
-  background:
-    radial-gradient(circle at 10% 18%, rgba(79, 207, 222, 0.18), rgba(79, 207, 222, 0) 36%),
-    linear-gradient(156deg, rgba(250, 254, 255, 0.98), rgba(236, 247, 253, 0.98));
-  box-shadow:
-    0 18px 36px rgba(18, 38, 62, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.94);
-}
-
-.theme-light .ticket-faq-launcher-title,
-.theme-light .ticket-faq-title {
-  color: #10233a;
-}
-
-.theme-light .ticket-faq-fab {
-  background:
-    radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.96), transparent 42%),
-    linear-gradient(156deg, rgba(252, 254, 255, 0.98), rgba(234, 245, 250, 0.98));
-  border-color: rgba(108, 197, 211, 0.52);
-  box-shadow:
-    0 18px 34px rgba(18, 38, 62, 0.18),
-    0 0 0 1px rgba(79, 207, 222, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.94);
-}
-
-.theme-light .ticket-faq-mobile-fab {
-  background:
-    radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.96), transparent 42%),
-    linear-gradient(156deg, rgba(252, 254, 255, 0.98), rgba(234, 245, 250, 0.98));
-  border-color: rgba(108, 197, 211, 0.52);
-  box-shadow:
-    0 18px 34px rgba(18, 38, 62, 0.18),
-    0 0 0 1px rgba(79, 207, 222, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.94);
-}
-
-.theme-light .ticket-faq-fab:hover,
-.theme-light .ticket-faq-fab:focus-visible,
-.theme-light .ticket-faq-fab.is-open,
-.theme-light .ticket-faq-mobile-fab:hover,
-.theme-light .ticket-faq-mobile-fab:focus-visible,
-.theme-light .ticket-faq-mobile-fab.is-open {
-  border-color: rgba(79, 207, 222, 0.58);
-  box-shadow:
-    0 22px 38px rgba(18, 38, 62, 0.2),
-    0 0 0 1px rgba(79, 207, 222, 0.28),
-    0 0 18px rgba(79, 207, 222, 0.12);
-}
-
-.theme-light .ticket-faq-fab-core,
-.theme-light .ticket-faq-mobile-fab-core {
-  background: linear-gradient(145deg, rgba(15, 22, 38, 0.98), rgba(7, 12, 24, 0.99));
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    0 0 0 1px rgba(79, 207, 222, 0.12);
-}
-
-.theme-light .ticket-faq-fab-copy-label {
-  color: #10233a;
-}
-
-.theme-light .ticket-faq-launcher-subtitle,
-.theme-light .ticket-faq-subtitle,
-.theme-light .ticket-faq-answer {
-  color: rgba(19, 38, 61, 0.72);
-}
-
-.theme-light .ticket-faq-panel {
-  border-color: rgba(79, 207, 222, 0.58);
-  background:
-    radial-gradient(circle at 10% 14%, rgba(79, 207, 222, 0.2), rgba(79, 207, 222, 0) 34%),
-    radial-gradient(circle at 88% 84%, rgba(240, 60, 100, 0.11), rgba(240, 60, 100, 0) 38%),
-    linear-gradient(160deg, rgba(250, 254, 255, 0.98) 0%, rgba(236, 247, 253, 0.99) 100%);
-  box-shadow:
-    0 24px 44px rgba(18, 38, 62, 0.16),
-    0 0 0 1px rgba(79, 207, 222, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.92);
-}
-
-.theme-light .ticket-faq-close {
-  color: rgba(16, 35, 58, 0.72);
-  background: rgba(255, 255, 255, 0.56);
-  border-color: rgba(79, 207, 222, 0.18);
-}
-
-.theme-light .ticket-faq-close:hover,
-.theme-light .ticket-faq-close:focus-visible {
-  color: rgba(16, 35, 58, 0.96);
-  background: rgba(255, 255, 255, 0.92);
-}
-
-.theme-light .ticket-faq-question {
-  background: rgba(255, 255, 255, 0.56);
-  border-color: rgba(79, 207, 222, 0.16);
-}
-
-.theme-light .ticket-faq-question:hover,
-.theme-light .ticket-faq-question:focus-visible,
-.theme-light .ticket-faq-item.is-open .ticket-faq-question {
-  background: rgba(255, 255, 255, 0.82);
-  border-color: rgba(79, 207, 222, 0.34);
-}
-
-.theme-light .ticket-faq-question-copy {
-  color: rgba(16, 35, 58, 0.96);
-}
-
-.theme-light .ticket-faq-question-index {
-  background: rgba(79, 207, 222, 0.14);
-  color: #13798d;
-}
-
 @media (max-width: 639px) {
   .ticket-faq-panel-head {
     padding: 1rem 1rem 0.8rem;
@@ -2208,340 +2281,30 @@ p {
   }
 }
 
-.theme-light .ticket-price-block {
-  background: linear-gradient(180deg, #ffffff, #edf4fb);
-  border-color: rgba(114, 148, 173, 0.5);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95);
+@keyframes events-trusted-scroll {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
 }
 
-.theme-light .ticket-price-label {
-  color: rgba(16, 35, 58, 0.62);
+@keyframes events-spacecard-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-.theme-light .ticket-price {
-  color: #f77828;
-  text-shadow: 0 0 0 transparent;
-}
-
-.theme-light .ticket-detail-dot {
-  box-shadow: 0 0 10px rgba(79, 207, 222, 0.45);
-}
-
-.theme-light .attractions-edge-fade-left {
-  background-image: linear-gradient(
-    to right,
-    var(--ap-bg) 0%,
-    rgba(215, 237, 242, 0.88) 42%,
-    rgba(241, 244, 247, 0) 100%
-  ) !important;
-}
-
-.theme-light .attractions-edge-fade-right {
-  background-image: linear-gradient(
-    to left,
-    var(--ap-bg) 0%,
-    rgba(215, 237, 242, 0.88) 42%,
-    rgba(241, 244, 247, 0) 100%
-  ) !important;
-}
-
-.theme-light .events-showcase {
-  background:
-    radial-gradient(circle at 14% 14%, rgba(140, 207, 217, 0.24), rgba(140, 207, 217, 0) 42%),
-    linear-gradient(165deg, #ffffff 0%, #eaf8fc 100%) !important;
-  border-color: rgba(108, 197, 211, 0.72) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.96),
-    0 16px 34px rgba(67, 135, 149, 0.16);
-}
-
-.theme-light .events-showcase-fade-top {
-  background: linear-gradient(
-    to bottom,
-    rgba(140, 207, 217, 0.5) 0%,
-    rgba(140, 207, 217, 0.2) 48%,
-    rgba(140, 207, 217, 0) 100%
-  ) !important;
-}
-
-.theme-light .events-showcase-fade-bottom {
-  background: linear-gradient(
-    to top,
-    rgba(140, 207, 217, 0.48) 0%,
-    rgba(140, 207, 217, 0.18) 46%,
-    rgba(140, 207, 217, 0) 100%
-  ) !important;
-}
-
-.theme-light .events-showcase-column {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.96) 0%,
-    rgba(231, 247, 252, 0.9) 100%
-  ) !important;
-  border-color: rgba(108, 197, 211, 0.6) !important;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.98);
-}
-
-.theme-light .events-showcase-item {
-  border-color: rgba(108, 197, 211, 0.52) !important;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.84) 0%,
-    rgba(235, 249, 253, 0.86) 100%
-  ) !important;
-}
-
-.theme-light .events-showcase-loader {
-  background: linear-gradient(
-    135deg,
-    rgba(140, 207, 217, 0.56) 0%,
-    rgba(166, 231, 239, 0.38) 48%,
-    rgba(247, 253, 255, 0.38) 100%
-  ) !important;
-}
-
-.events-page .events-info-group-separated {
-  border-color: rgba(79, 207, 222, 0.28);
-}
-
-.events-page .events-section-label {
-  color: var(--ap-ice);
-}
-
-.events-page .events-section-divider {
-  background: linear-gradient(
-    90deg,
-    rgba(79, 207, 222, 0) 0%,
-    rgba(79, 207, 222, 0.62) 50%,
-    rgba(79, 207, 222, 0) 100%
-  );
-}
-
-.events-page .events-section-intro {
-  color: var(--ap-text-muted);
-}
-
-.events-page .events-video-card {
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-
-.events-page .events-dome-card,
-.events-page .events-video-tile,
-.events-page .events-contact-card,
-.events-page .events-showcase-item {
-  contain: paint;
-}
-
-.events-page .events-video-tile {
-  --ap-card-hover-base-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
-}
-
-.events-page .events-dome-card {
-  --ap-card-hover-base-shadow:
-    0 18px 40px rgba(0, 0, 0, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.12);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.03));
-  box-shadow:
-    0 18px 40px rgba(0, 0, 0, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
-}
-
-.events-page .events-rental-pill {
-  border-color: rgba(79, 207, 222, 0.45);
-  background: rgba(79, 207, 222, 0.12);
-  color: #a5e6f0;
-}
-
-.events-page .events-dome-thumb {
-  border-color: rgba(255, 255, 255, 0.12);
-  background: rgba(8, 14, 28, 0.32);
-}
-
-.events-page .events-dome-divider {
-  background: rgba(255, 255, 255, 0.12);
-}
-
-.events-page .events-dome-highlight {
-  border-color: rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.02);
-  color: rgba(255, 255, 255, 0.92);
-}
-
-.events-page .events-dome-details {
-  border-color: rgba(79, 207, 222, 0.24);
-  background: rgba(8, 14, 28, 0.18);
-}
-
-.events-page .events-dome-summary,
-.events-page .events-dome-caret {
-  color: var(--ap-ice);
-}
-
-.events-page .events-dome-details-content {
-  border-color: rgba(255, 255, 255, 0.1);
-}
-
-.events-page .events-dome-point {
-  color: rgba(255, 255, 255, 0.88);
-}
-
-.events-page .events-contact-card {
-  border-color: rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.events-page .events-contact-link {
-  color: var(--ap-text);
-  transition: color 180ms ease;
-}
-
-.events-page .events-contact-link:hover {
-  color: var(--ap-text-strong);
-}
-
-.theme-light .events-page {
-  background:
-    radial-gradient(circle at 8% 6%, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0) 34%),
-    radial-gradient(circle at 92% 12%, rgba(140, 207, 217, 0.28), rgba(140, 207, 217, 0) 42%),
-    linear-gradient(180deg, #dff2f7 0%, #cbe5ed 100%);
-}
-
-.theme-light .events-page .ap-card {
-  border-color: rgba(108, 197, 211, 0.6) !important;
-  background: linear-gradient(162deg, rgba(255, 255, 255, 0.97), rgba(233, 248, 252, 0.93)) !important;
-  box-shadow:
-    0 18px 38px rgba(67, 135, 149, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
-}
-
-.theme-light .events-page .events-video-card {
-  background:
-    radial-gradient(circle at 12% 12%, rgba(140, 207, 217, 0.22), rgba(140, 207, 217, 0) 38%),
-    linear-gradient(165deg, rgba(255, 255, 255, 0.97) 0%, rgba(230, 246, 251, 0.94) 100%) !important;
-}
-
-.theme-light .events-page .events-video-tile {
-  --ap-card-hover-base-shadow:
-    0 12px 26px rgba(67, 135, 149, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.96);
-  border-color: rgba(108, 197, 211, 0.6) !important;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(235, 249, 253, 0.96)) !important;
-  box-shadow:
-    0 12px 26px rgba(67, 135, 149, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.96);
-}
-
-.theme-light .events-page .events-video-tile-overlay {
-  background: linear-gradient(
-    to top,
-    rgba(11, 36, 52, 0.58) 0%,
-    rgba(11, 36, 52, 0.16) 45%,
-    rgba(11, 36, 52, 0.05) 100%
-  ) !important;
-}
-
-.theme-light .events-page .events-video-play-badge {
-  background: rgba(16, 44, 63, 0.72) !important;
-  border-color: rgba(188, 236, 245, 0.74) !important;
-}
-
-.theme-light .events-page .events-info-group-separated {
-  border-color: rgba(108, 197, 211, 0.4);
-}
-
-.theme-light .events-page .events-section-label {
-  color: #5a9dad;
-}
-
-.theme-light .events-page .events-section-divider {
-  background: linear-gradient(
-    90deg,
-    rgba(108, 197, 211, 0) 0%,
-    rgba(108, 197, 211, 0.72) 50%,
-    rgba(108, 197, 211, 0) 100%
-  );
-}
-
-.theme-light .events-page .events-section-intro {
-  color: rgba(23, 23, 48, 0.68);
-}
-
-.theme-light .events-page .events-video-card {
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-
-.theme-light .events-page .events-dome-card {
-  --ap-card-hover-base-shadow:
-    0 14px 34px rgba(67, 135, 149, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.96);
-  border-color: rgba(108, 197, 211, 0.58);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(236, 249, 252, 0.96));
-  box-shadow:
-    0 14px 34px rgba(67, 135, 149, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.96);
-}
-
-.theme-light .events-page .events-rental-pill {
-  border-color: rgba(96, 186, 201, 0.62);
-  background: rgba(108, 197, 211, 0.12);
-  color: #4f93a1;
-}
-
-.theme-light .events-page .events-dome-thumb {
-  border-color: rgba(108, 197, 211, 0.42);
-  background: linear-gradient(180deg, rgba(219, 241, 247, 0.9), rgba(232, 247, 252, 0.9));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92);
-}
-
-.theme-light .events-page .events-dome-divider {
-  background: linear-gradient(
-    90deg,
-    rgba(108, 197, 211, 0) 0%,
-    rgba(108, 197, 211, 0.58) 50%,
-    rgba(108, 197, 211, 0) 100%
-  );
-}
-
-.theme-light .events-page .events-dome-highlight {
-  border-color: rgba(108, 197, 211, 0.46);
-  background: rgba(233, 247, 251, 0.9);
-  color: var(--ap-text);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92);
-}
-
-.theme-light .events-page .events-dome-details {
-  border-color: rgba(108, 197, 211, 0.44);
-  background: linear-gradient(180deg, rgba(239, 251, 254, 0.94), rgba(230, 246, 250, 0.9));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.94);
-}
-
-.theme-light .events-page .events-dome-summary,
-.theme-light .events-page .events-dome-caret {
-  color: #5a9dad;
-}
-
-.theme-light .events-page .events-dome-details-content {
-  border-color: rgba(108, 197, 211, 0.34);
-}
-
-.theme-light .events-page .events-dome-point {
-  color: var(--ap-text);
-}
-
-.theme-light .events-page .events-contact-card {
-  border-color: rgba(108, 197, 211, 0.46);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(238, 250, 253, 0.94));
-  box-shadow:
-    0 10px 24px rgba(67, 135, 149, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.92);
-}
-
-.theme-light .events-page .events-contact-link:hover {
-  color: var(--ap-orange);
+@keyframes events-preview-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .scroll-float {
@@ -2677,56 +2440,6 @@ p {
   box-shadow: 0 0 10px rgba(255, 95, 118, 0.72);
 }
 
-.theme-light .hero-film-alert {
-  box-shadow: 0 12px 28px rgba(67, 135, 149, 0.2);
-}
-
-.theme-light .hero-film-alert--cool {
-  color: #13323d;
-  border-color: rgba(108, 197, 211, 0.78);
-  background: linear-gradient(145deg, rgba(252, 255, 255, 0.96), rgba(228, 246, 251, 0.96));
-  box-shadow: 0 12px 28px rgba(67, 135, 149, 0.2);
-}
-
-.theme-light .hero-film-alert--hot {
-  color: #5f1d2e;
-  border-color: rgba(241, 103, 126, 0.74);
-  background: linear-gradient(145deg, rgba(255, 248, 249, 0.97), rgba(255, 232, 237, 0.97));
-  box-shadow: 0 12px 28px rgba(168, 62, 86, 0.18);
-}
-
-.theme-light .hero-film-alert--cool::after {
-  border-color: rgba(108, 197, 211, 0.56);
-}
-
-.theme-light .hero-film-alert--hot::after {
-  border-color: rgba(241, 103, 126, 0.42);
-}
-
-.theme-light .hero-film-alert--cool .hero-film-alert-copy {
-  color: rgba(19, 50, 61, 0.92);
-}
-
-.theme-light .hero-film-alert--hot .hero-film-alert-copy {
-  color: rgba(95, 29, 46, 0.94);
-}
-
-.theme-light .hero-film-alert--cool .hero-film-alert-cta {
-  color: #0f7588;
-}
-
-.theme-light .hero-film-alert--hot .hero-film-alert-cta {
-  color: #cf3658;
-}
-
-.theme-light .hero-film-alert-dot--cool {
-  box-shadow: 0 0 12px rgba(108, 197, 211, 0.62);
-}
-
-.theme-light .hero-film-alert-dot--hot {
-  box-shadow: 0 0 12px rgba(241, 103, 126, 0.56);
-}
-
 .hero-k360-preview {
   opacity: 0;
   will-change: clip-path, opacity, filter;
@@ -2788,17 +2501,6 @@ p {
   filter: brightness(1.04);
 }
 
-.theme-light .hero-preview-cta {
-  border-color: rgba(108, 197, 211, 0.24);
-  background:
-    linear-gradient(145deg, rgba(253, 255, 255, 0.96), rgba(238, 250, 253, 0.94)),
-    radial-gradient(circle at 18% 18%, rgba(79, 207, 222, 0.08), transparent 42%);
-  color: #13323d;
-  box-shadow:
-    0 14px 28px rgba(67, 135, 149, 0.14),
-    0 0 16px rgba(79, 207, 222, 0.08);
-}
-
 .ap-page-intro-stagger {
   animation: pageIntroMain 860ms cubic-bezier(0.22, 1, 0.36, 1) 40ms both;
 }
@@ -2858,7 +2560,22 @@ p {
   initial-value: #ff6a3d;
 }
 .rep-glass {
-  transition: --rep-accent 900ms ease, border-color 900ms ease;
+  /* Czas ZRÓWNANY z animacją kafli (260 ms mobile / 420 ms desktop poniżej).
+
+     Wcześniej było 900 ms. Zmierzone w WebKicie: ruch kafli kończył się na 433 ms,
+     a przenikanie --rep-accent trwało do 912 ms — czyli przez prawie pół sekundy
+     po zatrzymaniu kafli nadal trwała animacja. Ponieważ --rep-accent wchodzi przez
+     color-mix() do dwóch gradientów pokrywających CAŁY panel, Safari przemalowywało
+     w tym czasie całe tło sekcji co klatkę. Dopóki kafle się ruszały, było to
+     zamaskowane ruchem; gdy stanęły, zostawało samo migotanie tła.
+
+     Kolor nadal przenika płynnie — tylko kończy się razem z ruchem, a nie po nim. */
+  transition: --rep-accent 260ms ease, border-color 260ms ease;
+}
+@media (min-width: 640px) {
+  .rep-glass {
+    transition: --rep-accent 420ms ease, border-color 420ms ease;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .rep-glass {
@@ -2871,10 +2588,16 @@ p {
    oscylują co klatkę → drżenie. Tu flex-grow=0, a rozmiar każdego kafla to jego
    własny flex-basis zmieniany monotonicznie → brak oscylacji = brak drżenia.
    --rep-active (1 = wybrany, 0 = reszta) ustawiane inline w React.
-   Domyślnie mobile (flex-col: flex-basis = wysokość, proporcja 5:1, gap 2.5). */
+   Domyślnie mobile (flex-col: flex-basis = wysokość, gap 2.5).
+
+   Proporcja mobile to 4:1, nie 5:1 — zwinięta miniaturka niesie teraz tytuł,
+   czas trwania z grupą docelową i CTA. Przy poprzednim 1/8 kontenera wychodziło
+   ~72 px, a sam podpis mierzy ~85 px, więc górna linijka była obcinana. Przy 1/7
+   (i kontenerze 42rem) miniaturka ma ~92 px, czyli podpis mieści się z zapasem,
+   a karta aktywna zachowuje dotychczasową wysokość ~367 px. */
 .rep-tile {
-  --rep-active-grow: 5;
-  --rep-total: 8;
+  --rep-active-grow: 4;
+  --rep-total: 7;
   --rep-gaps: 1.875rem;
   flex-grow: 0;
   flex-shrink: 0;
@@ -2893,10 +2616,27 @@ p {
 }
 /* Przejście włączane DOPIERO po zakończeniu animacji wejścia (klasa dodawana przez
    stan `settled`), więc nie koliduje z transition klasy .wpk-reveal (są rozłączne). */
+/* Czas trwania zależy od orientacji akordeonu.
+
+   MOBILE (flex-col) — 260 ms. Przy układzie pionowym przełączenie filmu przesuwa
+   pozostałe kafle o ~275 px, więc treść zjeżdża pod palcem użytkownika. Ruch jest
+   monotoniczny (zmierzone: zero zmian kierunku, scrollY stabilne), ale przy 420 ms
+   trwa na tyle długo, że czyta się jak drganie interfejsu. Krótsza animacja nie
+   zmienia logiki ani zasięgu ruchu — skraca tylko czas jego trwania.
+
+   DESKTOP (flex-row, od sm) — zostaje 420 ms: tam kafle rozwijają się w poziomie,
+   strona nie przesuwa się w pionie i dłuższe, spokojniejsze przejście wygląda lepiej. */
 .rep-tile-anim {
   transition:
-    flex-basis 420ms cubic-bezier(0.4, 0, 0.2, 1),
-    height 420ms cubic-bezier(0.4, 0, 0.2, 1);
+    flex-basis 260ms cubic-bezier(0.4, 0, 0.2, 1),
+    height 260ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+@media (min-width: 640px) {
+  .rep-tile-anim {
+    transition:
+      flex-basis 420ms cubic-bezier(0.4, 0, 0.2, 1),
+      height 420ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .rep-tile-anim {
@@ -2995,22 +2735,6 @@ p {
   transform: translate3d(16px, -18px, 0) scale(1.08);
 }
 
-.theme-light .tour-info-card::after {
-  border-color: rgba(79, 207, 222, 0.42);
-}
-
-.theme-light .tour-info-card::before {
-  background: radial-gradient(circle, rgba(79, 207, 222, 0.18) 0%, rgba(79, 207, 222, 0.08) 42%, rgba(79, 207, 222, 0) 74%);
-}
-
-.theme-light .tour-info-card:hover,
-.theme-light .tour-info-card:focus-within {
-  box-shadow:
-    0 18px 36px rgba(67, 135, 149, 0.18),
-    0 0 22px rgba(79, 207, 222, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-}
-
 .k360-feature-card,
 .k360-feature-hero {
   --ap-card-hover-base-shadow: 0 18px 44px rgba(0, 0, 0, 0.18);
@@ -3104,20 +2828,6 @@ p {
   opacity: 0.78;
   border-color: var(--ap-card-hover-outline);
   transform: scale(1.003);
-}
-
-.theme-light .k360-feature-card::before,
-.theme-light .k360-feature-hero::before {
-  background: radial-gradient(circle, rgba(247, 72, 108, 0.18) 0%, rgba(247, 72, 108, 0.08) 40%, rgba(247, 72, 108, 0) 74%);
-}
-
-.theme-light .k360-feature-card:hover,
-.theme-light .k360-feature-card:focus-within,
-.theme-light .k360-feature-hero:hover,
-.theme-light .k360-feature-hero:focus-within {
-  box-shadow:
-    0 18px 36px rgba(67, 135, 149, 0.18),
-    0 0 24px rgba(79, 207, 222, 0.1);
 }
 
 @keyframes ticket-sheen {
@@ -3395,22 +3105,6 @@ p {
     font-size: 0.84rem;
   }
 
-  .events-page .events-dome-card,
-  .events-page .events-dome-highlight,
-  .events-page .events-dome-point,
-  .events-page .events-video-tile,
-  .events-page .events-video-tile img,
-  .events-page .events-contact-card,
-  .events-page .events-dome-caret {
-    transition: none !important;
-  }
-
-  .events-page .events-dome-card,
-  .events-page .events-video-tile,
-  .events-page .events-contact-card {
-    transform: none !important;
-  }
-
   .ticket-faq-avatar-glow {
     filter: blur(6px);
     opacity: 0.68;
@@ -3424,311 +3118,6 @@ p {
     padding-inline: 1rem;
     box-shadow: 0 12px 24px rgba(247, 72, 108, 0.22);
   }
-}
-.theme-light .k360-page .from-sky-300 {
-  --tw-gradient-from: #0e5088 !important;
-  --tw-gradient-to: rgb(14 80 136 / 0) !important;
-  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
-}
-.theme-light .k360-page .via-cyan-400 {
-  --tw-gradient-stops: var(--tw-gradient-from), #0b3c6f, var(--tw-gradient-to) !important;
-}
-.theme-light .k360-page .to-blue-700 {
-  --tw-gradient-to: #082d50 !important;
-}
-
-.theme-light .ap-card {
-  --tw-ring-offset-width: 0px;
-  --tw-ring-offset-color: transparent;
-  --tw-ring-color: var(--ap-border-strong);
-  --tw-ring-shadow: 0 0 0 1px var(--tw-ring-color);
-  border: 1px solid rgba(118, 203, 217, 0.52);
-  background: linear-gradient(162deg, rgba(255, 255, 255, 0.97) 0%, rgba(241, 251, 254, 0.94) 100%);
-  box-shadow:
-    var(--tw-ring-offset-shadow, 0 0 #0000),
-    var(--tw-ring-shadow),
-    0 14px 30px rgba(63, 130, 145, 0.17);
-}
-
-.theme-light .ap-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  background:
-    radial-gradient(circle at 14% 10%, rgba(140, 207, 217, 0.2), transparent 36%),
-    radial-gradient(circle at 88% 92%, rgba(166, 231, 239, 0.18), transparent 42%);
-  opacity: 0.85;
-}
-
-.theme-light .shadow-sm,
-.theme-light .shadow,
-.theme-light .shadow-md,
-.theme-light .shadow-lg,
-.theme-light .shadow-xl,
-.theme-light .shadow-2xl,
-.theme-light [class*="shadow-["] {
-  --tw-shadow: 0 10px 24px rgba(63, 130, 145, 0.15);
-  --tw-shadow-colored: 0 10px 24px rgba(63, 130, 145, 0.15);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
-    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow) !important;
-}
-
-.theme-light a,
-.theme-light .underline {
-  text-decoration-color: var(--ap-underline);
-}
-
-/* Final hard override for inline Bookero readability on /rezerwuj. */
-body #bookero .bookero-plugin-form .bookero-plugin-form-heading,
-body #bookero .bookero-plugin-form .field label,
-body #bookero .bookero-plugin-form .field-note,
-body #bookero .bookero-plugin-form .field .note,
-body #bookero .bookero-plugin-form .calendar-nav-month,
-body #bookero .bookero-plugin-form .calendar-days-heading-cell,
-body #bookero .bookero-plugin-form .week-days-heading-day,
-body #bookero .bookero-plugin-form .week-days-heading-date,
-body #bookero .bookero-plugin-form .week-days-hour-info,
-body #bookero .bookero-plugin-form .switcher-label {
-  color: var(--ap-bookero-text-main) !important;
-  -webkit-text-fill-color: var(--ap-bookero-text-main) !important;
-  opacity: 1 !important;
-}
-
-body #bookero .bookero-plugin-form :is(
-  input,
-  select,
-  textarea,
-  option,
-  .multiselect,
-  .multiselect *,
-  .multiselect__single,
-  .multiselect__single *,
-  .multiselect__input,
-  .multiselect__input *,
-  .multiselect__option,
-  .multiselect__option *,
-  .multiselect__placeholder,
-  .multiselect__placeholder *,
-  .vti__input,
-  .vti__input *,
-  .vti__dropdown-list,
-  .vti__dropdown-list *,
-  .vti__dropdown-item,
-  .vti__dropdown-item *
-) {
-  color: #0f172a !important;
-  -webkit-text-fill-color: #0f172a !important;
-  opacity: 1 !important;
-}
-
-body #bookero .bookero-plugin-form :is(
-  .bookero-plugin-form-heading.is-inactive,
-  .services-section .field.is-inactive,
-  .params-section:not(.is-active),
-  .add-to-cart-section:not(.is-active),
-  .submit-section:not(.is-active)
-) {
-  opacity: 1 !important;
-}
-
-/* Same override for the actual standard mount root generated by Bookero. */
-body #bookero-plugin[data-mode="standard"] .bookero-plugin-form .bookero-plugin-form-heading,
-body #bookero-plugin[data-mode="standard"] .bookero-plugin-form .field label,
-body #bookero-plugin[data-mode="standard"] .bookero-plugin-form .field-note,
-body #bookero-plugin[data-mode="standard"] .bookero-plugin-form .field .note,
-body #bookero-plugin[data-mode="standard"] .bookero-plugin-form .calendar-nav-month,
-body #bookero-plugin[data-mode="standard"] .bookero-plugin-form .calendar-days-heading-cell,
-body #bookero-plugin[data-mode="standard"] .bookero-plugin-form .week-days-heading-day,
-body #bookero-plugin[data-mode="standard"] .bookero-plugin-form .week-days-heading-date,
-body #bookero-plugin[data-mode="standard"] .bookero-plugin-form .week-days-hour-info,
-body #bookero-plugin[data-mode="standard"] .bookero-plugin-form .switcher-label {
-  color: var(--ap-bookero-text-main) !important;
-  -webkit-text-fill-color: var(--ap-bookero-text-main) !important;
-  opacity: 1 !important;
-}
-
-body #bookero-plugin[data-mode="standard"] .bookero-plugin-form :is(
-  input,
-  select,
-  textarea,
-  option,
-  .multiselect,
-  .multiselect *,
-  .multiselect__single,
-  .multiselect__single *,
-  .multiselect__input,
-  .multiselect__input *,
-  .multiselect__option,
-  .multiselect__option *,
-  .multiselect__placeholder,
-  .multiselect__placeholder *,
-  .vti__input,
-  .vti__input *,
-  .vti__dropdown-list,
-  .vti__dropdown-list *,
-  .vti__dropdown-item,
-  .vti__dropdown-item *
-) {
-  color: #0f172a !important;
-  -webkit-text-fill-color: #0f172a !important;
-  opacity: 1 !important;
-}
-
-body #bookero-plugin[data-mode="standard"] .bookero-plugin-form :is(
-  .bookero-plugin-form-heading.is-inactive,
-  .services-section .field.is-inactive,
-  .params-section:not(.is-active),
-  .add-to-cart-section:not(.is-active),
-  .submit-section:not(.is-active)
-) {
-  opacity: 1 !important;
-}
-
-/* Explicit fixes for dark panel subareas in standard mode. */
-body #bookero-plugin[data-mode="standard"] .bookero-plugin-form :is(
-  .people-section #bookero-plugin-people-number,
-  .people-section #bookero-plugin-children-number,
-  .people-section .people-number-minus,
-  .people-section .people-number-plus,
-  .people-section .children-number-minus,
-  .people-section .children-number-plus,
-  .days-section #bookero-plugin-days-number,
-  .days-section .days-number-minus,
-  .days-section .days-number-plus,
-  .params-section .field input,
-  .params-section .field textarea,
-  .temporary-price-section .temporary-price-quote,
-  .temporary-price-section .temporary-price-method,
-  .temporary-price-section .temporary-price-price,
-  .temporary-price-section .temporary-price-payment-method,
-  .payment-summary-section .payment-summary-quote,
-  .payment-summary-section .payment-summary-price
-) {
-  color: var(--ap-bookero-text-main) !important;
-  -webkit-text-fill-color: var(--ap-bookero-text-main) !important;
-}
-
-body #bookero-plugin[data-mode="standard"] .bookero-plugin-form :is(
-  .params-section .field input,
-  .params-section .field textarea,
-  .people-section #bookero-plugin-people-number,
-  .people-section #bookero-plugin-children-number,
-  .days-section #bookero-plugin-days-number
-) {
-  background-color: var(--ap-bookero-field-bg) !important;
-  border-color: var(--ap-bookero-field-border) !important;
-}
-
-/* Datepicker popup in standard mode is on a light surface, so keep dark text there. */
-body :is(#bookero, #bookero-plugin[data-mode="standard"]) .bookero-plugin-form .vdp-datepicker__calendar {
-  background-color: #ffffff !important;
-  border-color: rgba(15, 23, 42, 0.16) !important;
-}
-
-body :is(#bookero, #bookero-plugin[data-mode="standard"]) .bookero-plugin-form .vdp-datepicker__calendar,
-body :is(#bookero, #bookero-plugin[data-mode="standard"]) .bookero-plugin-form .vdp-datepicker__calendar * {
-  color: #0f172a !important;
-  -webkit-text-fill-color: #0f172a !important;
-  opacity: 1 !important;
-}
-
-body :is(#bookero, #bookero-plugin[data-mode="standard"]) .bookero-plugin-form .vdp-datepicker__calendar :is(.disabled, .muted) {
-  color: #94a3b8 !important;
-  -webkit-text-fill-color: #94a3b8 !important;
-}
-
-body :is(#bookero, #bookero-plugin[data-mode="standard"]) .bookero-plugin-form .vdp-datepicker__calendar :is(.selected, .selected *, .day.selected, .day.selected *) {
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-}
-
-/* Step 2 (customer data + agreements) stays on dark panel, so force light text there. */
-body :is(#bookero, #bookero-plugin[data-mode="standard"]) .bookero-plugin-form :is(
-  .customer-section,
-  .customer-section .field label,
-  .customer-section .field-note,
-  .customer-section .field .note,
-  .agreements-section,
-  .agreements-section .agreement-disclaimer,
-  .agreements-section .switcher-label,
-  .invoice-section .field label,
-  .invoice-section .field-note,
-  .invoice-section .field .note,
-  .payment-section .bookero-plugin-discount-code-section,
-  .payment-section .bookero-plugin-pass-code-section,
-  .payment-section .bookero-plugin-discount-code-wrapper > span,
-  .payment-section .bookero-plugin-pass-code-wrapper > span
-) {
-  color: var(--ap-bookero-text-main) !important;
-  -webkit-text-fill-color: var(--ap-bookero-text-main) !important;
-  opacity: 1 !important;
-}
-
-body :is(#bookero, #bookero-plugin[data-mode="standard"]) .bookero-plugin-form :is(
-  .customer-section input,
-  .customer-section select,
-  .customer-section textarea,
-  .customer-section .vti__input,
-  .customer-section .vti__dropdown,
-  .invoice-section input,
-  .invoice-section select,
-  .invoice-section textarea,
-  .payment-section .bookero-plugin-discount-code-wrapper > input,
-  .payment-section .bookero-plugin-pass-code-wrapper > input
-) {
-  color: var(--ap-bookero-text-main) !important;
-  -webkit-text-fill-color: var(--ap-bookero-text-main) !important;
-  background-color: var(--ap-bookero-field-bg) !important;
-  border-color: var(--ap-bookero-field-border) !important;
-  opacity: 1 !important;
-}
-
-body :is(#bookero, #bookero-plugin[data-mode="standard"]) .bookero-plugin-form :is(
-  .customer-section input::placeholder,
-  .customer-section textarea::placeholder,
-  .invoice-section input::placeholder,
-  .invoice-section textarea::placeholder,
-  .payment-section .bookero-plugin-discount-code-wrapper > input::placeholder,
-  .payment-section .bookero-plugin-pass-code-wrapper > input::placeholder
-) {
-  color: var(--ap-bookero-text-muted) !important;
-  -webkit-text-fill-color: var(--ap-bookero-text-muted) !important;
-}
-
-/* Discount/pass code inputs: explicit override (Bookero uses dedicated wrappers here). */
-body :is(#bookero, #bookero-plugin[data-mode="standard"]) .bookero-plugin-form :is(
-  .bookero-plugin-discount-code-section input,
-  .bookero-plugin-pass-code-section input
-) {
-  color: var(--ap-bookero-text-main) !important;
-  -webkit-text-fill-color: var(--ap-bookero-text-main) !important;
-  background-color: var(--ap-bookero-field-bg) !important;
-  border-color: var(--ap-bookero-field-border) !important;
-}
-
-body :is(#bookero, #bookero-plugin[data-mode="standard"]) .bookero-plugin-form :is(
-  .bookero-plugin-discount-code-section input::placeholder,
-  .bookero-plugin-pass-code-section input::placeholder
-) {
-  color: var(--ap-bookero-text-muted) !important;
-  -webkit-text-fill-color: var(--ap-bookero-text-muted) !important;
-}
-
-/* Brand cyan for Bookero primary action buttons. */
-body :is(#bookero, #bookero-plugin[data-mode="standard"], #bookero-plugin[data-mode="sticky"]) .bookero-plugin-form :is(
-  .bookero-plugin-header,
-  .bookero-plugin-header button,
-  .add-to-cart-section .add-button,
-  .bookero-plugin-error-btn,
-  .submit-section button,
-  button[type="submit"]
-) {
-  background: var(--ap-accent) !important;
-  border-color: rgba(70, 220, 231, 0.65) !important;
-  color: #171730 !important;
-  -webkit-text-fill-color: #171730 !important;
 }
 
 .runmageddon-pixel-enter {
@@ -3877,7 +3266,7 @@ body :is(#bookero, #bookero-plugin[data-mode="standard"], #bookero-plugin[data-m
 /* ============================================================
    LIQUID GLASS — matowe „szkło" z połyskiem (jak na grafikach).
    Drop-in: dodaj `ap-glass` / `ap-glass-pill` i USUŃ zastępowane
-   bg-*/backdrop-blur-*/ring/border/shadow. Zmienia TYLKO powierzchnię
+   bg-… , backdrop-blur-… , ring, border, shadow. Zmienia TYLKO powierzchnię
    (tło, blur, obrys, cień, połysk) — nigdy padding/margin/radius/układ.
    ============================================================ */
 :root {
@@ -3959,4 +3348,279 @@ body.film-path-route-active {
   .ap-glass::before {
     display: none;
   }
+}
+
+/* --------------------------------------------------------------------------
+   Paleta „Alvernia Planet EDU" — WYŁĄCZNIE podstrona /grupy.
+   Czerń + niebieski + żółty, dokładnie jak na plakacie wydarzenia.
+
+   Świadomie osobny zakres (.edu-page / body.edu-route-active), a nie film-path-*:
+   tamtych klas używa również /atrakcje/filmworld (inny komponent), więc zmiana
+   tam przemalowałaby stronę, której to nie dotyczy.
+
+   --ap-edu-bg jest tutaj, bo tego samego koloru używa gradient wygaszający hero
+   w DomeJourneyContent — inaczej na styku hero z resztą strony robi się szew.
+   Blok jest na końcu arkusza, żeby pewnie wygrywał z regułami film-path-*.
+   -------------------------------------------------------------------------- */
+body.edu-route-active {
+  --ap-edu-bg: #000000;
+  --ap-edu-blue: 24, 147, 248;
+  --ap-glass-accent: 24, 147, 248;
+}
+
+body.edu-route-active,
+html:has(body.edu-route-active) {
+  background-color: var(--ap-edu-bg) !important;
+}
+
+body.edu-route-active::before {
+  background-image:
+    radial-gradient(ellipse at 18% 12%, rgba(var(--ap-edu-blue), 0.10), transparent 42%),
+    radial-gradient(ellipse at 85% 72%, rgba(var(--ap-edu-blue), 0.06), transparent 48%),
+    radial-gradient(ellipse at 45% 95%, rgba(var(--ap-edu-blue), 0.06), transparent 52%) !important;
+}
+
+body.edu-route-active [data-ap-nav] .ap-nav-banner {
+  background-color: var(--ap-edu-bg) !important;
+}
+
+.edu-page .ap-card {
+  border-color: rgba(var(--ap-edu-blue), 0.18);
+}
+
+.edu-page .ap-tile:not(.ap-tile-accent):not(.ap-tile-lg) {
+  border-color: rgba(var(--ap-edu-blue), 0.17);
+}
+
+/* Klasy globalne z turkusem w środku — nadpisane tylko w zakresie tej podstrony.
+   Gradient domykamy żółcią zamiast koralu, zgodnie z plakatem. */
+.edu-page .ap-tile-accent {
+  border-color: rgba(var(--ap-edu-blue), 0.3);
+  background:
+    linear-gradient(135deg, rgba(var(--ap-edu-blue), 0.16) 0%, var(--ap-surface) 55%, rgba(246, 207, 63, 0.09) 100%);
+}
+
+body.edu-route-active .ticket-detail-dot {
+  box-shadow: 0 0 10px rgba(var(--ap-edu-blue), 0.45) !important;
+}
+
+body.edu-route-active .ticket-pill {
+  background: #56ddea !important;
+  color: #04222a !important;
+  border-color: transparent !important;
+  box-shadow: 0 6px 16px rgba(86, 221, 234, 0.3) !important;
+  --tw-ring-color: rgba(86, 221, 234, 0.55) !important;
+}
+
+body.edu-route-active .home-ticket-promo .ticket-card-badge {
+  background: transparent !important;
+  border-color: rgba(79, 207, 222, 0.55) !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+body.edu-route-active .home-ticket-promo .ticket-pill {
+  background: #56ddea !important;
+  color: #04222a !important;
+  box-shadow:
+    0 10px 30px rgba(var(--ap-edu-blue), 0.45),
+    0 0 24px rgba(var(--ap-edu-blue), 0.35) !important;
+  --tw-ring-color: rgba(var(--ap-edu-blue), 0.6) !important;
+}
+
+/* ---------------------------------------------------------------------------
+   Dzwonek przy zakładce „Grupy" (komponent EventBell w appbar.tsx).
+   Cyklicznie „dzwoni", żeby zwrócić uwagę na trwające wydarzenie. Ruch trwa
+   ~0,8 s i wraca do zera na resztę cyklu, więc nie migocze bez przerwy przed
+   oczami. Obrót idzie wokół zawieszenia dzwonka (transform-origin u góry),
+   dlatego ikona nie rozjeżdża linii tekstu w linku.
+   --------------------------------------------------------------------------- */
+@keyframes ap-bell-shake {
+  0%,
+  62%,
+  100% {
+    transform: rotate(0deg);
+  }
+  65% {
+    transform: rotate(15deg);
+  }
+  69% {
+    transform: rotate(-13deg);
+  }
+  73% {
+    transform: rotate(10deg);
+  }
+  77% {
+    transform: rotate(-7deg);
+  }
+  81% {
+    transform: rotate(4deg);
+  }
+  85% {
+    transform: rotate(-2deg);
+  }
+}
+
+.ap-event-bell {
+  transform-origin: 50% 12%;
+  animation: ap-bell-shake 3.6s ease-in-out infinite;
+}
+
+/* Użytkownicy z ograniczoną animacją systemowo — dzwonek stoi nieruchomo. */
+@media (prefers-reduced-motion: reduce) {
+  .ap-event-bell {
+    animation: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Scroll indicator w hero — bardzo wolne, ledwie zauważalne opadnięcie strzałki.
+   Ma sugerować kierunek, a nie przyciągać wzrok: 4 px co 2,6 s.
+   --------------------------------------------------------------------------- */
+@keyframes ap-hero-scroll-nudge {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(4px);
+  }
+}
+
+.ap-hero-scroll-dot {
+  animation: ap-hero-scroll-nudge 2.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ap-hero-scroll-dot {
+    animation: none;
+  }
+}
+
+/* Poziomy slider „Zobacz też" na podstronach filmów — pasek przewijania
+   schowany, bo kafle same sygnalizują, że da się przesunąć (ostatni jest
+   przycięty przy krawędzi). Przewijanie pozostaje w pełni dostępne. */
+.ap-seealso-rail {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.ap-seealso-rail::-webkit-scrollbar {
+  display: none;
+}
+
+/* 100% => pasmo stoi poza lewą krawędzią, 0% => poza prawą. Stąd kierunek
+   klatek: z lewej do prawej. */
+@keyframes events-contact-sweep {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0% 0;
+  }
+}
+
+
+/* ===========================================================================
+   PODSTRONA „JAK DOJECHAĆ"
+   ---------------------------------------------------------------------------
+   Zamknięty zestaw stylów pod `.dojazd-page`; nie dotyka innych podstron.
+   Paleta z projektu: granatowy nagłówek na zdjęciu kopuł, chłodne jasne tło
+   treści, turkus wyłącznie jako akcja główna i aktywny wybór.
+   Treść leży BEZPOŚREDNIO na tle — rozdzielają ją odstępy, typografia
+   i cienkie linie, a nie obramowane karty.
+   Telefon: jedna kolumna, 20 px marginesu, akcja główna 54 px.
+   Od 1024 px dwie kolumny: po lewej transport i trasa, po prawej zdjęcie
+   i wskazówki na miejscu.
+   =========================================================================== */
+
+/* Zmienne poniżej są WSPÓLNE dla podstron zbudowanych w nowym kierunku
+   wizualnym (/jak-dojechac, /bistro, /mars-colonization). Celowo jeden zestaw,
+   a nie kopia na każdą podstronę: skopiowana paleta prędzej czy później się
+   rozjedzie. Prefiks `--dj-` został z pierwszej podstrony, która ją wprowadziła.
+
+   PALETA jest tu rozdzielona od WYGLĄDU i to rozdzielenie jest celowe:
+   `/mars-colonization` używa tych samych żetonów (turkus marki, granat, promień),
+   ale jest podstroną NOCNĄ i ustawia własne tło w swoim arkuszu. Gdyby dostała
+   tu jasną płaszczyznę, trzeba by ją nadpisywać przy równej swoistości — czyli
+   liczyć na kolejność arkuszy, której Next nie gwarantuje. */
+.dojazd-page,
+.bistro-page,
+.mars-page {
+  --dj-granat: #0b1427;
+  --dj-tlo: #f8fbfe;
+  /* Elementy wyniesione ponad tło: przełącznik, kafelki, przycisk drugi. */
+  --dj-powierzchnia: #ffffff;
+  --dj-tekst: #0b1427;
+  /* 7,2:1 na jasnym tle — z zapasem ponad próg AA dla tekstu pomocniczego. */
+  --dj-tekst-2: #48566b;
+  --dj-turkus: #32d8e6;
+  --dj-turkus-ink: #06202a;
+  /* Odnośniki i etykiety akcji drugorzędnych: turkus jest za jasny na biel,
+     więc tekstowy wariant marki jest przyciemniony (7,6:1). */
+  --dj-akcent: #0a5a67;
+  --dj-linia: #dde6f0;
+  /* Obrys elementów sterujących musi mieć 3:1 wobec tła (zmierzone 3,63:1). */
+  --dj-obrys: #78849a;
+  --dj-pomoc: #e8f4fb;
+  --dj-promien: 0.875rem;
+}
+
+/* Jasna płaszczyzna — tylko podstrony zbudowane na jasnym tle. */
+.dojazd-page,
+.bistro-page {
+  position: relative;
+  background: var(--dj-tlo);
+  color: var(--dj-tekst);
+}
+
+@keyframes dojazd-lampka {
+  50% {
+    opacity: 0.2;
+  }
+}
+
+@keyframes dojazd-mapa-smuga {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes dojazd-mapa-obrot {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* --- Animacje ---------------------------------------------------------------
+   Zasada: ruszamy WYLACZNIE `opacity` i `transform`. Obie wlasciwosci
+   obsluguje kompozytor, wiec przegladarka nie przelicza ukladu ani nie
+   odmalowuje pikseli — animacja nie konkuruje z przewijaniem.
+
+   Swiadomie BEZ `will-change`: przy kilkunastu elementach naraz kosztuje
+   pamiec i tworzy warstwy, ktore i tak zyja tylko przez pol sekundy.
+
+   Ukrycie przed ujawnieniem wlacza klasa `ujawnianie-wlaczone`, dokladana
+   przez JavaScript. Bez skryptu i przed hydracja tresc jest po prostu
+   widoczna — nie zdarzy sie pusta strona przez nieuruchomiony obserwator. */
+@keyframes dojazd-wejscie {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+}
+
+/* Ujawnianie przy przewijaniu. Przejscie siedzi na stanie KONCOWYM, wiec
+   ukrycie ustawia sie natychmiast, a animuje sie tylko pojawienie. */
+.ujawnianie-wlaczone [data-ujawnij] {
+  opacity: 0;
+  transform: translate3d(0, 16px, 0);
+}
+
+.ujawnianie-wlaczone [data-ujawnij].jest-widoczny {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 300ms ease,
+    transform 300ms cubic-bezier(0.22, 0.61, 0.36, 1);
 }

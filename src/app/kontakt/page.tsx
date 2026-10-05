@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { bookingPortalHref } from "@/lib/booking";
+import { type Locale } from "@/lib/localizedRoutes";
 import Card from "@/app/components/Card";
 import { PrimaryButton } from "@/app/components/PrimaryButton";
 import ScrollMotionItem from "@/app/components/ScrollMotionItem";
@@ -8,18 +10,53 @@ import { useI18n } from "@/app/i18n-provider";
 
 const PHONE_BOOKING = "+48 723 999 099";
 const MAIL_BOOKING = "b.jacon@gremi.pl";
-const PHONE_BOOKING_SECOND = "+48 510 831 277";
-const MAIL_BOOKING_SECOND = "s.sambor@gremi.pl";
-const PHONE_INFO = "+48 12 344 40 00";
+// Telefon stacjonarny został całkowicie wycofany — infolinia korzysta z numeru
+// komórkowego 510 831 277.
+const PHONE_INFO = "+48 510 831 277";
 const MAIL_INFO = "rezerwacje@alverniaplanet.com";
-const MAIL_EVENTS = "b.jacon@gremi.pl";
 const PHONE_EVENTS_SECOND = "+48 452 432 315";
 const MAIL_EVENTS_SECOND = "p.kozolub@gremi.pl";
 const CONTACT_FORM_EMAIL = "rezerwacje@alverniaplanet.com";
 const CONTACT_FORM_ENDPOINT = process.env.NEXT_PUBLIC_CONTACT_FORM_ENDPOINT ?? "";
-const BOOKING_URL = "https://alverniaplanet.bookero.pl";
+// Sprzedaż przeniesiona z Bookero do Iksorisa (wrzesień 2026).
 
-type Locale = "pl" | "en" | "pt";
+// Opiekunowie kontaktu telefonicznego: rezerwacje indywidualne, grupy, eventy
+// i sesje zdjęciowe. Stanowiska i ich tłumaczenia 1:1 z sekcją „Zespół
+// sprzedaży" na /wydarzenia (rola renderowana pod nazwiskiem).
+const CONTACT_PEOPLE: {
+  name: string;
+  role: Record<Locale, string>;
+  phone: string;
+  email: string;
+  emailClass: string;
+}[] = [
+  {
+    name: "Bartłomiej Jacoń",
+    role: {
+      pl: "Starszy specjalista ds. sprzedaży",
+      en: "Senior sales specialist",
+      pt: "Especialista sénior de vendas",
+      de: "Senior-Vertriebsspezialist",
+      zh: "高级销售专员",
+    },
+    phone: PHONE_BOOKING,
+    email: MAIL_BOOKING,
+    emailClass: "text-[#f77828] hover:text-[#ffa15a]",
+  },
+  {
+    name: "Piotr Kozołub",
+    role: {
+      pl: "Specjalista ds. sprzedaży",
+      en: "Sales specialist",
+      pt: "Especialista de vendas",
+      de: "Vertriebsspezialist",
+      zh: "销售专员",
+    },
+    phone: PHONE_EVENTS_SECOND,
+    email: MAIL_EVENTS_SECOND,
+    emailClass: "text-[#ff6b8a] hover:text-[#ffa0b6]",
+  },
+];
 
 const COPY: Record<
   Locale,
@@ -31,23 +68,15 @@ const COPY: Record<
       phoneLabel: string;
       hoursLabel: string;
       hotlineHours: string[];
-      altContactLabel: string;
       emailLabel: string;
     };
-    booking: {
+    contact: {
       title: string;
       description: string;
-      caretakerLabel: string;
-      caretakerName: string;
+      peopleLabel: string;
       onlineTitle: string;
       onlineDescription: string;
       button: string;
-    };
-    events: {
-      title: string;
-      description: string;
-      contactLabel: string;
-      primaryName: string;
     };
     form: {
       title: string;
@@ -73,24 +102,16 @@ const COPY: Record<
       description: "Aktualne informacje o godzinach otwarcia, dostępności atrakcji i biletach.",
       phoneLabel: "Telefon",
       hoursLabel: "Godziny infolinii",
-      hotlineHours: ["Poniedziałek - piątek: 9:00 - 16:00"],
-      altContactLabel: "Kontakt dodatkowy",
+      hotlineHours: ["Poniedziałek - piątek: 10:00 - 16:00"],
       emailLabel: "Email",
     },
-    booking: {
-      title: "Rezerwacje i grupy",
-      description: "Planowanie wizyty, bilety grupowe oraz program dnia.",
-      caretakerLabel: "Opiekun",
-      caretakerName: "Bartłomiej Jacoń",
+    contact: {
+      title: "Rezerwacje, grupy i eventy",
+      description: "Rezerwacje telefoniczne, bilety grupowe, program dnia oraz eventy i sesje zdjęciowe.",
+      peopleLabel: "Opiekunowie",
       onlineTitle: "Rezerwacja online",
       onlineDescription: "Wybierz termin i liczbę osób. Potwierdzimy rezerwację na maila.",
       button: "Otwórz kalendarz rezerwacji",
-    },
-    events: {
-      title: "Eventy",
-      description: "Wsparcie przy eventach i sesjach zdjęciowych.",
-      contactLabel: "Kontakt",
-      primaryName: "Bartłomiej Jacoń",
     },
     form: {
       title: "Formularz kontaktowy",
@@ -115,24 +136,16 @@ const COPY: Record<
       description: "Current details on opening hours, attraction availability, and tickets.",
       phoneLabel: "Phone",
       hoursLabel: "Info line hours",
-      hotlineHours: ["Monday - Friday: 9:00 - 16:00"],
-      altContactLabel: "Additional contact",
+      hotlineHours: ["Monday - Friday: 10:00 - 16:00"],
       emailLabel: "Email",
     },
-    booking: {
-      title: "Bookings and groups",
-      description: "Visit planning, group tickets, and day schedules.",
-      caretakerLabel: "Coordinator",
-      caretakerName: "Bartłomiej Jacoń",
+    contact: {
+      title: "Bookings, groups & events",
+      description: "Phone bookings, group tickets, daily schedule, plus events and photo shoots.",
+      peopleLabel: "Coordinators",
       onlineTitle: "Online booking",
-      onlineDescription: "Pick a date and headcount. We’ll confirm your reservation by email.",
+      onlineDescription: "Pick a date and the number of people. We’ll confirm your reservation by email.",
       button: "Open booking calendar",
-    },
-    events: {
-      title: "Events",
-      description: "Support for events and photo shoots.",
-      contactLabel: "Contact",
-      primaryName: "Bartłomiej Jacoń",
     },
     form: {
       title: "Contact form",
@@ -157,24 +170,16 @@ const COPY: Record<
       description: "Informações atuais sobre horários, disponibilidade das atrações e bilhetes.",
       phoneLabel: "Telefone",
       hoursLabel: "Horário da linha de informação",
-      hotlineHours: ["Segunda - sexta: 9:00 - 16:00"],
-      altContactLabel: "Contacto adicional",
+      hotlineHours: ["Segunda - sexta: 10:00 - 16:00"],
       emailLabel: "Email",
     },
-    booking: {
-      title: "Reservas e grupos",
-      description: "Planeamento da visita, bilhetes de grupo e programa do dia.",
-      caretakerLabel: "Responsável",
-      caretakerName: "Bartłomiej Jacoń",
+    contact: {
+      title: "Reservas, grupos e eventos",
+      description: "Reservas por telefone, bilhetes de grupo, programa do dia e ainda eventos e sessões fotográficas.",
+      peopleLabel: "Responsáveis",
       onlineTitle: "Reserva online",
       onlineDescription: "Escolha a data e o número de pessoas. Confirmaremos por email.",
       button: "Abrir calendário de reservas",
-    },
-    events: {
-      title: "Eventos",
-      description: "Apoio a eventos e sessões fotográficas.",
-      contactLabel: "Contacto",
-      primaryName: "Bartłomiej Jacoń",
     },
     form: {
       title: "Formulário de contacto",
@@ -192,6 +197,74 @@ const COPY: Record<
       errorBody: `Tente novamente mais tarde ou escreva-nos por email para ${CONTACT_FORM_EMAIL}.`,
     },
   },
+  de: {
+    heroTitle: "Kontaktieren Sie uns",
+    info: {
+      title: "Info-Hotline",
+      description: "Aktuelle Informationen zu Öffnungszeiten, Verfügbarkeit der Attraktionen und Tickets.",
+      phoneLabel: "Telefon",
+      hoursLabel: "Zeiten der Info-Hotline",
+      hotlineHours: ["Montag - Freitag: 10:00 - 16:00"],
+      emailLabel: "E-Mail",
+    },
+    contact: {
+      title: "Buchungen, Gruppen & Events",
+      description: "Telefonische Buchungen, Gruppentickets, Tagesprogramm sowie Events und Fotoshootings.",
+      peopleLabel: "Ansprechpartner",
+      onlineTitle: "Online-Buchung",
+      onlineDescription: "Wählen Sie ein Datum und die Personenzahl. Wir bestätigen Ihre Reservierung per E-Mail.",
+      button: "Buchungskalender öffnen",
+    },
+    form: {
+      title: "Kontaktformular",
+      subtitle: "Schreiben Sie uns. Wir melden uns so schnell wie möglich.",
+      nameLabel: "Vor- und Nachname",
+      emailLabel: "E-Mail-Adresse",
+      phoneLabel: "Telefonnummer",
+      messageLabel: "Nachricht",
+      submit: "Senden",
+      sending: "Wird gesendet…",
+      requiredNote: "* Pflichtfelder",
+      successTitle: "Vielen Dank! Ihre Nachricht wurde gesendet.",
+      successBody: "Wir antworten Ihnen so schnell wie möglich.",
+      errorTitle: "Die Nachricht konnte nicht gesendet werden.",
+      errorBody: `Bitte versuchen Sie es später erneut oder schreiben Sie uns direkt an ${CONTACT_FORM_EMAIL}.`,
+    },
+  },
+  zh: {
+    heroTitle: "联系我们",
+    info: {
+      title: "咨询热线",
+      description: "获取开放时间、项目开放情况与门票的最新信息。",
+      phoneLabel: "电话",
+      hoursLabel: "热线服务时间",
+      hotlineHours: ["周一至周五：10:00 - 16:00"],
+      emailLabel: "电子邮箱",
+    },
+    contact: {
+      title: "预订、团体与活动",
+      description: "电话预订、团体票、当日行程安排，以及活动与拍摄服务。",
+      peopleLabel: "联系人",
+      onlineTitle: "在线预订",
+      onlineDescription: "选择日期和人数，我们将通过电子邮件确认您的预订。",
+      button: "打开预订日历",
+    },
+    form: {
+      title: "联系表单",
+      subtitle: "给我们留言，我们会尽快回复您。",
+      nameLabel: "姓名",
+      emailLabel: "电子邮箱地址",
+      phoneLabel: "电话号码",
+      messageLabel: "留言内容",
+      submit: "发送",
+      sending: "发送中…",
+      requiredNote: "* 为必填项",
+      successTitle: "感谢您！留言已发送。",
+      successBody: "我们会尽快回复您。",
+      errorTitle: "留言发送失败。",
+      errorBody: `请稍后重试，或直接发送邮件至 ${CONTACT_FORM_EMAIL}。`,
+    },
+  },
 };
 
 const inputBaseClass =
@@ -200,6 +273,8 @@ const inputBaseClass =
 export default function KontaktPage() {
   const { locale } = useI18n();
   const loc: Locale = (locale as Locale) ?? "pl";
+  // Iksoris ma tylko pl/en — wersja PT dostaje angielski interfejs kasy.
+  const BOOKING_URL = bookingPortalHref(loc);
   const copy = COPY[loc];
   const [formState, setFormState] = useState<"idle" | "sending" | "success" | "error">("idle");
 
@@ -256,111 +331,99 @@ export default function KontaktPage() {
         {/* Karty kontaktowe */}
         <section className="ap-shell">
           <ScrollMotionItem strength="strong" delay={40} className="ap-deferred-section" float={false}>
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-            {/* Infolinia */}
-            <div>
-              <Card variant="solid" motion="off" className="h-full flex flex-col gap-5 text-center items-center">
-                <div className="flex flex-col items-center gap-2">
+            {/* Dwie karty: Infolinia + połączony kontakt telefoniczny (rezerwacje,
+                grupy, eventy). ap-contact-cards wyłącza hover na wewnętrznych kaflach. */}
+            <div className="ap-contact-cards mx-auto grid w-full max-w-4xl grid-cols-1 gap-6 md:grid-cols-2 md:items-start">
+              {/* Infolinia */}
+              <div>
+                <Card variant="solid" motion="off" className="h-full flex flex-col gap-5 text-center items-center">
                   <h2 className="text-2xl font-semibold">{copy.info.title}</h2>
-                </div>
-                <div className="h-[1px] w-full bg-white/15 mt-1" />
-                <p className="text-sm text-gray-300 leading-relaxed px-2 md:px-4 mb-2">
-                  {copy.info.description}
-                </p>
-                <div className="w-full space-y-5">
-                  <div className="ap-tile ap-tile-sm space-y-4 p-4">
-                    <div className="space-y-1">
-                      <p className="text-sm uppercase tracking-[0.2em] text-white/60">{copy.info.phoneLabel}</p>
-                      <p className="text-lg font-semibold">{formatPhone(PHONE_INFO)}</p>
-                    </div>
-                    <div className="space-y-1">
-                      <p className="text-xs uppercase tracking-[0.2em] text-white/60">{copy.info.hoursLabel}</p>
-                      <ul className="space-y-1 text-sm text-gray-100">
-                        {copy.info.hotlineHours.map((line) => (
-                          <li key={line}>{line}</li>
-                        ))}
-                      </ul>
-                    </div>
-                    {/* Numer Szymona Sambora powielony z karty „Rezerwacje i grupy".
-                        Celowo POD godzinami infolinii — inaczej wyglądałoby, jakby
-                        godziny 9:00-16:00 dotyczyły także jego numeru. */}
-                    <div className="space-y-1 border-t border-white/10 pt-3">
-                      <p className="text-xs uppercase tracking-[0.2em] text-white/60">{copy.info.altContactLabel}</p>
-                      <p className="text-sm text-gray-300">Szymon Sambor</p>
-                      <p className="text-base font-semibold">{formatPhone(PHONE_BOOKING_SECOND)}</p>
-                    </div>
-                  </div>
-                  <div className="ap-tile ap-tile-sm w-full space-y-2 p-4">
-                    <p className="text-sm uppercase tracking-[0.2em] text-white/60">{copy.info.emailLabel}</p>
-                    <p className="font-semibold text-[#f03c64]">{MAIL_INFO}</p>
-                  </div>
-                </div>
-              </Card>
-            </div>
-
-            {/* Rezerwacje i grupy */}
-            <div>
-              <Card variant="solid" motion="off" className="h-full flex flex-col gap-6 text-center items-center">
-                <h2 className="text-2xl font-semibold">{copy.booking.title}</h2>
-                <div className="h-[1px] w-full bg-white/15 mt-1" />
-                <p className="text-sm text-gray-300 leading-relaxed px-2 md:px-6 mb-3">
-                  {copy.booking.description}
-                </p>
-                <div className="ap-tile ap-tile-sm w-full space-y-3 p-4">
-                  <p className="text-sm uppercase tracking-[0.2em] text-white/60">{copy.booking.caretakerLabel}</p>
-                  <div>
-                    <p className="font-semibold">Szymon Sambor</p>
-                    <p className="text-gray-300">{formatPhone(PHONE_BOOKING_SECOND)}</p>
-                    <p className="text-[#f03c64]">{MAIL_BOOKING_SECOND}</p>
-                  </div>
-                  <div className="space-y-1">
-                    <p className="font-semibold">{copy.booking.caretakerName}</p>
-                    <p className="text-gray-300">{formatPhone(PHONE_BOOKING)}</p>
-                    <p className="text-[#f77828]">{MAIL_BOOKING}</p>
-                  </div>
-                </div>
-                <div className="ap-tile ap-tile-sm ap-tile-accent mt-4 w-full p-4">
-                  <p className="text-sm font-semibold text-[#a5e6f0]">{copy.booking.onlineTitle}</p>
-                  <p className="text-sm text-gray-200">
-                    {copy.booking.onlineDescription}
+                  <div className="h-[1px] w-full bg-white/15 mt-1" />
+                  <p className="text-sm text-gray-300 leading-relaxed px-2 md:px-4 mb-2">
+                    {copy.info.description}
                   </p>
-                  <PrimaryButton
-                    href={BOOKING_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    size="sm"
-                    className="mt-3 w-full justify-center"
-                  >
-                    {copy.booking.button}
-                  </PrimaryButton>
-                </div>
-              </Card>
-            </div>
+                  <div className="w-full space-y-4">
+                    <div className="ap-tile ap-tile-sm space-y-4 p-4">
+                      <div className="space-y-1">
+                        <p className="text-sm uppercase tracking-[0.2em] text-white/60">{copy.info.phoneLabel}</p>
+                        <a
+                          href={`tel:${PHONE_INFO.replace(/\s/g, "")}`}
+                          className="inline-block text-lg font-semibold transition-colors hover:text-[#8fe6f8]"
+                        >
+                          {formatPhone(PHONE_INFO)}
+                        </a>
+                      </div>
+                      <div className="space-y-1 border-t border-white/10 pt-3">
+                        <p className="text-xs uppercase tracking-[0.2em] text-white/60">{copy.info.hoursLabel}</p>
+                        <ul className="space-y-1 text-sm text-gray-100">
+                          {copy.info.hotlineHours.map((line) => (
+                            <li key={line}>{line}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                    <div className="ap-tile ap-tile-sm w-full space-y-2 p-4">
+                      <p className="text-sm uppercase tracking-[0.2em] text-white/60">{copy.info.emailLabel}</p>
+                      <a
+                        href={`mailto:${MAIL_INFO}`}
+                        className="inline-block break-words font-semibold text-[#ff6b8a] transition-colors hover:text-[#ffa0b6]"
+                      >
+                        {MAIL_INFO}
+                      </a>
+                    </div>
+                  </div>
+                </Card>
+              </div>
 
-            {/* Eventy i sesje zdjęciowe */}
-            <div>
-              <Card variant="solid" motion="off" className="h-full flex flex-col gap-6 text-center items-center">
-                <h2 className="text-2xl font-semibold">{copy.events.title}</h2>
-                <div className="h-[1px] w-full bg-white/15 mt-1" />
-                <p className="text-sm text-gray-300 leading-relaxed px-2 md:px-6 mb-3">
-                  {copy.events.description}
-                </p>
-                <div className="ap-tile ap-tile-sm w-full space-y-3 p-4">
-                  <p className="text-sm uppercase tracking-[0.2em] text-white/60">{copy.events.contactLabel}</p>
-                  {/* Bartłomiej Jacoń jako pierwszy kontakt eventowy. */}
-                  <div className="space-y-1">
-                    <p className="font-semibold">{copy.events.primaryName}</p>
-                    <p className="text-gray-300">{formatPhone(PHONE_BOOKING)}</p>
-                    <p className="text-[#f77828]">{MAIL_EVENTS}</p>
+              {/* Rezerwacje, grupy i eventy (połączone) */}
+              <div>
+                <Card variant="solid" motion="off" className="h-full flex flex-col gap-5 text-center items-center">
+                  <h2 className="text-2xl font-semibold">{copy.contact.title}</h2>
+                  <div className="h-[1px] w-full bg-white/15 mt-1" />
+                  <p className="text-sm text-gray-300 leading-relaxed px-2 md:px-6 mb-1">
+                    {copy.contact.description}
+                  </p>
+                  <div className="ap-tile ap-tile-sm w-full space-y-4 p-4">
+                    <p className="text-sm uppercase tracking-[0.2em] text-white/60">{copy.contact.peopleLabel}</p>
+                    <div className="space-y-4">
+                      {CONTACT_PEOPLE.map((person, index) => (
+                        <div
+                          key={person.name}
+                          className={`space-y-0.5 ${index > 0 ? "border-t border-white/10 pt-4" : ""}`}
+                        >
+                          <p className="font-semibold">{person.name}</p>
+                          <p className="text-xs text-white/55">{person.role[loc]}</p>
+                          <a
+                            href={`tel:${person.phone.replace(/\s/g, "")}`}
+                            className="block text-gray-300 transition-colors hover:text-white"
+                          >
+                            {formatPhone(person.phone)}
+                          </a>
+                          <a
+                            href={`mailto:${person.email}`}
+                            className={`block break-words transition-colors ${person.emailClass}`}
+                          >
+                            {person.email}
+                          </a>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <div className="space-y-1">
-                    <p className="font-semibold">Piotr Kozołub</p>
-                    <p className="text-gray-300">{formatPhone(PHONE_EVENTS_SECOND)}</p>
-                    <p className="text-[#f03c64]">{MAIL_EVENTS_SECOND}</p>
+                  <div className="ap-tile ap-tile-sm ap-tile-accent mt-4 w-full p-4">
+                    <p className="text-sm font-semibold text-[#a5e6f0]">{copy.contact.onlineTitle}</p>
+                    <p className="text-sm text-gray-200">{copy.contact.onlineDescription}</p>
+                    <PrimaryButton
+                      href={BOOKING_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      size="sm"
+                      className="mt-3 w-full justify-center"
+                    >
+                      {copy.contact.button}
+                    </PrimaryButton>
                   </div>
-                </div>
-              </Card>
-            </div>
+                </Card>
+              </div>
             </div>
           </ScrollMotionItem>
         </section>

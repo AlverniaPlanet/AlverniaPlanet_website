@@ -1,16 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  FiCalendar,
-  FiExternalLink,
-  FiFileText,
-  FiFolderPlus,
-  FiLink,
-  FiLock,
-} from "react-icons/fi";
 import { RESOURCES, type ResourceType } from "./goteamData";
 import styles from "./GoTeamContent.module.css";
+import { ArrowSquareOut, CalendarBlank, FileText, FolderPlus, Link as LinkIcon, Lock } from "@phosphor-icons/react";
 
 // Dane logowania. UWAGA: to jest statyczna strona (output: "export"),
 // więc weryfikacja odbywa się w przeglądarce i NIE jest realnym
@@ -22,13 +15,13 @@ const STORAGE_KEY = "goteam-auth";
 function ResourceIcon({ type }: { type: ResourceType }) {
   switch (type) {
     case "drive":
-      return <FiFolderPlus aria-hidden />;
+      return <FolderPlus aria-hidden />;
     case "sheet":
-      return <FiCalendar aria-hidden />;
+      return <CalendarBlank aria-hidden />;
     case "doc":
-      return <FiFileText aria-hidden />;
+      return <FileText aria-hidden />;
     default:
-      return <FiLink aria-hidden />;
+      return <LinkIcon aria-hidden />;
   }
 }
 
@@ -73,7 +66,7 @@ export default function GoTeamContent() {
       <main className={styles.gate}>
         <form className={styles.card} onSubmit={handleSubmit}>
           <span className={styles.lockIcon} aria-hidden>
-            <FiLock />
+            <Lock />
           </span>
           <p className={styles.kicker}>Alvernia Planet</p>
           <h1 className={styles.gateTitle}>GoTeam</h1>
@@ -158,7 +151,7 @@ export default function GoTeamContent() {
               <span className={styles.tileDesc}>{r.desc}</span>
             </span>
             <span className={styles.tileArrow} aria-label={r.cta}>
-              <FiExternalLink aria-hidden />
+              <ArrowSquareOut aria-hidden />
             </span>
           </a>
         ))}

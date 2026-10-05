@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { SolarIcon } from "../../components/SolarIcon";
 
 // ---------------------------------------------------------------------------
 // /aplikacje/mars-brief — brief gościa dla MARS: coś pomiędzy aplikacją
@@ -71,7 +72,7 @@ function Slide1() {
 
       {/* Tytuł */}
       <h1
-        className="absolute left-1/2 top-[560px] -translate-x-1/2 -translate-y-1/2 text-[320px] font-black leading-none tracking-[-0.02em] text-white"
+        className="absolute left-1/2 top-[560px] -translate-x-1/2 -translate-y-1/2 text-[320px] font-extrabold leading-none tracking-[-0.02em] text-white"
         style={{ textShadow: `0 0 90px rgba(${MARS}, 0.55), 0 8px 40px rgba(0,0,0,0.55)` }}
       >
         MARS
@@ -99,19 +100,7 @@ function Slide1() {
 
 function GearIcon({ className }: { className?: string }) {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-      aria-hidden="true"
-    >
-      <circle cx="12" cy="12" r="3" />
-      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-    </svg>
+    <SolarIcon name="gear" className={className} />
   );
 }
 

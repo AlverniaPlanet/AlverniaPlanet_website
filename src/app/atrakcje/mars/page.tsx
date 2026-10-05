@@ -59,9 +59,9 @@ function getMarsAssets() {
         })[0] ?? null;
 
     return {
-      marsAsset: marsAsset ? `/mars/${encodeURIComponent(marsAsset)}` : null,
+      marsAsset: marsAsset ? `/atrakcje/mars/${encodeURIComponent(marsAsset)}` : null,
       surfaceAsset: surfaceAsset
-        ? `/mars/${encodeURIComponent(surfaceAsset)}`
+        ? `/atrakcje/mars/${encodeURIComponent(surfaceAsset)}`
         : null,
     };
   } catch {

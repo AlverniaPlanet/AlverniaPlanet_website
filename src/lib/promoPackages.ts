@@ -1,9 +1,11 @@
 import {
-  ALL_ATTRACTIONS_BOOKING_CATEGORY,
   ALL_ATTRACTIONS_BOOKING_SERVICES,
 } from "@/lib/booking";
 
-export type PromoLocale = "pl" | "en" | "pt";
+import { type Locale } from "@/lib/localizedRoutes";
+
+// Zrodlo prawdy dla listy jezykow to wspolny typ Locale (pl/en/pt/de/zh).
+export type PromoLocale = Locale;
 
 export type PromoTile = {
   verb: string;
@@ -26,9 +28,7 @@ export type PromoPackage = {
   reducedSavings: string;
   reducedSavingsPercent: string;
   button: string;
-  category: string;
   service?: string;
-  autopick?: boolean;
   heroLead: string;
   heroHighlight: string;
   promoStripLabel: string;
@@ -57,12 +57,12 @@ export const PROMO_PACKAGES: Record<PromoLocale, PromoPackage[]> = {
       reducedSavings: "Oszczędzasz 68,00 zł",
       reducedSavingsPercent: "41%",
       button: "Kup bilet",
-      category: ALL_ATTRACTIONS_BOOKING_CATEGORY,
-      service: ALL_ATTRACTIONS_BOOKING_SERVICES.reduced,
-      autopick: true,
+      // Cena normalna, nie ulgowa: pasek pokazuje 119 zł jako cenę główną,
+      // więc koszyk musi otworzyć się na tej samej taryfie.
+      service: ALL_ATTRACTIONS_BOOKING_SERVICES.normal,
       heroLead: "Jeden bilet",
       heroHighlight: "Wszystkie atrakcje",
-      promoStripLabel: "Promocja do końca czerwca",
+      promoStripLabel: "Taniej niż osobno",
       promoStripPrice: "Już od 99 zł",
       tilesIntro: "w promocyjnej cenie, w tym:",
       tiles: [
@@ -103,12 +103,12 @@ export const PROMO_PACKAGES: Record<PromoLocale, PromoPackage[]> = {
       reducedSavings: "You save 68.00 PLN",
       reducedSavingsPercent: "41%",
       button: "Buy ticket",
-      category: ALL_ATTRACTIONS_BOOKING_CATEGORY,
-      service: ALL_ATTRACTIONS_BOOKING_SERVICES.reduced,
-      autopick: true,
+      // Cena normalna, nie ulgowa: pasek pokazuje 119 zł jako cenę główną,
+      // więc koszyk musi otworzyć się na tej samej taryfie.
+      service: ALL_ATTRACTIONS_BOOKING_SERVICES.normal,
       heroLead: "One ticket",
       heroHighlight: "All attractions",
-      promoStripLabel: "Promo until end of June",
+      promoStripLabel: "Cheaper than separately",
       promoStripPrice: "From 99 PLN",
       tilesIntro: "at the promo price, including:",
       tiles: [
@@ -149,12 +149,12 @@ export const PROMO_PACKAGES: Record<PromoLocale, PromoPackage[]> = {
       reducedSavings: "Poupa 68,00 PLN",
       reducedSavingsPercent: "41%",
       button: "Comprar bilhete",
-      category: ALL_ATTRACTIONS_BOOKING_CATEGORY,
-      service: ALL_ATTRACTIONS_BOOKING_SERVICES.reduced,
-      autopick: true,
+      // Cena normalna, nie ulgowa: pasek pokazuje 119 zł jako cenę główną,
+      // więc koszyk musi otworzyć się na tej samej taryfie.
+      service: ALL_ATTRACTIONS_BOOKING_SERVICES.normal,
       heroLead: "Um bilhete",
       heroHighlight: "Todas as atrações",
-      promoStripLabel: "Promo até final de junho",
+      promoStripLabel: "Mais barato do que em separado",
       promoStripPrice: "A partir de 99 PLN",
       tilesIntro: "ao preço promocional, incluindo:",
       tiles: [
@@ -174,6 +174,98 @@ export const PROMO_PACKAGES: Record<PromoLocale, PromoPackage[]> = {
           verb: "Joga",
           title: "Projeto: MARS",
           body: "Grava a tua curta num cenário marciano profissional.",
+          accent: "orange",
+        },
+      ],
+    },
+  ],
+  de: [
+    {
+      badge: "Paket",
+      title: "Ticket für alle Attraktionen",
+      subtitle:
+        "Drei Filmabenteuer an einem Tag. Betreten Sie das größte 360°-Kino Europas, spielen Sie die Hauptrolle in einer Mars-Mission und entdecken Sie die Filmkuppeln mit echten Filmkulissen – alles mit einem einzigen Ticket, günstiger als einzeln.",
+      details: ["Drei Attraktionen zu einem Preis", "Gültig an einem Tag"],
+      priceLabel: "Regulärer Preis",
+      price: "119,00 PLN",
+      savings: "Sie sparen 78,00 PLN",
+      savingsPercent: "40%",
+      reducedPriceLabel: "Ermäßigter Preis",
+      reducedPrice: "99,00 PLN",
+      reducedSavings: "Sie sparen 68,00 PLN",
+      reducedSavingsPercent: "41%",
+      button: "Ticket kaufen",
+      // Cena normalna, nie ulgowa: pasek pokazuje 119 PLN jako cenę główną,
+      // więc koszyk musi otworzyć się na tej samej taryfie.
+      service: ALL_ATTRACTIONS_BOOKING_SERVICES.normal,
+      heroLead: "Ein Ticket",
+      heroHighlight: "Alle Attraktionen",
+      promoStripLabel: "Günstiger als einzeln",
+      promoStripPrice: "Schon ab 99 PLN",
+      tilesIntro: "zum Aktionspreis, darunter:",
+      tiles: [
+        {
+          verb: "Entdecken",
+          title: "Filmpfad",
+          body: "Ein Rundgang hinter die Kulissen: Filmsets, Requisiten und die Technik, mit der Kino gemacht wird.",
+          accent: "cyan",
+        },
+        {
+          verb: "Erleben",
+          title: "Kino 360",
+          body: "Europas größte Projektionskuppel – Bild und Ton rund um Sie herum.",
+          accent: "red",
+        },
+        {
+          verb: "Mitspielen",
+          title: "Projekt: MARS",
+          body: "Drehen Sie Ihren eigenen Kurzfilm in einer professionellen Mars-Kulisse.",
+          accent: "orange",
+        },
+      ],
+    },
+  ],
+  zh: [
+    {
+      badge: "套票",
+      title: "全项目通票",
+      subtitle:
+        "一天畅享三段电影之旅。走进欧洲最大的 360° 影院，在火星任务中担纲主角，漫游拥有真实拍摄场景的电影穹顶——一票全含，比单独购买更划算。",
+      details: ["三大项目，一个价格", "限当日使用"],
+      priceLabel: "全价票",
+      price: "119.00 PLN",
+      savings: "立省 78.00 PLN",
+      savingsPercent: "40%",
+      reducedPriceLabel: "优惠票",
+      reducedPrice: "99.00 PLN",
+      reducedSavings: "立省 68.00 PLN",
+      reducedSavingsPercent: "41%",
+      button: "购买门票",
+      // Cena normalna, nie ulgowa: pasek pokazuje 119 PLN jako cenę główną,
+      // więc koszyk musi otworzyć się na tej samej taryfie.
+      service: ALL_ATTRACTIONS_BOOKING_SERVICES.normal,
+      heroLead: "一张门票",
+      heroHighlight: "畅玩全部项目",
+      promoStripLabel: "比单独购买更划算",
+      promoStripPrice: "99 PLN 起",
+      tilesIntro: "享优惠价，包含：",
+      tiles: [
+        {
+          verb: "探索",
+          title: "电影之路",
+          body: "深入幕后的参观路线：拍摄场景、道具，以及支撑电影的技术。",
+          accent: "cyan",
+        },
+        {
+          verb: "体验",
+          title: "Kino 360 影院",
+          body: "欧洲最大的投影穹顶，画面与声音将您环绕。",
+          accent: "red",
+        },
+        {
+          verb: "出演",
+          title: "Projekt: MARS",
+          body: "在专业的火星布景中拍摄属于您自己的短片。",
           accent: "orange",
         },
       ],

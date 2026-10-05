@@ -1,0 +1,666 @@
+/* ============================================================================
+   Taśma filmowa z krokami misji — sekcja „Twoja misja", komponent
+   `KrokiTasma.tsx`.
+
+   PRZESTRZEŃ NAZW: `.mars-kadry-*`. Stary plaster miodu (`.mars-kroki`,
+   `.mars-krok-*` w `mars.css`) nie jest tu używany ani nadpisywany.
+
+   BUDOWA TAŚMY (od dołu):
+   1. Szyna (`.mars-kadry-szyna`) — kontener przewijania na całą szerokość
+      okna. Jej TŁO to ciepłe, bardzo słabe światło „za taśmą": widać je
+      wyłącznie przez otwory perforacji, a ponieważ tło kontenera przewijania
+      nie jedzie z treścią, światło stoi w miejscu, a taśma sunie nad nim.
+   2. Lista (`.mars-kadry-tasma`) — sama taśma. Środkowy pas (pod klatkami
+      i w odstępach między nimi) maluje jej tło; pasy perforacji u góry i na
+      dole rysują `::before` i `::after`, a otwory to MASKA (prawdziwa dziura,
+      a nie namalowany prostokąt) — przez nie widać to, co leży pod taśmą.
+   3. Klatki (`li`) — okno zdjęcia z lekko zaokrąglonymi rogami, w środku
+      zdjęcie, przyciemnienie, ikona i podpis kroku.
+   Perforacje są w przewijanej treści, więc przesuwają się RAZEM z klatkami.
+
+   UWAGA NA KOLEJNOŚĆ: `@media` nie podnosi swoistości — wszystkie progi stoją
+   na KOŃCU pliku, po regułach bazowych (pułapka z `mars.css`, pięć razy
+   w tym repozytorium).
+   ========================================================================= */
+
+.mars-kadry {
+  /* Szerokość okna. `100vw` to tylko stan przed hydracją: wlicza klasyczny
+     pasek przewijania (Windows: ok. 15 px), więc taśma wystaje wtedy o pół
+     paska z każdej strony (przycina ją `overflow: hidden` sekcji
+     i `overflow-x: clip` na `body`), a przy oknie węższym niż szyna treści
+     pierwsza klatka stoi o pół paska za daleko w lewo. Po hydracji
+     `useTasmaKadrow` wpisuje tu zmierzone `clientWidth` (styl inline). */
+  --kadry-okno: 100vw;
+  /* Szerokość treści `.mars-shell` (max 73.75rem, dopełnienie 1.25rem)
+     i odległość jej lewej krawędzi od krawędzi okna. */
+  --kadry-szyna: calc(min(var(--kadry-okno), 73.75rem) - 2.5rem);
+  --kadry-margines: calc((var(--kadry-okno) - var(--kadry-szyna)) / 2);
+  /* Pas WIDOKU: od lewej krawędzi szyny treści do prawej krawędzi okna —
+     tyle taśmy widzi gość przy scrollLeft 0. Od 1024 px szerokość klatki
+     liczy się z niego, a nie z szyny (patrz progi), żeby ułamek klatki
+     przy prawej krawędzi był na każdej szerokości taki sam i ZAMIERZONY. */
+  --kadry-widok: calc(var(--kadry-okno) - var(--kadry-margines));
+  /* Ile klatek przewija jedna kropka / strzałka. Czyta to `useTasmaKadrow`,
+     a progi niżej ustawiają zgodne z tym punkty zaczepienia przewijania —
+     jedna liczba w jednym miejscu, żeby JS i CSS się nie rozjechały. */
+  --kadry-na-strone: 1;
+  /* Telefon: jedna klatka na środku i po ok. 40 px sąsiadów z boków.
+     Od `--kadry-okno`, a nie od `vw` — dopełnienie taśmy liczy się z tej
+     samej miary, więc klatka stoi DOKŁADNIE na środku. */
+  --kadr-w: min(calc(var(--kadry-okno) * 0.72), 20rem);
+  --kadry-odstep: 0.75rem;
+  /* Pas perforacji i odstęp otworów. Całe piksele (28 / 22 px): maska
+     powtarzana co ułamek piksela rysuje między kafelkami cienkie szwy. */
+  --perf-pas: 1.75rem;
+  --perf-krok: 1.375rem;
+  /* Otwór perforacji: zaokrąglony prostokąt jak w taśmie 35 mm (szerszy niż
+     wysoki, ok. 55% odstępu). `evenodd` wycina go z pełnego kafelka, więc
+     w masce zostaje dziurą. `preserveAspectRatio='none'` pozwala dobrać
+     kafelek w całych pikselach na każdym progu. */
+  --kadry-perforacja: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 28' preserveAspectRatio='none'%3E%3Cpath fill-rule='evenodd' d='M0 0H22V28H0Z M6.8 9.8H15.2A1.8 1.8 0 0 1 17 11.6V16.4A1.8 1.8 0 0 1 15.2 18.2H6.8A1.8 1.8 0 0 1 5 16.4V11.6A1.8 1.8 0 0 1 6.8 9.8Z'/%3E%3C/svg%3E");
+  /* Podłoże taśmy: czerń z chłodnym połyskiem, nie płaska plama. */
+  --kadry-baza: #0b0c0f;
+  /* Światło widoczne przez perforacje: przygaszony bursztyn na środku okna,
+     przy krawędziach prawie czerń. */
+  --kadry-swiatlo: #5b4532;
+  --kadry-swiatlo-brzeg: #2a221c;
+  /* Dopełnienie szyny pod cień taśmy (patrz `.mars-kadry-szyna`). */
+  --kadry-cien-gora: 1rem;
+  --kadry-cien-dol: 2rem;
+  /* Zanik taśmy przy krawędziach okna (lewa / prawa). Na telefonie wąski —
+     zaglądające sąsiednie klatki mają tylko ~35 px i nie mogą w nim utonąć. */
+  --kadry-zanik: 0.75rem;
+  --kadry-zanik-prawy: var(--kadry-zanik);
+  /* Barwy nawigacji na granacie. Na jasnym tle podmienia je reguła niżej. */
+  --kadry-kropka: rgba(255, 255, 255, 0.42);
+  --kadry-kropka-aktywna: var(--dj-turkus);
+  /* Poświata klatki licznika, która jest w kadrze — „światło projektora". */
+  --kadry-poswiata: 0 0 0.625rem rgba(50, 216, 230, 0.45);
+  --kadry-ring: var(--dj-turkus);
+  --kadry-dalej-obrys: rgba(255, 255, 255, 0.24);
+  --kadry-dalej-tlo: rgba(255, 255, 255, 0.06);
+  --kadry-dalej-kolor: #ffffff;
+
+  position: relative;
+  /* Własny kontekst formatowania: ujemne marginesy szyny (miejsce pod cień)
+     nie przechodzą przez `.mars-kadry`, więc taśma zaczyna się DOKŁADNIE na
+     jej górnej krawędzi. Od tego liczy się położenie strzałki, która od
+     640 px leży na taśmie. Odstępy w sekcji zostają te same: margines
+     `.mars-kadry` i dopełnienie szyny dają tę samą miarę co wcześniej
+     zapadnięte marginesy. */
+  display: flow-root;
+  width: var(--kadry-okno);
+  /* Wyjście z `.mars-shell` na pełną szerokość: 50% to połowa szyny treści,
+     więc lewa krawędź ląduje na krawędzi okna. */
+  margin: 2.25rem 0 0 calc(50% - var(--kadry-okno) / 2);
+  /* Sekcja jest wyśrodkowana — podpisy klatek czytają się od lewej. */
+  text-align: left;
+}
+
+/* Gdyby sekcja zeszła z granatu na jasne tło: licznik, strzałka i obwódka
+   fokusu w barwach „na jasnym" (te same żetony co reszta strony). Sama
+   taśma jest czarna na każdym tle. */
+.mars-misja:not(.mars-ciemny) .mars-kadry {
+  --kadry-kropka: rgba(11, 20, 39, 0.45);
+  --kadry-kropka-aktywna: var(--dj-akcent);
+  --kadry-poswiata: none;
+  --kadry-ring: var(--dj-akcent);
+  --kadry-dalej-obrys: var(--dj-obrys);
+  --kadry-dalej-tlo: var(--dj-powierzchnia);
+  --kadry-dalej-kolor: var(--dj-tekst);
+}
+
+/* Na jasnym cień z granatu zamiast czerni i lżejszy — czarny kładł się na
+   bieli szarym pasem przez całą szerokość okna (sprawdzone symulacją). */
+.mars-misja:not(.mars-ciemny) .mars-kadry-tasma {
+  box-shadow: 0 1.25rem 2rem -1.25rem rgba(11, 20, 39, 0.35);
+}
+
+/* --- Szyna (kontener przewijania) ------------------------------------------ */
+
+.mars-kadry-szyna {
+  position: relative;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  /* Pasek przewijania schowany jak w karuzelach /wydarzenia: o przewijaniu
+     mówią zaglądające klatki i nawigacja pod taśmą. */
+  scrollbar-width: none;
+  /* Miejsce na cień taśmy (`box-shadow` listy niżej) — WEWNĄTRZ szyny, bo
+     kontener przewijania przycina wszystko, co wystaje poza jego dopełnienie,
+     a cień na samej szynie zjadłaby maska krawędzi. Ujemny margines oddaje
+     tę samą miarę, więc odstępy w sekcji się nie zmieniają. */
+  padding-block: var(--kadry-cien-gora) var(--kadry-cien-dol);
+  margin-block: calc(-1 * var(--kadry-cien-gora)) calc(-1 * var(--kadry-cien-dol));
+  /* Światło za taśmą — tylko w pasach perforacji. Jaśniejsze na środku,
+     jak lampa projektora; bardzo słabe, żeby otwory były ciepłe, a nie
+     świecące. KRYJĄCE, a nie półprzezroczyste: przy przezroczystym granat
+     sekcji wychodził przez otwory chłodną szarością i ciepło znikało.
+     `content-box`: pasy liczą się od taśmy, a nie od dopełnienia pod cień. */
+  background:
+    linear-gradient(90deg, var(--kadry-swiatlo-brzeg) 0%, var(--kadry-swiatlo) 50%, var(--kadry-swiatlo-brzeg) 100%)
+      0 0 / 100% var(--perf-pas) no-repeat content-box,
+    linear-gradient(90deg, var(--kadry-swiatlo-brzeg) 0%, var(--kadry-swiatlo) 50%, var(--kadry-swiatlo-brzeg) 100%)
+      0 100% / 100% var(--perf-pas) no-repeat content-box;
+  /* Taśma wyłania się z ciemności i w niej znika: krawędzie okna zanikają.
+     Szerokość zaniku nie przekracza marginesu szyny treści, więc przy
+     scrollLeft 0 pierwsza klatka stoi w pełnym kryciu — w zanik wchodzi
+     tylko pusty rozbieg taśmy (na 1920 px to ~390 px czerni po lewej).
+     Prawy zanik jest od 640 px WĄSKI: tam stoi celowo ucięta klatka i nie
+     może w nim zniknąć (patrz progi). */
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 var(--kadry-zanik),
+    #000 calc(100% - var(--kadry-zanik-prawy)),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 var(--kadry-zanik),
+    #000 calc(100% - var(--kadry-zanik-prawy)),
+    transparent 100%
+  );
+}
+
+.mars-kadry-szyna::-webkit-scrollbar {
+  display: none;
+}
+
+.mars-kadry-szyna:focus {
+  outline: none;
+}
+
+/* Fokus klawiatury rysuje się na SAMEJ TAŚMIE (3 px od jej krawędzi), a nie
+   na szynie: szyna sięga krawędzi okna i ma dopełnienie pod cień, więc jej
+   obwódka szła 2rem pod taśmą, przez kropki nawigacji. Boki obwódki leżą
+   poza oknem — widać dwie turkusowe linie wzdłuż taśmy, wygaszane przy
+   krawędziach tą samą maską co taśma. Miejsce na nie daje dopełnienie szyny. */
+.mars-kadry-szyna:focus-visible > .mars-kadry-tasma {
+  outline: 2px solid var(--kadry-ring);
+  outline-offset: 3px;
+}
+
+/* --- Taśma ------------------------------------------------------------------- */
+
+.mars-kadry-tasma {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--kadry-odstep);
+  width: max-content;
+  margin: 0;
+  /* Telefon: dopełnienie stawia pierwszą i ostatnią klatkę na środku okna. */
+  padding: var(--perf-pas) calc((var(--kadry-okno) - var(--kadr-w)) / 2);
+  list-style: none;
+  /* Cień pod taśmą — odkleja czerń od granatu. */
+  box-shadow:
+    0 1.5rem 2.25rem -1.25rem rgba(0, 0, 0, 0.75),
+    0 -0.75rem 1.5rem -1rem rgba(0, 0, 0, 0.45);
+  /* Środkowy pas taśmy. Zachodzi o 1 px pod pasy perforacji, żeby na styku
+     nie prześwitywała szczelina z zaokrąglenia subpikseli. Pasy perforacji
+     maluje tylko `::before` / `::after` — tło listy nie może ich podbić,
+     bo zatkałoby otwory. */
+  background:
+    linear-gradient(180deg, #101115 0%, var(--kadry-baza) 18%, var(--kadry-baza) 82%, #101115 100%)
+    0 calc(var(--perf-pas) - 1px) / 100% calc(100% - 2 * var(--perf-pas) + 2px) no-repeat;
+}
+
+.mars-kadry-tasma::before,
+.mars-kadry-tasma::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  height: var(--perf-pas);
+  pointer-events: none;
+  /* Połysk: zewnętrzna krawędź łapie światło (włosowa linia), pas ciemnieje
+     ku klatkom. Do tego szeroki, ledwie widoczny refleks co 26rem — jedzie
+     z taśmą, więc czyta się jak odbicie na lakierowanym podłożu. */
+  background:
+    repeating-linear-gradient(
+      100deg,
+      rgba(255, 255, 255, 0) 0rem,
+      rgba(255, 255, 255, 0) 17rem,
+      rgba(255, 255, 255, 0.045) 21rem,
+      rgba(255, 255, 255, 0) 25rem,
+      rgba(255, 255, 255, 0) 26rem
+    ),
+    linear-gradient(
+      var(--kadry-polysk, 180deg),
+      rgba(255, 255, 255, 0.1) 0,
+      rgba(255, 255, 255, 0.1) 1px,
+      #1d1f24 1px,
+      #131418 45%,
+      var(--kadry-baza) 100%
+    );
+  -webkit-mask: var(--kadry-perforacja) 0 0 / var(--perf-krok) 100% repeat-x;
+  mask: var(--kadry-perforacja) 0 0 / var(--perf-krok) 100% repeat-x;
+}
+
+.mars-kadry-tasma::before {
+  top: 0;
+}
+
+/* Dolny pas: ten sam połysk odwrócony — jasna krawędź jest na dole. */
+.mars-kadry-tasma::after {
+  --kadry-polysk: 0deg;
+  bottom: 0;
+}
+
+/* --- Klatka ------------------------------------------------------------------- */
+
+/* UWAGA: `mars.css` daje KAŻDEMU `li` w sekcji `[data-ujawnij]` opóźnienie
+   przejścia (0–280 ms, swoistość 0-4-1) — pod stary plaster. Klatka nie ma
+   więc żadnego `transition`: opóźnienie by ją dogoniło. */
+.mars-kadry-klatka {
+  position: relative;
+  flex: 0 0 var(--kadr-w);
+  width: var(--kadr-w);
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  /* Okno kadru w taśmie ma lekko zaokrąglone rogi — tak tnie ramka
+     naświetlania w aparacie. Mniej niż karty /wydarzenia, bo to klatka,
+     a nie kafelek. */
+  border-radius: 0.4rem;
+  background: #15171b;
+  scroll-snap-align: center;
+  /* Jeden gest = jedna klatka, bez przelatywania kilku naraz. */
+  scroll-snap-stop: always;
+}
+
+/* Włosowa krawędź okna — jaśniejsza niż czerń taśmy, żeby zdjęcie nie
+   „wylewało się" w podłoże. Nad wszystkimi warstwami klatki. */
+.mars-kadry-klatka::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.09),
+    inset 0 0 1.25rem rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
+.mars-kadry-foto {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  /* Pliki są już przycięte do 4:5 (`kadry_misji()` w warianty.py), więc
+     `cover` niczego nie odcina, dopóki klatka trzyma proporcję. */
+  object-fit: cover;
+  object-position: 50% 50%;
+}
+
+/* Dwa przyciemnienia: górne pod ikonę, dolne pod podpis. Środek
+   zostaje czysty — zdjęcie jest bohaterem klatki. */
+.mars-kadry-cien {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(4, 6, 12, 0.5) 0%,
+    rgba(4, 6, 12, 0) 24%,
+    rgba(4, 6, 12, 0) 40%,
+    rgba(4, 6, 12, 0.72) 64%,
+    rgba(4, 6, 12, 0.95) 100%
+  );
+}
+
+.mars-kadry-gora {
+  position: absolute;
+  inset: 0 0 auto;
+  display: flex;
+  align-items: flex-start;
+  /* Sama ikona, w prawym górnym rogu — numer klatki wyleciał (05.10.2026). */
+  justify-content: flex-end;
+  padding: 0.875rem;
+}
+
+/* Szklane kółko z ikoną — ten sam materiał co na kartach /wydarzenia.
+   Rozmycie tła tylko przy precyzyjnym wskaźniku (próg na końcu pliku): pięć
+   warstw `backdrop-filter` w przewijanej taśmie kosztuje na telefonie
+   płynność. */
+.mars-kadry-ikona {
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: rgba(8, 10, 18, 0.66);
+  color: #ffffff;
+}
+
+/* Jasna czerwień jak w starym plastrze: ikona to grafika (próg 3:1), a na
+   ciemnym szkle `--ms-czerwien` ma z zapasem więcej. */
+.mars-kadry-ikona {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 999px;
+  color: var(--ms-czerwien);
+}
+
+.mars-kadry-podpis {
+  position: absolute;
+  inset: auto 0 0;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 1rem 1.1rem;
+}
+
+.mars-kadry-klucz {
+  font-size: 0.66rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.2em;
+  color: var(--dj-turkus);
+}
+
+.mars-kadry-tytul {
+  margin-top: 0.35rem;
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+}
+
+.mars-kadry-opis {
+  margin-top: 0.4rem;
+  font-size: 0.86rem;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.82);
+  text-wrap: pretty;
+}
+
+/* Przygaszenie klatek obok środkowej. Domyślnie zero — włącza je tylko
+   próg telefonu (niżej), gdzie `--dist` ma sens. W znacznikach stoi POD
+   ikoną i podpisem, więc gaśnie wyłącznie zdjęcie. */
+.mars-kadry-przygas {
+  position: absolute;
+  inset: 0;
+  background: #05070b;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* --- Nawigacja pod taśmą --------------------------------------------------------
+   (pusto) | licznik | dalej — licznik zawsze dokładnie na środku. Strzałka
+   stoi tu tylko na telefonie; od 640 px leży na taśmie (próg niżej). */
+.mars-kadry-nawigacja {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.5rem;
+  width: var(--kadry-szyna);
+  margin: 1rem auto 0;
+}
+
+/* `display: grid` wyżej przebija domyślne `[hidden] { display: none }`. */
+.mars-kadry-nawigacja[hidden] {
+  display: none;
+}
+
+.mars-kadry-licznik {
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+}
+
+/* Klatka licznika: cel dotykowy 44 × 44 px, w środku mała klatka filmu —
+   prostokąt ok. 3:2 jak okno 35 mm, nie kropka. Zgaszona to sam obrys (▱),
+   klatka w kadrze jest wypełniona i świeci (▰). */
+.mars-kadry-segment {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.mars-kadry-segment-znak {
+  display: block;
+  width: 1.375rem;
+  height: 0.875rem;
+  /* .42 bieli na granacie ≈ 4:1 — powyżej 3:1 dla elementów nietekstowych. */
+  border: 1.5px solid var(--kadry-kropka);
+  border-radius: 0.1875rem;
+  background: transparent;
+  transition:
+    background-color 360ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 360ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 360ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.mars-kadry-segment.is-widoczny .mars-kadry-segment-znak {
+  border-color: var(--kadry-kropka-aktywna);
+  background: var(--kadry-kropka-aktywna);
+  box-shadow: var(--kadry-poswiata);
+}
+
+.mars-kadry-dalej {
+  grid-column: 3;
+  justify-self: end;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 1px solid var(--kadry-dalej-obrys);
+  border-radius: 999px;
+  background: var(--kadry-dalej-tlo);
+  color: var(--kadry-dalej-kolor);
+  cursor: pointer;
+  transition:
+    border-color 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.mars-kadry-dalej:hover {
+  border-color: rgba(50, 216, 230, 0.6);
+  background: rgba(50, 216, 230, 0.1);
+}
+
+/* Na końcu taśmy strzałka obraca się w lewo: następne kliknięcie wraca do
+   pierwszego kroku (nazwę przycisku podmienia komponent). */
+.mars-kadry-dalej-ikona {
+  transition: rotate 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.mars-kadry-dalej.is-wstecz .mars-kadry-dalej-ikona {
+  rotate: 180deg;
+}
+
+.mars-kadry-segment:focus-visible,
+.mars-kadry-dalej:focus-visible {
+  outline: 2px solid var(--kadry-ring);
+  outline-offset: 2px;
+}
+
+/* --- Wejście taśmy ---------------------------------------------------------------
+   Sekcja wchodzi jak każda inna (`[data-ujawnij]` w `mars.css`), a taśma
+   dodatkowo DOJEŻDŻA z prawej o 3rem — jakby ją przeciągnięto przez okienko.
+   Przesuwana jest SZYNA, nie lista: przesunięcie samej treści zmieniałoby
+   zakres przewijania w trakcie pomiaru. Bez JS (brak `.ujawnianie-wlaczone`)
+   taśma stoi od razu na miejscu. Stan widoczny ma o jedną klasę WYŻSZĄ
+   swoistość niż ukryty — przy równej wygrałby późniejszy. Przy „ogranicz
+   ruch" przejście zeruje blok `prefers-reduced-motion` w `mars.css`. */
+.mars-page.ujawnianie-wlaczone [data-ujawnij] .mars-kadry-szyna {
+  transform: translateX(3rem);
+  transition: transform 1100ms cubic-bezier(0.22, 0.61, 0.36, 1) 120ms;
+}
+
+.mars-page.ujawnianie-wlaczone [data-ujawnij].jest-widoczny .mars-kadry-szyna {
+  transform: none;
+}
+
+/* ============================================================================
+   PROGI — zawsze po regułach bazowych.
+   ========================================================================= */
+
+/* Telefon: przygaszenie sąsiadów, proporcjonalnie do odległości od środka.
+   Stan startowy jak przy scrollLeft 0 (pierwsza klatka na środku), żeby przed
+   hydracją sąsiad nie stał w pełnym świetle i nie „gasł" po niej. Wartości
+   wpisywane przez JS (styl inline) mają pierwszeństwo. Nakładka gasi tylko
+   zdjęcie (leży pod tekstem), więc kontrast podpisu sąsiada może tylko
+   wzrosnąć. */
+@media (max-width: 639.98px) and (prefers-reduced-motion: no-preference) {
+  .mars-kadry-klatka + .mars-kadry-klatka {
+    --dist: 1;
+  }
+
+  .mars-kadry-przygas {
+    opacity: calc(0.5 * var(--dist, 0));
+  }
+}
+
+/* Od 640 px: klatki od lewej krawędzi szyny treści, strzałka przewija
+   o DWIE. Punkt zaczepienia ma co druga klatka, więc gest gładzikiem
+   zatrzymuje się na pełnej stronie, a nie w pół klatki. Klatka to 38%
+   okna: w pasie widoku mieszczą się wtedy 2,5 klatki na każdej szerokości
+   od 640 do 1023 px — trzecia ucięta w połowie. Przy starym suficie 21rem
+   od ok. 950 px trzecia wychodziła w 75–90% i wyglądała na całą. */
+@media (min-width: 640px) {
+  .mars-kadry {
+    --kadry-na-strone: 2;
+    --kadr-w: clamp(15rem, calc(var(--kadry-okno) * 0.38), 24rem);
+    --kadry-odstep: 0.875rem;
+    /* Lewy zanik najwyżej tak szeroki jak margines szyny treści — przy
+       scrollLeft 0 nie sięga pierwszej klatki. Prawy wąski: tam stoi
+       ucięta klatka, która ma być widać. */
+    --kadry-zanik: min(var(--kadry-margines), 12rem);
+    --kadry-zanik-prawy: min(var(--kadry-margines), 2.5rem);
+    margin-top: 2.75rem;
+  }
+
+  /* Strzałka NA taśmie: przy prawej krawędzi okna, w połowie wysokości
+     klatek, nad uciętą klatką — „tam jest dalej". Wcześniej stała w rzędzie
+     pod taśmą przy krawędzi szyny treści i nie łączyła się z klatkami.
+     Połowa wysokości taśmy = pas perforacji + połowa klatki (4:5, więc
+     0,625 jej szerokości); `.mars-kadry` ma własny kontekst formatowania,
+     więc taśma zaczyna się na jej górnej krawędzi. Materiał jak szklane
+     kółka ikon na klatkach — leży na zdjęciu, więc tło musi być kryjące. */
+  .mars-kadry-dalej {
+    position: absolute;
+    top: calc(var(--perf-pas) + var(--kadr-w) * 0.625);
+    right: 1.25rem;
+    z-index: 2;
+    width: 3rem;
+    height: 3rem;
+    translate: 0 -50%;
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(8, 10, 18, 0.66);
+    box-shadow: 0 0.75rem 1.75rem -0.5rem rgba(0, 0, 0, 0.6);
+  }
+
+  .mars-kadry-dalej:hover {
+    border-color: rgba(50, 216, 230, 0.7);
+    background: rgba(8, 26, 34, 0.8);
+  }
+
+  .mars-kadry-szyna {
+    scroll-padding-inline: var(--kadry-margines);
+  }
+
+  .mars-kadry-tasma {
+    padding-inline: var(--kadry-margines);
+  }
+
+  .mars-kadry-klatka {
+    scroll-snap-align: none;
+    scroll-snap-stop: normal;
+  }
+
+  .mars-kadry-klatka:nth-child(2n + 1) {
+    scroll-snap-align: start;
+  }
+
+  .mars-kadry-gora {
+    padding: 1rem;
+  }
+
+  .mars-kadry-podpis {
+    padding: 1.1rem 1.1rem 1.2rem;
+  }
+
+  .mars-kadry-tytul {
+    font-size: 1.6rem;
+  }
+}
+
+/* Od 1024 px szerokość klatki liczy się z PASA WIDOKU (lewa krawędź szyny
+   treści → prawa krawędź okna), bo tyle taśmy widzi gość: N klatek w pasie
+   to klatka = (widok + odstęp) / N − odstęp. Tu N = 3,55 — trzy pełne
+   i połowa czwartej, ucięta celowo; przewijanie o TRZY. Do 05.10.2026
+   klatka miała stałe 1/3,3 szyny i przy 1512 px czwarta wychodziła w 87%:
+   wyglądała na całą, tylko przygaszoną, a piątej nie zdradzało nic. */
+@media (min-width: 1024px) {
+  .mars-kadry {
+    --kadry-na-strone: 3;
+    --kadry-odstep: 1rem;
+    --kadr-w: calc((var(--kadry-widok) + var(--kadry-odstep)) / 3.55 - var(--kadry-odstep));
+    --perf-pas: 2rem;
+    --perf-krok: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .mars-kadry-klatka:nth-child(2n + 1) {
+    scroll-snap-align: none;
+  }
+
+  .mars-kadry-klatka:nth-child(3n + 1) {
+    scroll-snap-align: start;
+  }
+
+  .mars-kadry-gora {
+    padding: 1.1rem;
+  }
+
+  .mars-kadry-podpis {
+    padding: 1.25rem 1.25rem 1.35rem;
+  }
+
+  .mars-kadry-tytul {
+    font-size: 1.75rem;
+  }
+
+  .mars-kadry-opis {
+    font-size: 0.9rem;
+  }
+
+  .mars-kadry-nawigacja {
+    margin-top: 1.25rem;
+  }
+}
+
+/* Od 1280 px: N = 4,35 — cztery pełne klatki i ok. 30% piątej, więc gość
+   WIDZI, że jest piąta. Ułamek trzyma się na każdej szerokości, bo klatka
+   rośnie razem z pasem widoku (1280 px: 266 px, 1512: 293, 1920: 340);
+   sufit 26rem działa dopiero od ok. 2570 px. Przewijanie o cztery, czyli
+   na desktopie są dwie pozycje: początek i koniec taśmy. */
+@media (min-width: 1280px) {
+  .mars-kadry {
+    --kadry-na-strone: 4;
+    --kadr-w: min(26rem, calc((var(--kadry-widok) + var(--kadry-odstep)) / 4.35 - var(--kadry-odstep)));
+  }
+
+  .mars-kadry-klatka:nth-child(3n + 1) {
+    scroll-snap-align: none;
+  }
+
+  .mars-kadry-klatka:nth-child(4n + 1) {
+    scroll-snap-align: start;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .mars-kadry-ikona,
+  .mars-kadry-dalej {
+    -webkit-backdrop-filter: blur(10px) saturate(1.3);
+    backdrop-filter: blur(10px) saturate(1.3);
+  }
+}

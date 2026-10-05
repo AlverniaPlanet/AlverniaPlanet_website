@@ -8,24 +8,42 @@ import { PrimaryButton } from "@/app/components/PrimaryButton";
 import { useI18n } from "@/app/i18n-provider";
 import {
   buildBookingPath,
-  K360_BOOKING_CATEGORY,
   K360_BOOKING_SERVICES,
 } from "@/lib/booking";
 import { PROMO_PACKAGES } from "@/lib/promoPackages";
-import { AllAttractionsPromoCard } from "@/app/components/AllAttractionsPromoCard";
-import { HeroMarquee } from "@/app/components/HeroMarquee";
-import { type Locale } from "./films";
+import { AllAttractionsBundleBar } from "@/app/components/AllAttractionsBundleBar";
+import { AttractionPortal } from "@/app/components/AttractionPortal";
+import { type Locale } from "@/lib/localizedRoutes";
 import RepertoireSection from "./RepertoireSection";
+import { SolarIcon } from "@/app/components/SolarIcon";
 
 type Highlight = { title: string; body: string };
 
 // Hero = jedno duże zdjęcie na cały ekran, które płynnie zmienia się (cross-fade)
 // między dwoma kadrami kopuły. Kropki na dole pokazują, ile jest zdjęć.
+//
+// Każdy kadr ma trzy szerokości, bo oryginał ma 2400 px i na telefonie był to
+// jeden plik na 248 kB — decydujący o LCP. Zmierzone na produkcji (telefon,
+// 1,6 Mb/s, procesor ×4 wolniejszy): LCP 6128 ms, czyli półtora raza powyżej
+// progu „słabo". `sizes="100vw"` pozwala przeglądarce wybrać wariant samej,
+// z uwzględnieniem gęstości ekranu — 900 px na telefonie, 2400 px na
+// czterokrotnym retinie.
 const HERO_IMAGES = [
-  "/galeria/K360/K360_2.webp",
-  "/galeria/K360/K360_1.webp",
+  {
+    src: "/galeria/K360/K360_2-1600.webp",
+    srcSet:
+      "/galeria/K360/K360_2-900.webp 900w, /galeria/K360/K360_2-1600.webp 1600w, /galeria/K360/K360_2.webp 2400w",
+  },
+  {
+    src: "/galeria/K360/K360_1-1600.webp",
+    srcSet:
+      "/galeria/K360/K360_1-900.webp 900w, /galeria/K360/K360_1-1600.webp 1600w, /galeria/K360/K360_1.webp 2400w",
+  },
 ];
 
+// Kafelek siatki ma najwyżej 380 px szerokości, a otwierał pliki 1600–2400 px.
+// Siatka pobierała przez to 1218 kB zamiast 261 kB. Pełny plik zostaje tam,
+// gdzie jest naprawdę potrzebny: w powiększeniu po kliknięciu.
 const GALLERY_IMAGES = [
   "/galeria/K360/1.webp",
   "/galeria/K360/2.webp",
@@ -34,6 +52,9 @@ const GALLERY_IMAGES = [
   "/galeria/K360/K360_1.webp",
   "/galeria/K360/K360_2.webp",
 ];
+
+/** Miniatura 760 px dla tego samego kadru — nazwa pliku z przyrostkiem. */
+const miniatura = (src: string) => src.replace(/\.webp$/, "-760.webp");
 
 // „Odcinek biletu" z perforacją po bokach (czerwona wersja).
 const TICKET_STUB_STYLE: CSSProperties = {
@@ -96,7 +117,7 @@ const COPY: Record<Locale, Copy> = {
     heroTitle: "Kino 360",
     heroTagline: "Przeżyj film, który dzieje się wokół Ciebie.",
     heroCtaPrimary: "Kup bilet",
-    heroCtaSecondary: "Zobacz szczegóły",
+    heroCtaSecondary: "Zobacz repertuar",
     europeBadge: "Największe Kino 360 w Europie",
     experienceBadge: "Przeżyj",
 
@@ -158,7 +179,7 @@ const COPY: Record<Locale, Copy> = {
     heroTitle: "K360 Cinema",
     heroTagline: "Experience a film that happens all around you.",
     heroCtaPrimary: "Buy a ticket",
-    heroCtaSecondary: "See details",
+    heroCtaSecondary: "See repertoire",
     europeBadge: "Europe's largest 360° cinema",
     experienceBadge: "Experience",
 
@@ -220,7 +241,7 @@ const COPY: Record<Locale, Copy> = {
     heroTitle: "Cinema K360",
     heroTagline: "Vive um filme que acontece à tua volta.",
     heroCtaPrimary: "Comprar bilhete",
-    heroCtaSecondary: "Ver detalhes",
+    heroCtaSecondary: "Ver repertório",
     europeBadge: "O maior cinema 360° da Europa",
     experienceBadge: "Vive",
 
@@ -276,6 +297,130 @@ const COPY: Record<Locale, Copy> = {
     priceReducedValue: "39 PLN",
     ticketCta: "Comprar bilhete",
   },
+
+  de: {
+    heroKicker: "Fulldome 360° • Europas größtes Kuppelkino",
+    heroTitle: "Kino 360",
+    heroTagline: "Erleben Sie einen Film, der rund um Sie herum stattfindet.",
+    heroCtaPrimary: "Ticket kaufen",
+    heroCtaSecondary: "Programm ansehen",
+    europeBadge: "Europas größtes 360°-Kino",
+    experienceBadge: "Erleben",
+
+    infoBar: ["48 m Kuppel", "15 m hoch", "Vorführung ~30 Min."],
+
+    aboutTitleLead: "Sie sehen nicht zu.",
+    aboutTitleAccent: "Sie sind mittendrin.",
+    aboutLead: "Kino 360 ist eine Fulldome-Projektion auf der gesamten Fläche einer 48-Meter-Kuppel.",
+    aboutBody:
+      "Statt einer flachen Leinwand umgibt Sie das Bild von allen Seiten und füllt Ihr gesamtes Sichtfeld aus. Es ist das größte Fulldome-Kino Europas: 15 Meter hoch, 48 Meter Durchmesser und Vorführungen von rund 30 Minuten.",
+    aboutHighlights: ["48 m Kuppel", "Fulldome 360°", "~30 Min. Vorführung"],
+
+    nowShowingKicker: "Jetzt im Programm",
+    nowShowingNote: "Die aktuelle Vorführung dauert rund 30 Minuten und wird auf Polnisch gezeigt.",
+    heroRepertoire: "4 Fulldome-Filme im Programm",
+    repertoireKicker: "Programm",
+    repertoireTitle: "Programm von Kino 360",
+    repertoireIntro: "Vier Fulldome-360°-Filme: Jeder füllt die gesamte Kuppel ringsum und über Ihnen.",
+    filmCta: "Ticket kaufen",
+    filmMore: "Mehr erfahren",
+
+    highlightsTitle: "Warum Kino 360",
+    highlights: [
+      {
+        title: "Europas größtes 360°-Kino",
+        body: "Kein anderer Fulldome-Ort auf dem Kontinent projiziert in einem solchen Maßstab wie unsere 48-Meter-Kuppel.",
+      },
+      {
+        title: "Volle Fulldome-360°-Immersion",
+        body: "Bild und Ton umgeben Sie von allen Seiten, über Ihnen und ringsum, ganz ohne Leinwandrahmen.",
+      },
+      {
+        title: "48 m Kuppel",
+        body: "15 Meter hoch, 48 Meter Durchmesser, eine Vorführung von rund 30 Minuten auf Polnisch.",
+      },
+    ],
+
+    galleryTitle: "Den Ort entdecken",
+    galleryIntro: "Die gesamte Kuppel wird zur Leinwand: Ein 360°-Bild füllt das komplette Sichtfeld des Publikums.",
+
+    ticketsTitle: "Tickets für Kino 360",
+    ticketsTagline: "Die Vorführung dauert rund 30 Minuten und wird auf Polnisch gezeigt.",
+    ticketBadge: "Kino 360",
+    ticketIncludes: [
+      "360°-Fulldome-Vorführung in der Kuppel",
+      "Dauer rund 30 Minuten",
+      "Vorführung auf Polnisch",
+      "Bis zu 150 Plätze pro Vorführung",
+    ],
+    priceNormalLabel: "Regulär",
+    priceNormalValue: "49 PLN",
+    priceReducedLabel: "Ermäßigt",
+    priceReducedValue: "39 PLN",
+    ticketCta: "Ticket kaufen",
+  },
+
+  zh: {
+    heroKicker: "全穹顶 360° • 欧洲最大的穹幕影院",
+    heroTitle: "Kino 360 影院",
+    heroTagline: "体验一场在你四周展开的电影。",
+    heroCtaPrimary: "购票",
+    heroCtaSecondary: "查看片单",
+    europeBadge: "欧洲最大的 360° 影院",
+    experienceBadge: "体验",
+
+    infoBar: ["48 米穹顶", "15 米高", "约 30 分钟放映"],
+
+    aboutTitleLead: "不是观看。",
+    aboutTitleAccent: "你身在其中。",
+    aboutLead: "Kino 360 影院是覆盖整个 48 米穹顶表面的全穹顶放映。",
+    aboutBody:
+      "这里没有平面银幕，画面从四面八方将你包围，填满整个视野。这是欧洲最大的全穹顶影院：高 15 米、直径 48 米，每场放映约 30 分钟。",
+    aboutHighlights: ["48 米穹顶", "全穹顶 360°", "约 30 分钟放映"],
+
+    nowShowingKicker: "正在放映",
+    nowShowingNote: "当前场次约 30 分钟，以波兰语放映。",
+    heroRepertoire: "片单中共有 4 部全穹顶影片",
+    repertoireKicker: "片单",
+    repertoireTitle: "Kino 360 影院片单",
+    repertoireIntro: "四部全穹顶 360° 影片：每一部都铺满整个穹顶，环绕四周与头顶。",
+    filmCta: "购票",
+    filmMore: "了解更多",
+
+    highlightsTitle: "为什么选择 Kino 360 影院",
+    highlights: [
+      {
+        title: "欧洲最大的 360° 影院",
+        body: "在欧洲，没有第二座全穹顶场馆能像我们 48 米的穹顶这样放映。",
+      },
+      {
+        title: "全穹顶 360° 沉浸体验",
+        body: "画面与声音从四面八方、头顶与周围将你包围，没有银幕边框。",
+      },
+      {
+        title: "48 米穹顶",
+        body: "高 15 米、直径 48 米，每场约 30 分钟，以波兰语放映。",
+      },
+    ],
+
+    galleryTitle: "走进场馆",
+    galleryIntro: "整个穹顶就是银幕：360° 画面填满观众的整个视野。",
+
+    ticketsTitle: "Kino 360 影院门票",
+    ticketsTagline: "每场放映约 30 分钟，以波兰语呈现。",
+    ticketBadge: "Kino 360 影院",
+    ticketIncludes: [
+      "穹顶内的 360° 全穹顶放映",
+      "时长约 30 分钟",
+      "以波兰语放映",
+      "每场最多 150 个座位",
+    ],
+    priceNormalLabel: "全价票",
+    priceNormalValue: "49 PLN",
+    priceReducedLabel: "优惠票",
+    priceReducedValue: "39 PLN",
+    ticketCta: "购票",
+  },
 };
 
 function RedDivider() {
@@ -296,13 +441,24 @@ export default function K360Content() {
 
   // Hero slideshow, jedno zdjęcie naraz, cross-fade między dwoma kadrami.
   const [heroIndex, setHeroIndex] = useState(0);
+  /* Drugi kadr wisiał w drzewie od pierwszej klatki — niewidoczny (opacity 0),
+     ale w kadrze, więc `loading="lazy"` nic by nie dało i przeglądarka
+     pobierała go razem z pierwszym. Dwa pliki po 2400 px konkurowały o pasmo
+     w chwili, która decyduje o LCP. Teraz dokłada się sekundę przed pierwszą
+     zmianą, a przy „ogranicz ruch" (pokaz slajdów nie rusza) nie pobiera się
+     wcale. */
+  const [drugiKadrGotowy, setDrugiKadrGotowy] = useState(false);
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const dokladka = window.setTimeout(() => setDrugiKadrGotowy(true), 3500);
     const id = window.setInterval(() => {
       setHeroIndex((i) => (i + 1) % HERO_IMAGES.length);
     }, 4500);
-    return () => window.clearInterval(id);
+    return () => {
+      window.clearTimeout(dokladka);
+      window.clearInterval(id);
+    };
   }, []);
 
   // Lightbox galerii, klik w zdjęcie otwiera je powiększone.
@@ -354,9 +510,7 @@ export default function K360Content() {
   }, [loc]);
 
   const bookingHref = buildBookingPath(loc, {
-    category: K360_BOOKING_CATEGORY,
     service: K360_BOOKING_SERVICES.normal,
-    autopick: true,
   });
 
   const promo = PROMO_PACKAGES[loc][0];
@@ -365,32 +519,37 @@ export default function K360Content() {
     <main className="k360-page relative z-10 min-h-screen overflow-x-clip">
       {/* ===== HERO (czerwony, pełny ekran, pod navbar) ===== */}
       <section className="relative -mt-[84px] min-h-[100svh] w-full sm:-mt-[96px]">
-        {HERO_IMAGES.map((src, i) => (
-          <Image
-            key={src}
-            src={src}
-            alt="Wnętrze kopuły Kina 360 w Alvernia Planet"
-            fill
-            priority={i === 0}
-            sizes="100vw"
-            className={`object-cover transition-opacity duration-[1400ms] ease-in-out ${
-              i === heroIndex ? "opacity-100" : "opacity-0"
-            }`}
-          />
-        ))}
+        {/* Zwykły <img>, a nie next/image: przy `images.unoptimized` (eksport
+            statyczny) next/image i tak nie wygeneruje `srcset`, a bez niego
+            telefon pobiera plik dla czterokrotnego retiny. */}
+        {HERO_IMAGES.map((kadr, i) =>
+          i === 0 || drugiKadrGotowy ? (
+            <img
+              key={kadr.src}
+              src={kadr.src}
+              srcSet={kadr.srcSet}
+              sizes="100vw"
+              alt="Wnętrze kopuły Kina 360 w Alvernia Planet"
+              width={2400}
+              height={1800}
+              fetchPriority={i === 0 ? "high" : "low"}
+              decoding="async"
+              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[1400ms] ease-in-out ${
+                i === heroIndex ? "opacity-100" : "opacity-0"
+              }`}
+            />
+          ) : null,
+        )}
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,5,16,0.62)_0%,rgba(8,5,16,0.32)_42%,rgba(8,5,16,0.95)_100%)]" />
 
         <div className="ap-page-intro-stagger relative z-10 mx-auto flex min-h-[100svh] max-w-6xl flex-col items-center justify-end px-4 pb-28 pt-24 text-center sm:pb-[11rem] lg:pb-[15rem]">
           <div className="relative mb-5 inline-flex flex-col items-center">
             {/* Korona spada z góry i ląduje na górnej krawędzi boxa */}
-            <svg
+            <SolarIcon
+              name="crown"
+              weight="fill"
               className="ap-crown-drop absolute -top-[3.5rem] left-1/2 z-10 h-[3.6rem] w-[3.6rem] text-[#f5b301] drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)] sm:-top-[4.5rem] sm:h-[4.5rem] sm:w-[4.5rem]"
-              viewBox="0 0 16 16"
-              fill="currentColor"
-              aria-hidden="true"
-            >
-              <path d="M1.5 5.2 4.4 7l1.9-4.6L8 5l1.7-2.6L11.6 7l2.9-1.8L13 12.7H3L1.5 5.2zM3 14h10v1.2H3V14z" />
-            </svg>
+            />
             <span className="inline-flex items-center whitespace-nowrap rounded-full bg-[linear-gradient(135deg,#f5b301,#fcd34d)] px-3.5 py-1.5 text-[0.62rem] font-extrabold uppercase tracking-[0.1em] text-[#231903] shadow-[0_6px_18px_rgba(251,191,36,0.45)] ring-1 ring-black/10 sm:px-6 sm:py-2.5 sm:text-[0.95rem] sm:tracking-[0.2em]">
               {t.europeBadge}
             </span>
@@ -406,12 +565,12 @@ export default function K360Content() {
             <PrimaryButton
               href={bookingHref}
               size="lg"
-              className="ticket-pill whitespace-nowrap !px-5 !py-1.5 !text-xs !bg-[linear-gradient(135deg,#f03c64,#f7486c,#ff96aa)] !font-extrabold ring-[color:rgba(240,60,100,0.6)] hover:!brightness-110 sm:!px-6 sm:!py-2.5 sm:!text-base sm:min-w-[12rem]"
+              className="ticket-pill !text-[#04222a] whitespace-nowrap !px-5 !py-1.5 !text-xs !bg-[#56ddea] !font-extrabold ring-[color:rgba(86,221,234,0.6)] hover:!brightness-110 sm:!px-6 sm:!py-2.5 sm:!text-base sm:min-w-[12rem]"
             >
               {t.heroCtaPrimary}
             </PrimaryButton>
             <a
-              href="#kino-360"
+              href="#repertuar"
               className="inline-flex items-center justify-center gap-1.5 rounded-[var(--ap-btn-radius)] border border-white/25 bg-white/[0.06] px-3.5 py-1.5 text-xs font-semibold text-white backdrop-blur-md transition hover:border-[#ff96aa]/60 hover:bg-white/12 sm:gap-2 sm:px-6 sm:py-2.5 sm:text-sm"
             >
               {t.heroCtaSecondary}
@@ -419,22 +578,13 @@ export default function K360Content() {
             </a>
           </div>
 
-          {/* Wzmianka o repertuarze — prowadzi do sekcji z 4 filmami */}
-          <a
-            href="#repertuar"
-            className="group mt-4 inline-flex items-center gap-2 text-[0.66rem] font-semibold uppercase tracking-[0.18em] text-white/75 [text-shadow:0_2px_10px_rgba(0,0,0,0.6)] transition hover:text-[#ff96aa] sm:mt-6 sm:text-sm sm:tracking-[0.2em]"
-          >
-            <span className="h-1.5 w-1.5 rounded-full bg-[#f7486c] shadow-[0_0_10px_rgba(247,72,108,0.75)]" />
-            {t.heroRepertoire}
-            <span aria-hidden="true" className="transition-transform group-hover:translate-y-0.5">↓</span>
-          </a>
         </div>
 
         {/* Kropki slideshow, pokazują liczbę zdjęć i aktywne (klikalne) */}
         <div className="absolute inset-x-0 bottom-[4.75rem] z-20 flex justify-center gap-2.5 sm:bottom-[5.75rem]">
-          {HERO_IMAGES.map((src, i) => (
+          {HERO_IMAGES.map((kadr, i) => (
             <button
-              key={src}
+              key={kadr.src}
               type="button"
               onClick={() => setHeroIndex(i)}
               aria-label={`Pokaż zdjęcie ${i + 1}`}
@@ -448,29 +598,16 @@ export default function K360Content() {
           ))}
         </div>
 
-        {/* Fakty (nad) + przewijany ticker (pod), przyklejone do dołu hero */}
-        <div className="absolute inset-x-0 bottom-0 z-10">
-          <div className="border-t border-white/10 bg-black/40 backdrop-blur-md">
-            <div className="ap-shell flex flex-wrap items-center justify-center gap-x-4 gap-y-1 px-3 py-1.5 text-center sm:gap-x-9 sm:py-2">
-              {t.infoBar.map((item, index) => (
-                <span key={item} className="flex items-center gap-3 sm:gap-5">
-                  {index > 0 && <span className="hidden h-1 w-1 rounded-full bg-[#f7486c]/70 sm:inline-block" aria-hidden="true" />}
-                  <span className="text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-white/85 sm:text-sm sm:tracking-[0.16em]">
-                    {item}
-                  </span>
-                </span>
-              ))}
-            </div>
-          </div>
-          <HeroMarquee verb="PRZEŻYJ" word="FILM" accent="#f7486c" />
-        </div>
+        {/* Usunięto dolny pasek hero: przewijany ticker „PRZEŻYJ FILM" (rozpraszał)
+            oraz pasek statystyk (Kopuła 48 m / Wysokość 15 m / Seans ~30 min) — te
+            same dane są niżej w sekcji „Nie oglądasz. Jesteś w środku.". */}
       </section>
 
       <div className="space-y-16 px-3 py-14 sm:space-y-24 sm:px-6 sm:py-20 lg:px-12">
         {/* ===== CZYM JEST KINO 360 ===== */}
         <ScrollMotionItem strength="soft" delay={40} float={false} className="wpk-reveal">
           <section id="kino-360" className="ap-shell grid items-center gap-8 scroll-mt-24 text-center lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-12 lg:text-left">
-            <h2 className="text-[clamp(1.85rem,5vw,4rem)] font-black leading-[1.0] tracking-[-0.04em] text-white">
+            <h2 className="text-[clamp(1.85rem,5vw,4rem)] font-extrabold leading-[1.0] tracking-[-0.04em] text-white">
               <span className="block whitespace-nowrap text-[clamp(2.1rem,6.4vw,4.65rem)] leading-[0.95]">{t.aboutTitleLead}</span>
               <span className="block whitespace-nowrap bg-[linear-gradient(120deg,#f7486c,#ff96aa)] bg-clip-text text-transparent" style={{ WebkitBackgroundClip: "text" }}>
                 {t.aboutTitleAccent}
@@ -524,14 +661,11 @@ export default function K360Content() {
                       }`}
                     />
                     {isCrown && (
-                      <svg
+                      <SolarIcon
+                        name="crown"
+                        weight="fill"
                         className="pointer-events-none absolute right-5 top-5 h-6 w-6 text-[#f5b301] drop-shadow-[0_2px_6px_rgba(245,179,1,0.45)] sm:h-7 sm:w-7"
-                        viewBox="0 0 16 16"
-                        fill="currentColor"
-                        aria-hidden="true"
-                      >
-                        <path d="M1.5 5.2 4.4 7l1.9-4.6L8 5l1.7-2.6L11.6 7l2.9-1.8L13 12.7H3L1.5 5.2zM3 14h10v1.2H3V14z" />
-                      </svg>
+                      />
                     )}
                     <div className="relative">
                       <span
@@ -572,19 +706,20 @@ export default function K360Content() {
                   aria-label={`Powiększ zdjęcie ${index + 1}`}
                   className="group relative aspect-[4/3] cursor-zoom-in overflow-hidden rounded-2xl ring-1 ring-[#f7486c]/30 shadow-[0_18px_50px_rgba(0,0,0,0.45),0_0_24px_rgba(247,72,108,0.18)] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#f7486c]"
                 >
-                  <Image
-                    src={src}
-                    alt={`Kino 360, kadr ${index + 1}`}
-                    fill
+                  <img
+                    src={miniatura(src)}
+                    srcSet={`${miniatura(src)} 760w, ${src} 1600w`}
                     sizes="(min-width: 640px) 33vw, 50vw"
-                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                    alt={`Kino 360, kadr ${index + 1}`}
+                    width={760}
+                    height={570}
+                    loading="lazy"
+                    decoding="async"
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
                   />
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
                   <span className="pointer-events-none absolute right-2 top-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-black/45 text-white opacity-0 backdrop-blur-sm transition group-hover:opacity-100">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
-                      <circle cx="11" cy="11" r="7" />
-                      <path d="M21 21l-4.3-4.3M11 8v6M8 11h6" />
-                    </svg>
+                    <SolarIcon name="zoom-in" size={14} weight="bold" />
                   </span>
                 </button>
               ))}
@@ -610,8 +745,10 @@ export default function K360Content() {
               <div className="relative w-full overflow-hidden rounded-[1.75rem]" style={TICKET_STUB_STYLE}>
                 <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(247,72,108,0.2),transparent_42%),radial-gradient(circle_at_bottom_right,rgba(247,72,108,0.12),transparent_38%)]" />
                 <div className="relative grid gap-6 p-6 sm:p-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-8">
-                  <div className="space-y-4 text-center lg:text-left">
-                    <span className="ticket-card-badge mx-auto lg:mx-0 !text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.55)]">
+                  <div className="flex flex-col items-center gap-5 text-center sm:flex-row sm:items-center sm:gap-6 sm:text-left">
+                    <AttractionPortal attraction="kino360" className="w-36 shrink-0 sm:w-44" />
+                    <div className="space-y-4">
+                    <span className="ticket-card-badge mx-auto sm:mx-0">
                       {t.ticketBadge}
                     </span>
                     <h3 className="text-2xl font-extrabold tracking-[-0.02em] text-white sm:text-3xl">{t.heroTitle}</h3>
@@ -623,6 +760,7 @@ export default function K360Content() {
                         </li>
                       ))}
                     </ul>
+                    </div>
                   </div>
 
                   <div
@@ -654,7 +792,7 @@ export default function K360Content() {
                     <PrimaryButton
                       href={bookingHref}
                       size="lg"
-                      className="ticket-pill w-full whitespace-nowrap !bg-[linear-gradient(135deg,#f03c64,#f7486c,#ff96aa)] !text-white !font-extrabold [text-shadow:0_1px_2px_rgba(0,0,0,0.55)] ring-[color:rgba(240,60,100,0.6)] hover:!brightness-110"
+                      className="ticket-pill w-full whitespace-nowrap !bg-[#56ddea] !text-[#04222a] !font-extrabold ring-[color:rgba(86,221,234,0.6)] hover:!brightness-110"
                     >
                       {t.ticketCta}
                     </PrimaryButton>
@@ -663,7 +801,7 @@ export default function K360Content() {
               </div>
 
               {/* Bilet na wszystkie atrakcje, wspólny komponent (1:1 jak na home), pod spodem */}
-              <AllAttractionsPromoCard promo={promo} locale={loc} />
+              <AllAttractionsBundleBar promo={promo} locale={loc} />
             </div>
           </section>
         </ScrollMotionItem>

@@ -50,6 +50,27 @@ export function PrimaryButton(props: PrimaryButtonProps) {
   if ("href" in props && props.href) {
     const { href, ...linkProps } = rest as AnchorProps;
     const hrefString = String(href);
+
+    // Adres zewnętrzny (system biletowy Iksoris) idzie zwykłym <a>, nie <Link>.
+    // <Link> jest komponentem routera Nexta — dla obcego origin i tak zrobiłby
+    // twarde przejście, ale wtedy zależymy od jego wewnętrznej heurystyki.
+    // Jawne <a> nie zostawia pola do domysłów. Ten sam wzorzec co w Footer.tsx
+    // dla plików z public/legal.
+    if (/^https?:\/\//i.test(hrefString)) {
+      // Propsy sterujace routerem nie moga trafic na <a> — React wypisalby
+      // ostrzezenie o nieznanym atrybucie DOM. Odsiewamy je po nazwie, zamiast
+      // destrukturyzowac do nieuzywanych zmiennych (to robilo ostrzezenia lintu).
+      const PROPSY_ROUTERA = new Set(["prefetch", "replace", "scroll", "shallow", "locale", "legacyBehavior", "passHref"]);
+      const anchorProps = Object.fromEntries(
+        Object.entries(linkProps as Record<string, unknown>).filter(([k]) => !PROPSY_ROUTERA.has(k)),
+      ) as React.AnchorHTMLAttributes<HTMLAnchorElement>;
+      return (
+        <a href={hrefString} className={classes} {...anchorProps}>
+          {children}
+        </a>
+      );
+    }
+
     const normalizedHref = hrefString.startsWith("/") ? getLocalizedPath(hrefString, loc) : hrefString;
     return (
       <Link href={normalizedHref} className={classes} {...linkProps}>

@@ -1,10 +1,11 @@
 "use client";
 
 import { Fragment, memo, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import BookingLink from "@/app/components/BookingLink";
 import Image from "next/image";
 import Link from "next/link";
 import { useI18n } from "@/app/i18n-provider";
-import AdaptiveVideo from "@/app/components/AdaptiveVideo";
+import FullscreenHero from "@/app/components/FullscreenHero";
 import { PrimaryButton } from "@/app/components/PrimaryButton";
 import { SolarIcon } from "./components/SolarIcon";
 import { NEWS_COPY, type NewsSection } from "@/app/components/newsContent";
@@ -12,22 +13,17 @@ import ScrollMotionItem from "@/app/components/ScrollMotionItem";
 import { FAQ_COPY, type FaqCopy } from "@/app/components/faqContent";
 import { waitForImagesReady } from "@/app/components/waitForImagesReady";
 import {
-  ALL_ATTRACTIONS_BOOKING_CATEGORY,
-  ALL_ATTRACTIONS_BOOKING_SERVICES,
+  bookingHomeHref,
+  heroBookingHref as heroBookingHrefFor,
   buildBookingPath,
-  FILM_PATH_BOOKING_CATEGORY,
   FILM_PATH_BOOKING_SERVICES,
-  K360_BOOKING_CATEGORY,
   K360_BOOKING_SERVICES,
-  MARS_BOOKING_CATEGORY,
   MARS_BOOKING_SERVICES,
 } from "@/lib/booking";
 import { PROMO_PACKAGES } from "@/lib/promoPackages";
-import { getSitePaths, getLocalizedPath } from "@/lib/localizedRoutes";
+import { getSitePaths, getLocalizedPath, type Locale } from "@/lib/localizedRoutes";
 import RepertoireSection from "./atrakcje/kino-360/RepertoireSection";
 import HomeSectionHeader from "./components/HomeSectionHeader";
-
-type Locale = "pl" | "en" | "pt";
 
 type AttractionItem = {
   title: string;
@@ -55,7 +51,6 @@ type TicketOption = {
   reducedPriceLabel?: string;
   reducedPrice?: string;
   bookingServiceName?: string;
-  bookingCategory?: string;
   bookingQuantity?: number;
   accent?: "red" | "orange" | "cyan";
   href?: string;
@@ -91,6 +86,8 @@ type TicketSection = {
   subheading: string;
   chooseLabel: string;
   reducedPrefix: string;
+  normalPrefix: string;
+  separatelyLabel: string;
   bestPriceLabel: string;
   bundleTitle: string;
   bundleTagline: string;
@@ -116,9 +113,13 @@ type HeroPromo = {
 };
 
 type HomeCopy = {
-  heroTitle: string;
-  heroEuropeBadge: string;
-  heroTagline: string;
+  heroTitleLead: string;
+  heroTitleAccent: string;
+  heroTitleTail: string;
+  heroTaglineLead: string;
+  heroTaglineAccent: string;
+  heroSecondaryCta: string;
+  heroScrollHint: string;
   heroPromos: HeroPromo[];
   attractions: {
     title: string;
@@ -132,9 +133,21 @@ type HomeCopy = {
 
 const HOME_COPY: Record<Locale, HomeCopy> = {
   pl: {
-    heroTitle: "Kino 360",
-    heroEuropeBadge: "Największe w Europie",
-    heroTagline: "Witamy!",
+    // Hero prowadzi KORZYŚCIĄ, nie nazwą jednej z trzech atrakcji.
+    // Wcześniej H1 brzmiał „Kino 360", a podtytuł „Witamy!" — gość z reklamy
+    // budował model „to tylko kino", co zaniżało wartość pakietu. Marka wchodzi
+    // do H1 (SEO brandowe), plakietka niesie sygnał „kompleks na cały dzień",
+    // a lokalizacja i cena wejścia są widoczne od razu.
+    // Nazwa atrakcji wyróżniona WERSALIKAMI wewnątrz zdania — niesie rozpoznanie
+    // marki, nie odbierając zdaniu roli obietnicy. Korzyści zwinięte do jednej
+    // linii razem z ceną wejścia, zamiast osobnego rzędu plakietek.
+    heroTitleLead: "Przeżyj największe",
+    heroTitleAccent: "KINO 360°",
+    heroTitleTail: "w Europie!",
+    heroTaglineLead: "Odkryj Kino 360°, weź udział w misji na Marsa i zajrzyj za kulisy świata filmu.",
+    heroTaglineAccent: "Bilety od 39 zł.",
+    heroSecondaryCta: "Zobacz atrakcje",
+    heroScrollHint: "Odkryj Alvernia Planet",
     heroPromos: [
       {
         message: "Przeżyj kino K360",
@@ -193,6 +206,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       subheading: "Jedna atrakcja czy cały filmowy dzień?",
       chooseLabel: "Wybieram",
       reducedPrefix: "ulgowy",
+      normalPrefix: "normalny",
+      separatelyLabel: "osobno",
       bestPriceLabel: "Najlepsza cena",
       bundleTitle: "Zgarnij całą trójkę!",
       bundleTagline: "jeden dzień • jeden bilet",
@@ -202,13 +217,13 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       priceLabel: "Cena za osobę",
       price: "79 zł/os. lub 69 zł/os.",
       cta: "Kup bilet",
-      ctaHref: "/rezerwuj",
+      ctaHref: bookingHomeHref("pl"),
       promoTicket: {
         badge: "Pakiet",
         title: "Ścieżka + Kino 360",
         subtitle:
           "Jeden duży pakiet promocyjny, który łączy zwiedzanie Ścieżki filmowej z projekcją K360.",
-        details: ["Około 3 godzin łącznie ze zwiedzaniem i seansem"],
+        details: ["Około 2,5 godziny łącznie ze zwiedzaniem i seansem"],
         priceLabel: "Cena promocyjna",
         price: "119,00 zł",
         savings: "Oszczędzasz 9,00 zł",
@@ -224,7 +239,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
           price: "49 zł/os.",
           reducedPriceLabel: "Cena ulgowa",
           reducedPrice: "39 zł/os.",
-          bookingCategory: K360_BOOKING_CATEGORY,
           bookingServiceName: K360_BOOKING_SERVICES.normal,
           accent: "red",
           ctaLabel: "Kup bilet",
@@ -237,7 +251,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
           price: "69 zł/os.",
           reducedPriceLabel: "Cena ulgowa",
           reducedPrice: "59 zł/os.",
-          bookingCategory: MARS_BOOKING_CATEGORY,
           bookingServiceName: MARS_BOOKING_SERVICES.normal,
           accent: "orange",
           ctaLabel: "Wybierz bilet",
@@ -245,12 +258,11 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         {
           badge: "Kopuła",
           title: "FILMWORLD",
-          subtitle: "Zwiedź tajemnicze kopuły pod Krakowem i poznaj film zza kulis.",
+          subtitle: "Ścieżka edukacyjna odkrywająca kulisy powstawania filmu.",
           details: ["Cena regularna za osobę"],
           price: "79 zł/os.",
           reducedPriceLabel: "Cena ulgowa",
           reducedPrice: "69 zł/os.",
-          bookingCategory: FILM_PATH_BOOKING_CATEGORY,
           bookingServiceName: FILM_PATH_BOOKING_SERVICES.normal,
           accent: "cyan",
           ctaLabel: "Kup bilet",
@@ -274,9 +286,13 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
     news: NEWS_COPY.pl,
   },
   en: {
-    heroTitle: "K360 Cinema",
-    heroEuropeBadge: "Largest in Europe",
-    heroTagline: "Welcome!",
+    heroTitleLead: "Experience the largest",
+    heroTitleAccent: "360° CINEMA",
+    heroTitleTail: "in Europe!",
+    heroTaglineLead: "Discover the 360° Cinema, join a mission to Mars and step behind the scenes of film.",
+    heroTaglineAccent: "Tickets from 39 PLN.",
+    heroSecondaryCta: "See attractions",
+    heroScrollHint: "Discover Alvernia Planet",
     heroPromos: [
       {
         message: "Experience the K360 Cinema",
@@ -334,6 +350,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       subheading: "One attraction or a full day of cinema?",
       chooseLabel: "I choose this",
       reducedPrefix: "reduced",
+      normalPrefix: "standard",
+      separatelyLabel: "separately",
       bestPriceLabel: "Best price",
       bundleTitle: "Get all three!",
       bundleTagline: "one day • one ticket",
@@ -343,13 +361,13 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       priceLabel: "Price per person",
       price: "79 PLN/person or 69 PLN/person",
       cta: "Buy tickets",
-      ctaHref: "/en/reserve",
+      ctaHref: bookingHomeHref("en"),
       promoTicket: {
         badge: "Package",
         title: "Film Path + K360 Cinema",
         subtitle:
           "One large promotional package that combines the Film Path visit with a K360 Cinema.",
-        details: ["About 3 hours in total with the visit and screening"],
+        details: ["About 2.5 hours in total with the visit and screening"],
         priceLabel: "Promo price",
         price: "119.00 PLN",
         savings: "You save 9.00 PLN",
@@ -365,7 +383,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
           price: "49 PLN/person",
           reducedPriceLabel: "Reduced price",
           reducedPrice: "39 PLN/person",
-          bookingCategory: K360_BOOKING_CATEGORY,
           bookingServiceName: K360_BOOKING_SERVICES.normal,
           accent: "red",
           ctaLabel: "Buy tickets",
@@ -378,7 +395,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
           price: "69 PLN/person",
           reducedPriceLabel: "Reduced price",
           reducedPrice: "59 PLN/person",
-          bookingCategory: MARS_BOOKING_CATEGORY,
           bookingServiceName: MARS_BOOKING_SERVICES.normal,
           accent: "orange",
           ctaLabel: "Choose ticket",
@@ -386,12 +402,11 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         {
           badge: "Dome",
           title: "FILMWORLD",
-          subtitle: "Explore the mysterious domes near Kraków and discover film from behind the scenes.",
+          subtitle: "An educational trail revealing how films are made.",
           details: ["Standard price per person"],
           price: "79 PLN/person",
           reducedPriceLabel: "Reduced price",
           reducedPrice: "69 PLN/person",
-          bookingCategory: FILM_PATH_BOOKING_CATEGORY,
           bookingServiceName: FILM_PATH_BOOKING_SERVICES.normal,
           accent: "cyan",
           ctaLabel: "Buy tickets",
@@ -415,9 +430,13 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
     news: NEWS_COPY.en,
   },
   pt: {
-    heroTitle: "Cinema K360",
-    heroEuropeBadge: "O maior da Europa",
-    heroTagline: "Bem-vindos!",
+    heroTitleLead: "Vive o maior",
+    heroTitleAccent: "CINEMA 360°",
+    heroTitleTail: "da Europa!",
+    heroTaglineLead: "Descobre o Cinema 360°, participa numa missão a Marte e espreita os bastidores do cinema.",
+    heroTaglineAccent: "Bilhetes desde 39 PLN.",
+    heroSecondaryCta: "Ver atrações",
+    heroScrollHint: "Descobre a Alvernia Planet",
     heroPromos: [
       {
         message: "Vive a cinema K360",
@@ -475,6 +494,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       subheading: "Uma atração ou um dia inteiro de cinema?",
       chooseLabel: "Escolho",
       reducedPrefix: "reduzido",
+      normalPrefix: "normal",
+      separatelyLabel: "em separado",
       bestPriceLabel: "Melhor preço",
       bundleTitle: "Leva as três!",
       bundleTagline: "um dia • um bilhete",
@@ -484,13 +505,13 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       priceLabel: "Preço por pessoa",
       price: "79 PLN/pessoa ou 69 PLN/pessoa",
       cta: "Comprar bilhetes",
-      ctaHref: "/pt/reservar",
+      ctaHref: bookingHomeHref("pt"),
       promoTicket: {
         badge: "Pacote",
         title: "Percurso + Cinema K360",
         subtitle:
           "Um grande pacote promocional que junta a visita ao Percurso de filmagem com a projeção no K360.",
-        details: ["Cerca de 3 horas no total com visita e sessão"],
+        details: ["Cerca de 2,5 horas no total com visita e sessão"],
         priceLabel: "Preço promocional",
         price: "119,00 PLN",
         savings: "Poupa 9,00 PLN",
@@ -506,7 +527,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
           price: "49 PLN/pessoa",
           reducedPriceLabel: "Preço reduzido",
           reducedPrice: "39 PLN/pessoa",
-          bookingCategory: K360_BOOKING_CATEGORY,
           bookingServiceName: K360_BOOKING_SERVICES.normal,
           accent: "red",
           ctaLabel: "Comprar bilhete",
@@ -519,7 +539,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
           price: "69 PLN/pessoa",
           reducedPriceLabel: "Preço reduzido",
           reducedPrice: "59 PLN/pessoa",
-          bookingCategory: MARS_BOOKING_CATEGORY,
           bookingServiceName: MARS_BOOKING_SERVICES.normal,
           accent: "orange",
           ctaLabel: "Escolher bilhete",
@@ -527,12 +546,11 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         {
           badge: "Cúpula",
           title: "FILMWORLD",
-          subtitle: "Visita as misteriosas cúpulas perto de Cracóvia e descobre o cinema nos bastidores.",
+          subtitle: "Um percurso educativo que revela os bastidores da produção de um filme.",
           details: ["Preço normal por pessoa"],
           price: "79 PLN/pessoa",
           reducedPriceLabel: "Preço reduzido",
           reducedPrice: "69 PLN/pessoa",
-          bookingCategory: FILM_PATH_BOOKING_CATEGORY,
           bookingServiceName: FILM_PATH_BOOKING_SERVICES.normal,
           accent: "cyan",
           ctaLabel: "Comprar bilhete",
@@ -555,13 +573,296 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
     },
     news: NEWS_COPY.pt,
   },
+  de: {
+    heroTitleLead: "Erleben Sie das größte",
+    heroTitleAccent: "360°-KINO",
+    heroTitleTail: "in Europa!",
+    heroTaglineLead: "Entdecken Sie das Kino 360, starten Sie zu einer Mission zum Mars und werfen Sie einen Blick hinter die Kulissen des Films.",
+    heroTaglineAccent: "Tickets ab 39 PLN.",
+    heroSecondaryCta: "Attraktionen ansehen",
+    heroScrollHint: "Alvernia Planet entdecken",
+    heroPromos: [
+      {
+        message: "Erleben Sie das Kino 360",
+        cta: "Kino 360 ansehen",
+        href: "/atrakcje/kino-360",
+        tone: "hot",
+        previewMedia: "k360",
+      },
+    ],
+    attractions: {
+      title: "Attraktionen",
+      intro: "Drei filmische Attraktionen für die ganze Familie – etwas für kleine Entdecker und für erwachsene Filmfans.",
+      items: [
+        {
+          title: "FILMWORLD",
+          description:
+            "Ein Rundgang hinter den Kulissen: Filmsets, Requisiten und die Technik, die Produktionen möglich macht.",
+          cta: "Filmpfad entdecken",
+          href: "/atrakcje/filmworld",
+          image: "/galeria/Sciezka_filmowa/webp/era_niema.webp",
+          imageAlt: "Kulissenelemente auf dem Filmpfad",
+          accent: "cyan",
+          cornerLabel: "Entdecken",
+        },
+        {
+          title: "Kino 360",
+          description:
+            "EUROPAS GRÖSSTES 360°-Kino. Eine Kuppel mit 48 Metern Durchmesser umhüllt Sie mit Bild und Ton aus allen Richtungen.",
+          cta: "Kino 360 ansehen",
+          href: "/atrakcje/kino-360",
+          image: "/galeria/K360/K360_2.webp",
+          imageAlt: "Aufnahme aus dem Kino 360, Fulldome auf der gesamten Kuppel",
+          accent: "red",
+          highlightLabel: "Größtes in Europa",
+          cornerLabel: "Erleben",
+          featured: true,
+        },
+        {
+          title: "MARS",
+          description:
+            "Schlüpfen Sie in die Hauptrolle Ihrer eigenen Mission und drehen Sie einen Kurzfilm in einer professionellen Marskulisse.",
+          cta: "MARS entdecken",
+          href: "/atrakcje/mars",
+          image: "/galeria/Projekt_MARS/webp/MARS_1.webp",
+          imageAlt: "Astronaut auf der Marsoberfläche, MARS in Alvernia Planet",
+          accent: "orange",
+          cornerLabel: "Spielen",
+        },
+      ],
+    },
+    tickets: {
+      title: "Tickets",
+      intro: "Wählen Sie eine Attraktion und kaufen Sie das Ticket direkt auf ihrer Unterseite.",
+      heading: "Wählen Sie Ihr Abenteuer",
+      subheading: "Eine Attraktion oder ein ganzer Filmtag?",
+      chooseLabel: "Auswählen",
+      reducedPrefix: "ermäßigt",
+      normalPrefix: "regulär",
+      separatelyLabel: "einzeln",
+      bestPriceLabel: "Bestpreis",
+      bundleTitle: "Nehmen Sie alle drei!",
+      bundleTagline: "ein Tag • ein Ticket",
+      packageCta: "Paket kaufen",
+      headerCta: "Drei Attraktionen, ein Schritt bis zur Buchung",
+      headerCtaSub: "K360, MARS und FILMWORLD. Jede hat ihren eigenen Ticketverkauf.",
+      priceLabel: "Preis pro Person",
+      price: "79 PLN/Pers. oder 69 PLN/Pers.",
+      cta: "Tickets kaufen",
+      ctaHref: bookingHomeHref("de"),
+      promoTicket: {
+        badge: "Paket",
+        title: "Filmpfad + Kino 360",
+        subtitle:
+          "Ein großes Aktionspaket, das den Besuch des Filmpfads mit einer Vorstellung im Kino 360 verbindet.",
+        details: ["Rund 2,5 Stunden insgesamt, mit Besichtigung und Vorstellung"],
+        priceLabel: "Aktionspreis",
+        price: "119,00 PLN",
+        savings: "Sie sparen 9,00 PLN",
+        savingsBadge: "7 % günstiger",
+        button: "Paket wählen",
+      },
+      options: [
+        {
+          badge: "K360",
+          title: "Kino 360",
+          subtitle: "Europas größtes 360°-Kino, Kuppel mit 48 m.",
+          details: ["Regulärer Preis pro Person"],
+          price: "49 PLN/Pers.",
+          reducedPriceLabel: "Ermäßigter Preis",
+          reducedPrice: "39 PLN/Pers.",
+          bookingServiceName: K360_BOOKING_SERVICES.normal,
+          accent: "red",
+          ctaLabel: "Tickets kaufen",
+        },
+        {
+          badge: "MARS",
+          title: "MARS",
+          subtitle: "Sie spielen den Astronauten und drehen Ihren eigenen Sci-Fi-Kurzfilm.",
+          details: ["Regulärer Preis pro Person"],
+          price: "69 PLN/Pers.",
+          reducedPriceLabel: "Ermäßigter Preis",
+          reducedPrice: "59 PLN/Pers.",
+          bookingServiceName: MARS_BOOKING_SERVICES.normal,
+          accent: "orange",
+          ctaLabel: "Ticket wählen",
+        },
+        {
+          badge: "Kuppel",
+          title: "FILMWORLD",
+          subtitle: "Ein Lehrpfad, der zeigt, wie ein Film hinter den Kulissen entsteht.",
+          details: ["Regulärer Preis pro Person"],
+          price: "79 PLN/Pers.",
+          reducedPriceLabel: "Ermäßigter Preis",
+          reducedPrice: "69 PLN/Pers.",
+          bookingServiceName: FILM_PATH_BOOKING_SERVICES.normal,
+          accent: "cyan",
+          ctaLabel: "Tickets kaufen",
+        },
+      ],
+    },
+    eventsPromo: {
+      eyebrow: "Veranstaltungen",
+      title: "Ein außergewöhnlicher Ort für Ihre Veranstaltung",
+      description:
+        "Außergewöhnliche Räume für Konferenzen, Galas und Premieren. Entdecken Sie, welche Veranstaltungen Sie in Alvernia Planet ausrichten können.",
+      cta: "Veranstaltungen entdecken",
+      href: "/wydarzenia",
+      images: [
+        "/wydarzenia/format-showcase-1.webp",
+        "/wydarzenia/format-showcase-2.webp",
+        "/wydarzenia/format-showcase-3.webp",
+      ],
+      imageAlt: "Veranstaltungsfläche von Alvernia Planet während einer Konferenz",
+    },
+    news: NEWS_COPY.de,
+  },
+  zh: {
+    heroTitleLead: "体验欧洲最大的",
+    heroTitleAccent: "360°",
+    heroTitleTail: "全景影院尽在 Alvernia Planet！",
+    heroTaglineLead: "探索 Kino 360 影院，加入火星任务，走进电影幕后的世界。",
+    heroTaglineAccent: "门票 39 PLN 起。",
+    heroSecondaryCta: "查看游玩项目",
+    heroScrollHint: "探索 Alvernia Planet",
+    heroPromos: [
+      {
+        message: "体验 Kino 360 影院",
+        cta: "查看 Kino 360 影院",
+        href: "/atrakcje/kino-360",
+        tone: "hot",
+        previewMedia: "k360",
+      },
+    ],
+    attractions: {
+      title: "游玩项目",
+      intro: "三大电影主题项目，适合全家同行：既有给小小探险家的乐趣，也有给资深影迷的惊喜。",
+      items: [
+        {
+          title: "FILMWORLD",
+          description:
+            "走进幕后，穿行于摄影棚布景、道具与电影制作技术之间。",
+          cta: "探索电影之路",
+          href: "/atrakcje/filmworld",
+          image: "/galeria/Sciezka_filmowa/webp/era_niema.webp",
+          imageAlt: "电影之路上的布景元素",
+          accent: "cyan",
+          cornerLabel: "探索",
+        },
+        {
+          title: "Kino 360 影院",
+          description:
+            "欧洲最大的 360° 影院。直径 48 米的穹顶，让影像与声音从四面八方将您包围。",
+          cta: "查看 Kino 360 影院",
+          href: "/atrakcje/kino-360",
+          image: "/galeria/K360/K360_2.webp",
+          imageAlt: "Kino 360 影院的画面，全穹顶投影覆盖整个穹幕",
+          accent: "red",
+          highlightLabel: "欧洲最大",
+          cornerLabel: "体验",
+          featured: true,
+        },
+        {
+          title: "火星任务",
+          description:
+            "化身自己任务中的主角，在专业的火星布景中拍摄一部短片。",
+          cta: "探索 MARS",
+          href: "/atrakcje/mars",
+          image: "/galeria/Projekt_MARS/webp/MARS_1.webp",
+          imageAlt: "火星表面上的宇航员，Alvernia Planet 的 MARS 项目",
+          accent: "orange",
+          cornerLabel: "出演",
+        },
+      ],
+    },
+    tickets: {
+      title: "门票",
+      intro: "选择一个项目，直接在它的页面上购票。",
+      heading: "选择您的冒险",
+      subheading: "只玩一个项目，还是畅玩一整天电影世界？",
+      chooseLabel: "我要选它",
+      reducedPrefix: "优惠票",
+      normalPrefix: "全价票",
+      separatelyLabel: "单独购买",
+      bestPriceLabel: "最优价格",
+      bundleTitle: "三大项目一次玩遍！",
+      bundleTagline: "一天 • 一张票",
+      packageCta: "购买套票",
+      headerCta: "三大项目，一步完成预订",
+      headerCtaSub: "K360、MARS 与 FILMWORLD，每个项目都有独立的购票流程。",
+      priceLabel: "每人价格",
+      price: "79 PLN/人 或 69 PLN/人",
+      cta: "购买门票",
+      ctaHref: bookingHomeHref("zh"),
+      promoTicket: {
+        badge: "套票",
+        title: "电影之路 + Kino 360 影院",
+        subtitle:
+          "超值组合套票，把电影之路的参观与 Kino 360 影院的放映合二为一。",
+        details: ["参观加观影全程约 2.5 小时"],
+        priceLabel: "优惠价",
+        price: "119.00 PLN",
+        savings: "立省 9.00 PLN",
+        savingsBadge: "立减 7%",
+        button: "选择套票",
+      },
+      options: [
+        {
+          badge: "K360",
+          title: "Kino 360 影院",
+          subtitle: "欧洲最大的 360° 影院，穹顶直径 48 米。",
+          details: ["每人全价"],
+          price: "49 PLN/人",
+          reducedPriceLabel: "优惠价",
+          reducedPrice: "39 PLN/人",
+          bookingServiceName: K360_BOOKING_SERVICES.normal,
+          accent: "red",
+          ctaLabel: "购买门票",
+        },
+        {
+          badge: "MARS",
+          title: "火星任务",
+          subtitle: "化身宇航员，拍摄属于自己的科幻短片。",
+          details: ["每人全价"],
+          price: "69 PLN/人",
+          reducedPriceLabel: "优惠价",
+          reducedPrice: "59 PLN/人",
+          bookingServiceName: MARS_BOOKING_SERVICES.normal,
+          accent: "orange",
+          ctaLabel: "选择门票",
+        },
+        {
+          badge: "穹顶",
+          title: "FILMWORLD",
+          subtitle: "一条揭秘电影幕后制作的教育路线。",
+          details: ["每人全价"],
+          price: "79 PLN/人",
+          reducedPriceLabel: "优惠价",
+          reducedPrice: "69 PLN/人",
+          bookingServiceName: FILM_PATH_BOOKING_SERVICES.normal,
+          accent: "cyan",
+          ctaLabel: "购买门票",
+        },
+      ],
+    },
+    eventsPromo: {
+      eyebrow: "活动",
+      title: "举办活动的独特场地",
+      description:
+        "适合会议、颁奖礼与首映式的非凡空间。看看您可以在 Alvernia Planet 举办哪些活动。",
+      cta: "探索活动",
+      href: "/wydarzenia",
+      images: [
+        "/wydarzenia/format-showcase-1.webp",
+        "/wydarzenia/format-showcase-2.webp",
+        "/wydarzenia/format-showcase-3.webp",
+      ],
+      imageAlt: "会议期间的 Alvernia Planet 活动空间",
+    },
+    news: NEWS_COPY.zh,
+  },
 };
 
-const HERO_WELCOME_AUTO_HIDE_MS = 2500;
-const HERO_WELCOME_FADE_DURATION_MS = 1200;
-const HERO_PROMO_DELAY_MS = 2000;
-const HERO_PROMO_FADE_DURATION_MS = 700;
-const HERO_PREVIEW_REVEAL_DURATION_MS = 980;
 const EVENTS_PROMO_ROTATION_MS = 5200;
 const EVENTS_PROMO_FADE_MS = 2400;
 
@@ -569,14 +870,15 @@ export default function Page() {
   const { locale } = useI18n();
   const loc = ((locale as Locale) ?? "pl") as Locale;
   const copy = HOME_COPY[loc];
-  const [introReady, setIntroReady] = useState(false);
-  const [secondaryAnimationsReady, setSecondaryAnimationsReady] = useState(false);
-  const [heroWelcomeVisible, setHeroWelcomeVisible] = useState(true);
   const heroVideoFallback =
     loc === "en"
       ? "Your browser does not support the video element."
       : loc === "pt"
       ? "O seu navegador não suporta o elemento de vídeo."
+      : loc === "de"
+      ? "Ihr Browser unterstützt das Video-Element nicht."
+      : loc === "zh"
+      ? "您的浏览器不支持视频播放。"
       : "Twój browser nie wspiera elementu video.";
 
   useEffect(() => {
@@ -585,22 +887,16 @@ export default function Page() {
     }
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setIntroReady(true);
-      setSecondaryAnimationsReady(false);
       return;
     }
 
-    const frame = window.requestAnimationFrame(() => {
-      setIntroReady(true);
-    });
     let idleTimeoutId: ReturnType<typeof setTimeout> | null = null;
     let idleCallbackId: number | null = null;
     const win = window as Window & {
       requestIdleCallback?: (callback: IdleRequestCallback, options?: IdleRequestOptions) => number;
       cancelIdleCallback?: (handle: number) => void;
     };
-
-    const startSecondary = () => setSecondaryAnimationsReady(true);
+    const startSecondary = () => {};
     if (typeof win.requestIdleCallback === "function") {
       idleCallbackId = win.requestIdleCallback(startSecondary, { timeout: 1800 });
     } else {
@@ -608,7 +904,6 @@ export default function Page() {
     }
 
     return () => {
-      window.cancelAnimationFrame(frame);
       if (idleCallbackId !== null && typeof win.cancelIdleCallback === "function") {
         win.cancelIdleCallback(idleCallbackId);
       }
@@ -618,51 +913,24 @@ export default function Page() {
     };
   }, []);
 
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-    const timer = window.setTimeout(() => {
-      setHeroWelcomeVisible(false);
-    }, HERO_WELCOME_AUTO_HIDE_MS);
-    return () => window.clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-    const history = window.history;
-    if (history && "scrollRestoration" in history) {
-      const previous = history.scrollRestoration;
-      history.scrollRestoration = "manual";
-      if (!window.location.hash) {
-        window.scrollTo(0, 0);
-      }
-      return () => {
-        history.scrollRestoration = previous;
-      };
-    }
-  }, []);
-
   return (
     <main className="relative min-h-screen text-white">
       <HeroSection
-        heroTitle={copy.heroTitle}
-        heroEuropeBadge={copy.heroEuropeBadge}
-        heroTagline={copy.heroTagline}
+        heroTitleLead={copy.heroTitleLead}
+        heroTitleAccent={copy.heroTitleAccent}
+        heroTitleTail={copy.heroTitleTail}
+        heroTaglineLead={copy.heroTaglineLead}
+        heroTaglineAccent={copy.heroTaglineAccent}
+        heroSecondaryCta={copy.heroSecondaryCta}
+        heroScrollHint={copy.heroScrollHint}
         heroVideoFallback={heroVideoFallback}
-        introReady={introReady}
-        heroWelcomeVisible={heroWelcomeVisible}
         locale={loc}
       />
       <div className="relative z-10 -mt-10 overflow-x-clip rounded-t-[2rem] bg-[var(--ap-bg)] px-4 pt-16 pb-10 shadow-[0_-28px_60px_rgba(0,0,0,0.55)] sm:-mt-14 sm:rounded-t-[2.75rem] sm:pt-20 sm:pb-14 lg:-mt-16 lg:pt-24 lg:pb-12">
         <HomeContent
-          introReady={introReady}
           tickets={copy.tickets}
           eventsPromo={copy.eventsPromo}
           news={copy.news}
-          secondaryAnimationsReady={secondaryAnimationsReady}
           locale={loc}
         />
       </div>
@@ -733,239 +1001,151 @@ const HERO_NAV_LABELS: Record<
     promoMainTail: "!",
     promoMainLine2: "Bilhetes desde 39 PLN",
   },
+  de: {
+    attractions: "Attraktionen ansehen",
+    about: "Informationen",
+    route: "Anfahrt",
+    buy: "Ticket kaufen",
+    learnMore: "Mehr erfahren",
+    promoEyebrow: "Aktion • bis 30.06",
+    promoMain: "Erleben Sie das größte 360°-Kino in Europa! Tickets ab 39 PLN",
+    promoMainPre: "Erleben Sie das ",
+    promoMainHighlight: "GRÖSSTE 360°-KINO",
+    promoMainPost: " in Europa! Tickets ab 39 PLN",
+    promoMainEurope: "in Europa",
+    promoMainTail: "!",
+    promoMainLine2: "Tickets ab 39 PLN",
+  },
+  zh: {
+    attractions: "查看游玩项目",
+    about: "相关信息",
+    route: "交通指南",
+    buy: "购买门票",
+    learnMore: "了解更多",
+    promoEyebrow: "优惠 • 截至 30.06",
+    promoMain: "体验欧洲最大的 360° 影院！门票 39 PLN 起",
+    promoMainPre: "体验欧洲",
+    promoMainHighlight: "最大的 360° 影院",
+    promoMainPost: "！门票 39 PLN 起",
+    promoMainEurope: "在欧洲",
+    promoMainTail: "！",
+    promoMainLine2: "门票 39 PLN 起",
+  },
 };
 
 const HeroSection = memo(function HeroSection({
-  heroTitle,
-  heroEuropeBadge,
-  heroTagline,
+  heroTitleLead,
+  heroTitleAccent,
+  heroTitleTail,
+  heroTaglineLead,
+  heroTaglineAccent,
+  heroSecondaryCta,
+  heroScrollHint,
   heroVideoFallback,
-  introReady,
-  heroWelcomeVisible,
   locale,
 }: {
-  heroTitle: string;
-  heroEuropeBadge: string;
-  heroTagline: string;
+  heroTitleLead: string;
+  heroTitleAccent: string;
+  heroTitleTail: string;
+  heroTaglineLead: string;
+  heroTaglineAccent: string;
+  heroSecondaryCta: string;
+  heroScrollHint: string;
   heroVideoFallback: string;
-  introReady: boolean;
-  heroWelcomeVisible: boolean;
   locale: Locale;
 }) {
-  const paths = getSitePaths(locale);
   const navLabels = HERO_NAV_LABELS[locale];
-  const heroBookingHref = buildBookingPath(locale, {
-    category: ALL_ATTRACTIONS_BOOKING_CATEGORY,
-    service: ALL_ATTRACTIONS_BOOKING_SERVICES.reduced,
-    autopick: true,
-  });
-  const pinRef = useRef<HTMLDivElement | null>(null);
-  const zoomRef = useRef<HTMLDivElement | null>(null);
-  const shadeRef = useRef<HTMLDivElement | null>(null);
-  const parallaxRef = useRef<HTMLDivElement | null>(null);
-  const [videoActive, setVideoActive] = useState(true);
-  const videoActiveRef = useRef(true);
-  const heroHiddenRef = useRef(false);
+  // Cena normalna, nie ulgowa: hero ma zakotwiczać na cenie, którą realnie
+  // płaci dorosły (119 zł). Wcześniej prosiliśmy o bilet ulgowy (99 zł), więc
+  // użytkownik wchodził do koszyka z inną liczbą w głowie niż na ekranie.
+  // Przewijanie do treści BEZ dopisywania #content-start do adresu. Kotwica
+  // zostawała w URL-u i przeglądarka zapamiętywała pozycję — po odświeżeniu
+  // albo powrocie strona otwierała się w środku, zamiast od góry.
+  const scrollToContent = () => {
+    const target = document.getElementById("content-start");
+    if (!target) return;
+    const smooth = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    target.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start" });
+  };
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const motionEnabled = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    let frame = 0;
-
-    const update = () => {
-      frame = 0;
-      const viewportHeight = window.innerHeight || 1;
-      const progress = Math.min(Math.max(window.scrollY / viewportHeight, 0), 1);
-
-      // Hero is position:fixed, so AdaptiveVideo's IntersectionObserver can't
-      // tell when it's covered. Drive playback from scroll instead.
-      const shouldBeActive = progress < 0.98;
-      if (shouldBeActive !== videoActiveRef.current) {
-        videoActiveRef.current = shouldBeActive;
-        setVideoActive(shouldBeActive);
-      }
-
-      // Once fully covered, hide the pinned layer so the fixed video can't
-      // bleed through transparent gaps below (e.g. between content and footer).
-      const shouldHide = progress >= 0.995;
-      if (shouldHide !== heroHiddenRef.current) {
-        heroHiddenRef.current = shouldHide;
-        if (pinRef.current) {
-          pinRef.current.style.visibility = shouldHide ? "hidden" : "visible";
-        }
-      }
-
-      if (!motionEnabled) return;
-
-      const eased = progress * progress * (3 - 2 * progress);
-
-      if (zoomRef.current) {
-        zoomRef.current.style.transform = `scale(${(1 + eased * 0.16).toFixed(4)})`;
-      }
-      if (shadeRef.current) {
-        shadeRef.current.style.opacity = Math.min(eased * 1.05, 0.82).toFixed(3);
-      }
-      if (parallaxRef.current) {
-        parallaxRef.current.style.transform = `translate3d(0, ${(eased * 80).toFixed(2)}px, 0)`;
-        parallaxRef.current.style.opacity = Math.max(1 - progress * 1.4, 0).toFixed(3);
-        // Gdy warstwa hero (z backdrop-blur) i tak jest już wygaszona, chowamy ją,
-        // by nie przeliczać kosztownego backdrop-filter przy dalszym przewijaniu.
-        parallaxRef.current.style.visibility = progress >= 0.75 ? "hidden" : "visible";
-      }
-    };
-
-    const onScroll = () => {
-      if (frame) return;
-      frame = window.requestAnimationFrame(update);
-    };
-
-    update();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-
-    return () => {
-      if (frame) window.cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
-  }, []);
-
+  // Główne CTA hero prowadzi na listę wydarzeń, a nie na deep link pakietu:
+  // przycisk jest ogólny („KUP BILET"), więc nie zawężamy wyboru za użytkownika.
+  const heroBookingHref = heroBookingHrefFor(locale);
   return (
-    <section className="relative z-0 -mt-24 h-[calc(100svh+6rem)] min-h-[calc(100dvh+6rem)] w-full md:-mt-28 md:h-[calc(100svh+7rem)] md:min-h-[calc(100dvh+7rem)]">
-      <div
-        ref={pinRef}
-        className={`fixed inset-0 z-0 overflow-hidden bg-black transition-opacity duration-[1300ms] ${
-          introReady ? "opacity-100" : "opacity-0"
-        }`}
-        style={{
-          transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
-        }}
-      >
-        <div ref={zoomRef} className="absolute inset-0 will-change-transform">
-          <AdaptiveVideo
-            mp4Src="/home/hero.mp4"
-            poster="/home/hero.poster.webp"
-            className="absolute inset-0 h-full w-full object-cover pointer-events-none"
-            sizes="100vw"
-            fallbackText={heroVideoFallback}
-            priority
-            rootMargin="320px 0px"
-            preferPosterOnLowPower
-            active={videoActive}
-          />
-        </div>
-        {/* Stałe przyciemnienie tła pod napisami hero — kontrast białego tekstu na jaśniejszym wideo */}
-        <div
-          className="pointer-events-none absolute inset-0 z-[5]"
-          style={{
-            background:
-              "radial-gradient(135% 100% at 50% 44%, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.44) 38%, rgba(0,0,0,0.2) 72%, rgba(0,0,0,0.06) 100%), linear-gradient(180deg, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0) 26%, rgba(0,0,0,0) 58%, rgba(0,0,0,0.55) 100%)",
-          }}
-          aria-hidden
-        />
-        <div
-          className={`pointer-events-none absolute inset-0 z-[6] bg-black transition-opacity ${
-            heroWelcomeVisible ? "opacity-30" : "opacity-0"
-          }`}
-          style={{
-            transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
-            transitionDuration: `${HERO_WELCOME_FADE_DURATION_MS}ms`,
-          }}
-          aria-hidden
-        />
-        <div
-          ref={shadeRef}
-          className="pointer-events-none absolute inset-0 z-[7] bg-black opacity-0 will-change-[opacity]"
-          aria-hidden
-        />
-        <div ref={parallaxRef} className="absolute inset-0 z-20 will-change-[transform,opacity]">
-      <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-4 text-center">
-        {/* Napis hero, taki sam jak na podstronie Kina: korona + złota plakietka + „Przeżyj" + tytuł + tagline */}
-        <div className="ap-page-intro-stagger flex flex-col items-center">
-          {/* Korona + złota plakietka „Największe w Europie", ZAWSZE na górze, większa */}
-          <div className="relative mb-1.5 inline-flex flex-col items-center sm:mb-2">
-            {/* Korona spada z góry i ląduje na górnej krawędzi plakietki */}
-            <svg
-              className="ap-crown-drop absolute -top-[2.05rem] left-1/2 z-10 h-[2.15rem] w-[2.15rem] text-[#f5b301] drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)] sm:-top-[2.5rem] sm:h-[2.65rem] sm:w-[2.65rem]"
-              viewBox="0 0 16 16"
-              fill="currentColor"
-              aria-hidden="true"
-            >
-              <path d="M1.5 5.2 4.4 7l1.9-4.6L8 5l1.7-2.6L11.6 7l2.9-1.8L13 12.7H3L1.5 5.2zM3 14h10v1.2H3V14z" />
-            </svg>
-            <span className="inline-flex items-center whitespace-nowrap rounded-full bg-[linear-gradient(135deg,#f5b301,#fcd34d)] px-3.5 py-1 text-[0.55rem] font-extrabold uppercase tracking-[0.14em] text-[#231903] shadow-[0_6px_18px_rgba(251,191,36,0.45)] ring-1 ring-black/10 sm:px-5 sm:py-1.5 sm:text-[0.67rem] sm:tracking-[0.18em]">
-              {heroEuropeBadge}
-            </span>
-          </div>
-          {/* Kino 360, duży główny napis hero (h1) */}
-          <h1 className="force-overlay !leading-[0.92] mb-2 drop-shadow-[0_0_30px_rgba(0,0,0,0.65)] [text-shadow:0_3px_16px_rgba(0,0,0,0.55)] !text-[clamp(3.6rem,14vw,5.5rem)] font-extrabold tracking-[-0.02em] text-white sm:mb-3 lg:!text-[clamp(6.5rem,3rem+5.5vw,9rem)]">
-            {heroTitle}
+    <FullscreenHero
+      mp4Src="/home/hero.mp4"
+      webmSrc="/home/hero.webm"
+      preferWebm
+      poster="/home/hero.poster.webp"
+      fallbackText={heroVideoFallback}
+    >
+      {/* Kompozycja hero: jedna ścieżka czytania — nagłówek → opis → cena → CTA →
+          subtelny scroll. Content siedzi ~43% wysokości ekranu (pb-[14svh] przy
+          justify-center podnosi środek o 7%), żeby nie „wisiał" nad fotelami. */}
+      <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-5 text-center">
+        <div className="flex w-full max-w-[60rem] flex-col items-center">
+          <h1
+            className={`ap-intro-rise force-overlay text-balance [text-shadow:0_2px_18px_rgba(0,0,0,0.6)] !leading-[1.3] !text-[clamp(2.05rem,8.2vw,3rem)] font-extrabold tracking-[-0.022em] text-white sm:!text-[clamp(2.8rem,5vw,4.75rem)] `}
+          >
+            {heroTitleLead} <span className="uppercase">{heroTitleAccent}</span> {heroTitleTail}
           </h1>
-          {/* Witamy!: mniejszy podpis pod tytułem */}
-          <p className="force-overlay leading-tight [text-shadow:0_2px_12px_rgba(0,0,0,0.6)] !text-[clamp(1.7rem,5.5vw,2.4rem)] font-extrabold tracking-[-0.01em] text-white sm:!text-[clamp(2.1rem,3.2vw,3rem)]">
-            {heroTagline}
+
+          <p
+            className={`ap-intro-rise ap-intro-d1 force-overlay-hero mt-6 max-w-[43.75rem] text-balance leading-[1.45] [text-shadow:0_2px_12px_rgba(0,0,0,0.55)] !text-[clamp(1rem,3.4vw,1.06rem)] font-medium sm:!text-[clamp(1.125rem,1.35vw,1.375rem)] `}
+          >
+            {heroTaglineLead}
           </p>
-        </div>
-        {/* Kup bilet + Dowiedz się więcej, dwa przyciski obok siebie, jak na podstronie Kina.
-            Na wąskich ekranach zawijają się (flex-wrap), na większych rosną. */}
-        <div
-          className={`mt-6 flex w-full flex-row flex-wrap items-center justify-center gap-2.5 transition-[opacity,transform] duration-[1000ms] sm:mt-8 sm:gap-3.5 lg:mt-10 lg:gap-4 ${
-            introReady ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
-          }`}
-          style={{ transitionDelay: "450ms", transitionTimingFunction: "cubic-bezier(0.33, 1, 0.68, 1)" }}
-        >
-          <Link
-            href={heroBookingHref}
-            className="pointer-events-auto inline-flex items-center justify-center gap-2 rounded-[var(--ap-btn-radius)] bg-gradient-to-br from-[#ff7a3c] via-[#ff5544] to-[#ff3960] px-5 py-2.5 text-xs font-bold uppercase tracking-[0.18em] !text-white shadow-[0_20px_50px_rgba(255,90,60,0.45),0_0_30px_rgba(255,90,60,0.35)] transition hover:scale-[1.02] hover:brightness-110 sm:gap-3 sm:px-9 sm:py-4 sm:text-sm sm:tracking-[0.2em] lg:px-11 lg:py-5 lg:text-base"
+
+          {/* Cena osobną linią, czystym tekstem — bez plakietki i bez boksu. */}
+          <p
+            className={`ap-intro-rise ap-intro-d2 mt-3.5 [text-shadow:0_2px_12px_rgba(0,0,0,0.55)] !text-[clamp(1.05rem,3.6vw,1.12rem)] font-bold text-[#56ddea] sm:!text-[clamp(1.125rem,1.35vw,1.375rem)] `}
           >
-            <SolarIcon name="ticket" size="1.35em" />
-            {navLabels.buy}
-          </Link>
-          <Link
-            href={paths.attractions.k360}
-            className="pointer-events-auto inline-flex items-center justify-center gap-1.5 rounded-[var(--ap-btn-radius)] border-2 border-[#7ef6ff]/70 bg-black/40 px-4 py-2.5 text-xs font-semibold !text-white shadow-[0_8px_28px_rgba(0,0,0,0.55),0_0_22px_rgba(126,246,255,0.3)] backdrop-blur-md transition hover:border-[#7ef6ff] hover:bg-black/60 hover:shadow-[0_8px_30px_rgba(0,0,0,0.6),0_0_34px_rgba(126,246,255,0.5)] sm:gap-2 sm:px-7 sm:py-4 sm:text-sm lg:px-8 lg:py-5 lg:text-base"
+            {heroTaglineAccent}
+          </p>
+
+          <div
+            className={`ap-intro-rise ap-intro-d3 mt-8 flex w-full max-w-[18rem] flex-col items-stretch gap-4 sm:w-auto sm:max-w-none sm:flex-row sm:items-center sm:gap-5 `}
           >
-            {navLabels.learnMore}
-            <SolarIcon name="arrow-right" size="1.15em" />
-          </Link>
-        </div>
-        <div
-          className={`mt-6 flex justify-center transition-[opacity,transform] duration-[1000ms] sm:mt-8 lg:mt-10 ${
-            introReady ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
-          }`}
-          style={{ transitionDelay: "750ms", transitionTimingFunction: "cubic-bezier(0.33, 1, 0.68, 1)" }}
-        >
-          <div className="pointer-events-auto inline-flex flex-col items-stretch justify-center gap-2.5 sm:flex-row sm:items-center sm:gap-5 sm:rounded-[var(--ap-btn-radius)] sm:border sm:border-[#7ef6ff]/25 sm:bg-black/65 sm:px-7 sm:py-3 sm:shadow-[0_18px_50px_rgba(0,0,0,0.6),0_0_22px_rgba(126,246,255,0.18)] sm:backdrop-blur-md sm:supports-[backdrop-filter]:bg-black/55 lg:gap-8 lg:px-9 lg:py-3.5">
-            <Link
-              href="#content-start"
-              className="inline-flex items-center justify-center gap-2 rounded-[var(--ap-btn-radius)] border border-[#7ef6ff]/25 bg-black/65 px-5 py-2.5 text-[0.7rem] font-semibold uppercase tracking-[0.22em] !text-white/90 shadow-[0_12px_30px_rgba(0,0,0,0.5),0_0_18px_rgba(126,246,255,0.15)] backdrop-blur-md transition hover:text-[#7ef6ff] supports-[backdrop-filter]:bg-black/55 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0 sm:text-xs sm:shadow-none sm:backdrop-blur-none sm:supports-[backdrop-filter]:bg-transparent"
+            <BookingLink
+              href={heroBookingHref}
+              className="ticket-pill pointer-events-auto inline-flex h-[3.75rem] items-center justify-center gap-2.5 rounded-[var(--ap-btn-radius)] px-8 text-sm font-extrabold uppercase tracking-[0.16em] transition hover:-translate-y-px hover:brightness-110 sm:min-w-[13.5rem]"
+              style={{
+                backgroundColor: "#56ddea",
+                color: "#04222a",
+                boxShadow: "0 6px 22px rgba(86,221,234,0.32)",
+                borderColor: "transparent",
+              }}
             >
-              {navLabels.attractions}
-              <SolarIcon name="arrow-down" size="1.2em" />
-            </Link>
-            <span className="hidden h-4 w-px bg-[#7ef6ff]/25 sm:inline-block" aria-hidden="true" />
-            <Link
-              href={paths.about}
-              className="inline-flex items-center justify-center gap-2 rounded-[var(--ap-btn-radius)] border border-[#7ef6ff]/25 bg-black/65 px-5 py-2.5 text-[0.7rem] font-semibold uppercase tracking-[0.22em] !text-white/90 shadow-[0_12px_30px_rgba(0,0,0,0.5),0_0_18px_rgba(126,246,255,0.15)] backdrop-blur-md transition hover:text-[#7ef6ff] supports-[backdrop-filter]:bg-black/55 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0 sm:text-xs sm:shadow-none sm:backdrop-blur-none sm:supports-[backdrop-filter]:bg-transparent"
+              <SolarIcon name="ticket" size="1.3em" />
+              {navLabels.buy}
+            </BookingLink>
+            <button
+              type="button"
+              onClick={scrollToContent}
+              className="pointer-events-auto inline-flex h-[3.75rem] items-center justify-center gap-2.5 rounded-[var(--ap-btn-radius)] border border-[#56ddea]/45 bg-black/45 px-8 text-sm font-bold uppercase tracking-[0.16em] !text-white backdrop-blur-md transition hover:-translate-y-px hover:border-[#56ddea]/80 hover:bg-[#56ddea]/10 sm:min-w-[13.5rem]"
             >
-              <SolarIcon name="info" size="1.2em" />
-              {navLabels.about}
-            </Link>
-            <span className="hidden h-4 w-px bg-[#7ef6ff]/25 sm:inline-block" aria-hidden="true" />
-            <Link
-              href={paths.gettingThere}
-              className="inline-flex items-center justify-center gap-2 rounded-[var(--ap-btn-radius)] border border-[#7ef6ff]/25 bg-black/65 px-5 py-2.5 text-[0.7rem] font-semibold uppercase tracking-[0.22em] !text-white/90 shadow-[0_12px_30px_rgba(0,0,0,0.5),0_0_18px_rgba(126,246,255,0.15)] backdrop-blur-md transition hover:text-[#7ef6ff] supports-[backdrop-filter]:bg-black/55 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0 sm:text-xs sm:shadow-none sm:backdrop-blur-none sm:supports-[backdrop-filter]:bg-transparent"
-            >
-              <SolarIcon name="route" size="1.2em" />
-              {navLabels.route}
-            </Link>
+              {heroSecondaryCta}
+              <SolarIcon name="arrow-right" size="1.15em" />
+            </button>
           </div>
+
+          {/* Scroll indicator — celowo cichy, nie może konkurować z CTA. */}
+          <button
+            type="button"
+            onClick={scrollToContent}
+            className={`ap-intro-rise ap-intro-d4 ap-hero-scroll pointer-events-auto mt-12 inline-flex items-center gap-3 text-[0.82rem] font-medium text-white/90 hover:text-white `}
+          >
+            <span
+              aria-hidden="true"
+              className="ap-hero-scroll-dot inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/35"
+            >
+              <SolarIcon name="arrow-down" size="1.1em" />
+            </span>
+            {heroScrollHint}
+          </button>
         </div>
       </div>
-        </div>
-      </div>
-    </section>
+    </FullscreenHero>
   );
 });
 
@@ -975,13 +1155,13 @@ const HeroSection = memo(function HeroSection({
 // i ucięty) — przed publikacją podmień na ORYGINALNE brzmienie opinii 1:1
 // z profilu Google Maps. Nazwiska i oceny są prawdziwe (publiczne opinie 5★).
 const GOOGLE_REVIEWS: Record<
-  string,
+  Locale,
   { kicker: string; title: string; source: string; reviews: { name: string; text: string }[] }
 > = {
   pl: {
     kicker: "Opinie",
     title: "Co mówią odwiedzający",
-    source: "Opinia z Google",
+    source: "opinii w Google",
     reviews: [
       {
         name: "Robert Greszta",
@@ -996,7 +1176,7 @@ const GOOGLE_REVIEWS: Record<
   en: {
     kicker: "Reviews",
     title: "What visitors say",
-    source: "Google review",
+    source: "Google reviews",
     reviews: [
       {
         name: "Robert Greszta",
@@ -1011,7 +1191,7 @@ const GOOGLE_REVIEWS: Record<
   pt: {
     kicker: "Opiniões",
     title: "O que dizem os visitantes",
-    source: "Opinião do Google",
+    source: "avaliações no Google",
     reviews: [
       {
         name: "Robert Greszta",
@@ -1023,74 +1203,166 @@ const GOOGLE_REVIEWS: Record<
       },
     ],
   },
+  de: {
+    kicker: "Bewertungen",
+    title: "Das sagen unsere Besucher",
+    source: "Google-Bewertungen",
+    reviews: [
+      {
+        name: "Robert Greszta",
+        text: "Ein toller Ort mit einer einzigartigen Atmosphäre! Alles ist bis ins Detail durchdacht und sehr interessant, und das 360°-Kino ist ein echtes Juwel.",
+      },
+      {
+        name: "Julia Bołtniewska",
+        text: "Ich wollte diesen Ort schon lange besuchen. Wir waren begeistert! Das 360°-Kino war großartig!",
+      },
+    ],
+  },
+  zh: {
+    kicker: "评价",
+    title: "访客怎么说",
+    source: "条 Google 评价",
+    reviews: [
+      {
+        name: "Robert Greszta",
+        text: "非常棒的地方，氛围独一无二！每个细节都很用心，也很有意思，360° 影院更是一大亮点。",
+      },
+      {
+        name: "Julia Bołtniewska",
+        text: "我很早就想来这里了。我们都非常喜欢！360° 影院太棒了！",
+      },
+    ],
+  },
 };
 
-function GoogleReviewsSection({ locale }: { locale: string }) {
+// Paleta awatarów Google Maps — tam, gdzie autor nie ma zdjęcia, Google rysuje
+// kółko z inicjałem w jednym z kilku kolorów. Kolor dobieramy DETERMINISTYCZNIE
+// z imienia, żeby ta sama osoba zawsze miała ten sam awatar (i żeby SSR nie
+// rozjechał się z hydracją, co zdarzyłoby się przy losowaniu).
+// Kolory dobrane tak, żeby BIAŁY inicjał spełniał WCAG AA (>=4,5:1) na każdym
+// z nich. Oryginalny pomarańcz Google (#ef6c00) dawał tylko 3,08:1, więc jest
+// przyciemniony do #a84c00 (5,52:1) — reszta palety przechodzi bez zmian.
+// ⚠️ DO PODMIANY NA DOKŁADNY ADRES PROFILU: to zapytanie do Map Google trafia
+// we właściwe miejsce, ale pewniejszy jest bezpośredni link z wizytówki
+// (Google Maps → Udostępnij → Kopiuj link).
+const GOOGLE_PLACE_URL =
+  "https://www.google.com/maps/search/?api=1&query=Alvernia%20Planet%20Nieporaz";
+
+// Ocena i liczba opinii ze stanu na dzień wpisania. „+" przy liczbie jest
+// świadomy: opinii przybywa, a zaokrąglenie w górę nie zestarzeje się w dół.
+// Aktualizować razem, obie wartości pochodzą z tej samej wizytówki.
+const GOOGLE_RATING = "4,3";
+const GOOGLE_REVIEW_COUNT = "1 721";
+
+const GOOGLE_AVATAR_COLORS = ["#7b1fa2", "#c62828", "#00695c", "#4527a0", "#a84c00", "#1565c0"];
+
+function googleAvatar(name: string) {
+  const seed = [...name].reduce((sum, ch) => sum + ch.charCodeAt(0), 0);
+  return {
+    color: GOOGLE_AVATAR_COLORS[seed % GOOGLE_AVATAR_COLORS.length],
+    initial: (name.trim()[0] ?? "?").toUpperCase(),
+  };
+}
+
+function GoogleReviewsSection({ locale }: { locale: Locale }) {
   const t = GOOGLE_REVIEWS[locale] ?? GOOGLE_REVIEWS.pl;
   return (
     <section aria-label={t.title} className="mx-auto mt-10 w-full max-w-[72rem] sm:mt-14">
-      <div className="text-center">
-        <p className="text-[0.66rem] font-semibold uppercase tracking-[0.24em] text-white/60 sm:text-[0.72rem] sm:tracking-[0.28em]">
-          {t.kicker}
-        </p>
-        <h2 className="mt-1.5 text-xl font-black tracking-[-0.02em] text-white sm:text-2xl">
+      <div className="flex flex-col items-center text-center">
+        <h2 className="text-2xl font-extrabold tracking-[-0.02em] text-white sm:text-3xl lg:text-[2.5rem]">
           {t.title}
         </h2>
+        {/* Atrybucja źródła — logo Google raz, przy sekcji, zamiast powtarzania
+            napisu „OPINIA Z GOOGLE" na każdej karcie. */}
+        <a
+          href={GOOGLE_PLACE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-3.5 inline-flex items-center gap-2.5 rounded-full px-2 py-1 text-[0.95rem] font-medium text-white/75 sm:text-base transition hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+        >
+          <Image
+            src="/wspolne/logotypy/google-g.png"
+            alt="Google"
+            width={20}
+            height={20}
+            className="h-5 w-5"
+            unoptimized
+          />
+          <span className="font-bold text-white">{GOOGLE_RATING}</span>
+          <span className="flex items-center gap-0.5 text-[#fbbc04]" aria-hidden="true">
+            {[0, 1, 2, 3, 4].map((i) => (
+              <SolarIcon key={i} name="star" size={16} weight="fill" />
+            ))}
+          </span>
+          <span>
+            {GOOGLE_REVIEW_COUNT}+ {t.source}
+          </span>
+        </a>
       </div>
-      <div className="mt-6 grid gap-4 sm:grid-cols-2">
-        {t.reviews.map((review) => (
-          <figure
-            key={review.name}
-            className="rounded-2xl border border-white/10 bg-black/45 p-5 sm:p-6"
-          >
-            <div className="flex items-center gap-1 text-[#fcd34d]" aria-label="5/5">
-              {[0, 1, 2, 3, 4].map((i) => (
-                <svg key={i} width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="m12 17.3 6.2 3.7-1.6-7 5.4-4.7-7.1-.6L12 2 9.1 8.7 2 9.3l5.4 4.7-1.6 7z" />
-                </svg>
-              ))}
-            </div>
-            <blockquote className="mt-3 text-sm leading-relaxed text-white/85 sm:text-[0.95rem]">
-              „{review.text}”
-            </blockquote>
-            <figcaption className="mt-4 flex items-center justify-between gap-3">
-              <span className="text-sm font-bold text-white">{review.name}</span>
-              <span className="whitespace-nowrap text-[0.64rem] font-semibold uppercase tracking-[0.14em] text-white/45">
-                {t.source}
-              </span>
-            </figcaption>
-          </figure>
-        ))}
+
+      <div className="mt-8 grid gap-5 sm:grid-cols-2 sm:gap-6">
+        {t.reviews.map((review) => {
+          const avatar = googleAvatar(review.name);
+          return (
+            <a
+              key={review.name}
+              href={GOOGLE_PLACE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`${review.name} — ${t.source}`}
+              /* LITE tło, nie szkło. Wcześniej karta była półprzezroczysta
+                 (bg-white/[0.04]) i prześwitywało przez nią zdjęcie hero — przez to
+                 czytała się jak element strony, a nie jak cytat z Google. Kolory to
+                 powierzchnia Google Material w trybie ciemnym (#202124 / #3c4043),
+                 czyli dokładnie to, co widać w Mapach Google po ciemnej stronie. */
+              className="block rounded-2xl border border-[#3c4043] bg-[#202124] p-5 transition sm:p-6 hover:border-[#5f6368] hover:bg-[#26282b] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 sm:p-5"
+            >
+              {/* Wiersz nagłówka: awatar + nazwa, jak w Mapach. */}
+              <div className="flex items-center gap-3">
+                <span
+                  aria-hidden="true"
+                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-lg font-medium text-white"
+                  style={{ backgroundColor: avatar.color }}
+                >
+                  {avatar.initial}
+                </span>
+                <span className="min-w-0 truncate text-base font-medium text-[#e8eaed] sm:text-[1.05rem]">
+                  {review.name}
+                </span>
+              </div>
+
+              {/* Gwiazdki pod całym nagłówkiem, przy lewej krawędzi karty —
+                  tak samo jak Google układa je pod nazwą autora. */}
+              <div className="mt-2.5 flex items-center gap-0.5 text-[#fbbc04]" aria-label="5/5">
+                {[0, 1, 2, 3, 4].map((i) => (
+                  <SolarIcon key={i} name="star" size={18} weight="fill" />
+                ))}
+              </div>
+
+              <p className="mt-3 text-[0.95rem] leading-[1.6] text-[#bdc1c6] sm:text-base">{review.text}</p>
+            </a>
+          );
+        })}
       </div>
     </section>
   );
 }
 
 const HomeContent = memo(function HomeContent({
-  introReady,
   tickets,
   eventsPromo,
   news,
-  secondaryAnimationsReady,
   locale,
 }: {
-  introReady: boolean;
   tickets: TicketSection;
   eventsPromo: PromoTile;
   news: NewsSection;
-  secondaryAnimationsReady: boolean;
   locale: Locale;
 }) {
   return (
     <section
       id="content-start"
-      className={`relative z-10 mt-10 sm:mt-12 transition-[opacity,transform] duration-[1200ms] ${
-        introReady ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-      }`}
-      style={{
-        transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
-        transitionDelay: "180ms",
-      }}
+      className="ap-intro-section relative z-10 mt-10 sm:mt-12"
     >
       <div className="flex flex-col gap-12 sm:gap-16">
         {/* Zdjęcie w tle regionu Repertuaru (od pod hero do czarnego pasa Biletów), full-bleed */}
@@ -1191,6 +1463,26 @@ const HOME_UI: Record<
     seeAllNews: "Ver tudo",
     subAttractions: "Três mundos. Emoções infinitas. Escolhe a tua missão.",
     subRepertoire: "Vê o que está em cartaz e escolhe a tua aventura.",
+  },
+  de: {
+    learnMore: "Mehr erfahren",
+    readMore: "Weiterlesen",
+    seeAllAttractions: "Alle Attraktionen ansehen",
+    seeRepertoire: "Programm ansehen",
+    seeAllFaq: "Alle ansehen",
+    seeAllNews: "Alle ansehen",
+    subAttractions: "Drei Welten. Unzählige Emotionen. Wählen Sie Ihre Mission.",
+    subRepertoire: "Sehen Sie, was läuft, und wählen Sie Ihr Abenteuer.",
+  },
+  zh: {
+    learnMore: "了解更多",
+    readMore: "阅读更多",
+    seeAllAttractions: "查看全部游玩项目",
+    seeRepertoire: "查看放映排期",
+    seeAllFaq: "查看全部",
+    seeAllNews: "查看全部",
+    subAttractions: "三个世界。无尽精彩。选择您的任务。",
+    subRepertoire: "看看正在放映什么，选择您的冒险。",
   },
 };
 
@@ -1315,7 +1607,7 @@ function NewsRailSection({ news, locale }: { news: NewsSection; locale: Locale }
               <span className="text-[0.64rem] font-bold uppercase tracking-[0.16em] text-[#4fcfde]">
                 {featured.badge}
               </span>
-              <h3 className="mt-2 text-pretty text-xl font-black leading-tight tracking-[-0.01em] text-white sm:text-2xl">
+              <h3 className="mt-2 text-pretty text-xl font-extrabold leading-tight tracking-[-0.01em] text-white sm:text-2xl">
                 {featured.title}
               </h3>
               <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-white/60">
@@ -1371,11 +1663,39 @@ function NewsRailSection({ news, locale }: { news: NewsSection; locale: Locale }
 }
 
 // Kolory akcentów sekcji „Bilety" (dokładnie wg referencji).
+const PER_UNIT_FALLBACK: Record<Locale, string> = {
+  pl: "os.",
+  en: "person",
+  pt: "pessoa",
+  de: "Pers.",
+  zh: "人",
+};
+
 const TICKET_ACCENTS: Record<NonNullable<TicketOption["accent"]>, string> = {
-  red: "#ff4773",
+  red: "#ff7092",
   orange: "#ff843d",
   cyan: "#56ddea",
 };
+
+// Kolor TEKSTU na przycisku wypełnionym akcentem.
+//
+// Biały tekst na tych tłach nie spełniał WCAG 2.2 AA (1.4.3, minimum 4,5:1) —
+// zmierzone na zbudowanej stronie: róż 3,28 / pomarańcz 2,44 / cyjan 1,62.
+// Od 06.2025 European Accessibility Act obejmuje e-commerce w UE, więc to nie
+// jest wyłącznie kwestia czytelności.
+//
+// Każdy kolor to mocno przyciemniony ton TEGO SAMEGO odcienia, żeby przyciski
+// nadal czytały się jako jeden system, a nie czarny tekst doklejony do koloru.
+// Wzorzec jest już na stronie: „Kup pakiet" to #04222a na cyjanie.
+// Zmierzone kontrasty: róż 5,86 · pomarańcz 7,15 · cyjan 10,20 — wszystkie ≥ 4,5.
+// Jedna para kolorów dla WSZYSTKICH przycisków akcji na stronie: „Wybieram",
+// „Kup pakiet" i CTA w hero. Wcześniej każdy przycisk brał kolor swojej karty,
+// więc na jednym ekranie były trzy różne „główne" kolory i nic nie wskazywało
+// jednoznacznie, gdzie się klika. Kolory atrakcji zostają przy cenie, obrysie
+// portalu i ikonie — tam niosą informację, na przycisku tylko rozpraszały.
+// Zmierzone: #04222a na #56ddea = 10,20:1 (WCAG AA wymaga 4,5).
+const TICKET_ACTION_FILL = "#56ddea";
+const TICKET_ACTION_INK = "#04222a";
 
 // Grafika portalu (wideo) + ikona wg akcentu atrakcji (K360 = red, MARS = orange, FILMWORLD = cyan).
 const TICKET_PORTALS: Record<
@@ -1435,13 +1755,19 @@ function PortalVideo({ mp4, webm, poster }: { mp4: string; webm: string; poster:
   return (
     <video
       ref={ref}
-      className="absolute inset-0 h-full w-full object-cover"
+      className="absolute inset-0 h-full w-full bg-[#070a16] object-cover"
       autoPlay
       muted
       loop
       playsInline
       preload="none"
-      poster={poster}
+      /* Plakat dopiero po wejściu w viewport, razem ze źródłami.
+         Atrybut `poster` NIE podlega leniwemu ładowaniu — przeglądarka pobiera
+         go natychmiast, nawet gdy <source> są odroczone stanem `load`. Te trzy
+         kafelki leżą 3–5 ekranów niżej, a mimo to zabierały 99 KB z łącza
+         dokładnie wtedy, gdy walczy o nie plakat hero. Tło #070a16 zakrywa
+         pustkę, zanim obserwator zapali `load`. */
+      poster={load ? poster : undefined}
       aria-hidden="true"
       tabIndex={-1}
     >
@@ -1470,32 +1796,58 @@ const TicketsSection = memo(function TicketsSection({
   // Skróć końcówki ",00"/".00" (np. „119,00 zł" → „119 zł").
   const shorten = (s: string) => s.replace(/[.,]00/g, "");
   // Sufiks „za osobę" pobrany z ceny pierwszej atrakcji (/os., /person, /pessoa).
-  const perUnit = `/${options[0]?.price?.split("/")[1]?.trim() ?? "os."}`;
+  // Fallback MUSI być zależny od języka: cena pierwszej pozycji to pakiet bez
+  // ukośnika, więc wchodził on zawsze — i na stronach /de oraz /zh wyświetlał
+  // polskie „/os." pośród niemieckiego i chińskiego tekstu.
+  const perUnit = `/${options[0]?.price?.split("/")[1]?.trim() ?? PER_UNIT_FALLBACK[locale]}`;
 
   const bookingHrefFor = (o: TicketOption) =>
     o.bookingServiceName
       ? buildBookingPath(locale, {
-          category: o.bookingCategory ?? FILM_PATH_BOOKING_CATEGORY,
           service: o.bookingServiceName,
-          quantity: o.bookingQuantity,
         })
       : o.href ?? tickets.ctaHref;
 
   const packageHref = buildBookingPath(locale, {
-    category: promo.category,
     service: promo.service,
-    autopick: promo.autopick,
   });
 
-  const [promoNum, ...promoCurRest] = shorten(promo.reducedPrice).split(" "); // „99", „zł"
-  const promoCur = promoCurRest.join(" ");
-  // Cena kupując osobno = suma cen normalnych 3 atrakcji (49+69+79); oszczędność względem pakietu.
-  const individualSum = options.reduce((sum, o) => sum + (parseInt(o.price ?? "0", 10) || 0), 0);
-  const savingsVsIndividual = individualSum - (parseInt(promoNum, 10) || 0);
-  const oldStruck = `${individualSum} ${promoCur}`.trim(); // np. „197 zł" (osobno)
-  const normalPrice = shorten(promo.price); // np. „119 zł" — normalna cena pakietu (99 to ulgowy)
-  const savingsPrefix = shorten(promo.savings).replace(/[\d.,].*/, "").trim(); // „Oszczędzasz"
-  const savingsText = `${savingsPrefix} ${savingsVsIndividual} ${promoCur}`.trim(); // „Oszczędzasz 98 zł"
+  // Waluta z ceny pakietu: „119,00 zł" → „zł".
+  const promoCur = shorten(promo.price).split(" ").slice(1).join(" ");
+  const priceNum = (value: string) => shorten(value).split(" ")[0];
+
+  // DWIE KOMPLETNE TARYFY, każda licząca się WEWNĄTRZ siebie.
+  //
+  // Wcześniej pasek pokazywał jako cenę główną 99 zł, czyli cenę ULGOWĄ, choć na
+  // kartach atrakcji obok cena główna jest zawsze NORMALNA — ta sama gramatyka
+  // znaczyła co innego. Do tego „oszczędność" liczyła się jako 197 (suma cen
+  // NORMALNYCH) − 99 (cena ULGOWA) = 98 zł: kwota, której nie uzyskiwał nikt.
+  // Dorosły oszczędza 78 (197→119), dziecko 68 (167→99).
+  //
+  // Sumy „osobno" liczymy z cen atrakcji, a nie wpisujemy na sztywno, żeby zmiana
+  // ceny jednej atrakcji nie rozjechała pakietu.
+  const sumOf = (pick: (o: TicketOption) => string | undefined) =>
+    options.reduce((total, o) => total + (parseInt(pick(o) ?? "0", 10) || 0), 0);
+
+  const tariffs = [
+    {
+      key: "normal",
+      label: tickets.normalPrefix,
+      num: priceNum(promo.price),
+      separately: `${sumOf((o) => o.price)} ${promoCur}`.trim(),
+      savings: shorten(promo.savings),
+      // Kolumna ceny normalnej lekko wyróżniona: to cena, którą realnie płaci dorosły.
+      lead: true,
+    },
+    {
+      key: "reduced",
+      label: tickets.reducedPrefix,
+      num: priceNum(promo.reducedPrice),
+      separately: `${sumOf((o) => o.reducedPrice)} ${promoCur}`.trim(),
+      savings: shorten(promo.reducedSavings),
+      lead: false,
+    },
+  ];
 
   // Lekki reveal wjazdowy — ta sama, sprawdzona metoda co w repertuarze: sterowana
   // STANEM Reacta (nie classList), transform+opacity na GPU, po animacji zdejmujemy
@@ -1547,12 +1899,9 @@ const TicketsSection = memo(function TicketsSection({
         <div className="mx-auto w-full max-w-[72rem] px-4 sm:px-8 lg:px-12 2xl:max-w-[92rem] min-[1800px]:max-w-[104rem]">
           {/* Nagłówek — wyśrodkowany */}
           <div className={`mx-auto max-w-2xl text-center ${revealCls}`}>
-          <p className="text-[0.72rem] font-bold uppercase tracking-[0.3em] text-[#ff4773]">
-            {tickets.title}
-          </p>
           <h2
             id="tickets-heading"
-            className="mt-2.5 text-[clamp(2.1rem,1.3rem+3.2vw,3.9rem)] font-black leading-[1.02] tracking-[-0.03em] text-white"
+            className="text-[clamp(2.1rem,1.3rem+3.2vw,3.9rem)] font-extrabold leading-[1.02] tracking-[-0.03em] text-white"
           >
             {tickets.heading}
           </h2>
@@ -1571,7 +1920,7 @@ const TicketsSection = memo(function TicketsSection({
             const href = bookingHrefFor(option);
             const attractionHref = getLocalizedPath(TICKET_ATTRACTION_PAGE[accent], locale);
             const isLast = i === options.length - 1;
-            const linkColor = i === 0 ? "#ff4773" : "#56ddea";
+            const linkColor = i === 0 ? TICKET_ACCENTS.red : TICKET_ACCENTS.cyan;
             return (
               <Fragment key={option.title}>
                 <div
@@ -1579,14 +1928,14 @@ const TicketsSection = memo(function TicketsSection({
                   className={`${revealCls} flex flex-1 flex-col items-center px-2 text-center sm:max-w-[21rem]`}
                 >
                   {/* Portal (łuk) — klikalny, ale poza kolejnością tab (dubluje przycisk „Wybieram") */}
-                  <Link
+                  <a
                     href={href}
                     tabIndex={-1}
                     aria-hidden="true"
                     className="group relative block w-full max-w-[17rem] overflow-hidden"
                     style={{
                       aspectRatio: "4 / 5",
-                      borderRadius: "48% 48% 16px 16px / 34% 34% 10px 10px",
+                      borderRadius: "48% 48% 48% 48% / 34% 34% 34% 34%",
                       boxShadow: `inset 0 0 0 2px ${hex}, 0 0 34px ${hex}44`,
                     }}
                   >
@@ -1610,17 +1959,17 @@ const TicketsSection = memo(function TicketsSection({
                         className="absolute inset-0"
                         style={{
                           backgroundColor: "currentColor",
-                          WebkitMask: "url(/icon/frame.svg) center / contain no-repeat",
-                          mask: "url(/icon/frame.svg) center / contain no-repeat",
+                          WebkitMask: "url(/wspolne/ikony/frame.svg) center / contain no-repeat",
+                          mask: "url(/wspolne/ikony/frame.svg) center / contain no-repeat",
                         }}
                         aria-hidden
                       />
                       {portal.icon}
                     </span>
-                  </Link>
+                  </a>
 
                   {/* Opis */}
-                  <h3 className="mt-5 text-[1.6rem] font-black tracking-[-0.02em] text-white">
+                  <h3 className="mt-5 text-[1.6rem] font-extrabold tracking-[-0.02em] text-white">
                     {option.title}
                   </h3>
                   <p className="mt-2 max-w-[18rem] text-[0.98rem] leading-snug text-white/75">
@@ -1629,7 +1978,7 @@ const TicketsSection = memo(function TicketsSection({
 
                   {/* Cena */}
                   <p className="mt-4 flex items-baseline justify-center gap-1.5">
-                    <span className="text-[2.6rem] font-black leading-none" style={{ color: hex }}>
+                    <span className="text-[2.6rem] font-extrabold leading-none" style={{ color: hex }}>
                       {priceNum}
                     </span>
                     <span className="text-base font-bold text-white/85">{priceUnit}</span>
@@ -1640,14 +1989,18 @@ const TicketsSection = memo(function TicketsSection({
                   </p>
 
                   {/* Przycisk „Wybieram" */}
-                  <Link
+                  <a
                     href={href}
                     aria-label={`${tickets.chooseLabel}: ${option.title}`}
-                    className="ticket-pill mt-4 inline-flex w-full max-w-[13rem] items-center justify-center rounded-[var(--ap-btn-radius)] px-6 py-2.5 text-sm font-extrabold text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45)] transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#05030a]"
-                    style={{ backgroundColor: hex, boxShadow: `0 10px 26px ${hex}55` }}
+                    className="ticket-pill mt-4 inline-flex w-full max-w-[13rem] items-center justify-center rounded-[var(--ap-btn-radius)] px-6 py-2.5 text-sm font-extrabold transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#05030a]"
+                    style={{
+                      backgroundColor: TICKET_ACTION_FILL,
+                      color: TICKET_ACTION_INK,
+                      boxShadow: `0 10px 26px ${TICKET_ACTION_FILL}73`,
+                    }}
                   >
                     {tickets.chooseLabel}
-                  </Link>
+                  </a>
                   <Link
                     href={attractionHref}
                     className="mt-2.5 inline-flex items-center gap-1.5 rounded text-[0.78rem] font-semibold text-white/70 transition hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
@@ -1666,7 +2019,7 @@ const TicketsSection = memo(function TicketsSection({
                     className="flex items-center justify-center px-1 py-1 sm:items-start sm:px-2 sm:py-0 lg:px-4"
                   >
                     <span
-                      className="text-3xl font-thin leading-none sm:mt-[min(13vw,8.5rem)] sm:text-[2.6rem]"
+                      className="text-3xl font-normal leading-none sm:mt-[min(13vw,8.5rem)] sm:text-[2.6rem]"
                       style={{ color: linkColor, textShadow: `0 0 16px ${linkColor}88` }}
                     >
                       +
@@ -1709,13 +2062,13 @@ const TicketsSection = memo(function TicketsSection({
                   >
                     {tickets.bestPriceLabel}
                   </span>
-                  <h3 className="mt-3 text-[1.55rem] font-black uppercase leading-[0.98] tracking-[-0.02em] text-white sm:text-[1.7rem] md:whitespace-nowrap">
+                  <h3 className="mt-3 text-[1.55rem] font-extrabold uppercase leading-[0.98] tracking-[-0.02em] text-white sm:text-[1.7rem] md:whitespace-nowrap">
                     {tickets.bundleTitle}
                   </h3>
                 </div>
 
                 <div className="min-w-0 lg:border-l lg:border-white/10 lg:pl-7">
-                  <p className="text-lg font-black tracking-[-0.01em] sm:text-xl">
+                  <p className="text-lg font-extrabold tracking-[-0.01em] sm:text-xl">
                     {options.map((o, i) => (
                       <Fragment key={o.title}>
                         {i > 0 && <span className="text-white/35"> + </span>}
@@ -1729,45 +2082,57 @@ const TicketsSection = memo(function TicketsSection({
                 </div>
               </div>
 
-              {/* Akcje: ceny + oszczędność + przycisk */}
-              <div className="flex flex-wrap items-center gap-x-5 gap-y-4 lg:shrink-0 lg:justify-end">
-                {/* Ceny: osobno (przekreślone) + pakiet ulgowy z ceną normalną */}
-                <div className="flex items-end gap-3 lg:flex-col lg:items-end lg:gap-1">
-                  <span className="text-lg font-semibold text-white/35 line-through">{oldStruck}</span>
-                  <div className="flex flex-col lg:items-end">
-                    <span className="flex items-baseline gap-1.5">
-                      <span className="text-[2.4rem] font-black leading-none text-white">{promoNum}</span>
-                      <span className="text-base font-bold text-white/80">
+              {/* Akcje: dwie taryfy + przycisk.
+                  Każda kolumna czyta się jednym przebiegiem z góry na dół:
+                  etykieta taryfy → cena → ile to samo kosztuje osobno → ile zyskujesz.
+                  Oszczędność jest zwykłym tekstem, a nie pigułką w kolorze cyjanu,
+                  bo wcześniej wyglądała jak drugi przycisk i konkurowała z CTA. */}
+              <div className="flex w-full flex-wrap items-stretch gap-3 lg:w-auto lg:shrink-0 lg:justify-end">
+                {tariffs.map((tariff) => (
+                  <div
+                    key={tariff.key}
+                    className={`flex min-w-[8.5rem] flex-1 flex-col items-start px-1 text-left sm:min-w-[9rem] lg:flex-none ${
+                      tariff.lead ? "" : "border-l border-white/10 pl-5 sm:pl-6"
+                    }`}
+                  >
+                    {/* Etykieta taryfy jako obwiedziona pigułka — czyta się jak
+                        nagłówek kolumny, a nie jak kolejna linia tekstu. */}
+                    <span className="inline-flex rounded-full border border-white/25 px-2.5 py-1 text-[0.52rem] font-bold uppercase tracking-[0.16em] text-white/70">
+                      {tariff.label}
+                    </span>
+                    <p className="mt-2 flex items-baseline gap-1">
+                      <span className="text-[1.9rem] font-extrabold leading-none text-white sm:text-[2.1rem]">
+                        {tariff.num}
+                      </span>
+                      <span className="text-sm font-bold text-white/75">
                         {promoCur}
                         {perUnit}
                       </span>
-                      <span className="self-center rounded-full border border-white/20 px-2 py-0.5 text-[0.52rem] font-bold uppercase tracking-[0.12em] text-white/70">
-                        {tickets.reducedPrefix}
-                      </span>
-                    </span>
-                    <span className="mt-0.5 text-[0.72rem] text-white/45">
-                      {promo.priceLabel}{" "}
-                      <span className="font-semibold text-white/60">{normalPrice}</span>
+                    </p>
+                    {/* Słowo „osobno" zostaje mimo wzorca z makiety: samo przekreślenie
+                        czyta się jak CENA POPRZEDNIA, a to porównanie do sumy trzech
+                        biletów. Bez tego rozróżnienia wchodzimy pod dyrektywę Omnibus. */}
+                    <p className="mt-1.5 text-[0.68rem] text-white/40">
+                      {tickets.separatelyLabel}{" "}
+                      <span className="line-through">{tariff.separately}</span>
+                    </p>
+                    <span
+                      className="mt-2 inline-flex rounded-full px-2.5 py-1 text-[0.64rem] font-semibold"
+                      style={{
+                        color: "#7fe9f2",
+                        border: "1px solid rgba(86,221,234,0.4)",
+                        background: "rgba(86,221,234,0.08)",
+                      }}
+                    >
+                      {tariff.savings}
                     </span>
                   </div>
-                </div>
+                ))}
 
-                {/* Oszczędność */}
-                <span
-                  className="inline-flex shrink-0 items-center rounded-full px-3 py-1.5 text-xs font-semibold"
-                  style={{
-                    color: "#7fe9f2",
-                    border: "1px solid rgba(86,221,234,0.4)",
-                    background: "rgba(86,221,234,0.08)",
-                  }}
-                >
-                  {savingsText}
-                </span>
-
-                {/* Przycisk „Kup pakiet" */}
-                <Link
+                {/* Przycisk „Kup pakiet" — jedyny element w kolorze cyjanu */}
+                <BookingLink
                   href={packageHref}
-                  className="ticket-pill inline-flex w-full shrink-0 items-center justify-center rounded-[var(--ap-btn-radius)] px-7 py-3 text-sm font-extrabold transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b1022] sm:w-auto"
+                  className="ticket-pill mx-auto inline-flex w-full max-w-[18rem] shrink-0 items-center justify-center self-center rounded-[var(--ap-btn-radius)] px-7 py-3 text-sm font-extrabold transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b1022] sm:mx-0 sm:w-auto sm:max-w-none"
                   style={{
                     backgroundColor: "#56ddea",
                     color: "#04222a",
@@ -1775,7 +2140,7 @@ const TicketsSection = memo(function TicketsSection({
                   }}
                 >
                   {tickets.packageCta}
-                </Link>
+                </BookingLink>
               </div>
             </div>
           </div>
@@ -1796,6 +2161,7 @@ const EventsPromoSection = memo(function EventsPromoSection({
   const [previousImageSrc, setPreviousImageSrc] = useState<string | null>(null);
   const [isCrossfading, setIsCrossfading] = useState(false);
   const [imagesReady, setImagesReady] = useState(promo.images.length <= 1);
+  const sekcjaRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -1812,14 +2178,38 @@ const EventsPromoSection = memo(function EventsPromoSection({
       };
     }
 
-    void waitForImagesReady(promo.images).then(() => {
-      if (!cancelled) {
-        setImagesReady(true);
-      }
-    });
+    // Obrazy dociagamy DOPIERO, gdy sekcja zbliza sie do ekranu.
+    //
+    // waitForImagesReady ustawia loading="eager" i wymusza pobranie od razu po
+    // hydracji — a ta sekcja lezy na samym dole strony. Zmierzone: 156 KB
+    // (3 pliki format-showcase) zajmowalo lacze dokladnie wtedy, gdy walczymy
+    // o LCP, czyli ~780 ms pasma na tresc, ktorej uzytkownik jeszcze nie widzi.
+    // rootMargin 240px — ten sam zapas co w AdaptiveVideo i FaqPreviewSection.
+    const kontener = sekcjaRef.current;
+    if (!kontener || typeof IntersectionObserver === "undefined") {
+      void waitForImagesReady(promo.images).then(() => {
+        if (!cancelled) setImagesReady(true);
+      });
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    const obserwator = new IntersectionObserver(
+      (wpisy) => {
+        if (!wpisy.some((w) => w.isIntersecting)) return;
+        obserwator.disconnect();
+        void waitForImagesReady(promo.images).then(() => {
+          if (!cancelled) setImagesReady(true);
+        });
+      },
+      { rootMargin: "240px 0px" },
+    );
+    obserwator.observe(kontener);
 
     return () => {
       cancelled = true;
+      obserwator.disconnect();
     };
   }, [promo.images]);
 
@@ -1895,7 +2285,10 @@ const EventsPromoSection = memo(function EventsPromoSection({
 
   return (
     <ScrollMotionItem strength="soft" delay={70} float={false} className="home-deferred-block">
-      <div className="mx-auto w-full max-w-[92rem] 2xl:max-w-[116rem] min-[1800px]:max-w-[138rem]">
+      <div
+        ref={sekcjaRef}
+        className="mx-auto w-full max-w-[92rem] 2xl:max-w-[116rem] min-[1800px]:max-w-[138rem]"
+      >
         <div className="relative grid items-stretch overflow-hidden rounded-[2rem] ring-1 ring-[color:var(--ap-border)] lg:grid-cols-2">
           <div className="relative min-h-[18rem] sm:min-h-[22rem] lg:min-h-[30rem]">
             {previousImageSrc ? (
@@ -1932,7 +2325,6 @@ const EventsPromoSection = memo(function EventsPromoSection({
             />
           </div>
           <div className="relative flex flex-col justify-center gap-3 bg-[color:var(--ap-surface)] px-6 py-10 text-center sm:px-10 sm:py-14 lg:px-14 lg:text-left">
-            <p className="ap-type-kicker">{promo.eyebrow}</p>
             <h2 className="ap-type-section-title text-balance">{promo.title}</h2>
             <p className="ap-type-section-body mx-auto max-w-2xl lg:mx-0">{promo.description}</p>
             <div className="mt-4 flex justify-center lg:justify-start">

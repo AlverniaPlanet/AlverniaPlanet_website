@@ -5,6 +5,7 @@ import Card from "@/app/components/Card";
 import { PrimaryButton } from "@/app/components/PrimaryButton";
 import Image from "next/image";
 import AdaptiveVideo from "@/app/components/AdaptiveVideo";
+import { SolarIcon } from "./SolarIcon";
 
 type Accent = "red" | "orange" | "cyan";
 
@@ -44,21 +45,21 @@ const ACCENT_TOKENS: Record<
     border: "border-[rgba(247,72,108,0.32)]",
     ring: "ring-[rgba(247,72,108,0.24)]",
     buttonClass:
-      "ticket-pill !bg-[#f7486c] ring-[color:rgba(247,72,108,0.55)] hover:!brightness-110",
+      "ticket-pill !bg-[#56ddea] !text-[#04222a] ring-[color:rgba(86,221,234,0.6)] hover:!brightness-110",
   },
   orange: {
     glow: "radial-gradient(circle at bottom left, rgba(247,120,40,0.18), transparent 38%), radial-gradient(circle at top right, rgba(247,120,40,0.08), transparent 32%)",
     border: "border-[rgba(247,120,40,0.32)]",
     ring: "ring-[rgba(247,120,40,0.24)]",
     buttonClass:
-      "ticket-pill !bg-[linear-gradient(135deg,#e2580c,#f59044)] !text-white !font-extrabold [text-shadow:0_1px_2px_rgba(0,0,0,0.55),0_0_10px_rgba(0,0,0,0.35)] !shadow-[0_8px_18px_rgba(247,120,40,0.45)] ring-[color:rgba(247,120,40,0.6)] hover:!brightness-110",
+      "ticket-pill !bg-[#56ddea] !text-[#04222a] !font-extrabold !shadow-[0_6px_16px_rgba(86,221,234,0.3)] ring-[color:rgba(86,221,234,0.6)] hover:!brightness-110",
   },
   cyan: {
     glow: "radial-gradient(circle at bottom left, rgba(79,207,222,0.18), transparent 38%), radial-gradient(circle at top right, rgba(79,207,222,0.08), transparent 32%)",
     border: "border-[rgba(79,207,222,0.32)]",
     ring: "ring-[rgba(79,207,222,0.24)]",
     buttonClass:
-      "ticket-pill !bg-[linear-gradient(135deg,#1ea6b7,#4fcfde)] !text-white !font-extrabold [text-shadow:0_1px_2px_rgba(0,0,0,0.55),0_0_10px_rgba(0,0,0,0.35)] !shadow-[0_8px_18px_rgba(79,207,222,0.45)] ring-[color:rgba(79,207,222,0.6)] hover:!brightness-110",
+      "ticket-pill !bg-[#56ddea] !text-[#04222a] !font-extrabold !shadow-[0_6px_16px_rgba(86,221,234,0.3)] ring-[color:rgba(86,221,234,0.6)] hover:!brightness-110",
   },
 };
 
@@ -145,16 +146,12 @@ export const AttractionCard = memo(function AttractionCard({
           ) : null}
           {highlightLabel ? (
             <span className="absolute left-1/2 bottom-3 z-10 inline-flex -translate-x-1/2 items-center gap-1.5 whitespace-nowrap rounded-full bg-[linear-gradient(135deg,#f5b301,#fcd34d)] px-2.5 py-1 text-[0.56rem] font-extrabold uppercase tracking-[0.16em] text-[#231903] shadow-[0_6px_18px_rgba(251,191,36,0.45)] ring-1 ring-black/10 sm:px-3.5 sm:py-1.5 sm:text-[0.64rem] sm:tracking-[0.2em] lg:bottom-auto lg:top-4">
-              <svg
-                width="11"
-                height="11"
-                viewBox="0 0 16 16"
-                fill="currentColor"
-                aria-hidden="true"
+              <SolarIcon
+                name="crown"
+                size={11}
+                weight="fill"
                 className="text-[#7a5c00] sm:h-3 sm:w-3"
-              >
-                <path d="M1.5 5.2 4.4 7l1.9-4.6L8 5l1.7-2.6L11.6 7l2.9-1.8L13 12.7H3L1.5 5.2zM3 14h10v1.2H3V14z" />
-              </svg>
+              />
               {highlightLabel}
             </span>
           ) : null}

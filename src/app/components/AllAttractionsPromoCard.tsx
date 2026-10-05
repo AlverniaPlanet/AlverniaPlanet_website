@@ -9,6 +9,20 @@ import type { PromoPackage } from "@/lib/promoPackages";
 // cyjanowy). Używany 1:1 na home oraz na podstronach atrakcji. Motyw strony
 // (k360 / film-path / mars) nie przemalowuje go, patrz override w globals.css
 // dla `.home-ticket-promo .ticket-card-badge` / `.ticket-pill`.
+// Etykieta bazy porównania — ten sam zestaw co na stronie głównej.
+const OSOBNO: Record<string, string> = { pl: "osobno", en: "separately", pt: "em separado" };
+
+/**
+ * „Osobno" liczymy jako cena pakietu + oszczędność. Obie liczby pochodzą z tego
+ * samego miejsca (promoPackages.ts), więc suma nie może rozjechać się z cenami.
+ * Dla 119 zł + 78 zł oszczędności zwraca „197 zł".
+ */
+function cenaOsobno(cena: string, oszczednosc: string) {
+  const liczba = (v: string) => parseInt((v.match(/\d+/) ?? ["0"])[0], 10);
+  const waluta = cena.replace(/[\d.,\s]/g, "") || "zł";
+  return `${liczba(cena) + liczba(oszczednosc.replace(/^\D+/, ""))} ${waluta}`;
+}
+
 export function AllAttractionsPromoCard({
   promo,
   locale,
@@ -16,6 +30,8 @@ export function AllAttractionsPromoCard({
   promo: PromoPackage;
   locale: Locale;
 }) {
+  const separatelyLabel = OSOBNO[locale] ?? OSOBNO.pl;
+
   return (
     <article
       className="home-ticket-promo relative overflow-hidden rounded-[1.75rem] border-2 border-[#4fcfde] px-4 py-5 shadow-[0_30px_80px_rgba(0,0,0,0.55),0_0_28px_rgba(79,207,222,0.35)] sm:px-7 sm:py-7"
@@ -43,14 +59,14 @@ export function AllAttractionsPromoCard({
 
       <div className="relative grid gap-5 sm:gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-8">
         <div className="space-y-4 sm:space-y-5 text-center lg:text-left">
-          <span className="ticket-card-badge mx-auto lg:mx-0 !text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.6)]">
+          <span className="ticket-card-badge mx-auto lg:mx-0">
             {promo.badge}
           </span>
           <div className="space-y-2 sm:space-y-3">
             <h3 className="text-2xl font-extrabold leading-[1.02] tracking-[-0.03em] text-[color:var(--ap-text-strong)] sm:text-3xl lg:text-4xl">
               {promo.heroLead}{" "}
               <span
-                className="block whitespace-nowrap bg-[linear-gradient(90deg,#4fcfde_0%,#a855f7_45%,#f7486c_65%,#f77828_100%)] bg-clip-text uppercase font-black text-transparent sm:inline"
+                className="block whitespace-nowrap bg-[linear-gradient(90deg,#4fcfde_0%,#a855f7_45%,#f7486c_65%,#f77828_100%)] bg-clip-text uppercase font-extrabold text-transparent sm:inline"
                 style={{ WebkitBackgroundClip: "text" }}
               >
                 {promo.heroHighlight}
@@ -96,9 +112,15 @@ export function AllAttractionsPromoCard({
                 <p className="mt-1 text-lg font-extrabold leading-none tracking-[-0.03em] text-[color:var(--ap-text-strong)] sm:text-2xl">
                   {promo.price}
                 </p>
-                <p className="mt-1.5 inline-flex flex-wrap items-center justify-center gap-1.5 text-[0.55rem] font-semibold leading-tight text-[color:var(--ap-breeze-strong)] sm:text-[0.68rem]">
-                  <span>−{promo.savingsPercent}</span>
-                  <span className="text-[color:var(--ap-text-muted)]">{promo.savings}</span>
+                {/* Zamiast samego „−40%": baza porównania + kwota, dokładnie jak na
+                    stronie głównej. Procent bez podanej bazy czytał się jak czasowa
+                    obniżka, a to jest porównanie do zakupu trzech biletów osobno. */}
+                <p className="mt-1.5 text-[0.55rem] leading-tight text-[color:var(--ap-text-muted)] sm:text-[0.68rem]">
+                  {separatelyLabel}{" "}
+                  <span className="line-through">{cenaOsobno(promo.price, promo.savings)}</span>
+                </p>
+                <p className="mt-0.5 text-[0.55rem] font-semibold leading-tight text-[color:var(--ap-breeze-strong)] sm:text-[0.68rem]">
+                  {promo.savings}
                 </p>
               </div>
               <div className="border-l border-[color:var(--ap-border)] pl-2 sm:pl-4">
@@ -108,18 +130,21 @@ export function AllAttractionsPromoCard({
                 <p className="mt-1 text-lg font-extrabold leading-none tracking-[-0.03em] text-[color:var(--ap-text-strong)] sm:text-2xl">
                   {promo.reducedPrice}
                 </p>
-                <p className="mt-1.5 inline-flex flex-wrap items-center justify-center gap-1.5 text-[0.55rem] font-semibold leading-tight text-[color:var(--ap-breeze-strong)] sm:text-[0.68rem]">
-                  <span>−{promo.reducedSavingsPercent}</span>
-                  <span className="text-[color:var(--ap-text-muted)]">{promo.reducedSavings}</span>
+                <p className="mt-1.5 text-[0.55rem] leading-tight text-[color:var(--ap-text-muted)] sm:text-[0.68rem]">
+                  {separatelyLabel}{" "}
+                  <span className="line-through">{cenaOsobno(promo.reducedPrice, promo.reducedSavings)}</span>
+                </p>
+                <p className="mt-0.5 text-[0.55rem] font-semibold leading-tight text-[color:var(--ap-breeze-strong)] sm:text-[0.68rem]">
+                  {promo.reducedSavings}
                 </p>
               </div>
             </div>
           </div>
 
           <PrimaryButton
-            href={buildBookingPath(locale, { category: promo.category, service: promo.service, autopick: promo.autopick })}
+            href={buildBookingPath(locale, { service: promo.service })}
             size="lg"
-            className="ticket-pill w-full whitespace-nowrap !bg-[linear-gradient(135deg,#1ea6b7,#4fcfde,#7ef6ff)] !text-white !font-extrabold [text-shadow:0_1px_2px_rgba(0,0,0,0.55)] !shadow-[0_10px_30px_rgba(79,207,222,0.45),0_0_24px_rgba(79,207,222,0.35)] ring-[color:rgba(79,207,222,0.6)] hover:!brightness-110"
+            className="ticket-pill w-full whitespace-nowrap !bg-[#56ddea] !text-[#04222a] !font-extrabold !shadow-[0_6px_16px_rgba(86,221,234,0.3)] ring-[color:rgba(86,221,234,0.6)] hover:!brightness-110"
           >
             {promo.button}
           </PrimaryButton>

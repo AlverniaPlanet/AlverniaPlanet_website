@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode } from "react";
+import { type CSSProperties, type ReactNode } from "react";
 
 type ScrollMotionStrength = "soft" | "strong";
 
@@ -12,6 +12,21 @@ type ScrollMotionItemProps = {
   float?: boolean;
 };
 
+/* Wejście treści przy przewijaniu.
+
+   Komponent sam NICZEGO nie liczy: dokłada tylko atrybut `data-ap-reveal`
+   i opóźnienie. Resztą zajmują się skrypt w <head> (jeden IntersectionObserver
+   dla całej strony, który po wejściu elementu w kadr dokłada klasę `is-visible`
+   i przestaje go obserwować) oraz CSS (przejście krycia i przesunięcia).
+
+   Dzięki temu w trakcie przewijania nie działa żaden JavaScript liczony co
+   klatkę, a animowane są wyłącznie właściwości obsługiwane przez kompozytor —
+   to ta sama zasada, która wyszła z diagnozy mikrodrgań.
+
+   Style wejścia są celowo ograniczone do podstrony /wydarzenia
+   (`.events-page` w globals.css). Komponent jest używany w czterdziestu
+   miejscach serwisu, więc bez tego ograniczenia zmiana dotknęłaby wszystkich
+   podstron naraz. */
 export default function ScrollMotionItem({
   children,
   className,
@@ -19,11 +34,15 @@ export default function ScrollMotionItem({
   strength = "soft",
   float = false,
 }: ScrollMotionItemProps) {
-  void delay;
-  void strength;
   void float;
 
   return (
-    <div className={className ?? ""}>{children}</div>
+    <div
+      className={className ?? ""}
+      data-ap-reveal={strength}
+      style={delay ? ({ "--reveal-delay": `${delay}ms` } as CSSProperties) : undefined}
+    >
+      {children}
+    </div>
   );
 }

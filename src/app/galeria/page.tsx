@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useI18n } from "@/app/i18n-provider";
 import Card from "@/app/components/Card";
+import { SolarIcon } from "@/app/components/SolarIcon";
 import ScrollMotionItem from "@/app/components/ScrollMotionItem";
 import {
   GALLERY_CATEGORIES,
@@ -75,22 +76,11 @@ export default function GalleryPage() {
                           <p className="text-sm leading-relaxed text-white/72">{intro}</p>
                           <span className="mt-auto inline-flex items-center gap-1.5 pt-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#7ef6ff] transition group-hover:text-white">
                             {labels.morePhotos}
-                            <svg
-                              width="14"
-                              height="14"
-                              viewBox="0 0 14 14"
-                              fill="none"
-                              aria-hidden="true"
+                            <SolarIcon
+                              name="arrow-right"
+                              size={14}
                               className="transition-transform group-hover:translate-x-0.5"
-                            >
-                              <path
-                                d="M2.5 7h9M8 3.5 11.5 7 8 10.5"
-                                stroke="currentColor"
-                                strokeWidth="1.6"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
+                            />
                           </span>
                         </div>
                       </Link>

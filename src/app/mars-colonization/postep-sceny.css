@@ -1,0 +1,101 @@
+/* =========================================================================
+   Postęp sceny z zaprzeczeniem — komponent `PostepSceny.tsx`
+   („Czym jest", „Real humanoids"; obie sekcje są JASNE).
+   Mały i cichy z założenia: cienki pasek jak przy ładowaniu, czas
+   w cyfrach o stałej szerokości i przycisk ponownego odtworzenia. Ma mówić
+   „to jest scena, trwa tyle", a nie konkurować z nagłówkiem.
+   ========================================================================= */
+
+.mars-scena-postep {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.9rem;
+  margin-top: 2rem;
+  font-size: 0.74rem;
+  color: var(--dj-tekst-2);
+}
+
+/* Tor i wypełnienie. Wypełnienie skaluje się w poziomie od lewej krawędzi —
+   sam `transform`, więc pasek nie przelicza układu w żadnej klatce. */
+.mars-scena-pasek {
+  position: relative;
+  flex: 0 0 auto;
+  width: 7.5rem;
+  height: 3px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(10, 22, 34, 0.1);
+}
+
+.mars-scena-wypelnienie {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  /* Ta sama czerwień co kreska i kursor sceny. */
+  background: var(--ms-czerwien);
+  transform-origin: left center;
+  animation: mars-scena-postep var(--ms-scena-czas) linear both;
+}
+
+@keyframes mars-scena-postep {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+/* Cyfry o stałej szerokości i zapas szerokości: licznik nie drga przy
+   zmianie cyfr i nie przesuwa przycisku obok. */
+.mars-scena-czas {
+  min-width: 6.5em;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+/* Przycisk wygląda jak cichy odnośnik, ale ma pełny cel dotykowy 44 px
+   (wysokość) — to kontrolka, nie słowo w zdaniu. */
+.mars-scena-odtworz {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.75rem;
+  margin: 0;
+  padding: 0 0.8rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  font: inherit;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dj-akcent);
+  cursor: pointer;
+  transition: background-color 160ms ease;
+}
+
+.mars-scena-odtworz:hover {
+  background: rgba(10, 90, 103, 0.08);
+}
+
+.mars-scena-odtworz:focus-visible {
+  outline: 2px solid var(--dj-akcent);
+  outline-offset: 2px;
+}
+
+/* Pasek rusza razem ze sceną — gdy sekcja wjeżdża w kadr. */
+.mars-page.ujawnianie-wlaczone [data-ujawnij]:not(.jest-widoczny) .mars-scena-wypelnienie {
+  animation: none;
+}
+
+/* Bez skryptu (korzeń nie dostaje `.ujawnianie-wlaczone`) przycisk nic by
+   nie zrobił, a licznik stałby na zerze — rząd znika. Przy „ogranicz ruch"
+   scena nie gra, więc nie ma czego mierzyć ani odtwarzać. */
+.mars-page:not(.ujawnianie-wlaczone) .mars-scena-postep {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mars-scena-postep {
+    display: none;
+  }
+}

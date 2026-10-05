@@ -220,6 +220,32 @@ const VR_SELECTION_UI: Record<
     mapNoteSilos: "K15 = Silos",
     notOnMapLabel: "Fora do mapa: Terraço, Oficinas, Ligação",
   },
+  de: {
+    selectionLabel: "VR-Räume",
+    selectionTitle: "Raum auswählen",
+    selectionIntro: "Wechseln Sie die Panoramen über die Liste oder klicken Sie auf den markierten Bereich auf der technischen Karte.",
+    mapLabel: "Technische Karte der Kuppeln",
+    mapTitle: "Klicken Sie im Plan auf einen markierten Bereich, um sein Panorama sofort zu öffnen.",
+    mapAlt: "Technische Karte von Alvernia Planet mit markierten VR-Räumen",
+    mapSelectLabel: "Raum auf der Karte auswählen",
+    scenePickerLabel: "Panoramen in diesem Raum",
+    mapNoteLaboratory: "K14 = Labor",
+    mapNoteSilos: "K15 = Silos",
+    notOnMapLabel: "Außerhalb der Karte: Terrasse, Werkstätten, Verbindungsgang",
+  },
+  zh: {
+    selectionLabel: "VR 空间",
+    selectionTitle: "选择空间",
+    selectionIntro: "可以从列表切换全景，也可以点击技术平面图上标记的区域。",
+    mapLabel: "穹顶技术平面图",
+    mapTitle: "点击平面图上标记的区域，即可立即打开该处全景。",
+    mapAlt: "标有 VR 空间的 Alvernia Planet 技术平面图",
+    mapSelectLabel: "在平面图上选择空间",
+    scenePickerLabel: "该空间的全景",
+    mapNoteLaboratory: "K14 = 实验室",
+    mapNoteSilos: "K15 = 筒仓",
+    notOnMapLabel: "平面图之外：露台、工坊、连廊",
+  },
 };
 
 function isVrDomeKey(value: string | null): value is VrDomeKey {

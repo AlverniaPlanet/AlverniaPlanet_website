@@ -1,0 +1,983 @@
+/* ============================================================================
+   Sekcja „Dla kogo" — lista grup + klatka wybranej grupy w taśmie filmowej,
+   komponent `DlaKogo.tsx`.
+
+   PRZESTRZEŃ NAZW: `.mars-kto-*`. Stara siatka kafelków (`.mars-dla-kogo`,
+   `.mars-odbiorcy`, `.mars-odbiorca-*` w `mars.css`) nie jest tu używana ani
+   nadpisywana — sekcja ma nową klasę, więc tamte reguły nie łapią niczego.
+
+   CIEMNA, jak „Twoja misja": sekcja nosi `.mars-ciemny` (biały tekst,
+   turkusowy nadtytuł, `overflow: hidden`), a TŁO nadpisuje reguła
+   `.mars-page .mars-kto` — swoistością, nie kolejnością, bo kolejność tego
+   arkusza względem `mars.css` zależy od importów i Next jej nie gwarantuje.
+
+   KLISZA ZAMIAST KARTY (05.10.2026, decyzja obiektu: „na te zdjęcia trzeba
+   dodać taśmę filmową, a nie taki kafelek"). Zaokrąglonej karty ze zdjęciem
+   w tle już nie ma. Zdjęcie grupy to okno klatki w taśmie 35 mm z TEGO
+   SAMEGO materiału co „Pięć kroków misji" (`kroki-tasma.css`): czarne
+   podłoże, rzędy perforacji wycięte maską (prawdziwe otwory), ciepłe światło
+   ZA otworami, które stoi, gdy taśma jedzie, połysk pasów, okno z promieniem
+   0,4 rem i włosową krawędzią, cień pod taśmą.
+
+   UKŁAD — jeden DOM, rozstawia go siatka:
+   — telefon (< 768 px): jedna kolumna, panel tuż POD swoim wierszem
+     (akordeon), nieaktywne mają `display: none`. Panel = odcinek taśmy od
+     krawędzi do krawędzi ekranu z jedną klatką, a pod nim zdanie i przycisk;
+   — od 768 px: dwie kolumny. Nagłówek i wiersze po lewej, po prawej JEDNA
+     taśma, w niej pięć klatek obok siebie. Taśma biegnie od szczeliny
+     między kolumnami do PRAWEJ KRAWĘDZI OKNA — jak „Pięć kroków", które
+     idą przez całe okno; zamknięty w kolumnie odcinek z zanikiem po obu
+     stronach czytał się jak wycinek, nie jak film. Wybrana klatka stoi
+     przy LEWEJ krawędzi kolumny (tam zaczyna się jej podpis), następne
+     biegną w prawo, przygaszone, aż utnie je krawędź okna z wąskim
+     zanikiem. Poprzednia klatka zagląda co najwyżej w szczelinę między
+     listą a kolumną i gaśnie, zanim dojdzie do listy. Pod taśmą nazwa,
+     zdanie i przycisk wybranej grupy.
+     DLACZEGO JUŻ OD 768, a nie od 1024: dwie kolumny są od 768 i tam
+     odcinek w kolumnie był najkrótszy (~380 px) — wycinek widać było
+     najbardziej. Przy 768 za wybraną klatką zostaje do krawędzi okna
+     ~95 px następnej — dość, żeby taśma miała dalszy ciąg.
+   DLACZEGO TABLET MA JUŻ DWIE KOLUMNY, a nie akordeon: przy 768 px lewa
+   kolumna ma ~310 px — mieści nagłówek w dwóch wierszach i najdłuższe
+   etykiety („Szukający wrażeń", DE „Erlebnishungrige") w jednym, a taśma
+   (~380 px) pokazuje klatkę nad zdaniem. Akordeon na pełnych 728 px dałby
+   wiersze rozciągnięte przez cały ekran — „obok" ginęłoby bez potrzeby.
+
+   TEKST POD TAŚMĄ, a nie na klatce. Na zdjęciu napis potrzebował cienia,
+   który gasił pół kadru (poprzednia karta: bez cienia opis miał 1,5:1),
+   i robił z klatki z powrotem kafelek. Pod taśmą tekst stoi na granacie
+   sekcji, klatka pokazuje całe zdjęcie, a taśma jest bohaterem — tekst to
+   jej podpis, wyrównany do lewej krawędzi wybranej klatki.
+
+   JAK PIĘĆ PANELI DAJE JEDNĄ TAŚMĘ (od 768 px). Wszystkie panele leżą
+   w jednej komórce prawej kolumny, jeden na drugim, a pod nimi stoi
+   `.mars-kto-tasma` — ozdoba spoza paneli: światło, podłoże i perforacje.
+   Każdy panel przesuwa SWOJĄ klatkę o (i − aktywny) kroków klatki, więc
+   klatki stają obok siebie. Zmiana `--kto-aktywny` (styl inline sekcji)
+   przesuwa pięć klatek i rząd perforacji o tę samą liczbę kroków, tym
+   samym przejściem — taśma jedzie jako całość, jak film w projektorze.
+   Nieaktywne panele są `visibility: hidden` i `inert` (ich tekst znika
+   z widoku i z drzewa dostępności); widać tylko ich klatkę — ozdobę
+   z `aria-hidden`.
+
+   KROK KLATKI JEST WIELOKROTNOŚCIĄ ODSTĘPU PERFORACJI, jak na prawdziwej
+   taśmie: po przewinięciu otwory stają dokładnie tam, gdzie stały, i każda
+   klatka ma ten sam układ perforacji. Od 768 px klatka ma stałą miarę
+   w rem, dobraną tak, żeby krok wychodził w całych otworach: 18,5 + 0,75
+   = 19,25 rem = 14 × 22 px, od 1024 px 20 + 1 = 21 rem = 14 × 24 px.
+
+   KOLUMNY KOŃCZĄ SIĘ RÓWNO (od 768 px). Przycisk jest zaczepiony do DOŁU
+   panelu: panele są rozciągnięte na całą komórkę (`align-self: stretch`),
+   a przycisk ma `margin-top: auto`. Komórka sięga od nagłówka do dołu
+   listy, więc przycisk kończy się równo z ostatnim wierszem listy
+   i przy zmianie grupy nie skacze (zdanie ma raz jeden, raz dwa wiersze).
+   Warunek: najwyższy panel nie może być wyższy niż lewa kolumna — stąd
+   miara klatki. Zmierzone: lewa kolumna od nagłówka do dołu listy ma
+   446–451 px (od 1024), taśma z klatką 320 px wysokości 277 px, a tekst
+   z dwuwierszowym zdaniem ok. 175 px. Większa klatka wypycha przycisk pod
+   listę (przy 512 px: o 118–144 px).
+
+   WYSOKOŚCI bez procentów (pułapka Safari: `height: 100%` na dziecku
+   siatki, której wysokość zależy od treści, nie oddaje miejsca przy
+   powrocie do niższej). Taśma ma wysokość z miar klatki, panele
+   rozciąga sama siatka, a ostatni wiersz siatki ma `1fr` — gdyby prawa
+   kolumna potrzebowała więcej miejsca niż nagłówek z listą, nadwyżkę
+   weźmie ten pusty wiersz, a nie odstępy między wierszami listy.
+
+   UWAGA NA KOLEJNOŚĆ: wszystkie progi stoją na KOŃCU pliku (`@media` nie
+   podnosi swoistości — pułapka z `mars.css`, pięć razy w repozytorium).
+   ========================================================================= */
+
+.mars-kto {
+  /* Czerwień akcentu jako TEKST w aktywnym wierszu (numer). `--ms-czerwien`
+     na tle aktywnego wiersza (granat + czerwony gradient) ma 3,9:1 — za mało
+     dla 12-px cyfr. O ton jaśniejsza ma tam 5,9:1 (zmierzone na zrzucie).
+     Obrys i poświata zostają w czerwieni marki. */
+  --kto-akcent: var(--ms-czerwien, #e1623a);
+  --kto-akcent-tekst: #ff8a5c;
+  --kto-obrys: rgba(255, 255, 255, 0.1);
+
+  /* MATERIAŁ TAŚMY — ten sam co `--kadry-*` w `kroki-tasma.css`, wartości
+     przepisane jeden do jednego. Własne nazwy, bo tamten arkusz ma osobnego
+     właściciela; zmiana materiału tam wymaga tej samej zmiany tutaj.
+     Otwór perforacji: zaokrąglony prostokąt, wycięty `evenodd` z pełnego
+     kafelka — w masce zostaje dziurą. */
+  --kto-perforacja: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 28' preserveAspectRatio='none'%3E%3Cpath fill-rule='evenodd' d='M0 0H22V28H0Z M6.8 9.8H15.2A1.8 1.8 0 0 1 17 11.6V16.4A1.8 1.8 0 0 1 15.2 18.2H6.8A1.8 1.8 0 0 1 5 16.4V11.6A1.8 1.8 0 0 1 6.8 9.8Z'/%3E%3C/svg%3E");
+  --kto-tasma-baza: #0b0c0f;
+  --kto-swiatlo: #5b4532;
+  --kto-swiatlo-brzeg: #2a221c;
+  /* Światło widoczne przez perforacje: przygaszony bursztyn na środku, przy
+     krawędziach prawie czerń (lampa projektora). KRYJĄCE — przy
+     przezroczystym granat sekcji wychodził przez otwory chłodną szarością. */
+  --kto-swiatlo-pas: linear-gradient(
+    90deg,
+    var(--kto-swiatlo-brzeg) 0%,
+    var(--kto-swiatlo) 50%,
+    var(--kto-swiatlo-brzeg) 100%
+  );
+  /* Środkowy pas taśmy (pod klatkami i między nimi). */
+  --kto-podloze: linear-gradient(
+    180deg,
+    #101115 0%,
+    var(--kto-tasma-baza) 18%,
+    var(--kto-tasma-baza) 82%,
+    #101115 100%
+  );
+  /* Pas perforacji i odstęp otworów w CAŁYCH pikselach (28 / 22 px, od
+     1024 px 32 / 24): maska powtarzana co ułamek piksela rysuje szwy. */
+  --kto-pas: 1.75rem;
+  --kto-perf: 1.375rem;
+  --kto-odstep: 0.75rem;
+
+  /* GEOMETRIA KLATKI. Okno 3:2 — jak klatka małoobrazkowa i jak same
+     zdjęcia. Telefon: cała szyna treści (`100cqi` = szerokość panelu, który
+     jest kontenerem), ale na niskim ekranie (telefon poziomo, 667 × 375)
+     najwyżej tyle, żeby taśma z klikniętym wierszem nad nią mieściła się
+     w kadrze — inaczej samo okno miało 418 px wysokości. Od 768 px — próg
+     niżej. */
+  --kto-kadr-w: min(100cqi, calc((100svh - 9rem) * 1.5));
+  --kto-krok: calc(var(--kto-kadr-w) + var(--kto-odstep));
+  --kto-kadr-h: calc(var(--kto-kadr-w) / 1.5);
+  --kto-film-h: calc(2 * var(--kto-pas) + var(--kto-kadr-h));
+
+  /* TEMPO: przejazd o jedną klatkę 0,62 s, każda dalsza +0,12 s — skok
+     z pierwszej grupy na ostatnią przewija się dłużej, jak prawdziwy film.
+     `--kto-skok` ustawia komponent. Krzywa łagodna na obu końcach: taśma
+     rusza i hamuje, nie strzela. */
+  --kto-czas: calc(500ms + var(--kto-skok, 1) * 120ms);
+  --kto-krzywa: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* Dopełnienie wspólnej taśmy pod jej cień (od 768 px, patrz niżej). */
+  --kto-cien-gora: 1rem;
+  --kto-cien-dol: 2rem;
+
+  /* OKNO I SZYNA (od 768 px taśma biegnie do prawej krawędzi okna).
+     `--kto-okno` = szerokość okna; `100vw` to tylko stan przed hydracją
+     (wlicza klasyczny pasek przewijania), potem komponent wpisuje tu
+     zmierzone `clientWidth` (styl inline sekcji) — jak `--kadry-okno`
+     w „Pięciu krokach". `--kto-margines` = odległość prawej krawędzi
+     kolumny (= szyny treści `.mars-shell`, max 73,75 rem, dopełnienie
+     1,25 rem) od prawej krawędzi okna. */
+  --kto-okno: 100vw;
+  --kto-szyna: calc(min(var(--kto-okno), 73.75rem) - 2.5rem);
+  --kto-margines: calc((var(--kto-okno) - var(--kto-szyna)) / 2);
+  /* Szczelina między listą a kolumną — JEDNA miara dla `column-gap` siatki
+     i dla lewego końca taśmy, żeby taśma nigdy nie weszła pod listę. */
+  --kto-szczelina: 2rem;
+  /* Zanik taśmy (od 768 px). Z lewej przez całą szczelinę: poprzednia
+     klatka gaśnie, zanim dojdzie do listy, a wybrana — stojąca tuż za
+     szczeliną — ma pełne krycie. Z prawej wąski, jak w „Pięciu krokach"
+     (`min(margines, 2,5 rem)`): taśmę ucina krawędź okna, a nie mgła. */
+  --kto-zanik-prawy: min(var(--kto-margines), 2.5rem);
+  --kto-zanik-maska: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 var(--kto-szczelina),
+    #000 calc(100% - var(--kto-zanik-prawy)),
+    transparent 100%
+  );
+
+  padding-block: clamp(3.5rem, 11vw, 6rem);
+}
+
+/* Całe piksele tam, gdzie przeglądarka umie `round()`: wysokość okna 3:2
+   wychodziłaby inaczej ułamkowa (350 / 1,5 = 233,33 px) i dolna krawędź
+   klatki rozmywałaby się na styku z pasem perforacji. */
+@supports (width: round(10.5px, 1px)) {
+  .mars-kto {
+    --kto-kadr-h: round(calc(var(--kto-kadr-w) / 1.5), 1px);
+  }
+}
+
+/* Granat jak w „Twojej misji" (#071522), poświaty odwrócone: chłodna za
+   nagłówkiem, ciepła za taśmą — jak żar lampy projektora za kliszą.
+   GÓRNA KRAWĘDŹ to `#06111b` (= `--ms-pod-fala`) i musi nim zostać: nad
+   sekcją leży pas `.mars-pas-nocny` w tym samym kolorze (`ekosystem.css`).
+   Dlatego obie poświaty gasną, zanim dojdą do góry — przy krawędzi
+   zabarwiłyby granat i na styku rysowałby się szew (ta sama zasada co
+   w „Roku 2035"). */
+.mars-page .mars-kto {
+  background-color: #071522;
+  background-image:
+    radial-gradient(46% 36% at 6% 30%, rgba(50, 216, 230, 0.08) 0%, rgba(50, 216, 230, 0) 70%),
+    radial-gradient(50% 52% at 86% 62%, rgba(225, 98, 58, 0.12) 0%, rgba(225, 98, 58, 0) 70%),
+    linear-gradient(180deg, #06111b 0%, #071522 50%, #0a1c2b 100%);
+}
+
+/* --- Siatka -------------------------------------------------------------------
+   Telefon: jedna kolumna w kolejności DOM — nadtytuł, nagłówek, a potem pary
+   wiersz → panel. Odstępy dają marginesy, a nie `gap`: ukryty panel
+   (`display: none`) nie zostawia wtedy podwójnej przerwy. */
+.mars-kto-uklad {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+}
+
+.mars-kto-tytul {
+  margin-bottom: 1.75rem;
+}
+
+/* Nagłówek akordeonu (h3) jest tylko opakowaniem przycisku — wygląd niesie
+   przycisk, więc zerujemy typografię nagłówka. */
+.mars-kto-pozycja {
+  margin: 0.5rem 0 0;
+  font-size: 1rem;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: normal;
+}
+
+.mars-kto-tytul + .mars-kto-pozycja {
+  margin-top: 0;
+}
+
+/* --- Wiersz-przycisk ------------------------------------------------------------
+   Numer │ ikona │ nazwa │ strzałka. 56 px wysokości — powyżej 44 px celu
+   dotykowego z zapasem na dociągnięcie pisma. */
+.mars-kto-wybor {
+  display: grid;
+  grid-template-columns: 1.5rem 1.375rem minmax(0, 1fr) 1rem;
+  align-items: center;
+  column-gap: 0.85rem;
+  width: 100%;
+  min-height: 3.5rem;
+  margin: 0;
+  padding: 0.65rem 1.05rem 0.65rem 1rem;
+  border: 1px solid var(--kto-obrys);
+  border-radius: var(--dj-promien);
+  background-color: rgba(255, 255, 255, 0.025);
+  background-image: none;
+  color: rgba(255, 255, 255, 0.86);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 220ms ease,
+    background-color 220ms ease,
+    box-shadow 220ms ease,
+    color 220ms ease;
+}
+
+/* .55 bieli na granacie wiersza = 5,8:1 (zmierzone) — numer jest drugim
+   planem, ale wciąż czytelnym tekstem. Cyfry tabelaryczne: „01" i „04" mają
+   tę samą szerokość, więc ikony stoją w jednej linii. */
+.mars-kto-numer {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.55);
+  transition: color 220ms ease;
+}
+
+/* Turkus przygaszony do „szaroturkusowego" z referencji — ikona ma być
+   widoczna (5,6:1), ale nie konkurować z nazwą. Strzałka .42 bieli ma 4:1,
+   powyżej progu 3:1 dla elementów nietekstowych. */
+.mars-kto-ikona {
+  color: rgba(50, 216, 230, 0.72);
+  transition: color 220ms ease;
+}
+
+.mars-kto-etykieta {
+  min-width: 0;
+}
+
+.mars-kto-strzalka {
+  justify-self: end;
+  color: rgba(255, 255, 255, 0.42);
+  transition:
+    transform 260ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    color 220ms ease;
+}
+
+/* Wybrany: obrys i poświata w czerwieni marki, ciepły gradient od lewej,
+   numer, ikona i strzałka w jaśniejszej czerwieni (tekstowej). */
+.mars-kto-wybor.is-otwarty {
+  border-color: rgba(225, 98, 58, 0.9);
+  background-color: rgba(225, 98, 58, 0.05);
+  background-image: linear-gradient(90deg, rgba(225, 98, 58, 0.2) 0%, rgba(225, 98, 58, 0) 78%);
+  box-shadow:
+    0 0 0 1px rgba(225, 98, 58, 0.16),
+    0 12px 32px -10px rgba(225, 98, 58, 0.42);
+  color: #ffffff;
+  font-weight: 700;
+  cursor: default;
+}
+
+.mars-kto-wybor.is-otwarty .mars-kto-numer,
+.mars-kto-wybor.is-otwarty .mars-kto-ikona,
+.mars-kto-wybor.is-otwarty .mars-kto-strzalka {
+  color: var(--kto-akcent-tekst);
+}
+
+/* Na telefonie panel otwiera się POD wierszem, więc strzałka wybranego
+   patrzy w dół. Od 768 px patrzy w prawo — na taśmę (patrz progi). */
+.mars-kto-wybor.is-otwarty .mars-kto-strzalka {
+  transform: rotate(90deg);
+}
+
+.mars-kto-wybor:focus-visible {
+  outline: 2px solid var(--dj-turkus);
+  outline-offset: 3px;
+}
+
+/* --- Panel ------------------------------------------------------------------------
+   Kontener zapytań: `cqi` w klatce i w tekście (telefon) to szerokość
+   panelu, czyli szyny treści; od 768 px klatka ma stałą miarę w rem. Tła
+   ani obrysu nie ma: panel to odcinek taśmy i podpis pod nim, a nie karta. */
+.mars-kto-panel {
+  display: none;
+  position: relative;
+  flex-direction: column;
+  margin-top: 0.75rem;
+  container-type: inline-size;
+}
+
+.mars-kto-panel.is-otwarty {
+  display: flex;
+}
+
+/* Wspólna taśma istnieje tylko od 768 px — na telefonie taśmę rysuje
+   otwarty panel (niżej). */
+.mars-kto-tasma {
+  display: none;
+}
+
+/* --- Odcinek taśmy z klatką (telefon) ---------------------------------------------
+   Od krawędzi do krawędzi ekranu: wychodzi z szyny treści o jej dopełnienie
+   (1,25 rem), przycina go sekcja (`overflow: hidden`), więc strona nie
+   przewija się w bok. Klatka stoi w linii z wierszami i tekstem.
+   Tło odcinka to światło za taśmą (tylko w pasach perforacji) i czarne
+   podłoże między nimi — ten sam przepis co szyna i lista w
+   `kroki-tasma.css`. Pasy perforacji rysują `::before` / `::after`, otwory
+   to maska. Tło stoi, a pasy jadą przy wjeździe klatki — przez otwory widać
+   wtedy światło, które się nie rusza. */
+.mars-kto-klisza {
+  position: relative;
+  height: var(--kto-film-h);
+  margin-inline: -1.25rem;
+  overflow: hidden;
+  background:
+    var(--kto-swiatlo-pas) 0 0 / 100% var(--kto-pas) no-repeat,
+    var(--kto-swiatlo-pas) 0 100% / 100% var(--kto-pas) no-repeat,
+    var(--kto-podloze) 0 calc(var(--kto-pas) - 1px) / 100% calc(100% - 2 * var(--kto-pas) + 2px) no-repeat;
+  /* Cień pod taśmą — odkleja czerń od granatu (jak w `kroki-tasma.css`). */
+  box-shadow:
+    0 1.5rem 2.25rem -1.25rem rgba(0, 0, 0, 0.75),
+    0 -0.75rem 1.5rem -1rem rgba(0, 0, 0, 0.45);
+}
+
+/* Pasy perforacji — wspólne dla odcinka w panelu (telefon) i dla wspólnej
+   taśmy (od 768 px). Połysk jak w `kroki-tasma.css`: zewnętrzna krawędź łapie
+   światło (włosowa linia), pas ciemnieje ku klatkom, a szeroki, ledwie
+   widoczny refleks co 26 rem jedzie z taśmą — odbicie na lakierowanym
+   podłożu. Tło nie może podbić pasów, bo zatkałoby otwory. */
+.mars-kto-klisza::before,
+.mars-kto-klisza::after,
+.mars-kto-tasma-film::before,
+.mars-kto-tasma-film::after {
+  content: "";
+  position: absolute;
+  height: var(--kto-pas);
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      100deg,
+      rgba(255, 255, 255, 0) 0rem,
+      rgba(255, 255, 255, 0) 17rem,
+      rgba(255, 255, 255, 0.045) 21rem,
+      rgba(255, 255, 255, 0) 25rem,
+      rgba(255, 255, 255, 0) 26rem
+    ),
+    linear-gradient(
+      var(--kto-polysk, 180deg),
+      rgba(255, 255, 255, 0.1) 0,
+      rgba(255, 255, 255, 0.1) 1px,
+      #1d1f24 1px,
+      #131418 45%,
+      var(--kto-tasma-baza) 100%
+    );
+  -webkit-mask: var(--kto-perforacja) 0 0 / var(--kto-perf) 100% repeat-x;
+  mask: var(--kto-perforacja) 0 0 / var(--kto-perf) 100% repeat-x;
+}
+
+/* Na telefonie pasy wystają o krok klatki z obu stron — wjazd klatki
+   przesuwa je o tyle, a końce pasa nie mogą wtedy wejść w kadr. */
+.mars-kto-klisza::before,
+.mars-kto-klisza::after {
+  inset-inline: calc(-1 * var(--kto-krok));
+}
+
+.mars-kto-klisza::before,
+.mars-kto-tasma-film::before {
+  top: 0;
+}
+
+/* Dolny pas: ten sam połysk odwrócony — jasna krawędź jest na dole. */
+.mars-kto-klisza::after,
+.mars-kto-tasma-film::after {
+  --kto-polysk: 0deg;
+  bottom: 0;
+}
+
+/* --- Klatka -------------------------------------------------------------------------
+   Okno zdjęcia między pasami perforacji — na telefonie wyśrodkowane
+   w odcinku, od 768 px przy lewej krawędzi kolumny (próg niżej). Lekko
+   zaokrąglone rogi — tak tnie ramka naświetlania w aparacie (0,4 rem jak
+   w `kroki-tasma.css`). Tło okna to „nienaświetlona" klatka: widać je, gdy
+   zdjęcie jeszcze się nie wczytało albo się nie udało (`data-blad`). */
+.mars-kto-kadr {
+  position: absolute;
+  top: var(--kto-pas);
+  left: 50%;
+  width: var(--kto-kadr-w);
+  height: var(--kto-kadr-h);
+  margin-left: calc(var(--kto-kadr-w) / -2);
+  overflow: hidden;
+  border-radius: 0.4rem;
+  background: #15171b;
+  /* Telefon: puste okna sąsiednich klatek, krok w lewo i w prawo — cień bez
+     rozmycia ma kształt i zaokrąglenie samego okna. Ich zdjęcia leżą
+     w zamkniętych panelach (`display: none`), więc bez tego przy wjeździe
+     klatki obok zostawałaby goła czerń, a taśma nie wyglądałaby na
+     przewijaną. W spoczynku z każdej strony zagląda ich tylko ~8 px. Od
+     768 px okna sąsiadów to prawdziwe klatki innych paneli (próg niżej). */
+  box-shadow:
+    calc(-1 * var(--kto-krok)) 0 0 0 #15171b,
+    var(--kto-krok) 0 0 0 #15171b;
+}
+
+/* Włosowa krawędź okna — jaśniejsza niż czerń taśmy, żeby zdjęcie nie
+   „wylewało się" w podłoże. Nad zdjęciem i przygaszeniem. */
+.mars-kto-kadr::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.09),
+    inset 0 0 1.25rem rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
+/* Zdjęcie wypełnia okno pozycjonowaniem absolutnym, a nie `height: 100%` —
+   procentowa wysokość to dokładnie pułapka Safari z nagłówka. Punkt
+   zaczepienia (`object-position`) przychodzi ze stylu inline (mapa `KADRY`
+   w komponencie). */
+.mars-kto-foto {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Nieudane pobranie: zamiast ikony zepsutego obrazka (Safari rysuje „?")
+   stoi ciemne okno klatki, a komponent ponawia pobranie (`ZdjecieKlatki`). */
+.mars-kto-foto[data-blad] {
+  visibility: hidden;
+}
+
+/* Przygaszenie klatek obok wybranej. Domyślnie zero — włącza je próg 768 px,
+   gdzie sąsiednie klatki są w kadrze. */
+.mars-kto-przygas {
+  position: absolute;
+  inset: 0;
+  background: #05070b;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* --- Tekst pod taśmą --------------------------------------------------------------
+   Wyrównany do lewej krawędzi klatki: dopełnienie = połowa różnicy panelu
+   i klatki. Na telefonie zwykle zero (klatka ma całą szynę), więcej tylko
+   na niskim ekranie, gdzie klatka jest węższa (patrz `--kto-kadr-w`). */
+.mars-kto-tresc {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1rem calc((100cqi - var(--kto-kadr-w)) / 2) 0.75rem;
+}
+
+/* Na telefonie nazwę grupy niesie wiersz tuż nad panelem. */
+.mars-kto-nazwa {
+  display: none;
+  margin: 0 0 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  /* BEZ dzielenia wyrazów (05.10.2026, decyzja obiektu): „Szukający wrażeń"
+     łamie się całymi słowami, jedno pod drugim — nigdy „wra-żeń". Najdłuższe
+     słowo nazwy mieści się pod najwęższą klatką, więc łamanie na spacjach
+     wystarcza. `balance` wyrównuje oba wiersze. */
+  hyphens: manual;
+  overflow-wrap: normal;
+  text-wrap: balance;
+}
+
+/* .8 bieli na granacie sekcji: ≥ 10,8:1, nazwa grupy ≥ 17,5:1 (zmierzone
+   na zrzutach 390–1512 px z ukrytym tekstem, 98. percentyl tła pod każdą
+   linią) — tekst nie leży już na zdjęciu. */
+.mars-kto-opis {
+  margin: 0;
+  max-width: 34rem;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.8);
+  text-wrap: pretty;
+}
+
+/* Przycisk konturowy jak „drugi" w hero (obrys .3 bieli, ciemne szkło),
+   z tym samym promieniem co reszta przycisków serwisu (`--dj-promien`). Na
+   telefonie na całą szerokość: etykieta zapisu ma 38 znaków i przy 375 px
+   i tak łamie się na dwa wiersze — pełna szerokość trzyma strzałkę przy
+   prawej krawędzi, a nie w połowie drugiego wiersza. */
+.mars-kto-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  min-height: 2.875rem;
+  margin-top: 1.1rem;
+  padding: 0.7rem 1.1rem 0.7rem 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--dj-promien);
+  background: rgba(5, 10, 18, 0.5);
+  color: #ffffff;
+  font: inherit;
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 200ms ease,
+    background-color 200ms ease;
+}
+
+.mars-kto-cta-strzalka {
+  transition: transform 220ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.mars-kto-cta:focus-visible {
+  outline: 2px solid var(--dj-turkus);
+  outline-offset: 3px;
+}
+
+/* --- Wjazd klatki (telefon) --------------------------------------------------------
+   Otwarty panel to nowy odcinek taśmy pod klikniętym wierszem. Klatka
+   wjeżdża w nim z kierunku przewijania (`--kto-kierunek`: 1 = dalej, czyli
+   z prawej; −1 = wstecz, z lewej), a pasy perforacji jadą razem z nią o ten
+   sam krok — światło za otworami stoi. Dopiero po pierwszym wyborze
+   (`data-wybrano`): przy wczytaniu strony taśma stoi.
+   Wysokości NIE animujemy — zamknięcie panelu wyżej i otwarcie niższego
+   w tej samej chwili przesuwałoby treść pod palcem, a korekta przewinięcia
+   (`wybierz()` w komponencie) jest dokładna tylko przy skoku.
+   `animation` startuje sama, gdy panel przechodzi z `display: none` na
+   `flex` — nie trzeba jej restartować.
+   Droga to 0,35 kroku, nie cały krok: przy pełnym kroku wjazd zaczynał się
+   od pustego, szarego okna (po 100 ms zdjęcie zakrywało ledwie 8% kadru)
+   i przez ćwierć sekundy wyglądał jak niewczytane zdjęcie. Krótszy przesuw
+   zostawia wrażenie przewinięcia filmu, a zdjęcie jest w kadrze od początku. */
+.mars-kto[data-wybrano] .mars-kto-panel.is-otwarty .mars-kto-kadr,
+.mars-kto[data-wybrano] .mars-kto-panel.is-otwarty .mars-kto-klisza::before,
+.mars-kto[data-wybrano] .mars-kto-panel.is-otwarty .mars-kto-klisza::after {
+  animation: mars-kto-przewin 460ms var(--kto-krzywa) both;
+}
+
+.mars-kto[data-wybrano] .mars-kto-panel.is-otwarty .mars-kto-tresc {
+  animation: mars-kto-wejscie 360ms cubic-bezier(0.22, 0.61, 0.36, 1) 180ms both;
+}
+
+@keyframes mars-kto-przewin {
+  from {
+    transform: translateX(calc(var(--kto-kierunek, 1) * var(--kto-krok) * 0.35));
+  }
+}
+
+@keyframes mars-kto-wejscie {
+  from {
+    opacity: 0;
+    transform: translateY(0.375rem);
+  }
+}
+
+/* --- Pojawienie przy przewinięciu ------------------------------------------------
+   Sekcja wchodzi jak każda inna (`[data-ujawnij]` w `mars.css`); wiersze
+   dodatkowo po kolei, co 70 ms, taśma DOJEŻDŻA z prawej o 3 rem (jak
+   w „Pięciu krokach") — jakby ją przeciągnięto przez okienko — a zdjęcie
+   „wyostrza się" z lekkiego przybliżenia. Taśma jedzie właściwością
+   `translate`, bo `transform` klatek i pasów jest zajęty przewijaniem.
+   Opóźnienie wierszy liczy się z `--kto-i` (styl inline wiersza), więc nie
+   zależy od `li:nth-child` z `mars.css`. Bez JS (brak
+   `.ujawnianie-wlaczone`) wszystko stoi od razu. Stan widoczny ma o klasę
+   WYŻSZĄ swoistość niż ukryty — przy równej wygrałby późniejszy. Przy
+   „ogranicz ruch" przejścia zeruje blok `prefers-reduced-motion` w `mars.css`. */
+.mars-page.ujawnianie-wlaczone [data-ujawnij] .mars-kto-pozycja {
+  opacity: 0;
+  transform: translateY(0.75rem);
+  transition:
+    opacity 520ms ease,
+    transform 520ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition-delay: calc(140ms + var(--kto-i, 0) * 70ms);
+}
+
+.mars-page.ujawnianie-wlaczone [data-ujawnij].jest-widoczny .mars-kto-pozycja {
+  opacity: 1;
+  transform: none;
+}
+
+.mars-page.ujawnianie-wlaczone [data-ujawnij] .mars-kto-tasma,
+.mars-page.ujawnianie-wlaczone [data-ujawnij] .mars-kto-klisza {
+  translate: 3rem 0;
+  transition: translate 1100ms cubic-bezier(0.22, 0.61, 0.36, 1) 120ms;
+}
+
+.mars-page.ujawnianie-wlaczone [data-ujawnij].jest-widoczny .mars-kto-tasma,
+.mars-page.ujawnianie-wlaczone [data-ujawnij].jest-widoczny .mars-kto-klisza {
+  translate: none;
+}
+
+.mars-page.ujawnianie-wlaczone [data-ujawnij] .mars-kto-foto {
+  transform: scale(1.05);
+  transition: transform 1600ms cubic-bezier(0.22, 0.61, 0.36, 1) 150ms;
+}
+
+.mars-page.ujawnianie-wlaczone [data-ujawnij].jest-widoczny .mars-kto-foto {
+  transform: none;
+}
+
+/* ============================================================================
+   PROGI — zawsze po regułach bazowych.
+   ========================================================================= */
+
+/* Od 768 px: dwie kolumny. Wiersze siatki: 1 nadtytuł, 2 nagłówek, 3–7 pięć
+   wierszy listy, 8 rezerwa `1fr` (patrz nagłówek pliku). Taśma i panele
+   zajmują prawą kolumnę od nagłówka do końca — taśma zaczyna się na
+   wysokości nagłówka, a nadtytuł stoi nad nią. Wiersze listy nie mają
+   jawnego `grid-row`: kursor rozmieszczania kładzie je kolejno w pierwszej
+   kolumnie, pod nagłówkiem. */
+@media (min-width: 768px) {
+  /* Klatka o stałej mierze (krok 19,25 rem = 14 otworów po 22 px — patrz
+     nagłówek pliku). Światło za otworami najjaśniejsze nad WYBRANĄ klatką
+     (szczelina + pół klatki od lewego końca taśmy) — tam stoi okienko
+     projektora — i gaśnie ku krawędzi okna. */
+  .mars-kto {
+    --kto-kadr-w: 18.5rem;
+    --kto-swiatlo-pas: linear-gradient(
+      90deg,
+      var(--kto-swiatlo-brzeg) 0,
+      var(--kto-swiatlo) calc(var(--kto-szczelina) + var(--kto-kadr-w) / 2),
+      var(--kto-swiatlo-brzeg) 100%
+    );
+  }
+
+  .mars-kto-uklad {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    grid-template-rows: auto auto repeat(5, auto) 1fr;
+    column-gap: var(--kto-szczelina);
+  }
+
+  .mars-kto-overline {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  /* Nagłówek w węższej kolumnie: przy 768 px globalne 6,2vw dawało 48 px
+     i „Kto wejdzie na Marsa" łamało się na trzy wiersze. */
+  .mars-kto-tytul {
+    grid-column: 1;
+    grid-row: 2;
+    font-size: calc(clamp(2rem, 4.6vw, 3.1rem) * var(--ms-skala-naglowka));
+  }
+
+  .mars-kto-pozycja {
+    grid-column: 1;
+    margin-top: 0.625rem;
+  }
+
+  /* WSPÓLNA TAŚMA = okno odcinka: od lewego brzegu szczeliny (ujemny
+     margines o szczelinę) do prawej krawędzi okna (ujemny margines
+     o `--kto-margines`) — ten sam zabieg co `.mars-kadry`, które wychodzą
+     z `.mars-shell` na całą szerokość. Za oknem strony nic nie wystaje:
+     przycina sekcja (`overflow: hidden`) i `body` (`overflow-x: clip`).
+     Okno przycina przewijany pas i gasi go przy końcach
+     (`--kto-zanik-maska`). Tło to światło za taśmą — stoi, bo przesuwa się
+     tylko pas w środku. Dopełnienie w pionie robi miejsce na cień taśmy
+     WEWNĄTRZ maski (inaczej maska by go zjadła); ujemny margines oddaje tę
+     miarę, więc film zaczyna się równo z górą komórki, tak jak klatki
+     w panelach. */
+  .mars-kto-tasma {
+    display: block;
+    position: relative;
+    z-index: 0;
+    grid-column: 2;
+    grid-row: 2 / -1;
+    align-self: start;
+    padding-block: var(--kto-cien-gora) var(--kto-cien-dol);
+    margin-block: calc(-1 * var(--kto-cien-gora)) calc(-1 * var(--kto-cien-dol));
+    margin-inline: calc(-1 * var(--kto-szczelina)) calc(-1 * var(--kto-margines));
+    overflow: hidden;
+    background:
+      var(--kto-swiatlo-pas) 0 0 / 100% var(--kto-pas) no-repeat content-box,
+      var(--kto-swiatlo-pas) 0 100% / 100% var(--kto-pas) no-repeat content-box;
+    -webkit-mask-image: var(--kto-zanik-maska);
+    mask-image: var(--kto-zanik-maska);
+  }
+
+  /* Sam film: podłoże i pasy perforacji. Dłuższy od okna o cztery kroki,
+     bo przy ostatniej grupie stoi przesunięty o cztery klatki w lewo.
+     Otwory powtarzają się co `--kto-perf`, a krok jest jego
+     wielokrotnością, więc w spoczynku film wygląda tak samo przy każdej
+     grupie — ruch widać tylko w trakcie przewijania. */
+  .mars-kto-tasma-film {
+    position: relative;
+    width: calc(100% + 4 * var(--kto-krok));
+    height: var(--kto-film-h);
+    background: var(--kto-podloze) 0 calc(var(--kto-pas) - 1px) / 100% calc(100% - 2 * var(--kto-pas) + 2px) no-repeat;
+    box-shadow:
+      0 1.5rem 2.25rem -1.25rem rgba(0, 0, 0, 0.75),
+      0 -0.75rem 1.5rem -1rem rgba(0, 0, 0, 0.45);
+    transform: translateX(calc(-1 * var(--kto-aktywny, 0) * var(--kto-krok)));
+    transition: transform var(--kto-czas) var(--kto-krzywa);
+  }
+
+  .mars-kto-tasma-film::before,
+  .mars-kto-tasma-film::after {
+    inset-inline: 0;
+  }
+
+  /* Puste, nienaświetlone klatki na filmie: jedna przed pierwszym zdjęciem
+     i osiem za ostatnim. Bez nich przy ostatnich grupach za wybraną klatką
+     ciągnęłaby się do krawędzi okna sama czarna taśma (przy 1920 px ponad
+     700 px) — film urywałby się w pół okna. Element stoi w miejscu klatki
+     pierwszej grupy (sam jest niewidoczny, przykrywa go jej zdjęcie),
+     a okna to jego cienie bez rozmycia, przesunięte o całe kroki — mają
+     kształt i zaokrąglenie okna. Jadą razem z filmem. Osiem wystarcza do
+     okna szerokości ok. 3800 px. */
+  .mars-kto-tasma-okna {
+    position: absolute;
+    top: var(--kto-pas);
+    left: var(--kto-szczelina);
+    width: var(--kto-kadr-w);
+    height: var(--kto-kadr-h);
+    border-radius: 0.4rem;
+    box-shadow:
+      calc(-1 * var(--kto-krok)) 0 0 0 #15171b,
+      calc(5 * var(--kto-krok)) 0 0 0 #15171b,
+      calc(6 * var(--kto-krok)) 0 0 0 #15171b,
+      calc(7 * var(--kto-krok)) 0 0 0 #15171b,
+      calc(8 * var(--kto-krok)) 0 0 0 #15171b,
+      calc(9 * var(--kto-krok)) 0 0 0 #15171b,
+      calc(10 * var(--kto-krok)) 0 0 0 #15171b,
+      calc(11 * var(--kto-krok)) 0 0 0 #15171b,
+      calc(12 * var(--kto-krok)) 0 0 0 #15171b;
+  }
+
+  /* Wszystkie panele w jednej komórce, jeden na drugim, NAD taśmą. Nieaktywny
+     stoi w układzie, ale jest niewidoczny i `inert` — widać z niego tylko
+     klatkę. Ukrywa się dopiero po zgaśnięciu tekstu (200 ms). Bez `opacity`
+     i `transform` na panelu: tworzyłyby warstwę w trakcie przejścia
+     i klatki skakałyby nad i pod taśmą.
+     ROZCIĄGNIĘTE na całą komórkę (od nagłówka do dołu listy), żeby przycisk
+     mógł stanąć przy dole — patrz nagłówek pliku. Siatka rozciąga je sama;
+     żadnego `height: 100%` (pułapka Safari). */
+  .mars-kto-panel {
+    display: flex;
+    z-index: 1;
+    grid-column: 2;
+    grid-row: 2 / -1;
+    align-self: stretch;
+    margin-top: 0;
+    visibility: hidden;
+    transition: visibility 0s linear 200ms;
+  }
+
+  .mars-kto-panel.is-otwarty {
+    visibility: visible;
+    transition: none;
+  }
+
+  /* Okno odcinka w panelu: tej samej wielkości, w tym samym miejscu i z tym
+     samym zanikiem co wspólna taśma pod spodem, ale przezroczyste — niesie
+     tylko klatkę. `visibility: visible` przebija ukrycie panelu: klatka
+     sąsiada ma być widać, tekst — nie. `flex: none`: w rozciągniętym
+     panelu taśma nigdy się nie kurczy. */
+  .mars-kto-klisza {
+    flex: none;
+    margin-inline: calc(-1 * var(--kto-szczelina)) calc(-1 * var(--kto-margines));
+    background: none;
+    box-shadow: none;
+    visibility: visible;
+    pointer-events: none;
+    -webkit-mask-image: var(--kto-zanik-maska);
+    mask-image: var(--kto-zanik-maska);
+  }
+
+  .mars-kto-klisza::before,
+  .mars-kto-klisza::after {
+    content: none;
+  }
+
+  /* Klatka zaczepiona przy lewej krawędzi kolumny (za szczeliną), a nie na
+     środku. Puste okna z telefonu znikają: cień panelu malowałby się NAD
+     prawdziwą klatką sąsiada z wcześniejszego panelu. */
+  .mars-kto-kadr {
+    left: var(--kto-szczelina);
+    margin-left: 0;
+    box-shadow: none;
+    transform: translateX(calc((var(--kto-i, 0) - var(--kto-aktywny, 0)) * var(--kto-krok)));
+    transition: transform var(--kto-czas) var(--kto-krzywa);
+  }
+
+  /* Sąsiad gaśnie o 40% — widać, że taśma ma dalszy ciąg, ale oko zostaje
+     na wybranej klatce (przy 55% razem z zanikiem prawie znikał). Gaśnie
+     i jaśnieje w rytmie przejazdu. */
+  .mars-kto-przygas {
+    opacity: 0.4;
+    transition: opacity var(--kto-czas) var(--kto-krzywa);
+  }
+
+  .mars-kto-panel.is-otwarty .mars-kto-przygas {
+    opacity: 0;
+  }
+
+  /* Wjazd klatki z telefonu — tu taśmę przewija przejście. Ta sama
+     swoistość co reguła bazowa, więc wygrywa kolejnością. */
+  .mars-kto[data-wybrano] .mars-kto-panel.is-otwarty .mars-kto-kadr,
+  .mars-kto[data-wybrano] .mars-kto-panel.is-otwarty .mars-kto-tresc {
+    animation: none;
+  }
+
+  /* Tekst pod taśmą. Wybrana klatka stoi przy lewej krawędzi kolumny, więc
+     podpis zaczyna się tam, gdzie kolumna — bez dopełnienia z boków.
+     Wypełnia resztę rozciągniętego panelu (`flex: 1`), żeby przycisk mógł
+     stanąć przy jego dole. Stary tekst gaśnie szybko, nowy wchodzi, gdy
+     klatka dojeżdża na miejsce — dwa napisy nie nakładają się nigdy
+     w pełnym kryciu. */
+  .mars-kto-tresc {
+    flex: 1 1 auto;
+    padding: 1.25rem 0 0;
+    opacity: 0;
+    transform: translateY(0.5rem);
+    transition:
+      opacity 200ms ease,
+      transform 0s linear 200ms;
+  }
+
+  .mars-kto-panel.is-otwarty .mars-kto-tresc {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 360ms ease calc(var(--kto-czas) * 0.45),
+      transform 520ms cubic-bezier(0.22, 0.61, 0.36, 1) calc(var(--kto-czas) * 0.45);
+  }
+
+  .mars-kto-nazwa {
+    display: block;
+  }
+
+  /* Najmniejszy odstęp między zdaniem a przyciskiem — przy jednowierszowym
+     zdaniu resztę miejsca bierze `margin-top: auto` przycisku. */
+  .mars-kto-opis {
+    margin-bottom: 1rem;
+  }
+
+  /* Przycisk przy dole panelu (= dół listy obok) i ZAWSZE w jednym wierszu.
+     Etykieta zapisu ma w jednym wierszu 381 px, a kolumna przy 768 px —
+     383 px; węższe dopełnienie, odstęp i o włos mniejsze pismo dają ok.
+     365 px, więc mieści się z zapasem w obu silnikach. Od 1024 px kolumna
+     ma ≥ 557 px i wraca pełna miara (próg niżej). */
+  .mars-kto-cta {
+    width: auto;
+    justify-content: flex-start;
+    gap: 0.6rem;
+    margin-top: auto;
+    padding-inline: 1.05rem 0.95rem;
+    font-size: 0.9rem;
+    white-space: nowrap;
+  }
+
+  .mars-kto-wybor.is-otwarty .mars-kto-strzalka {
+    transform: translateX(2px);
+  }
+}
+
+@media (min-width: 1024px) {
+  /* Pas i odstęp otworów jak w „Pięciu krokach" od 1024 px (32 / 24 px).
+     Klatka 20 rem (320 × 213 px): krok 21 rem = 14 otworów po 24 px,
+     a taśma ma 277 px — z podpisem i przyciskiem mieści się w wysokości
+     lewej kolumny (446–451 px, patrz nagłówek pliku). Szczelina 3,5 rem
+     jak dotąd odstęp kolumn. */
+  .mars-kto {
+    --kto-pas: 2rem;
+    --kto-perf: 1.5rem;
+    --kto-odstep: 1rem;
+    --kto-kadr-w: 20rem;
+    --kto-szczelina: 3.5rem;
+  }
+
+  .mars-kto-uklad {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  }
+
+  .mars-kto-tytul {
+    margin-bottom: 2rem;
+  }
+
+  .mars-kto-nazwa {
+    font-size: 1.75rem;
+  }
+
+  .mars-kto-opis {
+    font-size: 1.05rem;
+  }
+
+  /* Kolumna ma tu ≥ 557 px — przycisk wraca do pełnej miary. */
+  .mars-kto-cta {
+    gap: 0.75rem;
+    padding-inline: 1.2rem 1.1rem;
+    font-size: 0.92rem;
+  }
+}
+
+/* Od 1280 px większa nazwa grupy. Odstęp pod nią mniejszy niż dawne
+   0,65 rem — wysokość podpisu liczy się do równania kolumn. */
+@media (min-width: 1280px) {
+  .mars-kto-nazwa {
+    margin-bottom: 0.5rem;
+    font-size: 2rem;
+  }
+}
+
+/* Najechanie tylko tam, gdzie jest kursor — na ekranie dotykowym stan
+   najechania „przykleja się" do ostatnio dotkniętego wiersza. */
+@media (hover: hover) and (pointer: fine) {
+  .mars-kto-wybor:not(.is-otwarty):hover {
+    border-color: rgba(255, 255, 255, 0.24);
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+  }
+
+  .mars-kto-wybor:not(.is-otwarty):hover .mars-kto-strzalka {
+    color: rgba(255, 255, 255, 0.75);
+    transform: translateX(2px);
+  }
+
+  .mars-kto-cta:hover {
+    border-color: var(--dj-turkus);
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .mars-kto-cta:hover .mars-kto-cta-strzalka {
+    transform: translateX(3px);
+  }
+}

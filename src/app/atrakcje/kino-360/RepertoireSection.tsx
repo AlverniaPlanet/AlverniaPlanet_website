@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
+import BookingLink from "@/app/components/BookingLink";
 import Image from "next/image";
 import Link from "next/link";
 import { useI18n } from "@/app/i18n-provider";
 import {
   buildBookingPath,
-  K360_BOOKING_CATEGORY,
   k360FilmService,
 } from "@/lib/booking";
 import { getLocalizedPath } from "@/lib/localizedRoutes";
@@ -17,6 +17,8 @@ import {
   FILMS_COPY,
   FILM_DETAILS,
   REPERTOIRE_COPY,
+  filmBadges,
+  filmDuration,
   type Locale,
 } from "./films";
 
@@ -140,10 +142,7 @@ export default function RepertoireSection({ className = "" }: { className?: stri
         {/* Treść (nagłówek + kafle) w oryginalnej szerokości, wyśrodkowana — szersze jest tylko tło */}
         <div className="relative z-10 mx-auto w-full max-w-[72rem]">
           <div className={`text-center ${revealCls}`}>
-            <p className="text-[0.66rem] font-semibold uppercase tracking-[0.24em] text-[#ff96aa]/90 sm:text-[0.72rem] sm:tracking-[0.28em]">
-              {t.kicker}
-            </p>
-            <h2 className="mt-2 text-pretty text-[clamp(1.9rem,6vw,3.8rem)] font-black leading-[1.03] tracking-[-0.035em] text-white">
+            <h2 className="text-pretty text-[clamp(1.9rem,6vw,3.8rem)] font-extrabold leading-[1.03] tracking-[-0.035em] text-white">
               {t.title}
             </h2>
             <div className="mx-auto mt-4 h-[3px] w-24 rounded-full bg-[linear-gradient(90deg,#f7486c,#ff96aa)] shadow-[0_0_14px_rgba(247,72,108,0.6)]" />
@@ -156,18 +155,19 @@ export default function RepertoireSection({ className = "" }: { className?: stri
               Rozwijanie po KLIKNIĘCIU. Na mobile układ pionowy (rozwijanie w wysokość).
               [overflow-anchor:none] — kontener ma stałą wysokość; blokujemy scroll anchoring,
               żeby zmiana rozmiaru kafli nie wywoływała mikroprzewinięć strony (drżenie). */}
-          <div className="mt-9 flex h-[38rem] flex-col gap-2.5 [overflow-anchor:none] sm:h-[32rem] sm:flex-row sm:items-center sm:gap-3 lg:h-[34rem]">
+          <div className="mt-9 flex h-[42rem] flex-col gap-2.5 [overflow-anchor:none] sm:h-[32rem] sm:flex-row sm:items-center sm:gap-3 lg:h-[34rem]">
             {FILMS.map((film, index) => {
               const fc = FILMS_COPY[loc][film.slug];
+              const duration = filmDuration(film, loc);
+              // Skrót pokazywany na zwiniętej miniaturce: „~30 min · Dla wszystkich".
+              const microMeta = [duration, fc.audience].filter(Boolean).join(" · ");
               const detail = FILM_DETAILS[film.slug];
               const accent = detail.accent;
               const accentSoft = detail.accentSoft;
               const isActive = index === activeFilm;
               // „Kup bilet" prowadzi do rezerwacji z automatycznie wybranym biletem TEGO filmu.
               const filmBookingHref = buildBookingPath(loc, {
-                category: K360_BOOKING_CATEGORY,
                 service: k360FilmService(film.slug),
-                autopick: true,
               });
               // Ramka (ring) + poświata kafla w kolorze danego filmu; mocniejsza gdy aktywny.
               const tileShadow = isActive
@@ -198,7 +198,18 @@ export default function RepertoireSection({ className = "" }: { className?: stri
                     className={`pointer-events-none absolute inset-0 transition-opacity duration-500 ${
                       isActive
                         ? "bg-[linear-gradient(to_top,#0a0612_0%,rgba(10,6,18,0.82)_30%,rgba(10,6,18,0.25)_56%,transparent_78%)]"
-                        : "bg-[linear-gradient(to_top,#0a0612_0%,rgba(10,6,18,0.6)_22%,transparent_52%)]"
+                        : // Na mobile zwinięty kafel ma tylko ~92 px wysokości, a podpis
+                          // (tytuł + mikrodane + CTA) zajmuje z tego ~85 px — czyli praktycznie
+                          // całą wysokość. Poprzedni fade sięgał do 52% i górna linijka lądowała
+                          // na surowym plakacie; przy jasnych kadrach dawało to kontrast 1,16:1.
+                          // Dlatego na mobile przyciemniamy kafel — ale W POZIOMIE, od lewej.
+                          // Zmierzone zasięgi tekstu na mobile: tytuł do 32%, CTA do 38%,
+                          // najdłuższa linia metadanych do 70% szerokości kafla. Gradient trzyma
+                          // więc pełne krycie do ~60% i wygasza się do prawej krawędzi, dzięki
+                          // czemu prawa część plakatu zostaje widoczna zamiast zniknąć pod płaskim
+                          // przyciemnieniem. Od sm w górę wraca dotychczasowy, lżejszy fade od dołu,
+                          // bo tam kafel jest wąski i wysoki, a tekst siedzi przy dolnej krawędzi.
+                          "bg-[linear-gradient(to_right,#0a0612_0%,rgba(10,6,18,0.94)_60%,rgba(10,6,18,0.66)_78%,rgba(10,6,18,0.1)_100%)] sm:bg-[linear-gradient(to_top,#0a0612_0%,rgba(10,6,18,0.6)_22%,transparent_52%)]"
                     }`}
                   />
 
@@ -211,29 +222,74 @@ export default function RepertoireSection({ className = "" }: { className?: stri
                       if (index !== activeFilm) setActiveFilm(index);
                     }}
                     aria-expanded={isActive}
-                    aria-label={`${film.title} — ${fc.tagline}`}
+                    aria-label={`${film.title} — ${microMeta}`}
                     className="absolute inset-0 z-10 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#ff96aa]"
                   />
 
-                  {/* Tytuł na dole zwiniętej zakładki (nad fade), na wszystkich szerokościach */}
+                  {/* Sygnał klikalności: obrys w kolorze filmu pod kursorem/focusem.
+                      Osobna warstwa, bo boxShadow kafla jest ustawiany inline i
+                      wygrałby ze zwykłą regułą hover. Tylko dla zwiniętych kafli —
+                      aktywny ma już mocny obrys na stałe. */}
+                  {!isActive ? (
+                    <div
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-0 z-30 rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-within:opacity-100 sm:rounded-[1.4rem]"
+                      style={{ boxShadow: `inset 0 0 0 2px ${accent}, 0 0 26px ${accent}55` }}
+                    />
+                  ) : null}
+
+                  {/* aria-hidden: ten podpis jest w całości powtórzony w aria-label
+                      przycisku, więc dla czytnika ekranu byłby drugim odczytem tego
+                      samego. Zostawiamy go wyłącznie jako treść wizualną. */}
+                  {/* Tytuł + mikrodane na dole zwiniętej zakładki (nad fade).
+                      Metadane pokazujemy na KAŻDEJ szerokości — bez nich miniaturka
+                      nie daje się porównać z pozostałymi bez klikania. */}
                   <div
+                    aria-hidden="true"
                     className={`pointer-events-none absolute inset-x-0 bottom-0 z-20 p-3 transition-opacity duration-300 sm:p-4 ${
                       isActive ? "opacity-0" : "opacity-100"
                     }`}
                   >
-                    <h3 className="line-clamp-2 text-sm font-black leading-tight tracking-[-0.01em] text-white [text-shadow:0_2px_10px_rgba(0,0,0,0.85)] sm:text-base">
+                    <h3 className="line-clamp-1 text-sm font-extrabold leading-tight tracking-[-0.01em] text-white [text-shadow:0_2px_10px_rgba(0,0,0,0.85)] sm:line-clamp-2 sm:text-base">
                       {film.title}
                     </h3>
+                    {/* Najciaśniej jest w przedziale sm–md: kafel ma tam ok. 120 px
+                        szerokości, a najdłuższe grupy docelowe (de „Ältere Kinder ·
+                        Familien · Erwachsene", pt „Crianças mais velhas · famílias ·
+                        adultos") nie mieściły się w trzech linijkach i były ucinane.
+                        Stąd mniejszy stopień pisma i czwarta linijka aż do lg (kafel
+                        jest wąski w całym zakresie sm–lg: 120 px przy 768 px, 162 px
+                        przy 1024 px). Wysokości kafla — 256 px — starcza z zapasem. */}
+                    <p className="mt-1 line-clamp-2 text-[0.62rem] font-medium leading-snug text-white/78 [text-shadow:0_1px_8px_rgba(0,0,0,0.8)] sm:line-clamp-4 lg:line-clamp-3 lg:text-[0.68rem]">
+                      {microMeta}
+                    </p>
+                    {/* flex + min-w-0 zamiast inline-flex: inline-flex dobiera szerokość
+                        do max-content i nie da się go zmniejszyć poniżej najdłuższego
+                        słowa, przez co dłuższe tłumaczenia (np. niemieckie) wychodziły
+                        poza kafel i były obcinane przez overflow-hidden. */}
+                    <span
+                      className="mt-1.5 flex max-w-full items-center gap-1 text-[0.6rem] font-extrabold uppercase tracking-[0.1em] transition-colors duration-300 sm:text-[0.65rem]"
+                      style={{ color: accentSoft }}
+                    >
+                      <span className="min-w-0 [overflow-wrap:anywhere]">{t.watch}</span>
+                      <span aria-hidden="true" className="shrink-0 transition-transform duration-300 group-hover:translate-x-0.5">
+                        →
+                      </span>
+                    </span>
                   </div>
 
                   {/* Treść (stan rozwinięty) */}
+                  {/* Warstwa rozwinięta była chowana samym opacity — czytnik ekranu
+                      czytał więc opisy WSZYSTKICH czterech filmów naraz, mimo że
+                      przycisk ogłaszał aria-expanded="false". */}
                   <div
+                    aria-hidden={!isActive}
                     className={`pointer-events-none absolute inset-0 z-20 flex flex-col justify-end p-4 transition-opacity duration-500 sm:p-6 ${
                       isActive ? "opacity-100 delay-150" : "opacity-0"
                     }`}
                   >
                     <div className="flex flex-wrap gap-1.5">
-                      {film.badges.map((b) => (
+                      {filmBadges(film, loc).map((b) => (
                         <span
                           key={b}
                           className="rounded-full border px-2 py-0.5 text-[0.56rem] font-semibold uppercase tracking-[0.1em] text-white/90"
@@ -246,7 +302,7 @@ export default function RepertoireSection({ className = "" }: { className?: stri
                           na karcie, nie dopiero na podstronie. */}
                       <LanguageBadge locale={loc} size="sm" />
                     </div>
-                    <h3 className="mt-2.5 text-pretty text-2xl font-black leading-[1.05] tracking-[-0.02em] text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.75)] sm:text-3xl">
+                    <h3 className="mt-2.5 text-pretty text-2xl font-extrabold leading-[1.05] tracking-[-0.02em] text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.75)] sm:text-3xl">
                       {film.title}
                     </h3>
                     <p className="mt-1.5 text-sm font-bold [text-shadow:0_1px_8px_rgba(0,0,0,0.6)] sm:text-base" style={{ color: accentSoft }}>
@@ -259,20 +315,20 @@ export default function RepertoireSection({ className = "" }: { className?: stri
                       {fc.audience}
                     </p>
                     <div className={`mt-3.5 flex flex-wrap items-center gap-2 ${isActive ? "pointer-events-auto" : "pointer-events-none"}`}>
-                      <Link
+                      <BookingLink
                         href={filmBookingHref}
                         tabIndex={isActive ? 0 : -1}
                         aria-hidden={!isActive}
-                        className="inline-flex items-center whitespace-nowrap rounded-[var(--ap-btn-radius)] px-5 py-2 text-sm font-extrabold text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45)] transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
-                        style={{ background: `linear-gradient(135deg, ${accent}, ${accentSoft})`, boxShadow: `0 10px 26px ${accent}59` }}
+                        className="inline-flex items-center whitespace-nowrap rounded-[var(--ap-btn-radius)] px-5 py-2 text-xs font-extrabold transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+                        style={{ background: "#56ddea", color: "#04222a", boxShadow: "0 6px 16px rgba(86,221,234,0.3)" }}
                       >
                         {t.cta}
-                      </Link>
+                      </BookingLink>
                       <Link
                         href={getLocalizedPath(`/atrakcje/kino-360/${film.slug}`, loc)}
                         tabIndex={isActive ? 0 : -1}
                         aria-hidden={!isActive}
-                        className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-[var(--ap-btn-radius)] border bg-white/[0.06] px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/12 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+                        className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-[var(--ap-btn-radius)] border bg-white/[0.06] px-4 py-2 text-xs font-semibold text-white transition hover:bg-white/12 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
                         style={{ borderColor: `${accent}99` }}
                       >
                         {t.more}

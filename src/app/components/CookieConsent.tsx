@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import { type Locale } from "@/lib/localizedRoutes";
 import { useI18n } from "@/app/i18n-provider";
 import {
   OPEN_SETTINGS_EVENT,
@@ -9,9 +9,9 @@ import {
   writeConsent,
 } from "@/lib/consent";
 
-type Loc = "pl" | "en" | "pt";
+type Loc = Locale;
 
-const COOKIE_POLICY_HREF = "/legal/polityka-cookies.pdf";
+const COOKIE_POLICY_HREF = "/stopka/polityka-cookies.pdf";
 
 type Copy = {
   title: string;
@@ -69,6 +69,36 @@ const COPY: Record<Loc, Copy> = {
       { key: "necessary", name: "Necessários", desc: "Necessários ao funcionamento do site e para memorizar a sua escolha. Sempre ativos." },
       { key: "analytics", name: "Análise", desc: "Ajudam a perceber como utiliza o site (Google Analytics)." },
       { key: "marketing", name: "Marketing", desc: "Personalização e medição de anúncios (Meta Pixel)." },
+    ],
+  },
+  de: {
+    title: "Wir respektieren Ihre Privatsphäre",
+    body: "Wir verwenden Cookies, die für den Betrieb der Website notwendig sind, und — mit Ihrer Einwilligung — für Analyse und Marketing. Sie können alle akzeptieren, optionale ablehnen oder einzelne Kategorien wählen.",
+    policy: "Cookie-Richtlinie",
+    acceptAll: "Alle akzeptieren",
+    rejectAll: "Ablehnen",
+    settings: "Einstellungen",
+    save: "Auswahl speichern",
+    alwaysOn: "Immer aktiv",
+    categories: [
+      { key: "necessary", name: "Notwendig", desc: "Erforderlich für den Betrieb der Website und um Ihre Auswahl zu speichern. Immer aktiv." },
+      { key: "analytics", name: "Analyse", desc: "Helfen uns zu verstehen, wie Sie die Website nutzen (Google Analytics)." },
+      { key: "marketing", name: "Marketing", desc: "Personalisierung und Messung von Werbung (Meta Pixel)." },
+    ],
+  },
+  zh: {
+    title: "我们尊重您的隐私",
+    body: "我们使用网站运行所必需的 Cookie，并在获得您同意后用于分析与营销。您可以全部接受、拒绝可选项，或分类选择。",
+    policy: "《Cookie 政策》",
+    acceptAll: "全部接受",
+    rejectAll: "拒绝",
+    settings: "设置",
+    save: "保存选择",
+    alwaysOn: "始终启用",
+    categories: [
+      { key: "necessary", name: "必要", desc: "网站运行及记住您的选择所必需。始终启用。" },
+      { key: "analytics", name: "分析", desc: "帮助我们了解您如何使用本网站（Google Analytics）。" },
+      { key: "marketing", name: "营销", desc: "广告个性化与效果衡量（Meta Pixel）。" },
     ],
   },
 };
@@ -143,9 +173,12 @@ export default function CookieConsent() {
             <p className="text-base font-bold sm:text-lg">{t.title}</p>
             <p className="mt-1.5 text-[0.82rem] leading-relaxed text-white/70 sm:text-sm">
               {t.body}{" "}
-              <Link href={COOKIE_POLICY_HREF} className="font-semibold text-[#7ef6ff] underline underline-offset-2 hover:brightness-110">
+              {/* <a>, nie <Link> — polityka cookies to statyczny PDF z public/stopka/,
+                  a nie trasa Nexta. <Link> prefetchowałby payload RSC, czyli
+                  /stopka/polityka-cookies.pdf.txt → 404 w konsoli. */}
+              <a href={COOKIE_POLICY_HREF} className="font-semibold text-[#7ef6ff] underline underline-offset-2 hover:brightness-110">
                 {t.policy}
-              </Link>
+              </a>
               .
             </p>
           </div>

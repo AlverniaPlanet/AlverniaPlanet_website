@@ -4,18 +4,18 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run prices && next build && npm run compress",
     "start": "npm run build && npx serve@latest out",
     "lint": "next lint",
-    "export": "next build"
+    "export": "npm run prices && next build",
+    "prices": "node scripts/fetch-prices.mjs && node scripts/check-prices.mjs",
+    "compress": "node scripts/compress.mjs"
   },
   "dependencies": {
-    "clsx": "^2.1.1",
+    "@phosphor-icons/react": "^2.1.10",
     "next": "15.5.3",
-    "next-intl": "^4.3.9",
     "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "react-icons": "^5.5.0"
+    "react-dom": "19.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

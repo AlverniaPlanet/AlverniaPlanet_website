@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { submitLead } from "@/lib/leads";
+import { SolarIcon } from "../../components/SolarIcon";
 
 // ------------------------------------------------------------------
 // /aplikacje/identyfikacja. Kioskowa aplikacja wejścia na obiekt.
@@ -339,20 +340,7 @@ function Flag({ code }: { code: Lang }) {
 
 function FingerprintIcon({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 64 78" aria-hidden="true" className={className}>
-      <g fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="2.2">
-        <path d="M12 30a20 20 0 0 1 40 0v5" />
-        <path d="M19 30a13 13 0 0 1 26 0v11a9 9 0 0 1-1 4" />
-        <path d="M26 31a6 6 0 0 1 12 0v13" />
-        <path d="M32 31v18" />
-        <path d="M12 40v6a25 25 0 0 0 6 16" />
-        <path d="M52 40v4a30 30 0 0 1-4 17" />
-        <path d="M19 46a20 20 0 0 0 5 15" />
-        <path d="M45 46a22 22 0 0 1-3 16" />
-        <path d="M26 49v5a14 14 0 0 0 3 10" />
-        <path d="M38 49v4a16 16 0 0 1-2 12" />
-      </g>
-    </svg>
+    <SolarIcon name="fingerprint" className={className} />
   );
 }
 
@@ -706,7 +694,7 @@ export default function IdentyfikacjaPage() {
             {t.pill}
           </span>
           <h1
-            className="apid-in mt-4 text-[clamp(1.7rem,1.3rem+2.1vw,2.6rem)] font-black leading-[1.05] tracking-[-0.03em]"
+            className="apid-in mt-4 text-[clamp(1.7rem,1.3rem+2.1vw,2.6rem)] font-extrabold leading-[1.05] tracking-[-0.03em]"
             style={{ animationDelay: "180ms" }}
           >
             {t.title}
@@ -972,7 +960,7 @@ export default function IdentyfikacjaPage() {
                 {t.guestId}
               </span>
 
-              <h2 className="mt-4 text-2xl font-black tracking-[-0.02em] sm:text-3xl" style={{ color: accent.text }}>
+              <h2 className="mt-4 text-2xl font-extrabold tracking-[-0.02em] sm:text-3xl" style={{ color: accent.text }}>
                 {selectedEntrance.name}
               </h2>
               <p className="mt-1 text-sm text-white/55">

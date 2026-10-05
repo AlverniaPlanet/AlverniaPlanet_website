@@ -8,12 +8,25 @@ import {
 } from "@/lib/consent";
 
 // ---------------------------------------------------------------------------
-// Warunkowe ładowanie trackerów wg zgody:
-//   - GA4 + GTM  -> tylko gdy `analytics` = granted,
-//   - Meta Pixel -> tylko gdy `marketing` = granted.
-// Do tego aktualizacja Google Consent Mode v2 na każdą zmianę zgody.
-// Domyślny stan „denied" ustawia inline-skrypt beforeInteractive w layoutcie,
-// więc zanim tu cokolwiek zrobimy, żaden cookie analityczny/reklamowy nie leci.
+// Reakcja na zgodę użytkownika:
+//   - GA4 (gtag.js)  -> ładowany ZAWSZE w <head> (RootLayout), tutaj tylko
+//                       podnosimy `analytics_storage` przez consent update,
+//   - Meta Pixel     -> ładowany dopiero przy `marketing` = granted,
+//   - GTM            -> ładowany dopiero przy `marketing` = granted.
+//
+// GA4 celowo NIE jest już ładowany z tego komponentu — model to Consent Mode v2
+// „advanced": tag jest na stronie od pierwszej klatki, ale dopóki nie ma zgody,
+// `analytics_storage`/`ad_*` = 'denied', czyli zero cookies analitycznych i
+// reklamowych (tylko bezcookie'owe pingi). Powody:
+//   1) Google musi WIDZIEĆ tag na stronie (weryfikacja „Nie wykryliśmy tagu"),
+//   2) `window.gtag` musi istnieć zanim wystartuje widżet Bookero, który sam
+//      wypycha eventy e-commerce (view_cart / add_to_cart / begin_checkout /
+//      purchase) — patrz konfiguracja Bookero: GA4 = ON, GTM = „nie używam".
+// Gdyby trzeba było wrócić do wariantu „basic" (gtag.js dopiero po zgodzie),
+// oba są w git history — ale wtedy Google znów nie wykryje tagu.
+//
+// Meta Pixel zostaje za bramką zgody: nie ma odpowiednika Consent Mode i od
+// razu ustawia własne cookies (_fbp).
 // ---------------------------------------------------------------------------
 
 type AnyFn = (...args: unknown[]) => void;
@@ -27,24 +40,17 @@ interface TrackWindow extends Window {
 
 function getGtag(w: TrackWindow): AnyFn {
   if (typeof w.gtag === "function") return w.gtag;
+  // Awaryjny stub — normalnie gtag() definiuje inline-skrypt w <head> (RootLayout),
+  // który wykonuje się przed hydracją, więc tu praktycznie nie wchodzimy.
+  // UWAGA: gtag/GTM przetwarza z dataLayer WYŁĄCZNIE wpisy typu `arguments`;
+  // zwykła tablica jest cicho ignorowana, dlatego push(arguments), nie push(args).
   w.dataLayer = w.dataLayer || [];
-  const fn: AnyFn = (...args: unknown[]) => {
-    // gtag używa obiektu `arguments`, nie tablicy — odwzorowujemy 1:1.
-    (w.dataLayer as unknown[]).push(args.length === 1 ? args[0] : args);
-  };
+  const fn = function () {
+    // eslint-disable-next-line prefer-rest-params
+    (w.dataLayer as unknown[]).push(arguments);
+  } as unknown as AnyFn;
   w.gtag = fn;
   return fn;
-}
-
-function loadGa(w: TrackWindow, gaId: string) {
-  // GA4 (gtag.js) — czysta analityka, bez GTM.
-  const s = document.createElement("script");
-  s.async = true;
-  s.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
-  document.head.appendChild(s);
-  const gtag = getGtag(w);
-  gtag("js", new Date());
-  gtag("config", gaId);
 }
 
 // Google Tag Manager to MENEDŻER TAGÓW — może uruchamiać także tagi
@@ -89,16 +95,14 @@ function loadMetaPixel(w: TrackWindow, pixelId: string) {
 }
 
 export default function ConsentTrackers({
-  gaId,
   gtmId,
   metaPixelId,
 }: {
-  gaId: string;
   gtmId: string;
   metaPixelId: string;
 }) {
   const [consent, setConsent] = useState<ConsentState | null>(null);
-  const loaded = useRef({ ga: false, gtm: false, meta: false });
+  const loaded = useRef({ gtm: false, meta: false });
 
   useEffect(() => {
     const sync = () => setConsent(readConsent());
@@ -112,19 +116,15 @@ export default function ConsentTrackers({
     const w = window as TrackWindow;
     const gtag = getGtag(w);
 
-    // Odzwierciedl aktualny wybór w Consent Mode v2.
+    // Odzwierciedl aktualny wybór w Consent Mode v2. To JEDYNE miejsce, które
+    // przełącza GA4 z pingów bezcookie'owych na pełny pomiar — działa od razu,
+    // bez przeładowania strony (gtag.js już siedzi na stronie z <head>).
     gtag("consent", "update", {
       analytics_storage: consent.analytics ? "granted" : "denied",
       ad_storage: consent.marketing ? "granted" : "denied",
       ad_user_data: consent.marketing ? "granted" : "denied",
       ad_personalization: consent.marketing ? "granted" : "denied",
     });
-
-    // Analityka: tylko GA4 (gtag). GTM celowo nie jest tu ładowany.
-    if (consent.analytics && !loaded.current.ga) {
-      loaded.current.ga = true;
-      loadGa(w, gaId);
-    }
 
     // Marketing: Meta Pixel oraz GTM (może zawierać tagi marketingowe).
     if (consent.marketing) {
@@ -143,7 +143,7 @@ export default function ConsentTrackers({
       // Cofnięcie zgody po załadowaniu pixela — zatrzymaj wysyłkę.
       w.fbq?.("consent", "revoke");
     }
-  }, [consent, gaId, gtmId, metaPixelId]);
+  }, [consent, gtmId, metaPixelId]);
 
   return null;
 }

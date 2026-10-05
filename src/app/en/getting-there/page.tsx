@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { languageAlternates } from "@/lib/seo";
 
 const title = "Getting here, Alvernia Planet";
-const description = "How to get to Alvernia Planet near Kraków: directions, parking and transport.";
+const description = "How to get to Alvernia Planet near Kraków: driving directions, parking and the shuttle bus from Krzeszowice railway station — Friday, Saturday and Sunday timetable.";
 
 // Zlokalizowane metadane aliasu EN polskiej trasy /jak-dojechac.
 // Treść strony jest wspólna, ale tytuł, opis, canonical i hreflang muszą być

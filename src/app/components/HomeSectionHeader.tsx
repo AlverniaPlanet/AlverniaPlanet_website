@@ -25,7 +25,7 @@ export default function HomeSectionHeader({
       <div className="flex items-center gap-4">
         {number ? (
           <span
-            className="select-none text-[clamp(2.6rem,6vw,4.6rem)] font-black leading-none tracking-[-0.04em] text-white/[0.13]"
+            className="select-none text-[clamp(2.6rem,6vw,4.6rem)] font-extrabold leading-none tracking-[-0.04em] text-white/[0.13]"
             aria-hidden="true"
           >
             {number}
@@ -34,7 +34,7 @@ export default function HomeSectionHeader({
         <span className="h-[3px] w-10 rounded-full bg-[#4fcfde] shadow-[0_0_12px_rgba(79,207,222,0.6)] sm:w-12" />
       </div>
 
-      <h2 className="mt-2 text-pretty text-[clamp(1.9rem,3.4vw,3.1rem)] font-black uppercase leading-[0.98] tracking-[-0.02em] text-white [overflow-wrap:break-word]">
+      <h2 className="mt-2 text-pretty text-[clamp(1.9rem,3.4vw,3.1rem)] font-extrabold uppercase leading-[0.98] tracking-[-0.02em] text-white [overflow-wrap:break-word]">
         {title}
       </h2>
 

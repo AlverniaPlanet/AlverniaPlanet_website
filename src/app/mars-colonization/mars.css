@@ -1,0 +1,3556 @@
+/* ============================================================================
+   Mars Colonization — arkusz przypisany do podstrony.
+
+   PRZESTRZEŃ NAZW: `.mars-page`. Wspólna paleta (`--dj-*`) NIE jest tu
+   kopiowana — korzeń dopisany jest do selektora `.dojazd-page, .bistro-page`
+   w `globals.css`. Komentarz w tamtym pliku tłumaczy dlaczego: „skopiowana
+   paleta prędzej czy później się rozjedzie".
+
+   WŁASNE ZMIENNE są tylko tam, gdzie wspólna paleta nie ma odpowiednika:
+   czerwień i rdza marsjańska z briefu (sekcja 13).
+
+   UWAGA NA KOLEJNOŚĆ: `@media` nie podnosi swoistości, więc każdy blok z progiem
+   MUSI stać PO regule bazowej tego samego selektora. W tym repozytorium ta
+   pułapka wystąpiła już pięć razy — patrz test `dj9-kaskada.mjs`. Dlatego
+   wszystkie progi tej podstrony są zebrane na KOŃCU pliku, w jednym miejscu,
+   a nie rozsiane przy swoich sekcjach.
+
+   KIERUNEK Z BRIEFU: cinematic × mars × premium × mystery × real technology.
+   Granat to świat Alvernii, czerwień to świat kolonii, turkus to technologia
+   i marka, biel to komunikacja.
+   ========================================================================= */
+
+.mars-page {
+  /* Czerwień i rdza — jedyne barwy, których nie ma we wspólnej palecie. */
+  --ms-rdza: #c2502a;
+  --ms-czerwien: #e1623a;
+  --ms-zar: rgba(226, 98, 58, 0.16);
+  /* Wejście nagłówków sekcji (rozszczepienie barw, `.mars-rozszczepienie`).
+     0,75 czasów pierwszej wersji z „Rok 2035" — 05.10.2026: „o 25% szybsze". */
+  --ms-naglowek-start: 225ms;
+  --ms-naglowek-wejscie: 675ms;
+  --ms-naglowek-kopie: 825ms;
+  /* Ciemniejszy od `--dj-granat`: landing ma być nocny, a nie granatowy. */
+  --ms-noc: #05080f;
+  --ms-noc-2: #0a111d;
+  /* Kolor pod falą hero: wypełnienie fali i górna krawędź sekcji „Rok 2035"
+     muszą być TĄ SAMĄ liczbą, inaczej na styku rysuje się szew. */
+  --ms-pod-fala: #06111b;
+  /* Wysokość przyklejonego paska nawigacji — ZMIERZONA, nie policzona.
+     Trzy pasma, bo pasek ma trzy wysokości: do 767 px 98 px, 768–1279 px
+     105 px (ten sam hamburger, ale większe odsunięcie `md:top-4`), od 1280 px
+     70 px (pasek poziomy, od 05.10.2026 w paśmie 1280–1599 kompaktowy —
+     patrz `min-[1280px]` w `appbar.tsx`; zmierzone: ta sama wysokość).
+     Próg ma własny blok na końcu pliku, bo to wysokość PASKA, a nie układ
+     tej strony — dokładnie ta sama pułapka, którą na /bistro wyłapał test
+     `bs6-gora`, gdy próg paska przesunął się z 1024 na 1100. */
+  --ms-naglowek: 6.125rem;
+  --ms-fala: 2.75rem;
+  /* ODDECH NAD NAGŁÓWKIEM — cinematic przestrzeń, w której stoi głowa robota.
+     Rośnie z wysokością okna, bo w referencji jest ułamkiem ekranu. JEDNA
+     zmienna, bo tę samą miarę muszą trzymać DWA elementy: margines nagłówka
+     i kotwica postaci.
+
+     To nie jest porządkowanie — to naprawa błędu. Gdy kotwica robota była
+     stałą liczbą, a odstęp zależał od `svh`, na niskim oknie (realny iPhone
+     z paskiem przeglądarki) odstęp spadał ze 106 do 16 px, tekst jechał
+     w górę, a postać zostawała. Zmierzone: hełm z 49 px NAD tytułem robił się
+     29 px POD nim. W symulatorze z pełnym oknem problem nie występował. */
+  --ms-oddech: clamp(1rem, calc(103svh - 48.2rem), 13rem);
+  /* SKALA ZAWARTOŚCI HERO — mnożnik dla typografii, kart, przycisków i postaci.
+     Na telefonie i tablecie 1 (rozmiary pierwotne); od 1024 px 0,95 (05.10.2026,
+     prośba obiektu: napisy i robot o 5% mniejsze — blok progu 1024 mnoży przez
+     nią także desktopowe stopnie i wysokość postaci). Próbowaliśmy 0,8; mechanizm jest tu
+     zostawiony celowo, bo zmiana skali to teraz JEDNA liczba zamiast kilkunastu
+     ręcznie przeliczonych wartości.
+     UWAGA: przy wartości poniżej ~0,9 nazwa produktu przestaje się łamać na dwa
+     wiersze i kompozycja plakatowa się rozpada — trzeba wtedy dołożyć
+     `max-width: 78%` na `.mars-hero-tytul-glowny`. */
+  --ms-skala: 1;
+  /* SKALA SAMYCH NAPISÓW — nagłówek, podtytuł i lead. Osobna od `--ms-skala`,
+     bo zmniejszenie ma dotyczyć tekstu, a postać zostaje w swojej wielkości. */
+  --ms-skala-tekst: 1;
+  /* SKALA NAGŁÓWKÓW SEKCJI (h2) — 1 na telefonie i tablecie, 0,95 od 1024 px
+     (05.10.2026, prośba obiektu: „na desktopie o 5% mniejsze napisy"). */
+  --ms-skala-naglowka: 1;
+  /* CIEŃ POD TEKSTEM HERO — jedyna osłona czytelności na telefonie. Trzy
+     warstwy, bo jedna nie wystarcza: ciasna odcina literę od tła, średnia
+     buduje poświatę, szeroka sadza napis w kadrze. Cień nie dotyka pikseli
+     poza obrysem znaku, więc robot i planeta zostają jasne. */
+  --ms-cien: 0 1px 2px rgba(3, 5, 10, 0.78), 0 2px 10px rgba(3, 5, 10, 0.72),
+    0 0 32px rgba(3, 5, 10, 0.58);
+
+  /* Czerwień do TEKSTU na jasnym tle. `--ms-czerwien` ma tam tylko 3.36:1,
+     więc nadaje się wyłącznie na duże napisy; ta wersja ma 5.84:1 i może nieść
+     zwykły tekst. Na ciemnym pasie wraca jasna czerwień — patrz `.mars-ciemny`. */
+  --ms-czerwien-tekst: #a8421f;
+
+  /* STRONA JEST JASNA. Ciemne są wyłącznie trzy miejsca: nagłówek, pas
+     o robotach i finał — każde oznaczone `.mars-ciemny` albo własną regułą.
+     Taki jest rytm całego serwisu: ciemne hero zamknięte łukiem wchodzi
+     w jasną płaszczyznę, a ciemność wraca jako pełnoszerokościowe wcięcie. */
+  background: var(--dj-tlo);
+  color: var(--dj-tekst);
+}
+
+/* --- Ciemny pas -------------------------------------------------------------
+   Ta sama kompozycja co `.bistro-pas`: granat z dwiema poświatami, żeby pas nie
+   był płaską plamą. Wszystko, co w środku, wraca do barw „na ciemnym". */
+.mars-ciemny {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background-color: var(--ms-noc);
+  background-image:
+    radial-gradient(90% 120% at 82% 10%, rgba(226, 98, 58, 0.22) 0%, rgba(5, 8, 15, 0) 60%),
+    radial-gradient(70% 110% at 12% 95%, rgba(50, 216, 230, 0.14) 0%, rgba(5, 8, 15, 0) 60%),
+    linear-gradient(160deg, #0d1626 0%, var(--ms-noc) 55%, #03050a 100%);
+  color: #ffffff;
+}
+
+/* Kontener treści — ta sama miara co `.bistro-shell` i `.dojazd-shell`,
+   żeby landing trzymał się tej samej siatki co reszta serwisu. */
+.mars-shell {
+  width: 100%;
+  max-width: 73.75rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+
+/* --- Typografia wspólna ----------------------------------------------------- */
+
+/* Nadtytuł: na jasnym turkus ma 1.67:1 i jest nieczytelny, więc idzie tu
+   przyciemniony wariant marki (7.57:1). Na ciemnym wraca turkus — niżej. */
+.mars-overline {
+  margin: 0 0 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--dj-akcent);
+}
+
+.mars-hero .mars-overline,
+.mars-ciemny .mars-overline {
+  color: var(--dj-turkus);
+}
+
+.mars-tytul {
+  margin: 0;
+  font-size: calc(clamp(1.9rem, 6.2vw, 3.1rem) * var(--ms-skala-naglowka));
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.mars-lead {
+  margin: 1rem 0 0;
+  max-width: 44rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--dj-tekst-2);
+}
+
+.mars-hero .mars-lead,
+.mars-ciemny .mars-lead {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+/* Zdanie-zaprzeczenie („To nie jest wystawa robotów") — z briefu. Stoi NAD
+   nagłówkiem i jest celowo wyciszone: ma otwierać zdanie, które dopiero
+   nagłówek domyka. */
+.mars-zaprzeczenie {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1rem, 3.4vw, 1.25rem);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--dj-tekst-2);
+  text-decoration: line-through;
+  text-decoration-color: var(--ms-czerwien-tekst);
+  text-decoration-thickness: 2px;
+}
+
+.mars-ciemny .mars-zaprzeczenie {
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration-color: var(--ms-czerwien);
+}
+
+/* Pytanie zamykające „Twoją misję" — FINAŁ po pięciu krokach, a nie drugi
+   nagłówek. Do 05.10.2026 miało 2rem i grubość 800, przez co konkurowało
+   z „Pięć kroków misji"; teraz jest o ok. 22% mniejsze (desktop 1.55rem
+   zamiast 2rem, telefon 1rem zamiast 1.25rem) i lżejsze. Nad nim cienka
+   kreska schodzi od nawigacji taśmy — przejście „po etapach → pytanie". */
+.mars-pytanie {
+  margin: 1.25rem 0 0;
+  font-size: clamp(1rem, 3.6vw, 1.55rem);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  color: var(--ms-czerwien-tekst);
+  text-wrap: balance;
+}
+
+.mars-pytanie::before {
+  content: "";
+  display: block;
+  width: 1px;
+  height: 1.75rem;
+  margin: 0 auto 0.85rem;
+  background: linear-gradient(180deg, rgba(226, 98, 58, 0) 0%, rgba(226, 98, 58, 0.75) 100%);
+}
+
+.mars-ciemny .mars-pytanie {
+  color: var(--ms-czerwien);
+}
+
+.mars-zadanie {
+  margin: 1.25rem 0 0;
+  font-size: clamp(1.15rem, 4vw, 1.6rem);
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--dj-tekst);
+  text-wrap: balance;
+}
+
+.mars-ciemny .mars-zadanie {
+  color: #ffffff;
+}
+
+/* --- Przyciski --------------------------------------------------------------- */
+
+.mars-przycisk-glowny,
+.mars-przycisk-drugi {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  /* 46 px, nie 44: przy równych 44 px kontrolka stoi dokładnie na progu
+     wytycznych dotykowych, a ułamek piksela z dociągnięcia pisma spycha ją
+     poniżej. Ta sama liczba co na /jak-dojechac. */
+  min-height: 2.875rem;
+  padding: 0.85rem 1.4rem;
+  /* Ten sam promień co w przyciskach /bistro i /jak-dojechac (`--dj-promien`,
+     14 px) — kapsuła 9999 px odstawała od reszty serwisu. Plakietki niżej
+     (podpis zdjęcia) zostają okrągłe: to etykiety, nie kontrolki, i tam
+     pełne zaokrąglenie jest wspólne dla całego serwisu. */
+  border-radius: var(--dj-promien);
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    transform 180ms ease;
+}
+
+/* CIEMNY TUSZ na czerwieni, nie biel — i to jest pomiar, nie gust.
+   Biel na `--ms-czerwien` daje 3.49:1 przy 15.2 px pogrubionym, czyli PONIŻEJ
+   progu 4.5:1; etykieta głównej akcji konwersyjnej byłaby nieczytelna dla osoby
+   słabowidzącej. Było przy tym odwrotnie, niż powinno: stan najechania
+   (`--ms-rdza`, 4.69:1) czytał się LEPIEJ niż spoczynek, a na ekranie dotykowym
+   najechania nie ma wcale.
+   Tusz `--ms-noc` na czerwieni daje 5.73:1. To ta sama zasada, co w przycisku
+   /bistro (turkus + `--dj-turkus-ink`, 9.7:1): jasna powierzchnia akcentowa
+   dostaje ciemny tusz, a nie biały. */
+.mars-przycisk-glowny {
+  border: 0;
+  background: var(--ms-czerwien);
+  /* BIEL NA ŻYCZENIE OBIEKTU (2026-10-04). Zmierzone: biel na `--ms-czerwien`
+     daje 3,48:1, czyli PONIŻEJ progu 4,5:1 dla zwykłego tekstu — poprzedni
+     ciemny tusz `--ms-noc` miał 5,76:1. To jest świadoma decyzja projektowa,
+     nie przeoczenie.
+     Gdyby kiedyś trzeba było wrócić do zgodności bez rezygnacji z bieli:
+     przyciemnienie czerwieni o 14% (#c25431) podnosi wynik do 4,56:1. */
+  color: #ffffff;
+  box-shadow: 0 10px 28px rgba(226, 98, 58, 0.3);
+}
+
+/* Najechanie ROZJAŚNIA, a nie przyciemnia: kontrast ma rosnąć, nie spadać
+   (6.7:1). Wcześniej było odwrotnie. */
+.mars-przycisk-glowny:hover {
+  background: #ef6f44;
+  transform: translateY(-1px);
+}
+
+.mars-przycisk-glowny:disabled {
+  opacity: 0.6;
+  cursor: progress;
+  transform: none;
+}
+
+/* Przycisk drugi żyje tylko w hero, czyli zawsze na ciemnym. */
+.mars-przycisk-drugi {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  /* Rozjaśniająca szyba (biel 0,06) działa tylko na ciemnym tle. Na telefonie
+     ten przycisk siada na jasnej obudowie robota, więc wypełnienie jest
+     CIEMNE — rozjaśnienie podniosłoby tam tło jeszcze bliżej bieli napisu.
+     Od 1024 px wraca wersja rozjaśniająca. */
+  background: rgba(6, 10, 18, 0.66);
+  color: #ffffff;
+}
+
+.mars-przycisk-drugi:hover {
+  border-color: var(--dj-turkus);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* --- Pasek interfejsu misji --------------------------------------------------
+   Element scenograficzny z briefu. Na telefonie przewija się poziomo zamiast
+   łamać na pięć wierszy — to ma czytać się jak taśma telemetrii. */
+
+/* NA TELEFONIE pasek niesie TYLKO dwie pozycje: misję i stan.
+     MISSION │ STATUS
+   Daty wyleciały stąd świadomie — stoją niżej we własnych kartach i pokazywanie
+   ich dwa razy na jednym ekranie to dublowanie informacji, nie worldbuilding.
+   Pasek ma być scenografią interfejsu misji, a nie panelem danych.
+   Od 1024 px wraca pełny układ jednorzędowy — desktop jest zamknięty. */
+.mars-hud {
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-content: start;
+  column-gap: 0;
+  row-gap: 0;
+  margin: 0 0 1.75rem;
+  padding: 0 0 0.85rem;
+  overflow-x: visible;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  list-style: none;
+  /* Pasek nie jest treścią (ma `aria-hidden`), więc nie może zatrzymywać
+     przewijania strony pod palcem — `overscroll-behavior-x` odcina łańcuch,
+     gdy palec dojedzie do jego końca. Fokus odbiera `tabIndex={-1}`
+     w komponencie; samo `scrollbar-width` nie robi ani jednego, ani drugiego. */
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+
+.mars-hud::-webkit-scrollbar {
+  display: none;
+}
+
+.mars-hud li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  flex: 0 0 auto;
+}
+
+/* Rozstawienie JAWNE, bo kolejność w dokumencie (MISSION, STATUS, COLONY
+   INSPECTORS, PRE-SALE, HUMAN ARRIVAL) nie pokrywa się z układem na ekranie.
+   Na telefonie zostają dwie pierwsze pozycje; „colony inspectors" i obie daty
+   są wygaszone. */
+.mars-hud > li:nth-child(1) { grid-area: 1 / 1; }
+.mars-hud > li:nth-child(2) { grid-area: 1 / 2; }
+
+.mars-hud > li:nth-child(3),
+.mars-hud > li:nth-child(4),
+.mars-hud > li:nth-child(5) {
+  display: none;
+}
+
+/* Cienka kreska pionowa między misją a stanem. Kreska jest NA elemencie,
+   nie między nimi, więc nie trzeba pseudoelementów ani dodatkowego znacznika. */
+.mars-hud > li:nth-child(2) {
+  margin-left: 1.1rem;
+  padding-left: 1.1rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+/* 0.62, nie 0.42: przy 9.6 px każdy piksel kontrastu się liczy, a 42% bieli
+   dawało 4.37:1 — poniżej progu. Teraz 7.4:1. */
+.mars-hud-klucz {
+  text-shadow: var(--ms-cien);
+  font-size: calc(0.55rem * var(--ms-skala));
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+/* 0,68 rem, nie 0,74: przy większym piśmie „MARS COLONIZATION" łamało się
+   w swojej kolumnie na dwa wiersze i cały pasek rósł o 19 px, spychając
+   nagłówek w dół. Od 1024 px wraca pierwotna miara. */
+.mars-hud-wartosc {
+  text-shadow: var(--ms-cien);
+  font-size: calc(0.68rem * var(--ms-skala));
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--dj-turkus);
+}
+
+/* „PREPARING..." — kropki odsłaniane po kolei: żadna, jedna, dwie, trzy.
+   `clip-path` odcina je od prawej, a `steps(4, jump-none)` zatrzymuje
+   animację dokładnie na czterech stanach, bez przejść pośrednich. Kropki
+   mają równą szerokość, więc granice cięcia (⅓, ⅔) wypadają między nimi.
+   Szerokość elementu się nie zmienia — tekst obok nie skacze. Przy
+   „ogranicz ruch" animację gasi blok na końcu arkusza i kropki stoją
+   w komplecie. */
+.mars-hud-kropki {
+  display: inline-block;
+  animation: mars-kropki 1.6s steps(4, jump-none) infinite;
+}
+
+@keyframes mars-kropki {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* Radar za „PREPARING..." (prośba obiektu, 05.10.2026): tarcza z celownikiem,
+   wiązka omiatająca ją w kółko i plamka w środku — wskaźnik pracy konsoli
+   misji, a nie zwykłe kółko ładowania. Obraca się WYŁĄCZNIE wiązka
+   (`::before`); pierścień i celownik stoją jak na prawdziwym ekranie radaru.
+   Stoi ZA kropkami, nie przed słowem: lewe krawędzie „STATUS" i „PREPARING"
+   zostają w jednej linii jak w całym pasku.
+   WIELKOŚĆ: 2,1em pisma wartości (ok. 25 px na desktopie) — 1,1em było za
+   małe (uwaga obiektu). Ujemne marginesy w pionie trzymają wysokość wiersza,
+   więc pasek nie rośnie, a przesunięcie w górę stawia środek tarczy w połowie
+   OBU wierszy pozycji („STATUS" nad „PREPARING"), a nie samej wartości.
+   Ciemna obwódka to odpowiednik `--ms-cien` napisów — pasek leży na
+   fotografii. Przy „ogranicz ruch" animację gasi blok na końcu arkusza;
+   zostaje nieruchoma wiązka. */
+.mars-hud-radar {
+  position: relative;
+  display: inline-block;
+  width: 2.1em;
+  height: 2.1em;
+  margin: -0.6em 0 -0.6em 0.6em;
+  vertical-align: middle;
+  translate: 0 -0.5em;
+  border: 1px solid rgba(50, 216, 230, 0.6);
+  border-radius: 50%;
+  /* Celownik: dwie włosowe linie przez środek tarczy. */
+  background:
+    linear-gradient(rgba(50, 216, 230, 0.22), rgba(50, 216, 230, 0.22)) 50% 50% / 100% 1px no-repeat,
+    linear-gradient(rgba(50, 216, 230, 0.22), rgba(50, 216, 230, 0.22)) 50% 50% / 1px 100% no-repeat,
+    radial-gradient(circle, rgba(50, 216, 230, 0.1) 0%, rgba(50, 216, 230, 0) 70%);
+  box-shadow:
+    0 0 0 1px rgba(3, 5, 10, 0.45),
+    0 0 0.7em rgba(50, 216, 230, 0.35);
+}
+
+/* Wiązka: stożek gasnący za linią czoła. */
+.mars-hud-radar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(rgba(50, 216, 230, 0) 0deg 240deg, rgba(50, 216, 230, 0.85) 358deg, rgba(50, 216, 230, 0) 360deg);
+  animation: mars-radar 1.8s linear infinite;
+}
+
+.mars-hud-radar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 0.2em;
+  height: 0.2em;
+  margin: auto;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 0.3em rgba(50, 216, 230, 0.9);
+}
+
+@keyframes mars-radar {
+  to {
+    rotate: 360deg;
+  }
+}
+
+/* Logo AGIBOT za stanem misji — trzecia kolumna siatki w pasku hero.
+   Pasek ma szerokość SWOJEJ TREŚCI (`fit-content`), więc kreska pod nim
+   kończy się na logo, a nie ciągnie przez całą kolumnę — na desktopie
+   przecinała hełm postaci. Kolumna logo ma `minmax(0, max-content)`: przy
+   dość miejscu mieści logo (6rem) RAZEM z odstępem i kreską przed nim,
+   a gdy pasek dobija do szerokości okna (`max-width: 100%`), kolumna się
+   kurczy i logo maleje, zamiast łamać pasek na dwa wiersze (drugi wiersz
+   zepchnąłby nagłówek i postać). Przy `minmax(0, 6rem)` odstęp i kreska
+   zjadały z tych 6rem 30 px i logo miało 66 px zamiast 96.
+   Swoistość `.mars-hud > li.…` niżej jest konieczna — `.mars-hud li`
+   ustawia kolumnowego flexa i przy samej klasie wygrywał. */
+.mars-hero .mars-hud {
+  width: fit-content;
+  max-width: 100%;
+  grid-template-columns: auto minmax(0, max-content);
+}
+
+/* W pasku HERO nie ma pozycji „MISSION / MARS COLONIZATION" (05.10.2026) —
+   nazwa stoi tuż niżej jako nagłówek, a pasek niesie stan misji i logo.
+   Pozycja zostaje w znaczniku, bo pasek finałowy pokazuje ją od 1280 px;
+   tu jest tylko ukryta. STATUS wchodzi więc na początek rzędu, bez kreski
+   przed sobą (kreskę miał jako druga pozycja). */
+.mars-hero .mars-hud > li:nth-child(1) {
+  display: none;
+}
+
+.mars-hero .mars-hud > li:nth-child(2) {
+  grid-area: 1 / 1;
+  margin-left: 0;
+  padding-left: 0;
+  border-left: 0;
+}
+
+.mars-hud > li.mars-hud-logo {
+  grid-area: 1 / 2;
+  flex-direction: row;
+  align-items: center;
+  min-width: 0;
+  margin-left: 0.9rem;
+  padding-left: 0.9rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.mars-hud-logo img {
+  display: block;
+  /* Szerokość JAWNA (6rem) — od niej liczy się szerokość kolumny — a
+     kurczenie przez `max-width: 100%`, gdy kolumnie brakuje miejsca. */
+  width: 6rem;
+  max-width: 100%;
+  height: auto;
+  /* Ten sam cień co pod napisami paska — na telefonie pasek leży na
+     fotografii nieba i krawędzi planety. */
+  filter: drop-shadow(0 1px 4px rgba(3, 5, 10, 0.7));
+}
+
+
+/* --- Hero ---------------------------------------------------------------------
+   Kompozycja plakatowa: krajobraz jako scenografia, humanoid jako bohater po
+   prawej, cała treść w lewej kolumnie. Tło i postać to DWA osobne pliki i mają
+   takie zostać — dzięki temu robot może wychodzić poza kadr i być skalowany
+   niezależnie od fotografii.
+
+   Mobile i desktop to dwa RÓŻNE układy, a nie jeden przeskalowany:
+   — od 1024 px tekst stoi w lewej kolumnie, postać w prawej, obok siebie;
+   — niżej tekst idzie pod nagłówek, a postać zajmuje dolną prawą ćwiartkę
+     i jest przycięta do popiersia, bo na szerokość obu naraz nie ma miejsca.
+   Oba układy są WARSTWAMI nad tą samą fotografią — postać nigdzie nie wchodzi
+   w tok dokumentu i nigdzie nie wydłuża sekcji (patrz blok progów na końcu). */
+
+.mars-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  /* Treść zaczepiona do GÓRY kadru. To jedyny wariant, w którym odstęp pod
+     paskiem jest TAKI SAM na każdej wysokości telefonu. Przy wyrównaniu do dołu
+     cały luz zbierał się nad HUD-em (87 px przy oknie 390, 186 px przy 430);
+     przy środkowaniu dzielił się na pół, więc nadal rósł z wysokością okna
+     (40 px przy 390, 104 px przy 430). Przy zaczepieniu do góry odstęp jest
+     stały i równy dopełnieniu: 45 px.
+     Druga korzyść jest nie mniej ważna: cały blok treści ma teraz STAŁE
+     współrzędne od góry, więc postać da się zaczepić stałą wartością i nic
+     się nie rozjeżdża między szerokościami. Od 1024 px wyrównanie wraca
+     do środka. */
+  /* Treść zaczepiona do GÓRY: wszystkie odstępy są policzone od górnej
+     krawędzi, więc blok ma stałe współrzędne, a zapas wysokości zostaje na
+     dole — tam, gdzie i tak jest marsjański grunt. Od 1024 px wyrównanie
+     wraca do środka. */
+  align-items: flex-start;
+  /* Pasek nawigacji jest „sticky", więc ZAJMUJE miejsce nad nagłówkiem — bez
+     tego fotografia zaczyna się dopiero pod nim i u góry zostaje pas płaskiego
+     tła. Wciągamy nagłówek pod pasek ujemnym marginesem i oddajemy tę samą
+     wartość w dopełnieniu, żeby treść została tam, gdzie była. */
+  margin-top: calc(-1 * var(--ms-naglowek));
+  /* Postać NIE rezerwuje miejsca w toku dokumentu — jest warstwą nad kadrem.
+     Wcześniej jej wysokość wchodziła w dolne dopełnienie i hero rozciągało się
+     na prawie dwa ekrany telefonu, z pustym krajobrazem między przyciskiem
+     a głową robota. */
+  /* 3,5 rem = 56 px odstępu między paskiem a HUD-em, stale na każdej
+     szerokości telefonu. Dół rezerwuje miejsce na kliszę filmową
+     (`--ms-klisza-strefa`, w niej mieści się też fala) — klisza jest warstwą
+     bezwzględną i sama miejsca w toku nie zajmuje. */
+  padding-block: calc(2rem + var(--ms-naglowek)) calc(1.5rem + var(--ms-klisza-strefa));
+  /* `svh`, nie `vh`: na telefonie `vh` liczy się do PEŁNEJ wysokości okna,
+     razem z paskiem przeglądarki, który chowa się dopiero przy przewijaniu.
+     Minimum to 100%, ale kadr i tak wychodzi wyższy (105–108%), bo decyduje
+     o tym treść: odstęp pod HUD-em rośnie z wysokością okna. To jest ta
+     cinematic przestrzeń z referencji — NIE jest pusta, wypełnia ją głowa
+     robota i krawędź planety. */
+  /* Sam blok napisów o 15% mniejszy NA TELEFONIE. Postać, karty i przyciski
+     zostają w swojej mierze — stąd osobna zmienna, a nie wspólna skala. */
+  --ms-skala-tekst: 0.85;
+  min-height: 100svh;
+  background: var(--ms-noc);
+  /* KONIECZNE od chwili, gdy strona stała się jasna: bez tego cała treść hero
+     dziedziczy `--dj-tekst` z korzenia i granatowy tytuł ginie na granatowej
+     fotografii. */
+  color: #ffffff;
+}
+
+.mars-hero-foto {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+}
+
+.mars-hero-foto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* UWAGA NA PUŁAPKĘ: kadr 16:9 w wysokim pudełku telefonu `cover` skaluje
+     PO WYSOKOŚCI, więc pionowa składowa `object-position` nie robi NIC —
+     widać całą wysokość pliku, a przycinany jest tylko bok. Przez to planeta
+     (górne 45% pliku) ściskała się do 45% kadru i ginęła.
+
+     Dlatego obraz jest tu WYŻSZY od pudełka (118%) i przyklejony do góry —
+     dzięki temu tarcza planety rośnie i dominuje kadr, jak w referencji.
+
+     POZIOME 54% to wynik zderzenia dwóch wymagań. Przy 50% granica nieba
+     i tarczy wypada na środku kadru, tekst siada na ciemnym niebie i przesłona
+     może być lekka — ale wtedy CAŁA tarcza chowa się za postacią i planety
+     nie widać wcale. Przy 54% tarcza wchodzi na tyle w lewo, że widać ją obok
+     hełmu, kosztem mocniejszej przesłony pod literami. Referencja robi to samo:
+     za „MARS" jest ciemno, a planeta rozświetla się dopiero na prawo od napisu.
+
+     Nadmiar przycina `overflow: hidden` nagłówka.
+     Od 1024 px wszystko wraca do kadru desktopowego. */
+  height: 118%;
+  object-position: 54% 0;
+}
+
+/* Warstwy przyciemnień. Pięć gradientów w jednej deklaracji, od góry:
+   1. ciemny klin od lewej — pod kolumnę tekstu,
+   2. przyciemnienie od dołu — pod przyciski i łuk,
+   3. winieta — zbiera kadr i odcina rogi,
+   4. zimna poświata po lewej — barwa marki, bardzo subtelna,
+   5. ciepła poświata przy robocie — oddziela go od tła.
+   Osobny element, a nie `background` nagłówka, bo pod spodem leży `<img>`,
+   który musi zostać obrazem (wariantowanie, `fetchPriority`, opis alternatywny). */
+.mars-hero::before {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  pointer-events: none;
+  /* TELEFON. Przesłona jest tu narzędziem czytelności, nie nastroju, i ma
+     KSZTAŁT BLOKU TEKSTU, a nie całego kadru. To jest sedno: pełnoszerokościowe
+     przyciemnienie dołu ratowało litery, ale gasiło tors robota na całej
+     szerokości i postać stawała się szarą plamą — dokładnie tego brief zabrania.
+
+     Elipsa jest zaczepiona pod GOŁYM tekstem (środek 26%/41%) i nie schodzi
+     niżej, bo niżej nie ma czego ratować: karty z datami i oba przyciski mają
+     własne tła. A właśnie tam, poniżej leadu, zaczyna się jasny tors — więc
+     każdy piksel przyciemnienia zabrany z dołu kadru wraca jako widoczna
+     postać. Elipsa wygasa też do zera przed prawą krawędzią, żeby zostawić
+     jasny pas sylwetki i planetę.
+
+     Zmierzone na pięciu szerokościach: najsłabszy napis 3,95:1 przy progu 3,
+     a średnia jasność widocznej postaci 56,2 wobec 38,5 przy poprzedniej,
+     płaskiej wersji — czyli jednocześnie czytelniej I o 46% jaśniej.
+     Desktop ma własną wersję w bloku progów i jest NIETKNIĘTY. */
+  background:
+    /* Ta warstwa leży POD POSTACIĄ, więc NIE WOLNO jej używać do czytelności —
+       każdy ciemny piksel gasi tu robota. Czytelność załatwia osobna przesłona
+       nad postacią. Tu zostaje sama atmosfera:
+       temperatura, winieta i domknięcie dołu. Dokładnie taka jest kolejność
+       warstw w briefie: tło → gradienty → robot → interfejs.
+       1. Domknięcie dołu — tylko tyle, żeby łuk nie wychodził z pustki.
+          0,48 zamiast 0,78: przy mocniejszym grunt marsjański robił się czarny,
+          a w referencji jest ciepły i widoczny aż do fali. */
+    /* Wygaszenie od fali w górę, ZA kliszą filmową (klisza leży na tej samej
+       warstwie, ale później w drzewie, więc nad nim). Zaczyna się kolorem
+       fali, więc dół kadru przechodzi w łuk bez krawędzi, a kopuły za kliszą
+       gasną i taśma odkleja się od zdjęcia. Miary od dołu, nie procenty
+       wysokości: hero ma na każdym telefonie inną wysokość. */
+    linear-gradient(
+      0deg,
+      var(--ms-pod-fala) 0,
+      var(--ms-pod-fala) var(--ms-fala),
+      rgba(6, 17, 27, 0.85) calc(var(--ms-fala) + 12vw),
+      rgba(6, 17, 27, 0.4) calc(var(--ms-fala) + 32vw),
+      rgba(6, 17, 27, 0) calc(var(--ms-fala) + 52vw)
+    ),
+    /* 2. Bardzo delikatna winieta — ma domykać kadr, nie gasić planety. */
+    radial-gradient(142% 112% at 58% 36%, rgba(3, 5, 10, 0) 62%, rgba(3, 5, 10, 0.24) 100%),
+    /* 3. Temperatura sceny: chłodny poblask po lewej, ciepły po prawej i przy
+          gruncie. To jest ta różnica, przez którą referencja wygląda jak kadr
+          filmowy, a nie jak granatowa strona. */
+    radial-gradient(62% 54% at 0% 44%, rgba(50, 216, 230, 0.12) 0%, rgba(50, 216, 230, 0) 72%),
+    radial-gradient(64% 50% at 82% 22%, rgba(226, 98, 58, 0.42) 0%, rgba(226, 98, 58, 0) 78%),
+    radial-gradient(90% 34% at 62% 100%, rgba(226, 98, 58, 0.26) 0%, rgba(226, 98, 58, 0) 72%);
+}
+
+/* DELIKATNY FADE OD LEWEJ. Pełna wysokość i szerokość kadru — żadnej krawędzi
+   do zobaczenia, bo zaczyna się na samym brzegu ekranu i wygasa do zera zanim
+   dojdzie do postaci.
+
+   `z-index: 3`, czyli TYLE SAMO co postać: przy równych wartościach decyduje
+   kolejność w drzewie, a pseudoelement `::after` jest ostatnim dzieckiem, więc
+   ląduje NAD robotem i POD tekstem (4). Dzięki temu pomaga literom leżącym na
+   sylwetce, a nie tylko tym na niebie.
+
+   Siła 0,5 przy lewej krawędzi i zero na 52% szerokości — mniej więcej za
+   środkiem „COLONIZATION" (napis kończy się na 71%). Prawa połowa kadru,
+   z hełmem i tarczą planety, zostaje nietknięta. */
+.mars-hero::after {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    97deg,
+    rgba(3, 5, 10, 0.5) 0%,
+    rgba(3, 5, 10, 0.36) 22%,
+    rgba(3, 5, 10, 0.16) 38%,
+    rgba(3, 5, 10, 0) 52%
+  );
+}
+
+/* --- Humanoid -----------------------------------------------------------------
+   WARSTWY (telefon):
+
+     0  fotografia
+     1  postać        ← POD przesłoną
+     2  przesłona     ← gradienty, które pilnują czytelności liter
+     4  treść         ← zawsze na wierzchu
+     5  łuk
+
+   Na telefonie postać i litery leżą na sobie — taka jest kompozycja — więc
+   między nimi MUSI być warstwa gradientów. Od 1024 px postać przeskakuje NAD
+   przesłonę (z-index 3), bo tam stoi obok kolumny tekstu i ma zostać jasna.
+
+   TELEFON: duża, hełm w prawej połowie na wysokości nagłówka, tors schodzi
+   wzdłuż prawej krawędzi i jest ucięty łukiem. NIE rezerwuje miejsca w toku
+   dokumentu — jest warstwą, więc nie wydłuża sekcji ani o piksel. */
+.mars-hero-humanoid {
+  position: absolute;
+  /* POZYCJA Z POMIARU REFERENCJI, nie z oka. W obrazie wzorcowym czubek hełmu
+     wypada na 22% wysokości ekranu — czyli na wysokości drugiego rzędu paska
+     misji — a podbródek na ok. 42%, tuż nad nagłówkiem. Głowa zajmuje poziomo
+     mniej więcej 57–95% szerokości.
+
+     Stąd: `top: 11.5rem` (184 px, czyli dokładnie rząd „HUMAN ARRIVAL"),
+     `width: 100vw` (hełm to 30% wysokości pliku, więc przy tej szerokości ma
+     188 px i kończy się na 378 px) oraz `right: -28vw`, które stawia hełm
+     w prawej części kadru i wypuszcza resztę figury poza krawędź.
+
+     Zaczepienie stałą wartością od góry, bo treść też jest zaczepiona do góry —
+     relacja hełmu do HUD-u i nagłówka zostaje ta sama na każdym telefonie. */
+  /* `z-index: 3` — NAD atmosferą, pod interfejsem. Przy `1` (pod przesłoną)
+     postać gasła razem z całą sceną i była ciemną plamą zamiast bohatera. */
+  z-index: 3;
+  /* Przesunięcia liczone WZGLĘDEM POSTACI, nie okna: +9% jej szerokości
+     w prawo (0,09 × 72vw = 6,5vw) i −13,5% jej wysokości w górę
+     (0,135 × 72vw × 1,611 = 61 px przy oknie 390, czyli 3,8 rem).
+     W pionie zostaje `rem`, bo blok tekstu też ma stałe współrzędne — dzięki
+     temu relacja hełmu do nagłówka jest ta sama na każdym telefonie. */
+  /* Kotwica JEST ZWIĄZANA z oddechem nad nagłówkiem (`--ms-oddech`), a nie
+     stała. Przy pełnym oknie wychodzi z tego dokładnie 14,7 rem, czyli tyle,
+     ile było — ale na niskim oknie postać jedzie w górę razem z tekstem
+     zamiast zostawać w miejscu. */
+  top: calc(8.05rem + var(--ms-oddech));
+  bottom: auto;
+  /* 10% szerokości postaci w lewo wobec poprzedniego ustawienia
+     (0,10 × 72vw = 7,2vw, czyli -28,5vw → -21,3vw). */
+  right: -21.3vw;
+  width: calc(72vw * var(--ms-skala));
+  max-width: none;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+}
+
+.mars-hero-humanoid img {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* Cień daje postaci ciężar, a ciepły obrys odkleja ją od tła. Oba na
+     `filter`, więc idą przez kompozytor i nie kosztują odmalowania. Barw
+     samego materiału nie ruszamy. */
+  filter:
+    drop-shadow(0 18px 38px rgba(3, 5, 10, 0.75))
+    drop-shadow(0 0 26px rgba(226, 98, 58, 0.26));
+  /* TELEFON: plik postaci kończy się na wysokości bioder, a na telefonie
+     dół postaci wypada w połowie kadru — bez wygaszenia rysował się tam
+     prosty, poziomy brzeg tuż nad kliszą filmową. Od 768 px dół postaci
+     schodzi poniżej dołu hero i maska jest zdjęta — inaczej klisza
+     prześwitywałaby przez biodra. */
+  mask-image: linear-gradient(180deg, #000 80%, transparent 100%);
+}
+
+/* --- Klisza filmowa ------------------------------------------------------------
+   Komponent `KliszaHero.tsx`. Hierarchia z briefu: nazwa produktu → postać
+   → przycisk → daty → KLISZA. Klisza jest pierwszoplanową ozdobą, a nie
+   osobną sekcją: przecina dół sceny po łagodnej krzywej, wchodzi ZA postać
+   i częściowo chowa się za falą.
+
+   WARSTWY: fotografia 0 → atmosfera `::before` 2 → KLISZA 2 (później
+   w drzewie, więc nad atmosferą) → postać 3 → treść 4 → fala 5.
+
+   GEOMETRIA (w zmiennych, bo czyta je skrypt — wartości dla progów są
+   w bloku progów na końcu pliku):
+   --ms-klisza-wys     wysokość taśmy (perforacje + okno kadru),
+   --ms-klisza-fala    punkty krzywej „x y": x — ułamek szerokości hero,
+                       y — oś taśmy nad dołem hero w wysokościach taśmy,
+   --ms-klisza-skala   perspektywa: skala przy lewej krawędzi, w środku,
+                       przy prawej (lewa strona jest bliżej widza),
+   --ms-klisza-rozmycie  głębia ostrości: [px] przy lewej krawędzi, ułamek
+                       szerokości, na którym wygasa; [px] przy prawej,
+                       ułamek, od którego narasta,
+   --ms-klisza-petla   sekundy na pełną sekwencję sześciu zdjęć,
+   --ms-klisza-strefa  ile miejsca nad dołem hero zajmuje taśma pod kolumną
+                       treści (górna krawędź taśmy + odstęp) — dolne
+                       dopełnienie hero. Liczone Z KRZYWEJ: przy zmianie
+                       punktów trzeba je przeliczyć (miernik
+                       `mc2-klisza.mjs` pokazuje odstęp od przycisków).
+
+   TELEFON (baza): niska, prawie płaska taśma pod przyciskami, ok. trzech
+   kadrów naraz, dolna perforacja wchodzi pod falę. */
+.mars-hero {
+  --ms-klisza-wys: clamp(6.5rem, 28vw, 7.5rem);
+  /* Oś podniesiona o 0,15 wysokości taśmy (05.10.2026, na życzenie obiektu)
+     — wcześniej fala ucinała dół kadrów. Rozmiar bez zmian. */
+  --ms-klisza-fala: -0.3 0.95, 0.35 0.72, 0.75 0.67, 1.3 0.93;
+  --ms-klisza-skala: 1 1 1;
+  --ms-klisza-rozmycie: 0 0.35 0 0.9;
+  --ms-klisza-petla: 34;
+  /* Górna krawędź taśmy sięga ok. 1,35 jej wysokości nad dół hero. Strefa
+     urosła po podniesieniu osi tylko o 0,75 rem, a nie o całe 0,15 taśmy:
+     taśma wychodzi znad fali i idzie w górę, ale nie przykleja się do
+     przycisku „Odkryj misję" — ten ma od 05.10.2026 widoczną ramkę, więc
+     odstęp liczy się od niej (ok. 25 px), a nie od samego napisu. */
+  --ms-klisza-strefa: calc(var(--ms-klisza-wys) * 1.2 + 1.25rem);
+}
+
+.mars-klisza {
+  position: absolute;
+  z-index: 2;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  /* Pas na całą możliwą wysokość krzywej — tyle zajmuje warstwa wstęgi.
+     Odcinki są zaczepione do dołu i przesuwane transformacją. */
+  height: calc(var(--ms-klisza-wys) * 2.6);
+  pointer-events: none;
+  user-select: none;
+  /* Ukryta do pierwszego ułożenia przez skrypt: przed nim odcinki leżą
+     jeden na drugim w lewym dolnym rogu. */
+  visibility: hidden;
+}
+
+.mars-klisza.is-gotowa {
+  visibility: visible;
+  animation: mars-klisza-wejscie 1100ms cubic-bezier(0.22, 0.61, 0.36, 1) 380ms both;
+}
+
+@keyframes mars-klisza-wejscie {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Wstęga pod odcinkami: rozmyty cień taśmy na scenie i podkład, który
+   wypełnia kliny między odcinkami na zgięciach krzywej. Nad odcinkami —
+   włos światła na krawędziach. Obie warstwy liczy skrypt z tego samego,
+   gładkiego obrysu, którym przycina też odcinki (`.mars-klisza-tor`). */
+.mars-klisza-wstega,
+.mars-klisza-swiatlo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.mars-klisza-cien {
+  fill: rgba(2, 3, 6, 0.62);
+  transform: translateY(calc(var(--ms-klisza-wys) * 0.08));
+  filter: blur(calc(var(--ms-klisza-wys) * 0.09));
+}
+
+/* Kolor krawędzi podkładu odcinka — kliny wypadają właśnie przy krawędzi. */
+.mars-klisza-podklad {
+  fill: #141418;
+}
+
+.mars-klisza-tor {
+  position: absolute;
+  inset: 0;
+}
+
+/* Metaliczny połysk: ciepły włos światła na obu brzegach taśmy. */
+.mars-klisza-swiatlo path {
+  fill: none;
+  stroke: rgba(255, 214, 186, 0.2);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+/* ODCINEK = jeden kadr taśmy 35 mm: szerokość kroku to 1,11 wysokości
+   taśmy (proporcja filmu małoobrazkowego: klatka 36 mm + przerwa 2 mm przy
+   taśmie 35 mm), osiem perforacji na krok, okno kadru 3 : 2.
+
+   PODKŁAD jest czarny i „metaliczny": przy krawędziach jaśniejszy pas,
+   w środku głęboka czerń — tyle wystarczy, żeby taśma czytała się jako
+   materiał, a nie płaska plama. Włos światła na samym brzegu rysuje
+   `.mars-klisza-swiatlo`, nie odcinek — inaczej łamałby się na łączeniach. */
+.mars-klisza-odcinek {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: calc(var(--ms-klisza-wys) * 1.11);
+  height: var(--ms-klisza-wys);
+  transform-origin: 50% 50%;
+  background: linear-gradient(
+    180deg,
+    #18181c 0%,
+    #0e0e11 9%,
+    #0a0a0c 17%,
+    #0b0b0e 50%,
+    #0a0a0c 83%,
+    #0e0e11 91%,
+    #16161a 100%
+  );
+}
+
+/* Ruch: warstwa kompozytora na odcinek tylko wtedy, gdy taśma płynie — przy
+   „ogranicz ruch" i poza kadrem odcinki leżą w jednej warstwie. */
+.mars-klisza.is-ruch .mars-klisza-odcinek {
+  will-change: transform;
+}
+
+/* PERFORACJE: dwa rzędy po osiem otworów na odcinek, rysowane jednym
+   wektorowym wzorem (ostre na każdej gęstości ekranu). Przez otwory widać
+   STŁUMIONE ciepłe światło z jaśniejszym środkiem — dawna taśma miała tu
+   neonowy pomarańcz, który konkurował z przyciskiem głównym; teraz to
+   ok. 30% krycia i poświata na 2% wysokości taśmy. */
+.mars-klisza-odcinek::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  --ms-perf: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3CradialGradient id='g' cx='50%25' cy='45%25' r='60%25'%3E%3Cstop offset='0' stop-color='%23ffc59a'/%3E%3Cstop offset='1' stop-color='%23d97a45'/%3E%3C/radialGradient%3E%3Crect x='23' y='0' width='54' height='100' rx='18' ry='26' fill='url(%23g)'/%3E%3C/svg%3E");
+  background:
+    var(--ms-perf) 0 calc(var(--ms-klisza-wys) * 0.05) / calc(100% / 8) calc(var(--ms-klisza-wys) * 0.062) repeat-x,
+    var(--ms-perf) 0 calc(100% - var(--ms-klisza-wys) * 0.05) / calc(100% / 8) calc(var(--ms-klisza-wys) * 0.062) repeat-x;
+  opacity: 0.3;
+  filter: drop-shadow(0 0 calc(var(--ms-klisza-wys) * 0.02) rgba(255, 128, 64, 0.6));
+}
+
+/* OKNO KADRU: 3 : 2, wyśrodkowane w odcinku, z cienką ciemną ramką
+   i delikatnie zaokrąglonymi rogami — jak klatka na wywołanym negatywie. */
+.mars-klisza-okno {
+  position: absolute;
+  top: 16%;
+  bottom: 16%;
+  left: 50%;
+  width: calc(var(--ms-klisza-wys) * 1.02);
+  margin-left: calc(var(--ms-klisza-wys) * -0.51);
+  overflow: hidden;
+  border-radius: calc(var(--ms-klisza-wys) * 0.022);
+  background: #050507;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+/* Zdjęcia przygaszone i odbarwione: taśma ma stać na końcu hierarchii.
+   Pełne nasycenie neonowych świateł instalacji (zieleń, błękit) świeciło
+   mocniej niż przycisk główny. */
+.mars-klisza-okno img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.72) brightness(0.86) contrast(1.06);
+}
+
+/* Winieta kadru i — na co drugim zdjęciu — ciepła smuga prześwietlenia
+   z boku okna (light leak). Smuga jest w kadrze, nie w scenie, więc płynie
+   razem z taśmą, jak prawdziwe prześwietlenie emulsji. */
+.mars-klisza-okno::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(120% 120% at 50% 50%, rgba(5, 5, 8, 0) 55%, rgba(5, 5, 8, 0.55) 100%);
+}
+
+.mars-klisza-odcinek[data-zdjecie="1"] .mars-klisza-okno::after,
+.mars-klisza-odcinek[data-zdjecie="4"] .mars-klisza-okno::after {
+  background:
+    radial-gradient(60% 110% at 0% 40%, rgba(255, 150, 82, 0.3) 0%, rgba(255, 150, 82, 0) 70%),
+    radial-gradient(120% 120% at 50% 50%, rgba(5, 5, 8, 0) 55%, rgba(5, 5, 8, 0.55) 100%);
+}
+
+.mars-klisza-odcinek[data-zdjecie="3"] .mars-klisza-okno::after {
+  background:
+    radial-gradient(55% 120% at 100% 70%, rgba(255, 168, 96, 0.24) 0%, rgba(255, 168, 96, 0) 70%),
+    radial-gradient(120% 120% at 50% 50%, rgba(5, 5, 8, 0) 55%, rgba(5, 5, 8, 0.55) 100%);
+}
+
+.mars-hero-tresc {
+  position: relative;
+  z-index: 4;
+  width: 100%;
+}
+
+/* BEZ PRZESŁON NA TELEFONIE. Próbowaliśmy po kolei: jednej płachty na pół
+   kadru — gasiła robota; i poświat miejscowych pod blokami tekstu — widać było
+   ich prostokątne krawędzie. Zostaje sam CIEŃ POD LITERAMI (niżej, przy każdym
+   napisie): jedyny zabieg, który nie dotyka ani jednego piksela poza obrysem
+   znaku, więc postać i planeta zostają w pełnej jasności.
+
+   Do cieni dochodzi JEDEN delikatny gradient od lewej krawędzi (patrz
+   `.mars-hero::after`). Nie jest to powrót do usuniętych poświat: tamte były
+   prostokątami wokół każdego bloku i widać było ich granice, a ten biegnie
+   przez CAŁĄ wysokość kadru od samej krawędzi ekranu, więc nie ma w nim
+   żadnego brzegu do zauważenia. */
+
+/* NADTYTUŁ ZNIKA PONIŻEJ 1024 px (odchudzenie 2026-10-04). Nad nagłówkiem
+   zostają tylko misja i stan — „Alvernia Planet przedstawia" powtarzało markę,
+   którą gość ma już w pasku nawigacji nad spodem. Na desktopie zostaje: tam
+   kolumna tekstu ma dość miejsca i ta linia buduje rytm plakatu.
+   `display: none`, a nie usunięcie ze znacznika — tekst wraca od 1024 px
+   bez dublowania treści w dwóch miejscach. */
+.mars-hero-nadtytul {
+  display: none;
+  text-shadow: var(--ms-cien);
+  /* Cinematic przestrzeń z referencji — tam stoi głowa robota i krawędź
+     planety. Odstęp ROŚNIE Z WYSOKOŚCIĄ OKNA, bo cel jest ułamkiem ekranu,
+     a nie stałą liczbą: w referencji nadtytuł siedzi na 36% wysokości.
+     Stąd `36svh` minus to, co nad nim zajmują pasek i HUD (14,06 rem).
+     Zmierzone: 67 px przy oknie 812, 79 przy 844, 111 przy 932.
+
+     Próbowałem tu marginesu automatycznego — rozdzielał zapas elegancko, ale
+     spychał karty i przyciski na sam dół kadru, 90–120 px poniżej referencji. */
+  /* Nadtytuł jest poniżej 1024 px ukryty, więc ten odstęp działa tylko na
+     desktopie — ale zostaje spójny z resztą. */
+  margin: var(--ms-oddech) 0 0.7rem;
+  /* Łamanie po „ALVERNIA PLANET", jak w referencji. Robi to OGRANICZENIE
+     SZEROKOŚCI, a nie `<br>` w treści: cały napis mierzy 260 px, a sama nazwa
+     ok. 140 px, więc 11 rem (176 px) łamie go w jednym, właściwym miejscu
+     i nie zostawia sieroty. Znacznik zostaje czysty, a przy zmianie tekstu
+     łamanie dopasuje się samo zamiast rozjechać. */
+  max-width: 11rem;
+  font-size: calc(0.7rem * var(--ms-skala));
+  font-weight: 700;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.mars-hero-tytul {
+  /* Przejmuje odstęp po ukrytym nadtytule — ta sama miara, ten sam zapas
+     wysokości dla kadru z robotem. Bez tego cinematic przestrzeń zapadłaby się
+     razem z nim. */
+  margin: var(--ms-oddech) 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+/* Najmocniejszy element strony. `0.86` zamiast domyślnej interlinii: przy tym
+   stopniu pisma każde 0.1 to kilkanaście pikseli powietrza między wierszami,
+   a nazwa produktu ma czytać się jak jeden blok, nie jak dwa zdania. */
+/* Stopień pisma POLICZONY, a nie dobrany na oko: „COLONIZATION" zajmuje w tym
+   kroju 7.447 px szerokości na każdy piksel stopnia (zmierzone). Przy 390 px
+   kolumna ma 350 px, więc 12vw (46.8 px → 349 px napisu) wchodzi na styk,
+   a wcześniejsze 15vw dawało 436 px i napis był ucinany przez `overflow: hidden`
+   nagłówka. Dolna granica 2.3 rem pilnuje najwęższych telefonów. */
+/* Cień jest tu JEDYNĄ osłoną czytelności, więc nagłówek dostaje mocniejszy
+   wariant niż reszta — jest największy i leży wprost na tarczy planety. */
+.mars-hero-tytul-glowny {
+  text-shadow:
+    0 2px 4px rgba(3, 5, 10, 0.82),
+    0 4px 18px rgba(3, 5, 10, 0.76),
+    0 0 48px rgba(3, 5, 10, 0.6);
+  font-size: calc(clamp(2.3rem, 11.5vw, 7.5rem) * var(--ms-skala) * var(--ms-skala-tekst));
+  /* Łamanie na dwa wiersze wymusza MIARA. Po zmniejszeniu napisów cała nazwa
+     mieści się w jednym wierszu przy 430 px (392 px wobec 390 px kolumny)
+     i kompozycja plakatowa się rozpada. 82% kolumny jest węższe niż cała
+     nazwa, a szersze niż samo „COLONIZATION" — łamie dokładnie raz. */
+  max-width: 82%;
+  font-weight: 800;
+  line-height: 0.86;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-wrap: balance;
+}
+
+/* „MARS" o 20% większe, „COLONIZATION" o 20% mniejsze — procenty stopnia
+   rodzica, więc oba słowa skalują się razem z jego `clamp` i nie trzeba
+   pilnować dwóch niezależnych wzorów. */
+.mars-tytul-a {
+  font-size: 120%;
+}
+
+.mars-tytul-b {
+  font-size: 80%;
+}
+
+/* Podtytuł ma się MIEŚCIĆ W JEDNYM WIERSZU na typowym telefonie. Przy 3,1vw
+   i odstępie 0,2em potrzebował 355 px przy dostępnych 335 (375 px okna)
+   i łamał się na dwa wiersze. 2,85vw i 0,16em schodzą do 314 px — mieści się
+   od 360 px wzwyż. Na bardzo wąskich ekranach nadal może się złamać i to jest
+   w porządku. Od 1024 px wracają pierwotne wartości. */
+.mars-hero-tytul-drugi {
+  text-shadow: var(--ms-cien);
+  margin-top: 0.5rem;
+  font-size: calc(clamp(0.66rem, 2.85vw, 1.05rem) * var(--ms-skala) * var(--ms-skala-tekst));
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dj-turkus);
+}
+
+.mars-hero-haslo {
+  margin: 1.5rem 0 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  /* NA TELEFONIE 65%, bo prawa trzecia część kadru należy do postaci — bez
+     tego ograniczenia wiersze leadu dobijały do jej torsu. Od 1024 px wraca
+     miara z briefu (560–620 px): tam kolumna tekstu i tak stoi obok robota. */
+  max-width: 64%;
+}
+
+/* Większe niż poprzednio: w referencji pierwsze zdanie leadu ma wyraźnie
+   większy ciężar niż u nas — zmierzone 221 px szerokości pierwszego wiersza
+   wobec naszych 202. Od 1024 px wraca miara desktopowa. */
+.mars-hero-haslo strong {
+  text-shadow: var(--ms-cien);
+  font-size: calc(clamp(1.15rem, 4.5vw, 1.3rem) * var(--ms-skala) * var(--ms-skala-tekst));
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.mars-hero-haslo span {
+  text-shadow: var(--ms-cien);
+  font-size: calc(clamp(0.95rem, 3.7vw, 1.05rem) * var(--ms-skala) * var(--ms-skala-tekst));
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.74);
+}
+
+/* Dwie daty-kotwice. To one, a nie nagłówek, są najczęstszym powodem, dla
+   którego ktoś wróci na tę stronę. Szkło, a nie pełne wypełnienie: pod spodem
+   ma być widać kadr. */
+.mars-daty {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mars-daty li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  /* Większe niż wcześniej: w referencji to są „cinematic glass cards" na
+     prawie całą szerokość kolumny, a nie drobne plakietki. Od 1024 px wraca
+     pierwotna miara. */
+  padding: calc(0.7rem * var(--ms-skala)) calc(0.95rem * var(--ms-skala));
+  flex: 1 1 0;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 0.9rem;
+  /* 0,70 — na telefonie te kafelki leżą na jasnym torsie robota i przy 0,46
+     biała data miała na nim 2,6:1. Z nową, płytszą przesłoną starcza 0,70:
+     postać prześwituje przez kafelek, zamiast chować się za nieprzezroczystą
+     płytą. Szyba 0,46 wraca od 1024 px, gdzie pod kafelkiem jest już tylko
+     ciemne niebo. */
+  background: rgba(6, 10, 18, 0.7);
+  backdrop-filter: blur(10px);
+}
+
+.mars-daty-etykieta {
+  font-size: calc(0.64rem * var(--ms-skala));
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.mars-daty-wartosc {
+  font-size: calc(clamp(1.15rem, 4.4vw, 1.4rem) * var(--ms-skala));
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+  color: #ffffff;
+}
+
+/* WYSTAWA CZASOWA — „Tylko 3 miesiące" (05.10.2026, decyzja obiektu: cała
+   wystawa trwa trzy miesiące i „trzeba to dobrze zakomunikować"). Trzecia
+   karta, a nie dopisek: czas trwania ma tę samą wagę co obie daty.
+   Poniżej 1024 px to PASEK na całą szerokość pod datami, w jednym wierszu:
+   trzy karty obok siebie nie mieszczą się w kolumnie telefonu, a karta
+   w dwóch wierszach zabrałaby więcej wysokości niż pasek. Stoi tuż nad
+   przyciskiem zapisu — najpierw „tylko 3 miesiące", potem akcja. Pasek
+   dokłada do hero na telefonie ok. 45 px; przyciski zostają w pierwszym
+   ekranie, niżej schodzi tylko klisza (świadoma zmiana rytmu z 04.10).
+   Pomarańczowa obwódka, ciepłe szkło i wartość w czerwieni — jedyny
+   komunikat o ograniczonym czasie na stronie, ma być widać go od razu.
+   Swoistość `.mars-daty .mars-daty-czas` jest konieczna: `.mars-daty li`
+   (0-1-1) ustawia kolumnę i `flex: 1 1 0`. */
+.mars-daty .mars-daty-czas {
+  flex: 1 0 100%;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 0.6rem;
+  row-gap: 0.1rem;
+  padding-block: calc(0.55rem * var(--ms-skala));
+  border-color: rgba(226, 98, 58, 0.6);
+  background: rgba(28, 11, 7, 0.74);
+  box-shadow: 0 0 1.5rem -0.5rem rgba(226, 98, 58, 0.5);
+}
+
+/* Światło liter 0,12em zamiast 0,16em i wartość od 0,95rem: przy pełnych
+   miarach pasek łamał się na dwa wiersze już przy 360 px. */
+.mars-daty-czas .mars-daty-etykieta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.mars-daty-czas-ikona {
+  color: var(--ms-czerwien);
+}
+
+/* Czerwień na ciepłym szkle: ok. 5,4:1, a napis jest duży i pogrubiony. */
+.mars-daty-czas .mars-daty-wartosc {
+  font-size: calc(clamp(0.95rem, 4vw, 1.15rem) * var(--ms-skala));
+  color: var(--ms-czerwien);
+}
+
+/* Etykieta ma się zmieścić w JEDNYM wierszu i to narzuca resztę miar.
+   Zmierzone: napis „Powiadom mnie o starcie przedsprzedaży" potrzebuje 325 px
+   przy piśmie 15,2 px. Po odjęciu dopełnienia, dzwonka i odstępu zostaje
+   z kolumny tyle, że pismo musi zejść do ok. 11–15 px zależnie od szerokości
+   okna — stąd wartość płynna, a nie stała.
+
+   `calc(4.3vw - 4.3px)` to wynik rachunku: szerokość napisu rośnie liniowo
+   z pismem (21,4 px napisu na każdy piksel pisma), a dostępne miejsce liniowo
+   z oknem. Górny zacisk 0,95 rem trzyma miarę wspólną z resztą serwisu
+   na szerszych telefonach, dolny 0,66 rem jest bezpiecznikiem.
+
+   Celowo BEZ `white-space: nowrap`: pismo jest policzone tak, by napis mieścił
+   się w wierszu, a gdyby kiedyś przestał (dłuższe tłumaczenie, inny krój),
+   ma się złamać, a nie wyjechać poza przycisk.
+
+   Zawężenie do 86% z poprzedniej iteracji musiało ustąpić — przy nim na tekst
+   zostawało 219 px z potrzebnych 325 i pismo schodziło do 10 px. */
+.mars-hero-akcje .mars-przycisk-glowny {
+  /* CAŁA szerokość kolumny — to jest główna konwersja i w referencji jest
+     najcięższym elementem ekranu. Trójpodział (dzwonek z lewej, etykieta
+     na środku, strzałka z prawej) też jest z referencji. */
+  /* 92% kolumny, nie 100%: przycisk ma być dominujący, ale nie dobijać
+     do krawędzi tekstu — tak jest w referencji. */
+  width: 94%;
+  justify-content: space-between;
+  padding-inline: calc(0.9rem * var(--ms-skala));
+  gap: calc(0.42rem * var(--ms-skala));
+  /* Skala NIE schodzi poniżej progu dotykowego. Przy 0,8 sam iloczyn dawał
+     39,7 px i test celów dotykowych słusznie to wyłapał — kontrolka może być
+     wizualnie mniejsza, ale palec musi mieć swoje 44 px (tu 46, jak w całym
+     serwisie). */
+  min-height: max(2.875rem, calc(3.1rem * var(--ms-skala)));
+  /* Pismo nadal płynne, bo etykieta ma zostać w JEDNYM wierszu, ale teraz
+     ma do dyspozycji całą kolumnę, a nie 86% — stąd większe wartości niż
+     poprzednio (12,1–15,2 px zamiast 11,2–14,2). */
+  /* Etykieta ma być w JEDNYM wierszu ZAWSZE, więc stopień pisma jest tu
+     wyliczony, a nie dobrany. Rachunek: napis mierzy 342 px przy piśmie 16 px,
+     a miejsca na niego zostaje `szerokość okna − 106 px − 2,05 × pismo`
+     (dopełnienie, dzwonek, strzałka i dwa odstępy; ikony skalują się z pismem,
+     dlatego występuje po obu stronach). Z tego granica wychodzi
+     `0,0427 × okno − 4,53`.
+
+     Wzór jest przeliczany ZA KAŻDYM RAZEM, gdy zmienia się szerokość przycisku
+     albo jego dopełnienie — przy 94% kolumny i dopełnieniu 0,9 rem granica
+     wynosi `0,0422 × okno − 4,09`, a tu stoi ok. 4% niżej. Przy poprzedniej
+     wersji (100% szerokości) ten sam wzór po zwężeniu przycisku wypuszczał
+     napis poza kapsułę: `nowrap` nie łamie, tylko pozwala wyjechać. */
+  white-space: nowrap;
+  font-size: calc(clamp(0.5rem, calc(3.9vw - 4.2px), 0.95rem) * var(--ms-skala));
+}
+
+.mars-hero-akcje .mars-przycisk-glowny .mars-cta-etykieta {
+  flex: 1 1 auto;
+  /* Bez tego element elastyczny z `nowrap` nie może zejść poniżej szerokości
+     własnej treści i rozpycha przycisk poza kolumnę. */
+  min-width: 0;
+  text-align: center;
+}
+
+/* Przycisk drugorzędny bierze TO SAMO pismo, choć sam zmieściłby się większy.
+   Inaczej wychodzi odwrócona hierarchia: po zmniejszeniu etykiety głównej
+   akcji do jednego wiersza „Odkryj misję" miało 15,2 px wobec 12,5 px
+   w przycisku głównym i to ono wyglądało na ważniejsze. Przewagę akcji głównej
+   niosą kolor, szerokość i cień — nie stopień pisma. */
+/* NA TELEFONIE przycisk drugorzędny ma TĘ SAMĄ szklaną ramkę co na
+   desktopie, tylko mniejszą (05.10.2026, na życzenie obiektu — wcześniej był
+   tu sam napis i ginął na kadrze). Mniejszy przez pismo i dopełnienie,
+   nie przez wysokość: 46 px dotykowe zostaje, bo to kontrolka, a nie
+   odnośnik wpleciony w zdanie.
+   Szyba jest CIEMNA (desktop ma rozjaśniającą biel 0,06): przy 430 px
+   przycisk siada na wygaszanym dole jasnej obudowy robota, a rozjaśnienie
+   podniosłoby tło pod napisem jeszcze bliżej bieli. Na ciemnym kadrze obie
+   wersje wyglądają tak samo. */
+.mars-hero-akcje .mars-przycisk-drugi {
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(6, 10, 18, 0.5);
+  backdrop-filter: blur(8px);
+  padding-inline: 1.1rem;
+  font-weight: 700;
+  color: #ffffff;
+  font-size: calc(clamp(0.72rem, calc(3.4vw - 1.5px), 0.95rem) * var(--ms-skala));
+}
+
+.mars-hero-akcje {
+  display: flex;
+  flex-wrap: wrap;
+  /* Wyśrodkowanie dotyczy w praktyce tylko przycisku drugorzędnego: główny
+     bierze całą szerokość, więc nie ma się gdzie przesunąć. W referencji
+     „Odkryj misję" stoi pod spodem na środku, wyraźnie podrzędne wobec
+     pomarańczowej akcji głównej. */
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.1rem;
+}
+
+/* --- Wejście hero -------------------------------------------------------------
+   Ruch jest KRÓTKI i wyłącznie na `opacity` oraz `transform` — obie obsługuje
+   kompozytor, więc nie ma przeliczania układu ani odmalowywania. Treść wchodzi
+   od dołu, postać osobno i wolniej, żeby czytało się jak otwarcie ujęcia,
+   a nie jak animacja interfejsu.
+
+   Przez chwilę stało tu wejście „przez zakłócenia" (skoki, plastry,
+   rozszczepienie barw na `filter`). Wróciliśmy do płynnego: animacja
+   `clip-path` i `filter` odmalowuje element w każdej klatce i przy
+   przewijaniu strona szarpała.
+
+   Hero NIE jest `data-ujawnij`: stoi nad zgięciem, więc obserwator przecięć
+   i tak odpaliłby się natychmiast, a stan ukryty wieszany JavaScriptem dawałby
+   mignięcie przed hydracją. Zwykła animacja CSS startuje od razu.
+
+   Wyciszenie przy „ogranicz ruch" załatwia blok na końcu pliku — zeruje
+   `animation` dla całego `.mars-page`. */
+@keyframes mars-wejscie {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+}
+
+@keyframes mars-postac {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+  }
+}
+
+.mars-hero .mars-hud,
+.mars-hero-nadtytul,
+.mars-hero-tytul,
+.mars-hero-haslo,
+.mars-daty,
+.mars-hero-akcje {
+  animation: mars-wejscie 620ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+.mars-hero-nadtytul { animation-delay: 60ms; }
+.mars-hero-tytul { animation-delay: 120ms; }
+.mars-hero-haslo { animation-delay: 220ms; }
+.mars-daty { animation-delay: 300ms; }
+.mars-hero-akcje { animation-delay: 380ms; }
+
+/* Postać wchodzi dłużej i z własnym opóźnieniem — ma wejść W KADR, a nie
+   pojawić się razem z tekstem. */
+.mars-hero-humanoid {
+  animation: mars-postac 980ms cubic-bezier(0.22, 0.61, 0.36, 1) 160ms both;
+}
+
+/* --- Łuk przejścia ------------------------------------------------------------ */
+
+.mars-fala {
+  position: absolute;
+  z-index: 5;
+  right: 0;
+  /* `bottom: -1px` zasklepia włos, który potrafi zostać po zaokrągleniu
+     ułamkowych pikseli; nadmiar przycina `overflow: hidden` nagłówka. */
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: var(--ms-fala);
+  pointer-events: none;
+}
+
+/* Łuk maluje kolor sekcji, która stoi pod hero („Rok 2035" — granat), i robi
+   zaokrąglone przejście między nimi. Kolor idzie ze zmiennej wspólnej z tą
+   sekcją. Gdy sekcja była jasna, łuk malował `--dj-tlo` — przy granatowej
+   sekcji zostałby pod hero jasny pas. */
+.mars-fala-ksztalt {
+  fill: var(--ms-pod-fala);
+}
+
+.mars-orbita {
+  fill: none;
+  stroke: var(--dj-turkus);
+  stroke-width: 1;
+  /* Włos w barwie marki na samej granicy hero — ten sam zabieg co na /bistro.
+     0.42, nie 0.3: tam łuk wchodził w jasną płaszczyznę, tu w ciemną scenę
+     i przy 0.3 ginął. */
+  opacity: 0.42;
+}
+
+/* --- Sekcje: rytm pionowy ------------------------------------------------------ */
+
+/* Cel przycisku z hero dostaje fokus programowo (`przewinDo` w `page.tsx`),
+   żeby klawiatura szła dalej od miejsca, do którego przewinęła strona. Sekcja
+   nie jest kontrolką — obwódka na całej jej szerokości byłaby tylko szumem. */
+[data-cel-przewiniecia]:focus {
+  outline: none;
+}
+
+/* „Więcej niż jedna misja" i „Dla kogo" mają własne dopełnienia
+   (`ekosystem.css`, `dla-kogo.css`). */
+.mars-2035,
+.mars-misja {
+  padding-block: clamp(3.5rem, 11vw, 6rem);
+}
+
+/* ===========================================================================
+   SEKCJA „ROK 2035" — granatowa płaszczyzna narracyjna
+   ---------------------------------------------------------------------------
+   Trzy warstwy: HISTORIA → CELE MISJI → OŚ 2031 → 2033. Na osi sekcja się
+   kończy.
+
+   Sekcja nosi też klasę `.mars-ciemny` — stamtąd biorą się kolory tekstu na
+   ciemnym tle (turkusowy nadtytuł, przygaszony lead, białe zdanie zadania).
+   Samo TŁO nadpisujemy tutaj: brief chce granatu, a `.mars-ciemny` maluje
+   nocną czerń. Ta reguła stoi niżej w arkuszu przy tej samej swoistości,
+   więc wygrywa.
+
+   Wszystkie reguły są ZAKRESOWANE do `.mars-2035`, bo klasy `.mars-overline`,
+   `.mars-tytul`, `.mars-lead` i `.mars-zadanie` są wspólne dla pozostałych
+   sekcji i nie wolno ich przestawić globalnie.
+   =========================================================================== */
+
+.mars-2035 {
+  /* Granat schodzi ku dołowi w odrobinę jaśniejszy — cele misji leżą na
+     jaśniejszym tle niż górna część. Górna krawędź to `--ms-pod-fala`, ten
+     sam kolor, którym maluje się fala hero; inaczej na styku rysowałby się
+     szew. Obie poświaty zaczynają się poniżej górnej krawędzi z tego samego
+     powodu: przy krawędzi zabarwiałyby granat, a fala jest jednolita. */
+  background-color: var(--ms-pod-fala);
+  background-image:
+    /* Chłodna poświata od lewej, na wysokości tekstu. */
+    radial-gradient(48% 40% at 8% 60%, rgba(50, 216, 230, 0.07) 0%, rgba(50, 216, 230, 0) 70%),
+    /* Ciepła poświata od prawej, za fotografią bazy. */
+    radial-gradient(46% 38% at 92% 48%, rgba(225, 98, 58, 0.1) 0%, rgba(225, 98, 58, 0) 70%),
+    linear-gradient(180deg, var(--ms-pod-fala) 0%, #071522 50%, #0a1c2b 100%);
+}
+
+/* Siatka techniczna — biała przy kryciu 2,5%, więc widać ją dopiero, gdy się
+   jej szuka. Przesunięta o pół oczka: przy zerowym przesunięciu pierwsza linia
+   leżała dokładnie na górnej krawędzi sekcji i czytała się jak szew pod falą. */
+.mars-2035::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 7.5rem 7.5rem;
+  background-position: 0 3.75rem;
+  mask-image: radial-gradient(120% 90% at 10% 0%, #000 0%, rgba(0, 0, 0, 0) 72%);
+}
+
+/* Dwa znaczniki celownika — jeden w lewym górnym rogu, drugi po prawej na
+   wysokości celów misji. Każdy to dwie kreski z gradientów, bez dodatkowego
+   znacznika w HTML. Włączone dopiero od 1320 px (patrz próg desktopowy):
+   węższe okno ma 20 px marginesu, lewy znacznik wchodził tam na nadtytuł.
+   Pionowa i pozioma kreska prawego mają TO SAMO `top: 58%` — procent
+   w `background-position` liczy się od różnicy wysokości tła i warstwy, więc
+   dodany offset przesuwał poziomą kreskę na dół pionowej i znak rysował się
+   jako „⊥". */
+.mars-2035::after {
+  --ms-krzyz: rgba(255, 255, 255, 0.18);
+  content: "";
+  display: none;
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--ms-krzyz), var(--ms-krzyz)) left 4% top 3.5rem / 1px 0.75rem no-repeat,
+    linear-gradient(var(--ms-krzyz), var(--ms-krzyz)) left calc(4% - 0.344rem) top 3.844rem / 0.75rem 1px no-repeat,
+    linear-gradient(var(--ms-krzyz), var(--ms-krzyz)) right 3% top 58% / 1px 0.75rem no-repeat,
+    linear-gradient(var(--ms-krzyz), var(--ms-krzyz)) right calc(3% - 0.344rem) top 58% / 0.75rem 1px no-repeat;
+}
+
+.mars-2035 > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Tło sekcji: fotografia kosmosu pod całą sekcją, pod siatką i znacznikami.
+   Swoistość wyższa niż `.mars-2035 > *`, które stawia dzieci na warstwie 1
+   i w toku dokumentu. */
+.mars-2035 > .mars-2035-tlo {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+}
+
+.mars-2035-tlo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Planeta po prawej, Droga Mleczna przez środek — kadr trzyma prawą stronę,
+     bo tam jest planeta. */
+  object-position: 70% 35%;
+}
+
+/* Nakładka: (1) góra przechodzi w kolor fali hero — bez tego na styku byłby
+   szew, bo fotografia ma u góry inny granat; (2) przyciemnienie pod
+   wyśrodkowanym tekstem; (3) mocne wyrównanie całego kadru do granatu
+   strony — fotografia ma być tłem, nie obrazem: przy 30% krycia gwiazdy
+   i planeta konkurowały z napisami („za bardzo przejrzyste"), stąd 62%. */
+.mars-2035-tlo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, var(--ms-pod-fala) 0%, rgba(6, 17, 27, 0) 26%),
+    radial-gradient(62% 46% at 50% 32%, rgba(6, 17, 27, 0.7) 0%, rgba(6, 17, 27, 0) 78%),
+    rgba(6, 17, 27, 0.62);
+}
+
+/* --- Historia: tekst + fotografia ------------------------------------------ */
+
+.mars-2035-scena {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* TELEFON: fotografia jest osobnym kinowym oddechem MIĘDZY tekstem a celami
+   misji, więc w toku dokumentu idzie za kolumną treści. W znaczniku stoi
+   przed nią, bo od 1024 px jest warstwą tła kompozycji — `order` rozwiązuje
+   jedno i drugie bez dublowania elementu. */
+.mars-2035-foto {
+  order: 2;
+  position: relative;
+  margin: 1.25rem 0 0;
+  padding: 0;
+}
+
+.mars-2035-foto img {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* Kadr ma pokazywać NARRACJĘ: robot po lewej obserwujący bazę po prawej.
+     Dlatego nie przycinamy go do samego humanoida. */
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: 24% 50%;
+  /* Wtopienie w granat od góry i od dołu. Maska, nie nakładka — nakładka
+     musiałaby znać kolor tła, a ten jest gradientem. Na ciemnym tle czarny
+     sufit hali przechodzi w granat bez szarego pasa, więc górne wygaszenie
+     może być krótsze niż na jasnej płaszczyźnie. */
+  mask-image: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(0, 0, 0, 0.35) 7%,
+    rgba(0, 0, 0, 0.75) 14%,
+    #000 22%,
+    #000 74%,
+    rgba(0, 0, 0, 0.7) 85%,
+    rgba(0, 0, 0, 0.3) 93%,
+    transparent 100%
+  );
+}
+
+/* Etykiety transmisji w rogu kadru. Bardzo małe i rozstrzelone — mają czytać
+   się jak opis klatki z kamery, a nie jak karta informacyjna. Stoją POD
+   górnym wygaszeniem, na pełnym kadrze. */
+.mars-2035-hud {
+  position: absolute;
+  top: 22%;
+  right: clamp(1rem, 4vw, 2.25rem);
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: 0.75rem;
+  row-gap: 0.2rem;
+  justify-items: end;
+  align-items: center;
+  font-size: 0.5rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.72);
+  text-shadow: 0 1px 6px rgba(3, 5, 10, 0.7);
+}
+
+.mars-2035-hud span {
+  grid-column: 1;
+}
+
+/* Celownik obok etykiet — dwie kreski z gradientów w kolorze tekstu. */
+.mars-2035-hud::after {
+  content: "";
+  grid-column: 2;
+  grid-row: 1 / span 3;
+  width: 0.95rem;
+  height: 0.95rem;
+  background:
+    linear-gradient(currentColor, currentColor) center / 1px 100% no-repeat,
+    linear-gradient(currentColor, currentColor) center / 100% 1px no-repeat;
+}
+
+.mars-2035-uklad {
+  order: 1;
+}
+
+/* Blok historii jest WYŚRODKOWANY: nadtytuł, nagłówek, lead i zdanie
+   zadania. Do 1023 px kolumna stoi też na środku szyny — inaczej na tablecie
+   wyśrodkowany tekst siedziałby w lewych 34rem i wyglądał na przesunięty.
+   Od 1024 px kolumna wraca na lewo (po prawej jest zdjęcie), a tekst zostaje
+   wyśrodkowany w jej obrębie. Cele misji i oś czasu zostają wyrównane do
+   lewej — to inna warstwa, czytana jak lista. */
+.mars-2035-tresc {
+  position: relative;
+  /* 48rem: od tabletu „Roboty przybyły" w Michromie (10,4em) mieści się
+     w jednym wierszu. Na telefonie kolumna i tak ma całą szerokość szyny. */
+  max-width: 48rem;
+  margin-inline: auto;
+  text-align: center;
+}
+
+/* Nagłówek editorialny w dwóch wierszach, wyśrodkowanych względem siebie:
+       Roboty przybyły
+          pierwsze.
+   Drugi wiersz jest o 20% większy. Wiersze to dwa elementy blokowe, a nie
+   łamanie z miary kolumny — przy łamaniu z miary „pierwsze." nie mogłoby
+   mieć własnego stopnia pisma.
+
+   `width: fit-content` + `margin: auto`: nagłówek ma szerokość pierwszego
+   wiersza i stoi na środku kolumny, a „pierwsze." jest wyśrodkowane pod
+   „Roboty przybyły".
+
+   Stopień: „Roboty przybyły" ma 8,0em szerokości (zmierzone). Na telefonie
+   10.6vw daje 85% okna przy kolumnie 100vw − 40 px — od 360 px wzwyż zostaje
+   16–20 px zapasu i wiersz się nie łamie. Sufit 4.125rem dla tabletu.
+   (Przez chwilę stała tu Michroma — szeroka i jednej grubości; wróciliśmy
+   do Poppinsa jak w reszcie strony.) Kolor bierze z `.mars-ciemny`. */
+.mars-2035 .mars-2035-tytul {
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  font-size: calc(clamp(2.375rem, 10.6vw, 4.125rem) * var(--ms-skala-naglowka));
+  font-weight: 900;
+  line-height: 0.93;
+  letter-spacing: -0.035em;
+  text-align: center;
+  text-wrap: normal;
+}
+
+.mars-2035-tytul-wiersz,
+.mars-2035-akcent {
+  display: block;
+}
+
+.mars-2035-akcent {
+  margin-top: 0.02em;
+  font-size: 1.2em;
+  color: var(--ms-czerwien);
+}
+
+/* --- Nagłówki sekcji: płynne wejście z rozszczepieniem barw ----------------------
+   Pierwsze dostał je nagłówek „Rok 2035"; od 05.10.2026 ma je KAŻDY nagłówek
+   sekcji (komponent `TekstNaglowka`), a czasy są o 25% krótsze niż
+   w pierwszej wersji (`--ms-naglowek-*` na `.mars-page`). Hero ma własne,
+   zatwierdzone wejście i tego efektu nie dostaje.
+
+   Dwie fazy:
+   1. WEJŚCIE (gdy sekcja wjeżdża w kadr): napis wyłania się i podnosi, a dwie
+      kolorowe kopie — turkusowa w poziome pasy i czerwona — startują
+      rozsunięte w bok i PŁYNNIE zjeżdżają się w napis, gasnąc. To ślad
+      zakłócenia, ale bez skoków.
+   2. SPOCZYNEK: napis stoi czysty, kopie mają zerowe krycie.
+   („Rok 2035" ma jeszcze trzecią, przygasanie — niżej.)
+
+   WSZYSTKO animuje wyłącznie `opacity` i `transform` — kompozytor robi to
+   bez odmalowywania. Wcześniejsza wersja skakała (`steps`) i animowała
+   `clip-path` oraz `text-shadow`: każda klatka odmalowywała nagłówek
+   i przy przewijaniu strona szarpała.
+
+   Kopie to pseudoelementy z tekstem z `data-tekst`: w HTML nagłówek stoi
+   raz, a `content: … / ""` daje im PUSTY tekst alternatywny, więc czytnik
+   ekranu czyta go jeden raz. Element jest BLOKOWY, a kopie mają `inset: 0`
+   — ta sama szerokość co napis, więc łamią się w tych samych miejscach
+   (także przy `text-wrap: balance`, które dziedziczą). `--ms-naglowek-
+   opoznienie` (z komponentu) przesuwa start — w scenach z zaprzeczeniem
+   nagłówek czeka na kreskę. Przy „ogranicz ruch" animacje gasi blok na
+   końcu arkusza — kopie zostają niewidoczne, napis stoi. */
+.mars-rozszczepienie {
+  position: relative;
+  display: block;
+  /* Nowy kontekst warstw: kopie (`z-index: -1`) leżą pod literami, ale nad
+     tłem sekcji. */
+  isolation: isolate;
+  animation: mars-tytul-wejscie var(--ms-naglowek-wejscie) cubic-bezier(0.22, 0.61, 0.36, 1)
+    var(--ms-naglowek-opoznienie, var(--ms-naglowek-start)) both;
+}
+
+.mars-rozszczepienie::before,
+.mars-rozszczepienie::after {
+  content: attr(data-tekst) / "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Turkus w pasy: tekst wycina tło (`background-clip: text`), a tło to
+   powtarzane poziome paski — „skan" z referencji. Samo tło się nie rusza,
+   animowane jest tylko przesunięcie i krycie całej kopii. */
+.mars-rozszczepienie::before {
+  color: transparent;
+  background: repeating-linear-gradient(
+    180deg,
+    rgba(50, 216, 230, 0.95) 0 2px,
+    rgba(50, 216, 230, 0) 2px 4px
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: mars-kopia-turkus var(--ms-naglowek-kopie) cubic-bezier(0.22, 0.61, 0.36, 1)
+    var(--ms-naglowek-opoznienie, var(--ms-naglowek-start)) both;
+}
+
+.mars-rozszczepienie::after {
+  color: var(--ms-czerwien);
+  animation: mars-kopia-czerwien var(--ms-naglowek-kopie) cubic-bezier(0.22, 0.61, 0.36, 1)
+    var(--ms-naglowek-opoznienie, var(--ms-naglowek-start)) both;
+}
+
+@keyframes mars-tytul-wejscie {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 0.18em, 0);
+  }
+}
+
+@keyframes mars-kopia-turkus {
+  0% {
+    opacity: 0;
+    transform: translate3d(-0.28em, -0.04em, 0);
+  }
+  20% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+@keyframes mars-kopia-czerwien {
+  0% {
+    opacity: 0;
+    transform: translate3d(0.24em, 0.03em, 0);
+  }
+  20% {
+    opacity: 0.85;
+  }
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+/* Wejście ma ruszyć w chwili, gdy sekcja wjeżdża w kadr, a nie w tle przy
+   wczytaniu strony. Dopóki blok czeka na ujawnienie, animacje są zdjęte;
+   po dopisaniu `.jest-widoczny` wracają i startują od początku. Bez
+   skryptu ta reguła nie działa i wejście idzie przy wczytaniu. Swoistość
+   (pięć klas) przebija każdą regułę sekcji niżej, także „Rok 2035". */
+.mars-page.ujawnianie-wlaczone [data-ujawnij]:not(.jest-widoczny) .mars-rozszczepienie,
+.mars-page.ujawnianie-wlaczone [data-ujawnij]:not(.jest-widoczny) .mars-rozszczepienie::before,
+.mars-page.ujawnianie-wlaczone [data-ujawnij]:not(.jest-widoczny) .mars-rozszczepienie::after {
+  animation: none;
+}
+
+/* „Rok 2035": dwa wiersze o różnym stopniu, każdy z własnymi kopiami. Drugi
+   wchodzi 90 ms później (0,75 × pierwotne 120 ms) i przygasa w innym rytmie
+   — oba naraz wyglądały jak ruch całego bloku. Do wejścia dochodzi tu
+   PRZYGASANIE: co 7 s napis na ułamek sekundy łagodnie schodzi do 88%
+   krycia i wraca — jak oddech ekranu. Tylko w tej sekcji: na każdym
+   nagłówku strony byłoby migotaniem. Reguły MUSZĄ stać po
+   `.mars-rozszczepienie` (ta sama swoistość, wygrywa późniejsza). */
+.mars-2035-tytul-wiersz,
+.mars-2035-akcent {
+  animation:
+    mars-tytul-wejscie var(--ms-naglowek-wejscie) cubic-bezier(0.22, 0.61, 0.36, 1)
+      var(--ms-naglowek-start) both,
+    mars-tytul-przygasanie 7s ease-in-out 2.4s infinite;
+}
+
+.mars-2035-akcent {
+  animation-delay: calc(var(--ms-naglowek-start) + 90ms), 5.9s;
+}
+
+.mars-2035-akcent::before,
+.mars-2035-akcent::after {
+  animation-delay: calc(var(--ms-naglowek-start) + 90ms);
+}
+
+/* Delikatne przygasanie: przez ~0,6 s z 7 s napis łagodnie schodzi do 88%
+   krycia i wraca. Tylko `opacity`. */
+@keyframes mars-tytul-przygasanie {
+  0%,
+  90% {
+    opacity: 1;
+  }
+  94% {
+    opacity: 0.88;
+  }
+  98%,
+  100% {
+    opacity: 1;
+  }
+}
+
+.mars-2035 .mars-2035-lead {
+  margin: 1.25rem auto 0;
+  max-width: 30rem;
+  line-height: 1.55;
+  /* Wyśrodkowany akapit z równymi wierszami — przy zwykłym łamaniu ostatni
+     wiersz bywał jednym słowem pośrodku. */
+  text-wrap: balance;
+}
+
+/* Zdanie zadania tylko pogrubione, nie powiększone — ma domykać lead, a nie
+   konkurować z nagłówkiem. Kolor (biel) daje `.mars-ciemny`. */
+.mars-2035 .mars-zadanie {
+  margin: 0.6rem auto 0;
+  max-width: 28rem;
+  font-size: clamp(1.05rem, 3.6vw, 1.25rem);
+  line-height: 1.35;
+}
+
+/* --- Cele misji ------------------------------------------------------------- */
+
+.mars-cele {
+  margin-top: 1rem;
+}
+
+/* Bez zdjęcia cele stoją zaraz pod tekstem — 1rem był liczony pod wygaszenie
+   dołu fotografii, które samo dawało oddech. */
+.mars-2035:not(.ze-zdjeciem) .mars-cele {
+  margin-top: clamp(2.5rem, 9vw, 3.5rem);
+}
+
+/* Etykieta i ciągnąca się za nią cienka linia — jeden wiersz, więc linia
+   bierze całą resztę miejsca. */
+.mars-cele-etykieta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0 0 0.75rem;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.mars-cele-etykieta::after {
+  content: "";
+  flex: 1 1 auto;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 100%);
+}
+
+/* TELEFON: lista pionowa, bo pięć pozycji w rzędzie daje przy 375 px po 60 px
+   na pozycję — nieczytelnie. Każdy wiersz to jedna linia systemowa
+   z delikatnym separatorem, a nie osobna karta. */
+.mars-cele-lista {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mars-cele-lista li {
+  display: grid;
+  grid-template-columns: 2.1rem 2.5rem 1fr;
+  align-items: center;
+  column-gap: 0.75rem;
+  min-height: 3rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.mars-cel-numer {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--dj-turkus);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Ikona w cienkim turkusowym okręgu. Okrąg rysuje sam element SVG
+   (dopełnienie + obrys + zaokrąglenie), bez dodatkowego opakowania;
+   `content-box`, bo szerokość i wysokość ikona dostaje w stylu inline
+   i dopełnienie ma się do nich DODAĆ. */
+.mars-cel-ikona {
+  justify-self: center;
+  box-sizing: content-box;
+  padding: 0.45rem;
+  border: 1px solid rgba(50, 216, 230, 0.32);
+  border-radius: 9999px;
+  background: rgba(50, 216, 230, 0.05);
+  color: var(--dj-turkus);
+}
+
+.mars-cel-nazwa {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* --- Oś czasu --------------------------------------------------------------- */
+
+/* Trzy punkty: 2026 → 2031 → 2033, dwie linie między nimi. Na telefonie
+   jeden rząd — podpisy mają ograniczoną miarę i łamią się na dwa wiersze,
+   inaczej trzy daty nie mieszczą się przy 360 px. */
+.mars-os {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(0.5rem, 2.5vw, 1.5rem);
+  margin-top: clamp(1.75rem, 6vw, 2.75rem);
+}
+
+.mars-os-punkt {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.mars-os-punkt.is-cel {
+  justify-items: end;
+  text-align: right;
+}
+
+.mars-os-punkt.is-srodek {
+  justify-items: center;
+  text-align: center;
+}
+
+/* 2026 to „dziś" osi — przygaszony, żeby akcent został na 2031 i 2033. */
+.mars-os-punkt.is-poczatek .mars-os-rok {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* Trzy lata w jednym rzędzie: na telefonie 5,4vw (19–23 px), żeby między
+   nimi zostało miejsce na kropkowane linie — przy 6vw linie miały 10–24 px
+   i zostawały z nich same groty. */
+.mars-os-rok {
+  font-size: clamp(1.2rem, 5.4vw, 2.25rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+}
+
+.mars-os-punkt.is-cel .mars-os-rok {
+  color: var(--ms-czerwien);
+}
+
+.mars-os-opis {
+  max-width: 4.6rem;
+  font-size: 0.5rem;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+/* Trajektoria: kropkowana linia z turkusu w czerwień, z pierścieniem
+   w połowie drogi i grotem na końcu.
+   - kropki i grot to DWA pseudoelementy, a nie maska na całym elemencie —
+     maska obejmuje też pseudoelementy, więc wycinała grot razem z przerwami;
+   - pierścień to tło samego elementu, a w masce kropek jest w tym miejscu
+     dziura — kropki nie przecinają pierścienia. */
+.mars-os-linia {
+  position: relative;
+  height: 0.75rem;
+  background: radial-gradient(
+      circle,
+      transparent 0 3.2px,
+      var(--dj-turkus) 3.4px 4.6px,
+      transparent 5px
+    )
+    center / 0.75rem 0.75rem no-repeat;
+}
+
+.mars-os-linia::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0.35rem;
+  height: 2px;
+  translate: 0 -50%;
+  background-image: linear-gradient(
+    90deg,
+    var(--dj-turkus) 0%,
+    rgba(50, 216, 230, 0.75) 45%,
+    rgba(225, 98, 58, 0.8) 55%,
+    var(--ms-czerwien) 100%
+  );
+  mask-image:
+    repeating-linear-gradient(90deg, #000 0 2px, transparent 2px 9px),
+    linear-gradient(
+      90deg,
+      #000 calc(50% - 0.6rem),
+      transparent calc(50% - 0.6rem) calc(50% + 0.6rem),
+      #000 calc(50% + 0.6rem)
+    );
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
+/* Pierwszy odcinek (2026 → 2031): z szarości w turkus, bez pierścienia
+   w połowie, z turkusowym grotem. Maska bez dziury na pierścień — tylko
+   kropki i krawędź pojawiania się. */
+.mars-os-linia.is-pierwsza {
+  background: none;
+}
+
+.mars-os-linia.is-pierwsza::before {
+  background-image: linear-gradient(90deg, rgba(255, 255, 255, 0.35) 0%, var(--dj-turkus) 100%);
+}
+
+.mars-os-linia.is-pierwsza::after {
+  border-color: var(--dj-turkus);
+}
+
+.mars-os-linia::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 0.1rem;
+  width: 0.45rem;
+  height: 0.45rem;
+  translate: 0 -50%;
+  rotate: 45deg;
+  border-top: 1.5px solid var(--ms-czerwien);
+  border-right: 1.5px solid var(--ms-czerwien);
+}
+
+/* --- Ręka robota pod osią ---------------------------------------------------
+   Ramię wchodzi od LEWEJ krawędzi okna (na pliku jest tam ucięte — odsunięte
+   od krawędzi pokazywałoby ucięty koniec jako pionową kreskę), a otwarta
+   dłoń wypada pod środkiem osi. Element jest dzieckiem sekcji, nie szyny,
+   więc jego lewa krawędź to krawędź okna. Szerokość w vw, bo położenie
+   dłoni ma iść za szerokością okna, a nie za szyną.
+   Telefon: 98vw — kadr jest niski (4:1), przy węższej ręce dłoń miała
+   ledwie 90 px wysokości; palce kończą się na 97% kadru, więc nie
+   dotykają prawej krawędzi. */
+.mars-2035-reka {
+  width: 98vw;
+  margin: clamp(1.75rem, 6vw, 2.75rem) 0 0;
+  padding: 0;
+  pointer-events: none;
+}
+
+.mars-2035-reka img {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* Lekki cień oddziela biel pancerza od granatu tak, jak cień postaci
+     w hero — bez niego ręka wyglądała na naklejoną. */
+  filter: drop-shadow(0 14px 28px rgba(3, 5, 10, 0.55));
+}
+
+/* --- Czym jest ----------------------------------------------------------------- */
+
+/* Dolne dopełnienie jak górne: do 05.10.2026 było zerowe, bo sekcję domykał
+   pas ze zdjęciem (miejsce na zwiastun) stojący przy jej dolnej krawędzi. */
+.mars-czym {
+  padding-block: clamp(3.5rem, 11vw, 6rem);
+}
+
+/* Element niewidoczny na ekranie, ale czytany przez czytnik ekranu
+   i wyszukiwarkę — pełne zdanie obok liter „pisanych" po kolei. */
+.mars-niewidoczny {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --- Pisanie litera po literze (zaprzeczenia w „Czym jest" i „Real humanoids") -
+   Każda litera wchodzi łagodnie (90 ms, tylko `opacity`) w chwili
+   `start + i × krok`. Kursor to `::after` litery — pozycjonowany bezwzględnie,
+   więc nie zajmuje miejsca i nie przesuwa tekstu. Na zwykłej literze świeci
+   tylko przez jej własny krok (wędruje razem z pisaniem); na ostatniej
+   czeka `--ms-kursor-czas`, a w nagłówku na końcu mruga kilka razy i gaśnie.
+   Bez animacji (ogranicz ruch, brak obsługi) litery po prostu stoją, a kursor
+   jest niewidoczny. */
+.mars-litera {
+  position: relative;
+  animation: mars-litera 90ms ease-out
+    calc(var(--ms-pisanie-start) + var(--i) * var(--ms-pisanie-krok)) both;
+}
+
+.mars-litera::after {
+  content: "";
+  position: absolute;
+  top: 0.12em;
+  right: -0.09em;
+  width: 0.07em;
+  min-width: 2px;
+  height: 0.88em;
+  background: var(--ms-czerwien);
+  opacity: 0;
+  animation: mars-kursor var(--ms-pisanie-krok) linear
+    calc(var(--ms-pisanie-start) + var(--i) * var(--ms-pisanie-krok));
+}
+
+.mars-litera.is-ostatnia::after {
+  animation-duration: var(--ms-kursor-czas);
+}
+
+/* Ostatnia litera nagłówka: kursor mruga cztery razy i gaśnie — sygnał, że
+   zdanie jest skończone, bez migania w nieskończoność obok tekstu. */
+.mars-litera.is-mruga::after {
+  animation: mars-kursor-mruga 600ms ease-in-out
+    calc(var(--ms-pisanie-start) + var(--i) * var(--ms-pisanie-krok)) 4;
+}
+
+@keyframes mars-litera {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes mars-kursor {
+  from,
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes mars-kursor-mruga {
+  0%,
+  45% {
+    opacity: 1;
+  }
+  55%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Zaprzeczenie z animowanym przekreśleniem: czerwona kreska przejeżdża od
+   lewej po wpisaniu zdania. Zamiast `text-decoration` (którego nie da się
+   rysować stopniowo) — pseudoelement skalowany w poziomie, czyli sam
+   `transform`. `inline-block`, żeby kreska miała szerokość tekstu, a nie
+   całej kolumny. Bez animacji kreska stoi w całości. */
+.mars-zaprzeczenie.is-pisane {
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.mars-zaprzeczenie.is-pisane::after {
+  content: "";
+  position: absolute;
+  left: -0.1em;
+  right: -0.1em;
+  top: 52%;
+  height: 2px;
+  background: var(--ms-czerwien-tekst);
+  transform-origin: left center;
+  animation: mars-kreska 480ms cubic-bezier(0.65, 0, 0.35, 1) var(--ms-kreska-start) both;
+}
+
+@keyframes mars-kreska {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+/* Ostatni krok sceny: to, co stoi pod nagłówkiem, wyłania się i podnosi
+   dopiero po jego wejściu (`--ms-akapity-start` liczy komponent). Wspólne
+   dla obu scen z zaprzeczeniem — „Czym jest" i „Real humanoids".
+   Tylko `opacity` i `transform`. */
+.mars-po-pisaniu {
+  animation: mars-akapity 700ms cubic-bezier(0.22, 0.61, 0.36, 1) var(--ms-akapity-start) both;
+}
+
+@keyframes mars-akapity {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 0.75rem, 0);
+  }
+}
+
+/* Pisanie rusza, gdy sekcja wjeżdża w kadr — do tego czasu animacje są
+   zdjęte (a sekcja i tak jest ukryta przez ujawnianie). Bez skryptu ta
+   reguła nie działa i pisanie idzie przy wczytaniu strony. */
+.mars-page.ujawnianie-wlaczone [data-ujawnij]:not(.jest-widoczny) .mars-po-pisaniu,
+.mars-page.ujawnianie-wlaczone [data-ujawnij]:not(.jest-widoczny) .mars-litera,
+.mars-page.ujawnianie-wlaczone [data-ujawnij]:not(.jest-widoczny) .mars-litera::after,
+.mars-page.ujawnianie-wlaczone [data-ujawnij]:not(.jest-widoczny) .mars-zaprzeczenie.is-pisane::after {
+  animation: none;
+}
+
+.mars-czym-tekst {
+  display: grid;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+}
+
+/* --- Twoja misja --------------------------------------------------------------- */
+
+/* Granat (05.10.2026), ten sam co w sekcji „Rok 2035". Sekcja nosi też
+   `.mars-ciemny` — stamtąd kolory tekstu na ciemnym tle (biały nagłówek,
+   turkusowy nadtytuł, jasna czerwień pytania). Tło nadpisujemy tu, bo
+   `.mars-ciemny` maluje nocną czerń; ta reguła stoi niżej w arkuszu
+   i ma wyższą swoistość. */
+.mars-misja.mars-ciemny {
+  background-color: #071522;
+  background-image:
+    radial-gradient(52% 46% at 12% 22%, rgba(50, 216, 230, 0.08) 0%, rgba(50, 216, 230, 0) 70%),
+    radial-gradient(48% 44% at 90% 78%, rgba(225, 98, 58, 0.1) 0%, rgba(225, 98, 58, 0) 70%),
+    linear-gradient(180deg, #06111b 0%, #071522 50%, #0a1c2b 100%);
+}
+
+/* Sekcja wyśrodkowana (05.10.2026): status gościa, nadtytuł, nagłówek,
+   taśma kroków i pytanie. */
+.mars-misja .mars-shell {
+  position: relative;
+  text-align: center;
+}
+
+.mars-misja .mars-tytul,
+.mars-misja .mars-pytanie {
+  margin-inline: auto;
+}
+
+/* Status gościa — jednowierszowa plakietka TUŻ NAD nadtytułem, na osi sekcji
+   (05.10.2026). Wcześniej był dwuwierszowym pudełkiem przy lewej krawędzi
+   szyny, od 1024 px wyjętym z toku obok nagłówka — czytał się jak osobny
+   widżet, a nie część „Twojej misji". Dioda przed etykietą to ten sam
+   język co telemetria w hero: status jest „aktywny". */
+.mars-odznaka {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: fit-content;
+  margin: 0 auto 1rem;
+  padding: 0.4rem 0.95rem 0.4rem 0.8rem;
+  border: 1px solid rgba(50, 216, 230, 0.32);
+  border-radius: 999px;
+  background: rgba(50, 216, 230, 0.08);
+  line-height: 1.2;
+}
+
+.mars-odznaka::before {
+  content: "";
+  flex-shrink: 0;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: var(--dj-turkus);
+  box-shadow: 0 0 0.5rem rgba(50, 216, 230, 0.7);
+}
+
+.mars-odznaka-klucz {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.mars-odznaka-wartosc {
+  font-size: 0.875rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: var(--dj-turkus);
+}
+
+/* --- Real humanoids: własny arkusz `humanoidy.css` (od 05.10.2026) ----------- */
+
+/* --- Teaser B2B -------------------------------------------------------------------- */
+
+.mars-b2b {
+  padding-block: clamp(3.5rem, 11vw, 6rem);
+  background: linear-gradient(180deg, rgba(226, 98, 58, 0.09) 0%, rgba(226, 98, 58, 0) 60%);
+}
+
+.mars-b2b-uklad {
+  display: grid;
+  gap: 2rem;
+  align-items: center;
+}
+
+.mars-b2b-tekst .mars-przycisk-glowny {
+  margin-top: 1.75rem;
+}
+
+.mars-b2b-foto {
+  margin: 0;
+}
+
+.mars-b2b-foto img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 1.25rem;
+}
+
+/* --- Finał ------------------------------------------------------------------------- */
+
+.mars-final {
+  padding-block: clamp(3.5rem, 11vw, 6rem);
+  text-align: center;
+}
+
+/* W finale pasek telemetrii jest wyśrodkowany i bez dolnej kreski — tam
+   zamykają go liczby odliczania, a nie linia. `safe` jest konieczne: pasek ma
+   `overflow-x: auto`, a przy zwykłym `center` treść wystająca w LEWO na wąskim
+   ekranie staje się nieosiągalna. */
+/* Pasek FINAŁOWY nie podlega odchudzeniu nagłówkowemu. Redukcja do dwóch
+   pozycji była pomyślana dla hero, gdzie daty stoją niżej we własnych kartach —
+   tutaj żadnych kart nie ma, a to ostatnia przypominajka terminów przed
+   formularzem. Reguły bazowe objęły go po cichu, bo oba paski to ten sam
+   komponent; stąd ten jawny powrót. */
+.mars-hud.is-finalowy {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  justify-content: safe center;
+  border-bottom: 0;
+  margin-bottom: 2rem;
+}
+
+.mars-hud.is-finalowy > li:nth-child(1) {
+  display: none;
+}
+
+.mars-hud.is-finalowy > li:nth-child(4),
+.mars-hud.is-finalowy > li:nth-child(5) {
+  display: flex;
+}
+
+.mars-hud.is-finalowy > li:nth-child(2) {
+  margin-left: 0;
+  padding-left: 0;
+  border-left: 0;
+}
+
+.mars-final .mars-tytul {
+  margin-inline: auto;
+  max-width: 24ch;
+}
+
+.mars-odliczanie {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+  margin: 2rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* PRZED pierwszym tyknięciem ta sama lista jest tylko niewidoczna — liczby
+   pojawiają się dopiero w przeglądarce (inaczej React zgłosiłby niezgodność
+   hydracji). `visibility`, a nie `display: none`, bo pudełko MA zająć swoje
+   miejsce: inaczej treść pod nim podskakuje w chwili pierwszego tyknięcia.
+   Wcześniej była tu wysokość wpisana na sztywno (6.25 rem) i to ona powodowała
+   przeskok, któremu miała zapobiec — prawdziwa lista ma 89 px na telefonie
+   i 78 px wyżej. */
+.mars-odliczanie.is-czeka {
+  visibility: hidden;
+}
+
+.mars-odliczanie li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 4.75rem;
+  padding: 0.9rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.mars-odliczanie-liczba {
+  font-size: clamp(1.6rem, 7vw, 2.4rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  /* Cyfry o stałej szerokości — bez tego pudełko drga co sekundę, bo „1"
+     jest węższa od „8". */
+  font-variant-numeric: tabular-nums;
+  color: #ffffff;
+}
+
+.mars-odliczanie-etykieta {
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.mars-odliczanie-po {
+  margin: 2rem 0 0;
+  font-size: clamp(1.2rem, 4.5vw, 1.6rem);
+  font-weight: 800;
+  color: var(--dj-turkus);
+}
+
+.mars-przedsprzedaz {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin: 2.5rem 0 0;
+}
+
+.mars-przedsprzedaz-etykieta {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.mars-przedsprzedaz-data {
+  font-size: clamp(1.6rem, 7vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ms-czerwien);
+}
+
+/* Przypomnienie przy zapisie: wystawa jest czasowa (ten sam tekst co trzecia
+   karta w hero). Plakietka w barwach tamtej karty, na osi wyśrodkowanego
+   finału — `inline-flex` w bloku z `text-align: center` staje na środku.
+   Na wąskim ekranie wartość schodzi pod etykietę zamiast wyjeżdżać. */
+.mars-final-czas {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  column-gap: 0.55rem;
+  row-gap: 0.15rem;
+  margin: 1.25rem 0 0;
+  padding: 0.5rem 1.05rem;
+  border: 1px solid rgba(226, 98, 58, 0.6);
+  border-radius: 999px;
+  background: rgba(226, 98, 58, 0.1);
+  box-shadow: 0 0 1.5rem -0.5rem rgba(226, 98, 58, 0.45);
+}
+
+.mars-final-czas-ikona {
+  color: var(--ms-czerwien);
+}
+
+.mars-final-czas-etykieta {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.mars-final-czas-wartosc {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--ms-czerwien);
+}
+
+.mars-formularz-tytul {
+  margin: 2.5rem 0 0;
+  font-size: clamp(1.1rem, 4vw, 1.4rem);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+/* --- Formularz ---------------------------------------------------------------------- */
+
+.mars-formularz {
+  margin: 1.5rem auto 0;
+  max-width: 36rem;
+  text-align: left;
+}
+
+.mars-formularz-pola {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.mars-pole {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+}
+
+.mars-pole label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.66);
+}
+
+.mars-pole input {
+  /* Bez `min-width: 0` kolumna siatki rośnie do WEWNĘTRZNEJ szerokości pola.
+     WebKit (Safari i każda przeglądarka na iOS) daje jej przy Poppinsie 350 px,
+     a komórka od 768 px ma 282 px — imię wjeżdżało na nazwisko o 56 px,
+     a na telefonie 375 px wszystkie pola wystawały poza formularz. Chromium
+     liczy tę szerokość mniejszą i błędu nie pokazywał. */
+  min-width: 0;
+  min-height: 2.875rem;
+  padding: 0.7rem 0.95rem;
+  /* 0.42, nie 0.18: obrys elementu sterującego musi mieć 3:1 wobec tła.
+     Przy 18% bieli było 1.61:1 — pole było praktycznie niewidoczne. */
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: 0.8rem;
+  background: rgba(255, 255, 255, 0.05);
+  font-size: 1rem;
+  color: #ffffff;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease;
+}
+
+.mars-pole input:focus-visible {
+  outline: 2px solid var(--dj-turkus);
+  outline-offset: 2px;
+  border-color: transparent;
+}
+
+.mars-pole input[aria-invalid="true"] {
+  border-color: #ff8da3;
+  background: rgba(255, 141, 163, 0.08);
+}
+
+.mars-pole-blad {
+  font-size: 0.8rem;
+  line-height: 1.35;
+  color: #ff8da3;
+}
+
+.mars-zgoda {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 0.65rem;
+  row-gap: 0.35rem;
+  margin: 1.25rem 0 0;
+}
+
+.mars-zgoda input {
+  /* Cel dotykowy jest większy niż sam kwadracik — klikalna jest też etykieta,
+     ale sam checkbox nie może być celem 13-pikselowym. */
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: 0.15rem 0 0;
+  accent-color: var(--ms-czerwien);
+}
+
+.mars-zgoda label {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.mars-zgoda a {
+  color: var(--dj-turkus);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.mars-zgoda .mars-pole-blad {
+  grid-column: 2;
+}
+
+.mars-formularz .mars-przycisk-glowny {
+  width: 100%;
+  margin-top: 1.5rem;
+}
+
+.mars-wymagane {
+  margin: 0.75rem 0 0;
+  font-size: 0.76rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Region żywy ma stałą wysokość, żeby pojawienie się komunikatu nie
+   przesuwało układu. */
+.mars-komunikat {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1rem 0 0;
+  min-height: 1.5rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.mars-komunikat:focus-visible {
+  outline: 2px solid var(--dj-turkus);
+  outline-offset: 4px;
+}
+
+.mars-komunikat.is-blad {
+  color: #ff8da3;
+}
+
+.mars-komunikat.is-sukces {
+  justify-content: center;
+  margin-inline: auto;
+  margin-top: 1.5rem;
+  max-width: 36rem;
+  padding: 1.25rem;
+  border: 1px solid rgba(50, 216, 230, 0.35);
+  border-radius: 1rem;
+  background: rgba(50, 216, 230, 0.08);
+  color: var(--dj-turkus);
+  text-align: center;
+}
+
+/* ============================================================================
+   PROGI. Wszystkie zebrane TUTAJ, po regułach bazowych — `@media` nie podnosi
+   swoistości, więc blok z progiem umieszczony wyżej w pliku nie zadziałałby
+   ani razu. W tym repozytorium ta pułapka wystąpiła już pięć razy.
+   ========================================================================= */
+
+@media (min-width: 768px) {
+  .mars-page {
+    --ms-fala: 4rem;
+    /* Od 768 px pasek odsuwa się od góry o `md:top-4` zamiast `top-2`,
+       więc jest o 7 px wyższy — zmierzone. */
+    --ms-naglowek: 6.5625rem;
+  }
+
+  /* Tablet trzyma tę samą kompozycję co telefon, tylko w innej skali: kadr ma
+     tu 1024 px wysokości, a lead kończy się około 520 px. Jasny bark zaczyna
+     się na 36% wysokości pliku, więc żeby wypadł poniżej leadu, postać może
+     mieć najwyżej 64vw. 62vw zostawia margines błędu. */
+  /* Tablet ma własny `top`, bo jego nagłówek jest o kilkanaście pikseli wyższy
+     i podtytuł kończy się dopiero na 450 px — wartość telefonowa stawiałaby
+     hełm za podtytułem. Karty z datami nie sięgają tu postaci w poziomie
+     (kończą się na ~300 px, hełm zaczyna się na ~518), więc twarz jest wolna
+     mimo że pionowo pasy się pokrywają. */
+  .mars-hero-humanoid {
+    right: -14vw;
+    top: 30rem;
+    bottom: auto;
+    width: 62vw;
+  }
+
+  /* Na tablecie postać sięga poniżej dołu hero, więc jej wygaszenie wypadało
+     w kadrze — akurat tam, gdzie biegnie klisza, i taśma prześwitywała przez
+     biodra. Bez maski postać zasłania taśmę w całości. */
+  .mars-hero-humanoid img {
+    mask-image: none;
+  }
+
+  /* KLISZA NA TABLECIE: wyższa niż na telefonie, ale nadal pod przyciskami
+     (te biorą tu całą szerokość). Prawą połowę zasłania postać — taśma
+     wchodzi za nią. */
+  .mars-hero {
+    --ms-klisza-wys: clamp(7.5rem, 15vw, 8.75rem);
+    /* Podniesiona o 0,15 wysokości taśmy, jak na telefonie, a strefa
+       z tego samego powodu tylko o 0,5 rem (ramka „Odkryj misję"). */
+    --ms-klisza-fala: -0.25 1.15, 0.3 0.89, 0.62 0.75, 1.25 1.05;
+    --ms-klisza-skala: 1.04 1 0.98;
+    --ms-klisza-strefa: calc(var(--ms-klisza-wys) * 1.42 + 1.25rem);
+  }
+
+  .mars-formularz-pola {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Adres e-mail bierze całą szerokość — jest dłuższy niż imię i nazwisko
+     razem wzięte, a łamanie go na pół kolumny nic nie daje. */
+  .mars-formularz-pola .mars-pole:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .mars-formularz .mars-przycisk-glowny {
+    width: auto;
+    min-width: 16rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .mars-page {
+    --ms-fala: 4.5rem;
+    /* Nagłówki sekcji o 5% mniejsze (05.10.2026, prośba obiektu). */
+    --ms-skala-naglowka: 0.95;
+  }
+
+  /* Od 1024 px hero jest plakatem: kolumna tekstu po lewej, postać po prawej.
+     Minimalna wysokość nie schodzi poniżej 48 rem, bo przy niskim oknie
+     (np. laptop 1280 × 720) samo `100svh` dałoby kadr, w którym robot nie
+     mieści się w całości i kompozycja się rozpada. */
+  .mars-hero {
+    /* Skala napisów wraca do 1 — tamto zmniejszenie jest wyłącznie telefonowe. */
+    --ms-skala-tekst: 1;
+    /* Napisy i postać o 5% mniejsze (05.10.2026, prośba obiektu). Działa na
+       wszystko, co mnoży przez `--ms-skala` — także na desktopowe stopnie
+       i wysokość postaci niżej w tym bloku. */
+    --ms-skala: 0.95;
+    min-height: max(100svh, calc(48rem + var(--ms-naglowek)));
+    align-items: center;
+    /* KLISZA NA DESKTOPIE (05.10.2026, wg referencji): wchodzi zza lewej
+       krawędzi na wysokości dolnych ~25–30% hero, łagodnie opada, najniżej
+       leży między kolumną treści a postacią (tam dolna perforacja schodzi
+       pod falę), potem unosi się i przechodzi ZA postać na wysokości bioder
+       i dłoni, a kończy za prawą krawędzią. Jedna szeroka fala, bez
+       sinusoidy. Wysokość 158–202 px (190 px przy 1920) — o ok. 22% niższa
+       niż dawny raster (ok. 245 px przy 1920).
+       05.10.2026, na życzenie obiektu: o 10% większa niż pierwsza wersja
+       (144–184 px) i oś wyżej o 0,35 wysokości taśmy (dwa podejścia: 0,2
+       i 0,15) — dolna perforacja nie chowa się już za falą, cała taśma stoi
+       nad nią. */
+    --ms-klisza-wys: clamp(9.9rem, 4.4vw + 6.6rem, 12.65rem);
+    --ms-klisza-fala: -0.22 1.85, 0 1.69, 0.47 0.95, 0.79 1.33, 1.22 1.67;
+    /* Lewy koniec bliżej widza (większy i lekko rozmyty), środek ostry,
+       fragment za postacią o włos dalej. Bez wyraźnego zniekształcenia —
+       taśma ma się czytać jako zwykła klisza. */
+    --ms-klisza-skala: 1.07 1 0.96;
+    --ms-klisza-rozmycie: 1.3 0.34 0.5 0.86;
+    /* Strefa pod kolumną treści = górna krawędź taśmy tam, gdzie zaczyna
+       się kolumna, + odstęp od przycisków. STAŁA, bo tak wyszło z krzywej:
+       przy szerszym oknie taśma jest wyższa (rośnie z vw), ale kolumna
+       zaczyna się dalej w prawo, gdzie krzywa leży niżej — i oba efekty się
+       znoszą. Wyliczone (splajn jak w `KliszaHero.tsx`) od 1024 do 2048 px:
+       górna krawędź 346–353 px nad dołem hero. 22,75 rem (364 px) + 1,5 rem
+       dopełnienia daje ok. 35 px od dołu przycisków na każdej szerokości.
+       PRZY ZMIANIE krzywej, `--ms-klisza-wys` albo szyny treści trzeba to
+       przeliczyć — miernik `mc2-klisza.mjs` mierzy prawdziwą krawędź taśmy. */
+    --ms-klisza-strefa: 22.75rem;
+    /* Przywrócenie miary desktopowej. Reguła bazowa dostała 2,5 rem wyłącznie
+       po to, by skrócić odstęp pod paskiem NA TELEFONIE — przy wyśrodkowanej
+       treści każdy dołożony piksel dopełnienia przesuwa blok o pół piksela,
+       więc bez tej linii desktop zjeżdżał o 8 px. */
+    padding-block: calc(1.5rem + var(--ms-naglowek)) calc(1.5rem + var(--ms-klisza-strefa));
+  }
+
+  /* Pasek misji wraca do jednego rzędu — dwurzędowa siatka jest wyłącznie
+     telefonowa. Zerowanie `grid-area` i kresek jest konieczne, bo reguły
+     bazowe obowiązują także tutaj. */
+  .mars-hud {
+    display: flex;
+    gap: 1.25rem;
+    column-gap: 1.25rem;
+    row-gap: 0;
+    padding-bottom: 0.75rem;
+    overflow-x: auto;
+  }
+
+  .mars-hud > li:nth-child(1),
+  .mars-hud > li:nth-child(2) {
+    grid-area: auto;
+  }
+
+  /* Daty wracają TYLKO w pasku finałowym. Pasek w nagłówku niesie na KAŻDEJ
+     szerokości wyłącznie misję i stan — daty stoją niżej we własnych kartach,
+     a ta sama informacja dwa razy na jednym ekranie to dublowanie. Wcześniej
+     ta reguła obejmowała oba paski i dlatego desktop pokazywał w hero pięć
+     pozycji. */
+  .mars-hud.is-finalowy > li:nth-child(4),
+  .mars-hud.is-finalowy > li:nth-child(5) {
+    display: flex;
+  }
+
+  .mars-hud > li:nth-child(2) {
+    margin-left: 0;
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  /* Na desktopie pasek jest jednym rzędem flexa: logo stoi zaraz za stanem,
+     oddzielone kreską — NIE przy prawej krawędzi, bo tam wchodziłoby na hełm
+     postaci. Cień zbędny z tego samego powodu co pod napisami (kolumna leży
+     na ciemnym niebie z własną przesłoną). */
+  .mars-hud > li.mars-hud-logo {
+    margin-left: 0;
+    padding-left: 1.25rem;
+  }
+
+  .mars-hud-logo img {
+    width: 7.25rem;
+    max-width: none;
+    filter: none;
+  }
+
+  /* KOMPLET miar sprzed przebudowy telefonowej. Każda z tych reguł bazowych
+     została ściśnięta na potrzeby kompozycji mobilnej i bez przywrócenia
+     przesuwała desktop o kilka pikseli — co przy porównaniu zrzutów wychodzi
+     jako 71 tys. różniących się pikseli w kolumnie tekstu. */
+  .mars-hero-nadtytul {
+    display: block;
+    margin: 0 0 0.75rem;
+    max-width: none;
+  }
+
+  .mars-hero-tytul {
+    margin: 0;
+    gap: 0.3rem;
+  }
+
+  .mars-hero-akcje {
+    margin-top: 1.75rem;
+  }
+
+  .mars-daty {
+    margin-top: 1.75rem;
+  }
+
+  .mars-hero-haslo {
+    margin: 1.5rem 0 0;
+  }
+
+  /* Przesłony czytelności są zabiegiem WYŁĄCZNIE telefonowym: na desktopie
+     kolumna tekstu stoi obok postaci, nie na niej. */
+  /* Przesłona wraca do wersji desktopowej — zatwierdzonej i NIETKNIĘTEJ.
+     Reguła bazowa dostała mocniejsze gradienty wyłącznie na potrzeby telefonu,
+     gdzie litery leżą na postaci; tutaj litery leżą obok niej. */
+  .mars-hero::before {
+    background:
+      /* Wygaszenie od lewej — o 25% słabsze niż w zatwierdzonej wersji
+         (0.94 / 0.84 / 0.54 / 0.14 × 0,75), żeby fotografia przebijała pod
+         kolumną tekstu. Czytelność sprawdzona pomiarem po zmianie. */
+      linear-gradient(90deg, rgba(3, 5, 10, 0.705) 0%, rgba(3, 5, 10, 0.63) 40%, rgba(3, 5, 10, 0.405) 64%, rgba(3, 5, 10, 0.105) 88%),
+      linear-gradient(180deg, rgba(3, 5, 10, 0.72) 0%, rgba(3, 5, 10, 0) 26%, rgba(3, 5, 10, 0.35) 62%, rgba(3, 5, 10, 0.9) 100%),
+      radial-gradient(120% 95% at 50% 45%, rgba(3, 5, 10, 0) 48%, rgba(3, 5, 10, 0.72) 100%),
+      radial-gradient(60% 70% at 2% 38%, rgba(50, 216, 230, 0.12) 0%, rgba(50, 216, 230, 0) 70%),
+      radial-gradient(48% 62% at 76% 58%, rgba(226, 98, 58, 0.2) 0%, rgba(226, 98, 58, 0) 72%);
+  }
+
+  /* Miara z briefu: 560–620 px. Na telefonie lead i podtytuł są węższe (72%),
+     bo tam prawa część kadru należy do postaci. */
+  .mars-hero-haslo,
+  .mars-hero-tytul-drugi {
+    max-width: 38rem;
+  }
+
+  /* Od 1024 px pod kafelkami i przyciskiem jest już samo ciemne niebo — postać
+     stoi obok kolumny tekstu, nie pod nią. Wraca więc szyba: lżejsza i bardziej
+     zgodna z resztą serwisu niż ciemna plama potrzebna na telefonie. */
+  .mars-daty li {
+    background: rgba(6, 10, 18, 0.46);
+    padding: 0.7rem 1.1rem;
+  }
+
+  /* Przywrócenie miary odstępu kart — reguła bazowa jest telefonowa. */
+  .mars-daty {
+    gap: 0.65rem;
+  }
+
+  /* Od 1024 px przyciski stoją obok siebie w szerokiej kolumnie i etykieta
+     mieści się w wierszu bez żadnych zabiegów — wracają miary wspólne
+     z resztą serwisu. */
+  /* Przycisk główny wraca do miar desktopowych w KOMPLECIE: szerokość z treści,
+     wyśrodkowanie zamiast trójpodziału, pierwotna wysokość i dopełnienie.
+     Strzałka jest elementem telefonowym — na desktopie znika, bo przycisk ma
+     tam zatwierdzony wygląd i nie wolno go ruszać. */
+  /* Przycisk drugorzędny wraca do kapsuły — odchudzenie go do odnośnika jest
+     zabiegiem telefonowym, desktop jest zatwierdzony. */
+  .mars-hero-akcje .mars-przycisk-drugi {
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.06);
+    /* Rozmycie tła jest telefonowe (tam szyba bywa na jasnym robocie). */
+    backdrop-filter: none;
+    padding-inline: 1.4rem;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .mars-hero-akcje .mars-przycisk-glowny {
+    width: auto;
+    justify-content: center;
+    min-height: 2.875rem;
+    padding-inline: 1.4rem;
+    gap: 0.55rem;
+  }
+
+  .mars-hero-akcje .mars-przycisk-glowny .mars-cta-etykieta {
+    flex: 0 0 auto;
+    white-space: normal;
+  }
+
+  .mars-hero-akcje .mars-cta-strzalka {
+    display: none;
+  }
+
+  .mars-hero-akcje {
+    justify-content: flex-start;
+    gap: 0.65rem;
+  }
+
+  /* Od 1024 px „Wystawa czasowa" to karta w rzędzie z datami, w tej samej
+     mierze co one — wartość wraca do wielkości dat. */
+  .mars-daty .mars-daty-czas {
+    flex: 0 0 auto;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.15rem;
+    padding: 0.7rem 1.1rem;
+    background: rgba(28, 11, 7, 0.5);
+  }
+
+  .mars-daty-czas .mars-daty-etykieta {
+    letter-spacing: 0.16em;
+  }
+
+  .mars-daty-czas .mars-daty-wartosc {
+    font-size: calc(1.4rem * var(--ms-skala));
+  }
+
+  .mars-daty li {
+    flex: 0 0 auto;
+  }
+
+  .mars-hud-klucz {
+    font-size: calc(0.6rem * var(--ms-skala));
+    letter-spacing: 0.16em;
+  }
+
+  .mars-hud-wartosc {
+    font-size: calc(0.74rem * var(--ms-skala));
+    letter-spacing: 0.06em;
+  }
+
+  .mars-hero-haslo strong {
+    font-size: calc(clamp(1.05rem, 4vw, 1.3rem) * var(--ms-skala));
+  }
+
+  .mars-hero-haslo span {
+    font-size: calc(clamp(0.92rem, 3.4vw, 1.05rem) * var(--ms-skala));
+  }
+
+  .mars-hero-akcje .mars-przycisk-glowny,
+  .mars-hero-akcje .mars-przycisk-drugi {
+    font-size: calc(0.95rem * var(--ms-skala));
+  }
+
+  .mars-przycisk-drugi {
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  /* Humanoid: duży, przy prawej krawędzi, dochodzi do dołu kadru i może być tam
+     przycięty — jak postać na plakacie filmowym. WYSOKOŚĆ, nie szerokość, jest
+     tu miarą wiodącą: kadr bywa niski i to ona decyduje, czy robot się zmieści. */
+  /* O ok. 8% większa niż poprzednio i o te same 8% wyżej: ma czytać się jak
+     bohater plakatu, a nie jak element tła. `z-index: 3` wynosi ją NAD
+     przesłonę — tu stoi obok kolumny tekstu, nie pod nią, więc nic jej nie
+     musi gasić. */
+  .mars-hero-humanoid {
+    z-index: 3;
+    right: clamp(1rem, 4vw, 5rem);
+    /* `top: auto` jest TU KONIECZNE. Reguła bazowa zaczepia postać do środka
+       kadru (`top`), a przy elemencie bezwzględnym z podaną wysokością `top`
+       wygrywa z `bottom` — bez tego zerowania desktopowy robot wędrował razem
+       z telefonowym, mimo że `bottom` niżej jest ustawione. */
+    top: auto;
+    /* Postać stoi PRZED kliszą i schodzi do samego dołu kadru (pół rem pod
+       krawędź — tę resztę przycina `overflow: hidden`), więc taśma
+       przechodzi za jej biodrami i dłońmi. Plik kończy się na biodrach:
+       gdyby postać kończyła się nad dołem hero, pod nią wychodziłaby taśma
+       i wyglądałoby, że to klisza przecina tors. */
+    bottom: -0.5rem;
+    width: auto;
+    /* Wysokość liczona od PASKA NAWIGACJI, nie jako procent hero. Hero
+       zaczyna się pod przyklejonym paskiem, więc dawne 91% obejmowało też
+       pas, który pasek zasłania — przy 1280–1536 px czubek hełmu chował się
+       57 px pod paskiem, przy 1728 × 1000 — 15 px. Teraz hełm stoi zawsze
+       3rem pod dolną krawędzią paska: od wysokości hero odejmujemy pasek
+       (`--ms-naglowek`), jego odsunięcie od góry okna (1rem, `md:top-4`),
+       ten odstęp i dolne zaczepienie postaci. Przy 1920 × 1080 wychodzi
+       dokładnie tyle, ile było — tam hełm miał już 47 px oddechu.
+       Pół rem zanurzenia pod dół hero (`bottom`) wraca tu w wysokości.
+       Sufit rośnie z szerokością dopiero od ~2060 px (45vw > 58rem): postać
+       zaczepiona do dołu przy oknie 2560 × 1440 i suficie 58rem stała
+       hełmem na 36% wysokości hero — o 200 px niżej niż przed zmianą. */
+    height: calc(clamp(33rem, calc(100% - var(--ms-naglowek) - 1rem - 3rem + 0.5rem), max(58rem, 45vw)) * var(--ms-skala));
+  }
+
+  .mars-hero-foto img {
+    height: 100%;
+    object-position: 62% 42%;
+  }
+
+  .mars-hero-humanoid img {
+    width: auto;
+    height: 100%;
+    object-fit: contain;
+    /* BEZ wygaszenia dołu: postać schodzi pod falę, a każdy przezroczysty
+       piksel jej bioder odsłaniałby kliszę, która ma iść ZA nią. */
+    mask-image: none;
+  }
+
+  /* BEZ `max-width` na kolumnie. `.mars-shell` ma `margin-inline: auto`, więc
+     każdy węższy limit przestawał trzymać lewą krawędź siatki strony i cała
+     treść hero jechała do środka — zmierzone: do 235 px rozjazdu względem
+     sekcji niżej. Asymetrię kompozycji daje więc sam stopień pisma nagłówka
+     i `max-width` opisu, a nie zwężona kolumna.
+
+     Stopień policzony z pomiaru (7.447 px szerokości na px stopnia): przy
+     1680 px 6vw daje 751 px najszerszego wiersza, a postać zaczyna się na
+     1077 px. Brief proponował 7vw/8.5 rem — przy tej wartości „COLONIZATION"
+     wchodziło pod ramię robota. */
+  /* Szerokość kolumny treści w układzie plakatowym. JEDNA zmienna, bo tę samą
+     miarę trzymają dwa elementy, które inaczej wchodzą pod postać: nagłówek
+     i rząd przycisków.
+
+     46vw policzone z pomiaru: „COLONIZATION" zajmuje 7.447 px szerokości na
+     każdy piksel stopnia pisma, czyli przy 6vw dokładnie 44.7vw. Limit musi być
+     większy od tego (żeby dłuższe słowo zmieściło się w wierszu) i mniejszy
+     od całej frazy (żeby nazwa łamała się na dwa wiersze, jak na referencji).
+     Zmierzone na pięciu szerokościach: napis kończy się od 48 do 140 px przed
+     lewą krawędzią postaci. */
+  .mars-hero {
+    --ms-kolumna: 46vw;
+  }
+
+  /* Łamanie wymusza MIARA, nie twardy podział w tekstach — podział wpisany
+     w dane rozjechałby się po cichu przy innym kroju albo innym języku. */
+  .mars-hero-tytul {
+    max-width: var(--ms-kolumna);
+  }
+
+  /* Bez tego ograniczenia rząd przycisków ciągnie się na całą szerokość
+     kontenera i przy 1024 px „Odkryj misję" wypadał pod ramieniem robota.
+     Teraz przyciski zawijają się do drugiego wiersza, zamiast chować. */
+  .mars-hero-akcje {
+    max-width: var(--ms-kolumna);
+  }
+
+  /* Fade od lewej jest telefonowy — desktop ma własną przesłonę w `::before`. */
+  .mars-hero::after {
+    content: none;
+  }
+
+  /* CIENIE POD TEKSTEM SĄ ZABIEGIEM WYŁĄCZNIE TELEFONOWYM. Na desktopie
+     kolumna tekstu stoi obok postaci, na ciemnym niebie, i ma własną przesłonę
+     w `.mars-hero::before` — tam cienie nie są potrzebne, a desktop jest
+     zatwierdzony. */
+  .mars-hero-nadtytul,
+  .mars-hud-klucz,
+  .mars-hud-wartosc,
+  .mars-hero-tytul-drugi,
+  .mars-hero-haslo strong,
+  .mars-hero-haslo span,
+  .mars-hero-akcje .mars-przycisk-drugi {
+    text-shadow: none;
+  }
+
+  .mars-hero-tytul-glowny {
+    text-shadow: none;
+    max-width: none;
+    font-size: calc(clamp(3.75rem, 6vw, 7.5rem) * var(--ms-skala));
+  }
+
+  /* Oba słowa nazwy w jednej mierze — różnicowanie stopni jest telefonowe. */
+  .mars-tytul-a,
+  .mars-tytul-b {
+    font-size: 100%;
+  }
+
+  .mars-hero-tytul-drugi {
+    margin-top: 0.35rem;
+    font-size: calc(clamp(1rem, 1.5vw, 1.35rem) * var(--ms-skala));
+    letter-spacing: 0.2em;
+  }
+
+  /* === SEKCJA „ROK 2035" — układ desktopowy =============================
+     Fotografia przestaje być osobnym kadrem w toku tekstu i staje się prawą
+     częścią jednej kompozycji: sięga od górnej krawędzi sekcji do celów
+     misji i od 30% szyny do krawędzi okna, a jej lewy brzeg wygasa w granat. */
+  .mars-2035 {
+    /* Górne dopełnienie w zmiennej, bo zdjęcie musi się o nie cofnąć, żeby
+       sięgnąć górnej krawędzi sekcji. */
+    --ms-2035-gora: clamp(5rem, 7vw, 7rem);
+    padding-block: var(--ms-2035-gora) clamp(4.5rem, 6vw, 6rem);
+  }
+
+  .mars-2035-scena {
+    display: block;
+  }
+
+  .mars-2035-foto {
+    position: absolute;
+    top: calc(-1 * var(--ms-2035-gora));
+    /* Dół schodzi pod etykietę celów misji i tam gaśnie — tak jak na
+       referencji, gdzie zdjęcie przechodzi w rząd celów bez krawędzi. */
+    bottom: -3.75rem;
+    /* Lewa krawędź liczona od SZYNY treści, a nie od okna: 45% szerokości
+       kolumny za jej początkiem. Przy stałym procencie okna brzeg zdjęcia
+       wypadał w innym miejscu tekstu na każdym ekranie. 45%, nie 30%: od
+       kiedy „Roboty przybyły" stoi w jednym wierszu, nagłówek sięga prawie
+       do końca kolumny — przy 30% hełm postaci zaczynał się pod jego
+       końcówką, przy 42% litera „y" stykała się z tyłem hełmu. Liczby to
+       miara `.mars-shell` (73.75rem, dopełnienie 1.25rem). */
+    left: calc(max(0px, (100% - 73.75rem) / 2) + 1.25rem + 0.45 * (min(100%, 73.75rem) - 2.5rem));
+    right: 0;
+    margin: 0;
+  }
+
+  .mars-2035-foto img {
+    height: 100%;
+    aspect-ratio: auto;
+    /* Pudełko jest węższe niż proporcja zdjęcia, więc `cover` tnie
+       w poziomie — 18% zostawia robotowi głowę i bark, z prawej odcina
+       tylko skraj ostatniego namiotu. */
+    object-position: 18% 40%;
+    /* Lewe wygaszenie jest POCHYŁE (75°): u góry zaczyna się wcześniej,
+       u dołu później. Nagłówek leży wysoko, na ciemnym suficie hali, i może
+       zachodzić na zdjęcie; lead i zdanie zadania leżą nisko, na wysokości
+       jasnego barku robota — tam zdjęcie musi już być wygaszone, inaczej
+       przygaszona biel tekstu stałaby na jasnoszarym pancerzu.
+       Druga maska: krótkie wygaszenie u góry, długie u dołu.
+       `mask-composite: intersect` mnoży maski; `-webkit-` dla Safari sprzed
+       15.4. */
+    mask-image:
+      linear-gradient(
+        75deg,
+        transparent 0%,
+        rgba(0, 0, 0, 0.1) 8%,
+        rgba(0, 0, 0, 0.35) 15%,
+        rgba(0, 0, 0, 0.7) 22%,
+        rgba(0, 0, 0, 0.92) 29%,
+        #000 35%
+      ),
+      linear-gradient(
+        180deg,
+        transparent 0%,
+        rgba(0, 0, 0, 0.6) 5%,
+        #000 11%,
+        #000 64%,
+        rgba(0, 0, 0, 0.7) 76%,
+        rgba(0, 0, 0, 0.3) 88%,
+        transparent 100%
+      );
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+  }
+
+  .mars-2035-hud {
+    top: 11%;
+  }
+
+  /* --- Wariant ZE ZDJĘCIEM (`POKAZ_ZDJECIE_2035` w page.tsx) ---------------
+     Kolumna tekstu po lewej, fotografia po prawej. Bez zdjęcia sekcja jest
+     wyśrodkowana i te reguły nie działają. */
+  .mars-2035.ze-zdjeciem .mars-2035-uklad {
+    /* Minimalna wysokość daje fotografii kadr do wypełnienia — bez niej
+       sekcja miałaby wysokość samego tekstu i zdjęcie byłoby paskiem. */
+    min-height: 29rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .mars-2035.ze-zdjeciem .mars-2035-tresc {
+    max-width: 44%;
+    margin-inline: 0;
+  }
+
+  /* Pierwszy wiersz musi zmieścić się w kolumnie tekstu (44% szyny)
+     i skończyć PRZED hełmem postaci na zdjęciu — inaczej biały napis leżałby
+     na jasnej skorupie hełmu. */
+  .mars-2035.ze-zdjeciem .mars-2035-tytul {
+    font-size: calc(clamp(3.25rem, 4.45vw, 3.875rem) * var(--ms-skala-naglowka));
+  }
+
+  /* --- Wariant WYŚRODKOWANY (bez zdjęcia) ----------------------------------
+     Blok historii na środku szyny (kolumna 48rem z reguły bazowej).
+     Stopień: przy 72 px „Roboty przybyły" (8,0em) ma 576 px, a „pierwsze."
+     (×1,2) 86 px — tyle samo co „MARS COLONIZATION" w hero przy 1440, więc
+     sufit 4.5rem; wyżej nagłówek sekcji przerastałby nagłówek strony. */
+  .mars-2035:not(.ze-zdjeciem) .mars-2035-tytul {
+    font-size: calc(clamp(3.5rem, 5vw, 4.5rem) * var(--ms-skala-naglowka));
+  }
+
+  /* Pionowa kreska przy nagłówku — oznaczenie techniczne z referencji:
+     cienka linia z odcinkiem w czerwieni na wysokości drugiego wiersza.
+     Tylko w wariancie ze zdjęciem: przy wyśrodkowanym bloku wisiałaby
+     w połowie strony. Dopiero od 1320 px, razem ze znacznikami celownika:
+     węższe okno ma po lewej szyny najwyżej 70 px marginesu i kreska
+     kleiłaby się do krawędzi ekranu jak błąd układu. */
+  @media (min-width: 1320px) {
+    .mars-2035::after {
+      display: block;
+    }
+
+    .mars-2035.ze-zdjeciem .mars-2035-tresc::before {
+      content: "";
+      position: absolute;
+      top: 0.2rem;
+      left: -2.75rem;
+      width: 1px;
+      height: 17rem;
+      background:
+        linear-gradient(var(--ms-czerwien), var(--ms-czerwien)) 0 6rem / 100% 2.5rem no-repeat,
+        linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0) 100%);
+    }
+  }
+
+  .mars-cele {
+    margin-top: 3rem;
+  }
+
+  /* Pięć celów w jednym rzędzie — jedna linia systemowa z cienkimi pionowymi
+     kreskami między pozycjami, a nie pięć kart. */
+  .mars-cele-lista {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    margin-top: 0.75rem;
+  }
+
+  .mars-cele-lista li {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      "ikona numer"
+      "ikona nazwa";
+    align-content: center;
+    column-gap: 1rem;
+    row-gap: 0.2rem;
+    min-height: 4rem;
+    padding-inline: clamp(0.75rem, 1.8vw, 1.75rem);
+    border-bottom: 0;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .mars-cele-lista li:first-child {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  /* Na desktopie numer jest biały — turkus niesie tu okrąg z ikoną,
+     a dwa turkusowe elementy obok siebie zlewały się w jedną plamę. */
+  .mars-cel-numer {
+    grid-area: numer;
+    align-self: end;
+    font-size: 0.9rem;
+    color: #ffffff;
+  }
+
+  .mars-cel-nazwa {
+    grid-area: nazwa;
+    align-self: start;
+    font-size: 0.78rem;
+  }
+
+  .mars-cel-ikona {
+    grid-area: ikona;
+    align-self: center;
+    padding: 0.8rem;
+  }
+
+  /* Oś nie biegnie przez całą szynę: rok 2035 stoi w ok. 60% szerokości,
+     a resztę rzędu zajmuje cienka linia namiaru z celownikiem — ten sam
+     układ co na referencji. Linia to `::after`, który jest czwartą kolumną
+     siatki. */
+  .mars-os {
+    grid-template-columns: auto minmax(0, 16rem) auto minmax(0, 22rem) auto minmax(0, 1fr);
+    column-gap: clamp(1.25rem, 2.5vw, 2rem);
+    margin-top: 3rem;
+  }
+
+  .mars-os::after {
+    content: "";
+    align-self: center;
+    height: 0.75rem;
+    margin-left: clamp(2rem, 6vw, 6rem);
+    background:
+      linear-gradient(rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.22)) right 1.5rem center / 1px
+        100% no-repeat,
+      linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.16) 100%) center / 100%
+        1px no-repeat;
+  }
+
+  .mars-os-rok {
+    font-size: clamp(2.25rem, 3.4vw, 3rem);
+  }
+
+  .mars-os-opis {
+    font-size: 0.68rem;
+    letter-spacing: 0.3em;
+  }
+
+  /* Na desktopie wszystkie podpisy wyrównane do lewej, jak na referencji —
+     rok 2035 nie stoi przy prawej krawędzi, więc nie ma do czego się
+     dociągać. Podpisy bez ograniczenia miary: na desktopie jest miejsce. */
+  .mars-os-punkt.is-cel,
+  .mars-os-punkt.is-srodek {
+    justify-items: start;
+    text-align: left;
+  }
+
+  .mars-os-opis {
+    max-width: none;
+  }
+
+  /* Wariant wyśrodkowany: oś stoi na środku szyny, bez jednostronnej linii
+     namiaru (czwarta kolumna przechylała całość w lewo), a etykieta celów
+     ma linie po obu stronach. */
+  .mars-2035:not(.ze-zdjeciem) .mars-os {
+    grid-template-columns: auto minmax(0, 20rem) auto minmax(0, 26rem) auto;
+    justify-content: center;
+  }
+
+  .mars-2035:not(.ze-zdjeciem) .mars-os::after {
+    content: none;
+  }
+
+  /* 62vw: dłoń (≈ 62–97% szerokości kadru, środek ok. 80%) wypada wtedy
+     pod środkiem okna. Sufit 72rem, żeby na bardzo szerokim ekranie ręka
+     nie rosła bez końca (przy 72rem ma ok. 290 px wysokości). */
+  .mars-2035-reka {
+    width: min(62vw, 72rem);
+  }
+
+  .mars-2035:not(.ze-zdjeciem) .mars-cele-etykieta::before {
+    content: "";
+    flex: 1 1 auto;
+    height: 1px;
+    background: linear-gradient(270deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 100%);
+  }
+
+  .mars-b2b-uklad {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+    gap: 3rem;
+  }
+}
+
+/* Wysokość paska nawigacji, a NIE układ tej strony — dlatego ma WŁASNY próg.
+   Pasek zwija się do hamburgera poniżej 1280 px (patrz `appbar.tsx`; do
+   05.10.2026 było to 1600), więc między 1024 a 1279 jest WYŻSZY: 105 px
+   zamiast 70. Gdyby ta deklaracja siedziała w bloku od 1024 px, nagłówek
+   odejmowałby 70 px tam, gdzie pasek ma 105 — i fotografia zaczynałaby się
+   35 px poniżej góry ekranu. Dokładnie to wyłapał na /bistro test `bs6-gora`.
+   Blok MUSI stać PO bloku od 1024 px. */
+/* Od 1280 px komplet pięciu pozycji — ale TYLKO w pasku finałowym. W nagłówku
+   zostają dwie na każdej szerokości. */
+@media (min-width: 1280px) {
+  .mars-hud.is-finalowy > li:nth-child(1),
+  .mars-hud.is-finalowy > li:nth-child(3) {
+    display: flex;
+  }
+}
+
+@media (min-width: 1280px) {
+  .mars-page {
+    --ms-naglowek: 4.375rem;
+  }
+}
+
+@media (min-width: 1600px) {
+  .mars-page {
+    --ms-fala: 6rem;
+  }
+}
+
+/* ============================================================================
+   Pojawianie się treści. Mechanika ta sama co na /jak-dojechac i /bistro: jeden
+   obserwator przecięć wiesza `.jest-widoczny` na sekcji, a stan ukryty włącza
+   JavaScript (klasa `.ujawnianie-wlaczone` na korzeniu). Bez skryptu i przed
+   hydracją treść jest po prostu widoczna — nie zdarzy się pusta strona przez
+   nieuruchomiony obserwator.
+   ========================================================================= */
+
+/* Hook wiesza klasę NA korzeniu podstrony, więc wariant potomkowy
+   (`.ujawnianie-wlaczone .mars-page`) nie pasowałby nigdy — stąd jeden
+   selektor, a nie para. */
+.mars-page.ujawnianie-wlaczone [data-ujawnij] {
+  opacity: 0;
+  transform: translateY(1.5rem);
+  transition:
+    opacity 620ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 620ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.mars-page.ujawnianie-wlaczone [data-ujawnij].jest-widoczny {
+  opacity: 1;
+  transform: none;
+}
+
+/* Elementy wewnątrz ujawnionej sekcji wchodzą po kolei — opóźnienie zależy od
+   pozycji w liście, a nie od osobnej klasy na każdym elemencie. */
+.mars-page.ujawnianie-wlaczone [data-ujawnij] .mars-cele-lista li {
+  opacity: 0;
+  transform: translateY(0.75rem);
+  transition:
+    opacity 480ms ease,
+    transform 480ms ease;
+}
+
+.mars-page.ujawnianie-wlaczone [data-ujawnij].jest-widoczny .mars-cele-lista li {
+  opacity: 1;
+  transform: none;
+}
+
+/* Opóźnienia MUSZĄ mieć tę samą swoistość co reguła wyżej, która ustawia
+   skrót `transition` — skrót zeruje `transition-delay`, więc przy niższej
+   swoistości te pięć reguł nie działało ani razu i wszystkie kafelki wchodziły
+   naraz. Stąd powtórzony pełny selektor zamiast krótkiego `.mars-page`. */
+.mars-page.ujawnianie-wlaczone [data-ujawnij] li:nth-child(1) { transition-delay: 0ms; }
+.mars-page.ujawnianie-wlaczone [data-ujawnij] li:nth-child(2) { transition-delay: 70ms; }
+.mars-page.ujawnianie-wlaczone [data-ujawnij] li:nth-child(3) { transition-delay: 140ms; }
+.mars-page.ujawnianie-wlaczone [data-ujawnij] li:nth-child(4) { transition-delay: 210ms; }
+.mars-page.ujawnianie-wlaczone [data-ujawnij] li:nth-child(5) { transition-delay: 280ms; }
+
+/* Ręka robota wsuwa się od lewej krawędzi — tak, jak ramię na zdjęciu.
+   Swoistość stanu widocznego MUSI być wyższa niż ukrytego: obie reguły
+   mają tę samą liczbę klas, więc przy równej swoistości wygrałaby
+   późniejsza (ukryta) i ręka zostałaby za kadrem na zawsze. */
+.mars-page.ujawnianie-wlaczone .mars-2035-reka[data-ujawnij] {
+  transform: translateX(-12%);
+  transition:
+    opacity 900ms cubic-bezier(0.22, 0.61, 0.36, 1) 150ms,
+    transform 1300ms cubic-bezier(0.22, 0.61, 0.36, 1) 150ms;
+}
+
+.mars-page.ujawnianie-wlaczone .mars-2035-reka[data-ujawnij].jest-widoczny {
+  transform: none;
+}
+
+/* Zdjęcie sekcji „Rok 2035" wchodzi wolniej niż tekst i z lekkiego
+   przybliżenia — ma się „wyostrzyć" w kadrze, a nie wjechać. Animowane są
+   wyłącznie `opacity` i `transform`. */
+.mars-page.ujawnianie-wlaczone [data-ujawnij] .mars-2035-foto img {
+  opacity: 0;
+  transform: scale(1.04);
+  transition:
+    opacity 1400ms cubic-bezier(0.22, 0.61, 0.36, 1) 120ms,
+    transform 1800ms cubic-bezier(0.22, 0.61, 0.36, 1) 120ms;
+}
+
+.mars-page.ujawnianie-wlaczone [data-ujawnij].jest-widoczny .mars-2035-foto img {
+  opacity: 1;
+  transform: none;
+}
+
+/* Trajektoria na osi 2031 → 2033 pojawia się KROPKA PO KROPCE, od lewej,
+   po wejściu celów misji — ale płynnie: nad kropkami przesuwa się miękka
+   krawędź (trzecia warstwa maski, 3rem rozmycia), więc każda kropka
+   rozjaśnia się po kolei, zamiast wyskakiwać. Pozycję krawędzi niesie
+   `--ms-os-postep` (`@property`, procent), animowany liniowo — stałe tempo.
+   Pierścień w połowie i grot stoją od początku: to punkty, do których
+   kropki dochodzą. Bez obsługi `@property` wartość przeskakuje w połowie
+   animacji i linia pojawia się naraz — nadal poprawnie, tylko bez efektu. */
+@property --ms-os-postep {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 100%;
+}
+
+@keyframes mars-os-kropki {
+  from {
+    --ms-os-postep: 0%;
+  }
+  to {
+    --ms-os-postep: 100%;
+  }
+}
+
+.mars-os-linia::before {
+  mask-image:
+    repeating-linear-gradient(90deg, #000 0 2px, transparent 2px 9px),
+    linear-gradient(
+      90deg,
+      #000 calc(50% - 0.6rem),
+      transparent calc(50% - 0.6rem) calc(50% + 0.6rem),
+      #000 calc(50% + 0.6rem)
+    ),
+    linear-gradient(
+      90deg,
+      #000 calc(var(--ms-os-postep) * 1.1 - 3rem),
+      transparent calc(var(--ms-os-postep) * 1.1)
+    );
+  -webkit-mask-composite: source-in, source-in;
+  mask-composite: intersect, intersect;
+  animation: mars-os-kropki 2.2s linear 0.5s both;
+}
+
+/* Pierwszy odcinek osi bez dziury na pierścień (patrz wyżej) i wcześniej:
+   kropki idą najpierw od 2026 do 2031, potem od 2031 do 2033. */
+.mars-os-linia.is-pierwsza::before {
+  mask-image:
+    repeating-linear-gradient(90deg, #000 0 2px, transparent 2px 9px),
+    linear-gradient(
+      90deg,
+      #000 calc(var(--ms-os-postep) * 1.1 - 3rem),
+      transparent calc(var(--ms-os-postep) * 1.1)
+    );
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+  animation-duration: 1.3s;
+}
+
+.mars-os-linia:not(.is-pierwsza)::before {
+  animation-delay: 1.75s;
+}
+
+/* Telefon: odcinki mają 30–60 px, a pierścień (12 px + przerwa w kropkach)
+   zjadał z drugiego połowę — zostawały z niego dwie kropki. Pierścień
+   znaczy połowę drogi 2031 → 2033, a przy trzech punktach na osi to
+   ozdoba, nie informacja; na telefonie znika. */
+@media (max-width: 767.98px) {
+  .mars-os-linia {
+    background: none;
+  }
+
+  .mars-os-linia::before {
+    mask-image:
+      repeating-linear-gradient(90deg, #000 0 2px, transparent 2px 9px),
+      linear-gradient(
+        90deg,
+        #000 calc(var(--ms-os-postep) * 1.1 - 3rem),
+        transparent calc(var(--ms-os-postep) * 1.1)
+      );
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+  }
+}
+
+.mars-page.ujawnianie-wlaczone [data-ujawnij]:not(.jest-widoczny) .mars-os-linia::before {
+  animation: none;
+  --ms-os-postep: 0%;
+}
+
+/* Przy „ogranicz ruch" nic się nie rusza. Selektor `*` dopasowuje elementy,
+   ale NIE pseudoelementy — stąd dwa dodatkowe wiersze. Bez własnego bloku ta
+   podstrona animowałaby mimo ustawienia systemowego: reguła globalna dotyczy
+   wyłącznie `[data-ujawnij]`. */
+@media (prefers-reduced-motion: reduce) {
+  .mars-page *,
+  .mars-page *::before,
+  .mars-page *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}

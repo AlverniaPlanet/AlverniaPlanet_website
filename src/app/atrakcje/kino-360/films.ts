@@ -1,7 +1,8 @@
 // Wspólne dane repertuaru Kina 360 — używane przez stronę kina (K360Content)
 // oraz podstrony filmów (/atrakcje/kino-360/[slug]).
 
-export type Locale = "pl" | "en" | "pt";
+import { type Locale } from "@/lib/localizedRoutes";
+export type { Locale };
 
 // --- Meta wspólne dla języków (tytuł, plakat, format, kolejność) ---
 export type FilmMeta = {
@@ -13,10 +14,10 @@ export type FilmMeta = {
 };
 
 export const FILMS: readonly FilmMeta[] = [
-  { slug: "one-step-beyond", title: "One Step Beyond: A Journey to Mars", poster: "/k360/Seanse/one-step-beyond.webp", badges: ["Fulldome 360°", "~30 min"], nowShowing: true },
-  { slug: "the-stellars", title: "The Stellars", poster: "/k360/Seanse/the-stellars.webp", badges: ["Fulldome 4K 3D", "~30 min"] },
-  { slug: "time", title: "TIME", poster: "/k360/Seanse/time.webp", badges: ["Fulldome 4K 3D", "~30 min"] },
-  { slug: "explore", title: "Explore", poster: "/k360/Seanse/explore.webp", badges: ["Fulldome 4K 3D", "27 min"] },
+  { slug: "one-step-beyond", title: "One Step Beyond: A Journey to Mars", poster: "/atrakcje/kino-360/Seanse/one-step-beyond.webp", badges: ["Fulldome 360°", "~30 min"], nowShowing: true },
+  { slug: "the-stellars", title: "The Stellars", poster: "/atrakcje/kino-360/Seanse/the-stellars.webp", badges: ["Fulldome 4K", "~30 min"] },
+  { slug: "time", title: "TIME", poster: "/atrakcje/kino-360/Seanse/time.webp", badges: ["Fulldome 4K", "~30 min"] },
+  { slug: "explore", title: "Explore", poster: "/atrakcje/kino-360/Seanse/explore.webp", badges: ["Fulldome 4K", "27 min"] },
 ];
 
 // --- Język seansów ---
@@ -28,7 +29,41 @@ export const FILM_LANGUAGE_COPY: Record<Locale, { badge: string; note: string }>
   pl: { badge: "Wersja polska", note: "Seans w wersji polskiej." },
   en: { badge: "Polish audio", note: "The film is screened with Polish audio." },
   pt: { badge: "Áudio em polaco", note: "A sessão é exibida com áudio em polaco." },
+  de: { badge: "Polnische Tonspur", note: "Der Film wird mit polnischer Tonspur gezeigt." },
+  zh: { badge: "波兰语配音", note: "本场放映为波兰语配音。" },
 };
+
+// Czas trwania seansu. Wcześniej był wyłuskiwany z `badges`, ale te są WSPÓLNE
+// dla wszystkich języków, więc na stronach /zh i /de wyświetlało się łacińskie
+// „~30 min" pośród chińskiego i niemieckiego tekstu. Trzymamy więc samą liczbę
+// minut (jedno źródło prawdy) i formatujemy ją per język.
+export const FILM_DURATION: Record<string, { min: number; approx: boolean }> = {
+  "one-step-beyond": { min: 30, approx: true },
+  "the-stellars": { min: 30, approx: true },
+  time: { min: 30, approx: true },
+  explore: { min: 27, approx: false },
+};
+
+const DURATION_LABEL: Record<Locale, (min: number, approx: boolean) => string> = {
+  pl: (m, a) => `${a ? "~" : ""}${m} min`,
+  en: (m, a) => `${a ? "~" : ""}${m} min`,
+  pt: (m, a) => `${a ? "~" : ""}${m} min`,
+  de: (m, a) => `${a ? "ca. " : ""}${m} Min.`,
+  zh: (m, a) => `${a ? "约 " : ""}${m} 分钟`,
+};
+
+export function filmDuration(film: FilmMeta, locale: Locale): string | undefined {
+  const d = FILM_DURATION[film.slug];
+  if (!d) return undefined;
+  return (DURATION_LABEL[locale] ?? DURATION_LABEL.pl)(d.min, d.approx);
+}
+
+// Plakietki filmu do WYŚWIETLENIA: format zostaje jak w danych (termin branżowy),
+// a czas trwania podmieniamy na wersję w języku strony.
+export function filmBadges(film: FilmMeta, locale: Locale): string[] {
+  const czas = filmDuration(film, locale);
+  return film.badges.map((b) => (/\d\s*min/i.test(b) && czas ? czas : b));
+}
 
 export const FILM_SLUGS = FILMS.map((f) => f.slug);
 export function findFilm(slug: string): FilmMeta | undefined {
@@ -107,6 +142,50 @@ export const FILMS_COPY: Record<Locale, Record<string, FilmText>> = {
       audience: "Crianças 3-8 · famílias",
     },
   },
+  de: {
+    "one-step-beyond": {
+      tagline: "Eine Reise zum Mars in der vollen 360°-Kuppel.",
+      desc: "Lassen Sie die Erde hinter sich und erleben Sie die Reise zum Roten Planeten, während das Bild Sie von allen Seiten und über Ihrem Kopf umgibt.",
+      audience: "Für alle",
+    },
+    time: {
+      tagline: "Was ist Zeit wirklich?",
+      desc: "Eine Reise durch die Menschheitsgeschichte und die moderne Wissenschaft: von den ersten Uhren bis zu Einsteins Relativitätstheorie. TIME ergründet eines der größten Rätsel des Universums.",
+      audience: "8+ · Familien · Erwachsene",
+    },
+    explore: {
+      tagline: "Eine preisgekrönte Reise zum Mars, geführt von Kepler.",
+      desc: "Die Geschichte des menschlichen Strebens, den Mars zu erreichen, erzählt anhand der Keplerschen Gesetze und der Geschichte der Astronomie. Eine vielfach ausgezeichnete Fulldome-Produktion.",
+      audience: "Ältere Kinder · Familien · Erwachsene",
+    },
+    "the-stellars": {
+      tagline: "Ein kosmisches Abenteuer für die Jüngsten.",
+      desc: "Eine farbenfrohe, interaktive Geschichte darüber, was Pflanzen zum Leben brauchen. Aki, Imani und John nehmen die Kinder mit auf eine gemeinsame Mission, um einen kosmischen Wald zu retten.",
+      audience: "Kinder 3-8 · Familien",
+    },
+  },
+  zh: {
+    "one-step-beyond": {
+      tagline: "在360°全穹顶中开启火星之旅。",
+      desc: "离开地球，踏上前往红色星球的旅程，画面从四面八方与头顶将您完全包围。",
+      audience: "适合所有人",
+    },
+    time: {
+      tagline: "时间究竟是什么？",
+      desc: "一场穿越人类历史与现代科学的旅程：从最早的时钟到爱因斯坦的相对论。TIME 探索宇宙最大的谜题之一。",
+      audience: "8岁以上 · 家庭 · 成人",
+    },
+    explore: {
+      tagline: "追随开普勒的脚步，屡获殊荣的火星之旅。",
+      desc: "影片讲述人类抵达火星的雄心，通过开普勒定律与天文学史娓娓道来。一部屡获大奖的全穹顶作品。",
+      audience: "大龄儿童 · 家庭 · 成人",
+    },
+    "the-stellars": {
+      tagline: "为最年幼观众打造的宇宙冒险。",
+      desc: "一个色彩缤纷的互动故事，讲述植物生长需要什么。Aki、Imani 和 John 带领孩子们共同展开拯救宇宙森林的任务。",
+      audience: "3-8岁儿童 · 家庭",
+    },
+  },
 };
 
 // --- Dane podstrony filmu: kolor akcentu (trochę nasz róż, trochę z filmu) + galeria ---
@@ -122,7 +201,7 @@ export type FilmDetailMeta = {
 };
 
 const galleryOf = (dir: string) =>
-  [1, 2, 3, 4].map((i) => `/k360/Seanse/${dir}/content/g${i}.webp`);
+  [1, 2, 3, 4].map((i) => `/atrakcje/kino-360/Seanse/${dir}/content/g${i}.webp`);
 
 export const FILM_DETAILS: Record<string, FilmDetailMeta> = {
   "one-step-beyond": { accent: "#ff6a3d", accentSoft: "#ff9a6a", gallery: galleryOf("One_step_beyond"), posterPos: "50% 22%", trailer: "https://www.youtube.com/embed/M4TkXrFogNw" },
@@ -230,6 +309,70 @@ export const FILM_DETAILS_COPY: Record<Locale, Record<string, FilmDetailText>> =
       awardsNote: "Estreia mundial no festival IPS em Jena (2024).",
     },
   },
+  de: {
+    "one-step-beyond": {
+      about: [
+        "One Step Beyond nimmt die Zuschauer mit auf die komplette Reise von der Erde zum Mars. Das Bild füllt die gesamte Kuppel, sodass der Rote Planet Sie von allen Seiten und über Ihrem Kopf umgibt.",
+        "Der Film verbindet kinoreife Bilder mit der Immersion der 360°-Kuppel und vermittelt das echte Gefühl, bei einer Weltraumexpedition dabei zu sein.",
+      ],
+      learn: ["Die Reise von der Erde zum Mars", "Erkundung des Roten Planeten", "Volle Immersion in der 360°-Kuppel"],
+    },
+    time: {
+      about: [
+        "TIME ist eine Fulldome-Produktion des Studios Creative Planet für ältere Kinder, Familien und Erwachsene. Der Film führt von den Rhythmen der Natur und den ersten Versuchen, die Zeit zu messen, über Relativitätstheorie und Raumzeit bis zur menschlichen Wahrnehmung des „Jetzt“.",
+        "Aristoteles, Newton, Maxwell und Einstein treten als Teilnehmer einer fortwährenden Debatte über das Wesen der Zeit auf. Statt komplexe Ideen zu vereinfachen, führt TIME Schritt für Schritt durch sie hindurch und schafft Verständnis durch Immersion.",
+      ],
+      learn: ["Die Zeit in der Natur und in der Menschheitsgeschichte", "Relativitätstheorie und Raumzeit", "Entropie und der Zeitpfeil", "Das menschliche Erleben des „Jetzt“"],
+    },
+    explore: {
+      about: [
+        "Explore erzählt die Geschichte des menschlichen Strebens, den Mars zu erreichen, und präsentiert dabei ein breites Spektrum an Wissenschaft: von der Geschichte der Astronomie über das geo- und heliozentrische Weltbild bis zu den Keplerschen Gesetzen und Bahnmanövern.",
+        "Astronauten verlassen die Erde, führen Hohmann-Transfers durch und koppeln an eine Raumstation an, bevor es zum Mars geht. In kinoreifen Bildern zeigt der Film, wie die Keplerschen Gesetze das Raumschiff von der Erde in den Orbit und darüber hinaus tragen.",
+      ],
+      learn: ["Geschichte der Astronomie", "Helio- und geozentrisches Weltbild", "Die drei Keplerschen Gesetze", "Bahnmanöver"],
+      awardsNote: "Vielfach ausgezeichnet auf internationalen Festivals (u. a. Jena, IPS, Cannes, Brno).",
+    },
+    "the-stellars": {
+      about: [
+        "The Stellars ist eine CGI-Animation in Kinoqualität für die jüngsten Zuschauer (3-8 Jahre). Aki, Imani und John stürzen auf der Erde ab und machen sich mit Hilfe der Kinder im Planetarium auf, ihren kosmischen Wald Yumi-Plumi zu retten.",
+        "Die Figuren durchbrechen die vierte Wand und binden die Kinder in eine gemeinsame Mission ein: herauszufinden, was Pflanzen zum Leben brauchen. Spiel trifft auf Lernen und weckt Fantasie und Neugier.",
+      ],
+      learn: ["Was Pflanzen zum Leben brauchen", "Die Vielfalt der Lebensräume auf der Erde", "Die Rolle der Wälder als Lebensraum", "Beobachtung und wissenschaftliche Methode"],
+      awardsNote: "Weltpremiere beim IPS-Festival in Jena (2024).",
+    },
+  },
+  zh: {
+    "one-step-beyond": {
+      about: [
+        "One Step Beyond 带领观众完成从地球到火星的完整旅程。画面铺满整个穹顶，红色星球从四面八方与头顶将您包围。",
+        "影片将电影级视觉效果与360°穹顶的沉浸感融为一体，让人真切感受到置身于一场宇宙远征之中。",
+      ],
+      learn: ["从地球到火星的旅程", "探索红色星球", "360°全穹顶沉浸体验"],
+    },
+    time: {
+      about: [
+        "TIME 是 Creative Planet 工作室为大龄儿童、家庭和成人打造的全穹顶作品。影片从自然的节律与人类最早的计时尝试出发，经由相对论与时空，一直讲到人类对「当下」的感知。",
+        "亚里士多德、牛顿、麦克斯韦与爱因斯坦如同参与一场关于时间本质的持续辩论。TIME 不回避复杂的概念，而是循序渐进地展开，用沉浸感建立理解。",
+      ],
+      learn: ["自然与人类历史中的时间", "相对论与时空", "熵与时间之箭", "人类对「当下」的体验"],
+    },
+    explore: {
+      about: [
+        "Explore 讲述人类抵达火星的雄心，一路呈现广博的科学知识：从天文学史，到地心说与日心说，再到开普勒定律与轨道机动。",
+        "宇航员离开地球，完成霍曼转移，与空间站对接，随后飞向火星。影片以电影级画面展示开普勒定律如何将飞船从地球送入轨道，并驶向更远处。",
+      ],
+      learn: ["天文学史", "日心说与地心说", "开普勒三定律", "轨道机动"],
+      awardsNote: "屡获国际电影节大奖（包括 Jena、IPS、Cannes、Brno）。",
+    },
+    "the-stellars": {
+      about: [
+        "The Stellars 是一部面向最年幼观众（3-8岁）的电影级 CGI 动画。Aki、Imani 和 John 坠落到地球上，在天文馆孩子们的帮助下，踏上拯救宇宙森林 Yumi-Plumi 的旅程。",
+        "角色们打破第四面墙，把孩子们带入一场共同的任务：发现植物生长需要什么。寓教于乐，激发想象力与好奇心。",
+      ],
+      learn: ["植物生长需要什么", "地球环境的多样性", "森林作为栖息地的作用", "观察与科学方法"],
+      awardsNote: "在 Jena 举行的 IPS 电影节上全球首映（2024年）。",
+    },
+  },
 };
 
 // --- Etykiety UI podstrony ---
@@ -251,19 +394,24 @@ export type SubpageText = {
   fullSchedule: string;
   today: string;
   notPlaying: string;
+  alsoSee: string;
 };
 export const SUBPAGE_COPY: Record<Locale, SubpageText> = {
-  pl: { back: "Wróć do repertuaru", trailer: "Obejrzyj zwiastun", about: "O filmie", learn: "Czego się dowiesz", gallery: "Kadry z filmu", cta: "Kup bilet", studioLabel: "Produkcja", awardsLabel: "Nagrody", audienceLabel: "Dla kogo", formatLabel: "Format", nowShowing: "Teraz w kopule", showtimes: "Godziny seansów", showtimesIntro: "Repertuar różni się w zależności od dnia tygodnia. Wybierz przedział dni, aby zobaczyć godziny.", thisFilmAt: "Ten film gra o", fullSchedule: "Pełny grafik dnia", today: "dziś", notPlaying: "W tych dniach ten seans nie jest wyświetlany." },
-  en: { back: "Back to repertoire", trailer: "Watch the trailer", about: "About the film", learn: "What you'll discover", gallery: "Stills from the film", cta: "Buy a ticket", studioLabel: "Production", awardsLabel: "Awards", audienceLabel: "Audience", formatLabel: "Format", nowShowing: "Now showing", showtimes: "Screening times", showtimesIntro: "The repertoire varies by day of the week. Pick a day range to see the times.", thisFilmAt: "This film plays at", fullSchedule: "Full daily schedule", today: "today", notPlaying: "This film isn't shown on these days." },
-  pt: { back: "Voltar ao repertório", trailer: "Ver o trailer", about: "Sobre o filme", learn: "O que vais descobrir", gallery: "Imagens do filme", cta: "Comprar bilhete", studioLabel: "Produção", awardsLabel: "Prémios", audienceLabel: "Público", formatLabel: "Formato", nowShowing: "Em exibição", showtimes: "Horários das sessões", showtimesIntro: "O repertório varia consoante o dia da semana. Escolhe um intervalo de dias para ver os horários.", thisFilmAt: "Este filme às", fullSchedule: "Programação do dia", today: "hoje", notPlaying: "Este filme não é exibido nestes dias." },
+  pl: { back: "Wróć do repertuaru", trailer: "Obejrzyj zwiastun", about: "O filmie", learn: "Czego się dowiesz", gallery: "Kadry z filmu", cta: "Kup bilet", studioLabel: "Produkcja", awardsLabel: "Nagrody", audienceLabel: "Dla kogo", formatLabel: "Format", nowShowing: "Teraz w kopule", showtimes: "Godziny seansów", showtimesIntro: "Repertuar różni się w zależności od dnia tygodnia. Wybierz przedział dni, aby zobaczyć godziny.", thisFilmAt: "Ten film gra o", fullSchedule: "Pełny grafik dnia", today: "dziś", notPlaying: "W tych dniach ten seans nie jest wyświetlany.", alsoSee: "Zobacz też" },
+  en: { back: "Back to repertoire", trailer: "Watch the trailer", about: "About the film", learn: "What you'll discover", gallery: "Stills from the film", cta: "Buy a ticket", studioLabel: "Production", awardsLabel: "Awards", audienceLabel: "Audience", formatLabel: "Format", nowShowing: "Now showing", showtimes: "Screening times", showtimesIntro: "The repertoire varies by day of the week. Pick a day range to see the times.", thisFilmAt: "This film plays at", fullSchedule: "Full daily schedule", today: "today", notPlaying: "This film isn't shown on these days.", alsoSee: "See also" },
+  pt: { back: "Voltar ao repertório", trailer: "Ver o trailer", about: "Sobre o filme", learn: "O que vais descobrir", gallery: "Imagens do filme", cta: "Comprar bilhete", studioLabel: "Produção", awardsLabel: "Prémios", audienceLabel: "Público", formatLabel: "Formato", nowShowing: "Em exibição", showtimes: "Horários das sessões", showtimesIntro: "O repertório varia consoante o dia da semana. Escolhe um intervalo de dias para ver os horários.", thisFilmAt: "Este filme às", fullSchedule: "Programação do dia", today: "hoje", notPlaying: "Este filme não é exibido nestes dias.", alsoSee: "Vê também" },
+  de: { back: "Zurück zum Programm", trailer: "Trailer ansehen", about: "Über den Film", learn: "Das erfahren Sie", gallery: "Bilder aus dem Film", cta: "Ticket kaufen", studioLabel: "Produktion", awardsLabel: "Auszeichnungen", audienceLabel: "Für wen", formatLabel: "Format", nowShowing: "Jetzt in der Kuppel", showtimes: "Vorstellungszeiten", showtimesIntro: "Das Programm unterscheidet sich je nach Wochentag. Wählen Sie einen Zeitraum, um die Uhrzeiten zu sehen.", thisFilmAt: "Dieser Film läuft um", fullSchedule: "Vollständiger Tagesplan", today: "heute", notPlaying: "An diesen Tagen wird dieser Film nicht gezeigt.", alsoSee: "Auch interessant" },
+  zh: { back: "返回排片表", trailer: "观看预告片", about: "关于影片", learn: "您将了解到", gallery: "影片剧照", cta: "购票", studioLabel: "制作", awardsLabel: "奖项", audienceLabel: "适合人群", formatLabel: "格式", nowShowing: "正在放映", showtimes: "放映时间", showtimesIntro: "排片因星期而异。请选择日期区间以查看放映时间。", thisFilmAt: "本片放映时间", fullSchedule: "当日完整排片", today: "今天", notPlaying: "这几天不放映本片。", alsoSee: "更多推荐" },
 };
 
 // Repertuar — nagłówek sekcji akordeonu (współdzielony przez stronę kina i stronę główną).
-export type RepertoireText = { kicker: string; title: string; intro: string; cta: string; more: string; nowShowing: string };
+export type RepertoireText = { kicker: string; title: string; intro: string; cta: string; more: string; nowShowing: string; watch: string };
 export const REPERTOIRE_COPY: Record<Locale, RepertoireText> = {
-  pl: { kicker: "Seanse", title: "Repertuar Kina 360", intro: "Cztery filmy fulldome 360°: każdy wypełnia całą kopułę dookoła i nad głową.", cta: "Kup bilet", more: "Obejrzyj trailer", nowShowing: "Teraz w kopule" },
-  en: { kicker: "Screenings", title: "K360 repertoire", intro: "Four fulldome 360° films: each one fills the entire dome all around and overhead.", cta: "Buy a ticket", more: "Watch the trailer", nowShowing: "Now showing" },
-  pt: { kicker: "Sessões", title: "Repertório do K360", intro: "Quatro filmes fulldome 360°: cada um preenche toda a cúpula à volta e por cima.", cta: "Comprar bilhete", more: "Ver o trailer", nowShowing: "Em exibição" },
+  pl: { kicker: "Seanse", title: "Repertuar Kina 360", intro: "Cztery filmy fulldome 360°: każdy wypełnia całą kopułę dookoła i nad głową.", cta: "Kup bilet", more: "Obejrzyj trailer", nowShowing: "Teraz w kopule", watch: "Zobacz seans" },
+  en: { kicker: "Screenings", title: "K360 repertoire", intro: "Four fulldome 360° films: each one fills the entire dome all around and overhead.", cta: "Buy a ticket", more: "Watch the trailer", nowShowing: "Now showing", watch: "See screening" },
+  pt: { kicker: "Sessões", title: "Repertório do K360", intro: "Quatro filmes fulldome 360°: cada um preenche toda a cúpula à volta e por cima.", cta: "Comprar bilhete", more: "Ver o trailer", nowShowing: "Em exibição", watch: "Ver sessão" },
+  de: { kicker: "Vorstellungen", title: "Programm von Kino 360", intro: "Vier Fulldome-360°-Filme: Jeder füllt die gesamte Kuppel rundum und über Ihrem Kopf.", cta: "Ticket kaufen", more: "Trailer ansehen", nowShowing: "Jetzt in der Kuppel", watch: "Ansehen" },
+  zh: { kicker: "放映场次", title: "Kino 360 影院排片表", intro: "四部全穹顶360°影片：每一部都铺满整个穹顶，环绕四周与头顶。", cta: "购票", more: "观看预告片", nowShowing: "正在放映", watch: "查看该场次" },
 };
 
 // Grafik seansów — trzy przedziały dni, godziny wpisane ręcznie (seanse co ~45 min).
@@ -273,9 +421,9 @@ export type ScheduleEntry = { time: string; slug: string };
 export type DayGroupKey = "mon-wed" | "thu-fri" | "sat-sun";
 
 export const DAY_GROUPS: readonly { key: DayGroupKey; label: Record<Locale, string> }[] = [
-  { key: "mon-wed", label: { pl: "Pon-Śr", en: "Mon-Wed", pt: "Seg-Qua" } },
-  { key: "thu-fri", label: { pl: "Czw-Pt", en: "Thu-Fri", pt: "Qui-Sex" } },
-  { key: "sat-sun", label: { pl: "Sob-Nd", en: "Sat-Sun", pt: "Sáb-Dom" } },
+  { key: "mon-wed", label: { pl: "Pon-Śr", en: "Mon-Wed", pt: "Seg-Qua", de: "Mo-Mi", zh: "周一至周三" } },
+  { key: "thu-fri", label: { pl: "Czw-Pt", en: "Thu-Fri", pt: "Qui-Sex", de: "Do-Fr", zh: "周四至周五" } },
+  { key: "sat-sun", label: { pl: "Sob-Nd", en: "Sat-Sun", pt: "Sáb-Dom", de: "Sa-So", zh: "周六至周日" } },
 ];
 
 const SCHEDULE_MON_WED: ScheduleEntry[] = [

@@ -1,0 +1,347 @@
+/* =========================================================================
+   „Real humanoids" — /mars-colonization
+   Własny arkusz od 05.10.2026, kiedy sekcja dostała kadr z robotem (wycinek
+   obiektu). Progi zebrane na KOŃCU pliku, po regułach bazowych — `@media`
+   nie podnosi swoistości, więc próg stojący wyżej przegrywa z regułą bazową
+   niżej (pułapka opisana na początku `mars.css`).
+
+   Kompozycja wzięta z referencji obiektu: kolumna tekstu po lewej, po prawej
+   karta ze zdjęciem kopuły, PRZED nią humanoid wychodzący głową ponad jej
+   górną krawędź, za nimi cienki pierścień. Robot SIEDZI na karcie z liczbą
+   robotów (prośba obiektu, 05.10.2026), która jak cokół wystaje za lewy
+   dolny róg zdjęcia. Poniżej 1024 px kadr staje pod tekstem.
+   ========================================================================= */
+
+/* JASNA od 05.10.2026 (decyzja obiektu) — wcześniej był to ciemny pas
+   `.mars-ciemny`. Stoi na tle strony (`--dj-tlo`), więc barwy wnętrza są
+   jasnymi wariantami: turkus ma na bieli tylko 1,67:1 i ustępuje
+   `--dj-akcent`, a biel napisów — `--dj-tekst-2`. */
+.mars-humanoidy {
+  padding-block: clamp(3.5rem, 11vw, 6rem);
+  /* Bez górnego marginesu: sekcja nad nią („Twoja misja") jest granatowa
+     i styk ma być ostrą krawędzią granat → biel, bez dodatkowego pasa. */
+  margin-top: 0;
+  background: var(--dj-tlo);
+  /* Pierścień i dłoń robota wychodzą poza kartę — poza kolumnę wolno im,
+     poza okno już nie (na telefonie pierścień sięga za lewą krawędź). */
+  overflow-x: clip;
+}
+
+.mars-humanoidy-uklad {
+  display: grid;
+  gap: clamp(2rem, 7vw, 3rem);
+}
+
+/* Pasek postępu sceny stoi NA DOLE sekcji, pod tekstem i kadrem — na
+   desktopie przez obie kolumny. Odstęp daje przerwa siatki. */
+.mars-humanoidy-uklad > .mars-scena-postep {
+  grid-column: 1 / -1;
+  margin-top: 0;
+}
+
+.mars-wyroznienie {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin: 1.5rem 0 0;
+}
+
+.mars-wyroznienie span {
+  font-size: 1rem;
+  color: var(--dj-tekst-2);
+}
+
+.mars-wyroznienie strong {
+  font-size: clamp(1.1rem, 4vw, 1.45rem);
+  font-weight: 800;
+  line-height: 1.25;
+  color: var(--dj-akcent);
+}
+
+/* --- Kadr ---------------------------------------------------------------------
+   `.mars-humanoidy-scena` ma pudełko KARTY ZE ZDJĘCIEM: karta jest jej jedynym
+   dzieckiem w toku, a pierścień i cokół (robot + liczba) stoją bezwzględnie,
+   w procentach karty — skalują się z nią razem na każdej szerokości. Marginesy
+   sceny robią miejsce na to, co z karty wystaje: u góry głowa robota, z lewej
+   i u dołu cokół, z lewej pierścień. Procenty marginesów liczą się od
+   szerokości kadru (jak każdy margines w procentach).
+
+   WARSTWY (`isolation` na scenie): pierścień 0 → zdjęcie 1 → cokół 2 (w nim
+   liczba pod robotem). Robot stoi PRZED zdjęciem, więc nic go nie przycina —
+   wystaje naprawdę, a nie jest dorysowany. */
+.mars-humanoidy-kadr {
+  width: 100%;
+  max-width: 34rem;
+  margin-inline: auto;
+}
+
+/* Górny margines na telefonie jest WIĘKSZY niż wyżej: karta z liczbą ma tu
+   stałą wysokość w rem, a zdjęcie jest niskie, więc robot na cokole wystaje
+   ponad zdjęcie o ~0,3 jego wysokości (na desktopie ~0,2). Przy 17% głowa
+   dotykała ostatniego wiersza tekstu (320 px: 0 px odstępu). */
+.mars-humanoidy-scena {
+  position: relative;
+  isolation: isolate;
+  margin: 25% 2% 12% 5%;
+}
+
+/* Karta 10:7 ze zdjęciem instalacji pod kopułą (MARS_1, wybór obiektu):
+   turkusowa mgła z lewej — dokładnie za robotem — i moduł habitatu w ciepłym
+   świetle na prawo od niego. Źródło 4:3 w karcie 10:7 traci tylko 7%
+   wysokości; zaczep nieco powyżej środka zostawia łuk kopuły u góry. */
+.mars-humanoidy-karta {
+  position: relative;
+  z-index: 1;
+  display: block;
+  aspect-ratio: 10 / 7;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  /* Kolor nocy pod kopułą — widać go, zanim zdjęcie się wczyta. */
+  background: #0b1622;
+  box-shadow: 0 1.5rem 2.75rem -1.25rem rgba(7, 21, 34, 0.42);
+}
+
+.mars-humanoidy-karta img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 40%;
+}
+
+/* Turkusowa poświata za robotem: jego czarne stawy i ekran twarzy giną na
+   ciemnym tle — mgiełka odcina sylwetkę od kopuły i podbija mgłę, która na
+   zdjęciu już tam jest. Turkus to na tej stronie kolor techniki. */
+.mars-humanoidy-karta::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    46% 62% at 28% 58%,
+    rgba(50, 216, 230, 0.2) 0%,
+    rgba(50, 216, 230, 0) 72%
+  );
+}
+
+/* Pierścień z referencji: cienka brzoskwiniowa linia za robotem, widoczna
+   tylko tam, gdzie wychodzi poza kartę — łukiem z lewej i nad górną
+   krawędzią. Średnica 58% karty, środek przy 12% szerokości i 35% wysokości
+   karty (zmierzone na referencji). */
+.mars-humanoidy-pierscien {
+  position: absolute;
+  z-index: 0;
+  left: -17%;
+  top: -7%;
+  width: 58%;
+  aspect-ratio: 1;
+  border: 1.5px solid rgba(226, 98, 58, 0.3);
+  border-radius: 50%;
+}
+
+/* COKÓŁ: robot i pod nim karta z liczbą, w zwykłym toku jeden pod drugim —
+   dlatego robot zawsze siedzi na krawędzi karty, ile by wierszy nie miał
+   jej opis. Cały blok stoi przy lewym dolnym rogu zdjęcia i wystaje za
+   lewą (`left`, % szerokości) i dolną krawędź (`bottom`, % wysokości), więc
+   głowa robota wychodzi ponad zdjęcie o tyle, o ile robot z cokołem jest
+   wyższy od karty.
+
+   GEOMETRIA SIEDZENIA (05.10.2026). Wycinek to postać SIEDZĄCA: uda do
+   przodu, łydki zwisają, dłonie oparte po bokach o siedzisko. Do tego dnia
+   karta stała pod STOPAMI — robot siedział na niczym, a dłonie wisiały
+   w powietrzu („dalej nie siedzi, gdzie ma"). Teraz górna krawędź karty
+   biegnie linią siedziska: na 69,5% wysokości wycinka (zmierzone z kanału
+   alfa — tam kończą się palce dalszej, prawej dłoni, więc dłoń OPIERA SIĘ
+   o krawędź; palce bliższej, lewej, sięgają 80% i ją obejmują). Przy 72,5%
+   (pierwsza wersja) prawa dłoń wisiała ~12 px nad kartą, a między udami
+   prześwitywało zdjęcie. Nogi zwisają PRZED kartą, liczba stoi pod
+   podeszwami.
+   Obie miary są w % szerokości cokołu, bo w tej jednostce liczą się
+   procentowe marginesy i dopełnienia jego dzieci. Robot ma 88% szerokości,
+   a wycinek proporcję 1034:1333, więc jego wysokość to 113,5% szerokości
+   cokołu:
+   — pod siedziskiem: (1 − 0,695) × 113,5% = 34,6%,
+   — od krawędzi do podeszew: (0,9935 − 0,695) × 113,5% = 33,9%
+     (0,9935 — dół stóp; niżej leży 8 px przezroczystego marginesu).
+   Inny wycinek albo inna szerokość robota = przeliczyć obie liczby. */
+.mars-humanoidy-cokol {
+  --mars-pod-siedziskiem: 34.6%;
+  --mars-nogi: 33.9%;
+  position: absolute;
+  z-index: 2;
+  left: -4%;
+  bottom: -11%;
+  width: 66%;
+}
+
+/* Wycinek ma pudełko postaci (`warianty.py` przycina przezroczysty margines
+   do 8 px), więc szerokość opisuje samą postać. Ujemny dolny margines wpuszcza
+   na kartę wszystko, co jest poniżej siedziska (patrz cokół). Robot leży NAD
+   kartą (`z-index`), a jego cień kładzie się na niej pod zwisającymi
+   stopami — to on odkleja białe nogi od jasnej karty. */
+.mars-humanoidy-robot {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 88%;
+  height: auto;
+  margin: 0 0 calc(-1 * var(--mars-pod-siedziskiem)) 6%;
+  filter: drop-shadow(0 0.45rem 0.55rem rgba(7, 21, 34, 0.3));
+}
+
+/* Liczba robotów — teraz siedzisko robota. Na zdjęciu MUSI być
+   nieprzezroczysta (dawne tło 12% czerwieni prześwitywałoby kopułą) — to ten
+   sam kolor, który tamto tło dawało na bieli strony. Górne dopełnienie
+   zaczyna się od `--mars-nogi`: tyle karty zajmują zwisające nogi, liczba
+   stoi pod nimi. */
+.mars-licznik {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  margin: 0;
+  padding: calc(var(--mars-nogi) + 0.6rem) 0.85rem 0.75rem;
+  border: 1px solid rgba(226, 98, 58, 0.24);
+  border-radius: 1rem;
+  background: #f6e9e6;
+  box-shadow: 0 1rem 2rem -1rem rgba(7, 21, 34, 0.38);
+}
+
+/* Cień styku: tuż pod siedzącym robotem karta lekko ciemnieje. Bez niego
+   jasna karta pod białymi udami wyglądała, jakby robot unosił się nad nią
+   zamiast na niej siedzieć. Elipsa leży pod biodrami i udami (12–78%
+   szerokości karty, zgodnie z wycinkiem) i POD robotem, więc widać ją tylko
+   między nogami i obok nich. Pozycjonowana bezwzględnie — nie jest
+   elementem flexa i nie przesuwa liczby. */
+.mars-licznik::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 12%;
+  width: 66%;
+  height: 1.75rem;
+  background: radial-gradient(50% 100% at 50% 0%, rgba(7, 21, 34, 0.2) 0%, rgba(7, 21, 34, 0) 100%);
+  pointer-events: none;
+}
+
+.mars-licznik-liczba {
+  font-size: 1.85rem;
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: var(--ms-czerwien);
+}
+
+/* Liczba zostaje w `--ms-czerwien` — to napis duży (30–54 px, pogrubiony),
+   dla którego próg wynosi 3:1. Opis pod nią jest małym tekstem, więc idzie
+   w ciemną czerwień tekstową (5,84:1 na bieli). */
+.mars-licznik-opis {
+  font-size: 0.64rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ms-czerwien-tekst);
+}
+
+/* --- Ruch ---------------------------------------------------------------------
+   Kadr wchodzi RAZEM z sekcją (scena z zaprzeczeniem trwa ~4 s — gdyby kadr
+   czekał na jej koniec, pół sekcji stałoby puste): najpierw cokół z liczbą
+   wyłania się i podnosi, potem robot opada na niego z góry, a pierścień
+   rozchodzi się z mniejszego. Kolejność ma znaczenie — robot nie może wisieć
+   w powietrzu nad pustym miejscem. Tylko `opacity` i `transform`; przy
+   „ogranicz ruch" wszystko gasi blok na końcu `mars.css`. */
+.mars-humanoidy-cokol .mars-licznik {
+  animation: mars-licznik-wejscie 600ms cubic-bezier(0.22, 0.61, 0.36, 1) 150ms both;
+}
+
+.mars-humanoidy-robot {
+  animation: mars-robot-ladowanie 800ms cubic-bezier(0.22, 0.61, 0.36, 1) 380ms both;
+}
+
+.mars-humanoidy-pierscien {
+  animation: mars-pierscien-wejscie 1200ms cubic-bezier(0.22, 0.61, 0.36, 1) 350ms both;
+}
+
+@keyframes mars-licznik-wejscie {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 0.75rem, 0);
+  }
+}
+
+@keyframes mars-robot-ladowanie {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -6%, 0);
+  }
+}
+
+@keyframes mars-pierscien-wejscie {
+  from {
+    opacity: 0;
+    transform: scale(0.86);
+  }
+}
+
+/* Ruch rusza, gdy sekcja wjeżdża w kadr — do tego czasu animacje są zdjęte
+   (sekcja i tak jest wtedy ukryta przez ujawnianie). */
+.mars-page.ujawnianie-wlaczone [data-ujawnij]:not(.jest-widoczny) .mars-humanoidy-cokol .mars-licznik,
+.mars-page.ujawnianie-wlaczone [data-ujawnij]:not(.jest-widoczny) .mars-humanoidy-robot,
+.mars-page.ujawnianie-wlaczone [data-ujawnij]:not(.jest-widoczny) .mars-humanoidy-pierscien {
+  animation: none;
+}
+
+/* --- Progi ------------------------------------------------------------------- */
+
+/* TABLET: kadr nadal pod tekstem, tylko szerszy; liczba rośnie. */
+@media (min-width: 768px) {
+  .mars-humanoidy-kadr {
+    max-width: 36rem;
+  }
+
+  .mars-humanoidy-scena {
+    margin: 16% 4% 10% 8%;
+  }
+
+  .mars-humanoidy-karta {
+    border-radius: 1.5rem;
+  }
+
+  .mars-humanoidy-cokol {
+    width: 62%;
+  }
+
+  .mars-licznik {
+    gap: 0.35rem;
+    padding: calc(var(--mars-nogi) + 0.8rem) 1.3rem 1.1rem;
+    border-radius: 1.25rem;
+  }
+
+  .mars-licznik-liczba {
+    font-size: clamp(2.6rem, 4.6vw, 3.4rem);
+  }
+
+  .mars-licznik-opis {
+    font-size: 0.72rem;
+  }
+}
+
+/* DESKTOP: dwie kolumny, kadr po prawej, wyśrodkowany w pionie względem
+   tekstu (jak w referencji). Kolumna kadru szersza — cokół i pierścień
+   wychodzą z niej w lewo. */
+@media (min-width: 1024px) {
+  .mars-humanoidy-uklad {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
+    align-items: center;
+    column-gap: clamp(2.5rem, 5vw, 5rem);
+  }
+
+  .mars-humanoidy-kadr {
+    max-width: none;
+  }
+
+  .mars-humanoidy-scena {
+    margin: 15% 3% 9% 8%;
+  }
+}

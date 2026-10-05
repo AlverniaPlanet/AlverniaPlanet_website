@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { languageAlternates } from "@/lib/seo";
 
 const title = "Como chegar, Alvernia Planet";
-const description = "Como chegar à Alvernia Planet, perto de Cracóvia: direções, estacionamento e transportes.";
+const description = "Como chegar à Alvernia Planet, perto de Cracóvia: acesso de carro, estacionamento e autocarro a partir da estação de Krzeszowice — horário de sexta, sábado e domingo.";
 
 // Zlokalizowane metadane aliasu PT polskiej trasy /jak-dojechac.
 // Treść strony jest wspólna, ale tytuł, opis, canonical i hreflang muszą być

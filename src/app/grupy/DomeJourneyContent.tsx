@@ -1,23 +1,23 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import BookingLink from "@/app/components/BookingLink";
 import Image from "next/image";
 import AdaptiveVideo from "@/app/components/AdaptiveVideo";
-import BookeroEmbed from "@/app/components/BookeroEmbed";
 import Card from "@/app/components/Card";
 import { PrimaryButton } from "@/app/components/PrimaryButton";
 import TourLineGalleryRow from "@/app/components/TourLineGalleryRow";
 import { useI18n } from "@/app/i18n-provider";
 import {
   buildBookingPath,
-  FILM_PATH_BOOKING_CATEGORY,
   FILM_PATH_BOOKING_SERVICES,
-  GROUP_BOOKING_CATEGORY,
+  eduBookingHref,
+  bookingHomeHref,
 } from "@/lib/booking";
 import { PROMO_PACKAGES } from "@/lib/promoPackages";
-import { AllAttractionsPromoCard } from "@/app/components/AllAttractionsPromoCard";
-
-type Locale = "pl" | "en" | "pt";
+import { AllAttractionsBundleBar } from "@/app/components/AllAttractionsBundleBar";
+import { type Locale } from "@/lib/localizedRoutes";
+import { SolarIcon } from "@/app/components/SolarIcon";
 
 // Ta sama treść obsługuje dwie podstrony:
 //  - "groups"     → /grupy: pełny program "Ścieżka filmowa" dla grup + formularz
@@ -26,27 +26,36 @@ type Locale = "pl" | "en" | "pt";
 //                    "FILMWORLD", bez biletu grupowego i bez formularza.
 type Audience = "groups" | "individual";
 
-const BOOKERO_PLUGIN_ID = "8iWKMAEWtI0P";
 
 // Nazwa indywidualnej atrakcji (grupowa wersja zostaje "Ścieżką filmową").
 const INDIVIDUAL_HERO_TITLE: Record<Locale, string> = {
   pl: "FILMWORLD",
   en: "FILMWORLD",
   pt: "FILMWORLD",
+  de: "FILMWORLD",
+  zh: "FILMWORLD",
 };
 
 const GROUP_FORM_COPY: Record<Locale, { title: string; intro: string }> = {
   pl: {
     title: "Zarezerwuj bilet grupowy",
-    intro: "Wybierz termin i bilet grupowy w kalendarzu poniżej. Rezerwację zrobisz od ręki.",
+    intro: "Wybierz termin i bilet grupowy w systemie rezerwacji. Zajmie to chwilę.",
   },
   en: {
     title: "Book a group ticket",
-    intro: "Pick a date and a group ticket in the calendar below. You can complete it right away.",
+    intro: "Pick a date and a group ticket in our booking system. It only takes a moment.",
   },
   pt: {
     title: "Reserva um bilhete de grupo",
-    intro: "Escolhe a data e o bilhete de grupo no calendário abaixo. Podes concluir de imediato.",
+    intro: "Escolhe a data e o bilhete de grupo no nosso sistema de reservas. É rápido.",
+  },
+  de: {
+    title: "Gruppenticket buchen",
+    intro: "Wählen Sie im Buchungssystem einen Termin und ein Gruppenticket. Das dauert nur einen Moment.",
+  },
+  zh: {
+    title: "预订团体票",
+    intro: "在预订系统中选择日期和团体票，只需片刻即可完成。",
   },
 };
 
@@ -82,6 +91,24 @@ const GROUP_TICKETS_COPY: Record<
       "Acima de 50 pessoas: contacta-nos individualmente e ajudamos a marcar datas e dividir o grupo.",
     ],
     contactLabel: "Contacto para grupos 50+",
+  },
+  de: {
+    title: "Gruppentickets",
+    lead: "Für organisierte Gruppen und Schulklassen.",
+    bullets: [
+      "Gruppen von 30 bis 50 Personen pro Buchung.",
+      "Mehr als 50 Personen? Bitte kontaktieren Sie uns direkt – wir helfen bei der Terminwahl und der Aufteilung der Gruppe.",
+    ],
+    contactLabel: "Kontakt für Gruppen ab 50 Personen",
+  },
+  zh: {
+    title: "团体票",
+    lead: "面向团体客人与学校团体。",
+    bullets: [
+      "每份预订可容纳 30 至 50 人。",
+      "超过 50 人时，请单独与我们联系，我们会协助安排日期并拆分团队。",
+    ],
+    contactLabel: "50 人以上团体联系",
   },
 };
 
@@ -139,7 +166,7 @@ type GalleryItem = {
 const OPENING_PHOTO_SOURCES = {
   entrance: "/galeria/Sciezka_filmowa/webp/wejscie_korytarz_k9.webp",
   silent: "/galeria/Sciezka_filmowa/webp/era_niema.webp",
-  interactive: "/galeria/Sciezka_filmowa/webp/K9_quizy.webp",
+  sound: "/galeria/Sciezka_filmowa/webp/dzwieku.webp",
 } as const;
 
 const COPY: Record<
@@ -148,6 +175,7 @@ const COPY: Record<
     heroTag: string;
     heroTitle: string;
     heroLead: string;
+    heroCta: string;
     planEyebrow: string;
     planTitle: string;
     planBody: string;
@@ -172,14 +200,15 @@ const COPY: Record<
 > = {
   pl: {
     heroTag: "Atrakcje",
-    heroTitle: "Ścieżka filmowa",
+    heroTitle: "Lekcja edukacyjna",
     heroLead: "Przejdź trasę zwiedzania, która odsłania kulisy tworzenia filmowych światów.",
+    heroCta: "Kup bilet dla grupy",
     planEyebrow: "Ścieżka edukacyjna",
     planTitle: "Poznaj świat filmu",
     planBody:
-      "Odświeżona ścieżka edukacyjna została wzbogacona o nowe atrakcje i prowadzi przez historię kina, przestrzenie Alvernia Planet oraz kolejne etapy pracy na planie. To jedna spójna trasa, która łączy wiedzę, scenografię, dźwięk i finał interaktywny. Oprowadzanie odbywa się w języku polskim.",
+      "Odświeżona ścieżka edukacyjna została wzbogacona o nowe atrakcje i prowadzi przez historię kina, przestrzenie Alvernia Planet oraz kolejne etapy pracy na planie. To jedna spójna trasa, która łączy wiedzę, scenografię i dźwięk. Oprowadzanie z przewodnikiem trwa 2 godziny, a po jego zakończeniu grupa może korzystać z czasu wolnego na Terminalu — bez limitu czasu. Oprowadzanie odbywa się w języku polskim.",
     planCaption:
-      "Od wejścia na trasę, przez epoki kina i pracę na planie, aż po interaktywne zadanie na końcu.",
+      "Od wejścia na trasę, przez epoki kina, aż po pracę na planie filmowym.",
     planPhotos: [
       {
         src: OPENING_PHOTO_SOURCES.entrance,
@@ -192,18 +221,18 @@ const COPY: Record<
         label: "Ery projekcji",
       },
       {
-        src: OPENING_PHOTO_SOURCES.interactive,
-        alt: "Interaktywny fragment ścieżki edukacyjnej.",
-        label: "Finał i interakcja",
+        src: OPENING_PHOTO_SOURCES.sound,
+        alt: "Studio postprodukcji dźwięku na ścieżce edukacyjnej.",
+        label: "Studio dźwięku",
       },
     ],
     stats: [
-      { value: "8 etapów", label: "od historii projekcji po finał interaktywny" },
-      { value: "2,5 h", label: "oprowadzania z przewodnikiem" },
+      { value: "7 etapów", label: "od historii projekcji po zawody filmowe" },
+      { value: "2 h", label: "oprowadzania, potem czas wolny na Terminalu" },
       { value: "polski", label: "język oprowadzania" },
     ],
     routeEyebrow: "Trasa zwiedzania",
-    routeTitle: "8 etapów na trasie",
+    routeTitle: "7 etapów na trasie",
     route: [
       {
         number: "01",
@@ -229,24 +258,24 @@ const COPY: Record<
       },
       {
         number: "03",
-        title: "Zawody filmowe",
-        summary: "Kto za co odpowiada na planie filmowym.",
+        title: "Postprodukcja dźwięku",
+        summary: "Skąd biorą się filmowe dźwięki i jak zmieniają scenę.",
         highlights: [
-          "kto tworzy ekipę filmową?",
-          "za co odpowiada reżyser?",
-          "co robi operator?",
-          "jak pracuje cała ekipa?",
+          "skąd bierze się dźwięk w filmie?",
+          "jak powstają dialogi?",
+          "skąd biorą się efekty?",
+          "na czym polega praca w studiu?",
         ],
       },
       {
         number: "04",
-        title: "Gwiazdy i produkcje",
-        summary: "Znane nazwiska i projekty związane z obiektem.",
+        title: "Produkcja i sceny akcji",
+        summary: "Jak powstają sceny akcji i ile przygotowań wymagają.",
         highlights: [
-          "jakie gwiazdy były tu obecne?",
-          "jakie produkcje tu powstały?",
-          "które tytuły są najbardziej znane?",
-          "z czego słynie to miejsce?",
+          "jak wyglądają etapy produkcji?",
+          "jak przygotowuje się sceny akcji?",
+          "po co są próby?",
+          "jak dba się o bezpieczeństwo?",
         ],
       },
       {
@@ -262,42 +291,29 @@ const COPY: Record<
       },
       {
         number: "06",
-        title: "Produkcja i sceny akcji",
-        summary: "Jak powstają sceny akcji i ile przygotowań wymagają.",
+        title: "Gwiazdy i produkcje",
+        summary: "Znane nazwiska i projekty związane z obiektem.",
         highlights: [
-          "jak wyglądają etapy produkcji?",
-          "jak przygotowuje się sceny akcji?",
-          "po co są próby?",
-          "jak dba się o bezpieczeństwo?",
+          "jakie gwiazdy były tu obecne?",
+          "jakie produkcje tu powstały?",
+          "które tytuły są najbardziej znane?",
+          "z czego słynie to miejsce?",
         ],
       },
       {
         number: "07",
-        title: "Postprodukcja dźwięku",
-        summary: "Skąd biorą się filmowe dźwięki i jak zmieniają scenę.",
+        title: "Zawody filmowe",
+        summary: "Kto za co odpowiada na planie filmowym.",
         highlights: [
-          "skąd bierze się dźwięk w filmie?",
-          "jak powstają dialogi?",
-          "skąd biorą się efekty?",
-          "na czym polega praca w studiu?",
-        ],
-      },
-      {
-        number: "08",
-        title: "Finał interaktywny",
-        summary: "Krótki finał, który angażuje i podsumowuje trasę.",
-        highlights: [
-          "quizy",
-          "pisanie własnego scenariusza przy pomocy AI",
-          "fotobudka",
-          "sklepik z gadżetami filmowymi",
-          "drzwi wymiarów",
-          "rozmowa z maskotką obiektu",
+          "kto tworzy ekipę filmową?",
+          "za co odpowiada reżyser?",
+          "co robi operator?",
+          "jak pracuje cała ekipa?",
         ],
       },
     ],
     galleryTitle: "Galeria ścieżki edukacyjnej",
-    galleryIntro: "Wybrane kadry z trasy: od korytarza historii po interaktywne stanowiska i scenografię.",
+    galleryIntro: "Wybrane kadry z trasy: od korytarza historii po studio dźwięku i scenografię.",
     galleryItems: [
       {
         title: "Korytarz wejściowy",
@@ -325,11 +341,6 @@ const COPY: Record<
         image: "/galeria/Sciezka_filmowa/webp/K10_ozdoby.webp",
       },
       {
-        title: "Strefa quizów",
-        body: "Interaktywne stanowiska, które domykają zwiedzanie aktywnym finałem.",
-        image: "/galeria/Sciezka_filmowa/webp/K9_quizy.webp",
-      },
-      {
         title: "Kadr ze ścieżki",
         body: "Fragment ekspozycji z trasy zwiedzania.",
         image: "/galeria/Sciezka_filmowa/webp/sciezka_1.webp",
@@ -352,18 +363,18 @@ const COPY: Record<
     ],
     ticketsTitle: "Bilety na ścieżkę edukacyjną",
     ticketsIntro:
-      "Bilet normalny kosztuje 79 zł za osobę, a bilet ulgowy 69 zł za osobę. Dla grup szkolnych start to 2 070 zł za 30 osób, a każda kolejna osoba kosztuje 69 zł, maksymalnie do 50 uczestników na rezerwację. Sama Ścieżka filmowa trwa około 2,5 godziny, a w pakiecie z projekcją K360 całość zajmuje około 3 godzin.",
+      "Bilet normalny kosztuje 79 zł za osobę, a bilet ulgowy 69 zł za osobę. Dla grup szkolnych start to 2 070 zł za 30 osób, a każda kolejna osoba kosztuje 69 zł, maksymalnie do 50 uczestników na rezerwację. Oprowadzanie z przewodnikiem trwa 2 godziny, a po nim grupa może korzystać z czasu wolnego na Terminalu bez limitu czasu. W pakiecie z projekcją K360 całość zajmuje około 2,5 godziny.",
     ticketsPriceLabel: "Cena za osobę",
     ticketsPrice: "79 zł/os. lub 69 zł/os.",
     ticketsButton: "Kup bilet",
     promoTicket: {
       badge: "Pakiet",
       title: "Ścieżka + Kino 360",
-      subtitle:
-        "Jeden duży pakiet promocyjny, który łączy zwiedzanie Ścieżki filmowej z projekcją K360.",
-      details: ["Około 3 godzin łącznie ze zwiedzaniem i seansem"],
       priceLabel: "Cena normalna",
       price: "119,00 zł",
+      subtitle:
+        "Jeden duży pakiet promocyjny, który łączy zwiedzanie Ścieżki filmowej z projekcją K360.",
+      details: ["Około 2,5 godziny łącznie ze zwiedzaniem i seansem"],
       savings: "Oszczędzasz 9,00 zł",
       savingsPercent: "7%",
       reducedPriceLabel: "Cena ulgowa",
@@ -408,14 +419,15 @@ const COPY: Record<
   },
   en: {
     heroTag: "Attractions",
-    heroTitle: "Film path",
+    heroTitle: "Educational lesson",
     heroLead: "Walk the tour that reveals how film worlds are built.",
+    heroCta: "Buy group ticket",
     planEyebrow: "Educational path",
     planTitle: "Discover the world of film",
     planBody:
-      "The refreshed educational path has been expanded with new attractions and now leads through moving-image history, Alvernia Planet spaces, and the key stages of film production. It is one cohesive route that combines learning, set design, sound, and an interactive finale. The guided tour is available in Polish.",
+      "The refreshed educational path has been expanded with new attractions and now leads through moving-image history, Alvernia Planet spaces, and the key stages of film production. It is one cohesive route that combines learning, set design, and sound. The guided tour lasts 2 hours, after which the group can enjoy free time in the Terminal with no time limit. The guided tour is available in Polish.",
     planCaption:
-      "From the route entrance and projection eras to on-set work and the interactive ending.",
+      "From the route entrance and projection eras to on-set work.",
     planPhotos: [
       {
         src: OPENING_PHOTO_SOURCES.entrance,
@@ -428,18 +440,18 @@ const COPY: Record<
         label: "Projection eras",
       },
       {
-        src: OPENING_PHOTO_SOURCES.interactive,
-        alt: "Interactive section of the educational path.",
-        label: "Final interaction",
+        src: OPENING_PHOTO_SOURCES.sound,
+        alt: "Sound post-production studio on the educational path.",
+        label: "Sound studio",
       },
     ],
     stats: [
-      { value: "8 stages", label: "from film history to the interactive finale" },
-      { value: "2.5 h", label: "guided visit" },
+      { value: "7 stages", label: "from film history to film professions" },
+      { value: "2 h", label: "guided visit, then free time in the Terminal" },
       { value: "Polish", label: "tour language" },
     ],
     routeEyebrow: "Tour route",
-    routeTitle: "8 stages on the route",
+    routeTitle: "7 stages on the route",
     route: [
       {
         number: "01",
@@ -465,24 +477,24 @@ const COPY: Record<
       },
       {
         number: "03",
-        title: "Film professions",
-        summary: "Who does what on a film set.",
+        title: "Sound post-production studio",
+        summary: "Where film sound comes from and how it shapes a scene.",
         highlights: [
-          "who makes up the film crew?",
-          "what does the director do?",
-          "what does the director of photography do?",
-          "how does the crew work together?",
+          "where does film sound come from?",
+          "how are dialogues prepared?",
+          "how are effects created?",
+          "what happens in the studio?",
         ],
       },
       {
         number: "04",
-        title: "Stars and productions",
-        summary: "Known names and productions linked to the venue.",
+        title: "Production and action scenes",
+        summary: "How action scenes are planned and prepared.",
         highlights: [
-          "which stars have been here?",
-          "which productions were made here?",
-          "which titles stand out most?",
-          "what is this place known for?",
+          "what are the stages of production?",
+          "how are action scenes prepared?",
+          "why are rehearsals needed?",
+          "how is safety managed on set?",
         ],
       },
       {
@@ -498,42 +510,29 @@ const COPY: Record<
       },
       {
         number: "06",
-        title: "Production and action scenes",
-        summary: "How action scenes are planned and prepared.",
+        title: "Stars and productions",
+        summary: "Known names and productions linked to the venue.",
         highlights: [
-          "what are the stages of production?",
-          "how are action scenes prepared?",
-          "why are rehearsals needed?",
-          "how is safety managed on set?",
+          "which stars have been here?",
+          "which productions were made here?",
+          "which titles stand out most?",
+          "what is this place known for?",
         ],
       },
       {
         number: "07",
-        title: "Sound post-production studio",
-        summary: "Where film sound comes from and how it shapes a scene.",
+        title: "Film professions",
+        summary: "Who does what on a film set.",
         highlights: [
-          "where does film sound come from?",
-          "how are dialogues prepared?",
-          "how are effects created?",
-          "what happens in the studio?",
-        ],
-      },
-      {
-        number: "08",
-        title: "Interactive final task",
-        summary: "A short closing activity that wraps up the route.",
-        highlights: [
-          "quizzes",
-          "writing your own script with AI",
-          "photo booth",
-          "shop with film gadgets",
-          "dimension doors",
-          "conversation with the venue mascot",
+          "who makes up the film crew?",
+          "what does the director do?",
+          "what does the director of photography do?",
+          "how does the crew work together?",
         ],
       },
     ],
     galleryTitle: "Educational path gallery",
-    galleryIntro: "Selected moments from the route, from the history corridor to interactive stations and set details.",
+    galleryIntro: "Selected moments from the route, from the history corridor to the sound studio and set details.",
     galleryItems: [
       {
         title: "Entrance corridor",
@@ -561,11 +560,6 @@ const COPY: Record<
         image: "/galeria/Sciezka_filmowa/webp/K10_ozdoby.webp",
       },
       {
-        title: "Quiz zone",
-        body: "Interactive stations that close the visit with a more active finale.",
-        image: "/galeria/Sciezka_filmowa/webp/K9_quizy.webp",
-      },
-      {
         title: "Frame from the path",
         body: "A glimpse of the exhibition along the route.",
         image: "/galeria/Sciezka_filmowa/webp/sciezka_1.webp",
@@ -588,18 +582,18 @@ const COPY: Record<
     ],
     ticketsTitle: "Educational path tickets",
     ticketsIntro:
-      "The standard ticket costs 79 PLN per person and the reduced ticket costs 69 PLN per person. For school groups the starting price is 2,070 PLN for 30 guests, then 69 PLN for each additional guest up to 50 people per booking. The Film Path itself lasts about 2.5 hours, and with the K360 Cinema package the full visit takes about 3 hours.",
+      "The standard ticket costs 79 PLN per person and the reduced ticket costs 69 PLN per person. For school groups the starting price is 2,070 PLN for 30 guests, then 69 PLN for each additional guest up to 50 people per booking. The guided tour lasts 2 hours, after which the group can use the Terminal with no time limit. With the K360 Cinema package the full visit takes about 2.5 hours.",
     ticketsPriceLabel: "Price per person",
     ticketsPrice: "79 PLN/person or 69 PLN/person",
     ticketsButton: "Buy tickets",
     promoTicket: {
       badge: "Package",
       title: "Film Path + K360 Cinema",
-      subtitle:
-        "One large promotional package that combines the Film Path visit with a K360 Cinema.",
-      details: ["About 3 hours in total with the visit and screening"],
       priceLabel: "Standard price",
       price: "119.00 PLN",
+      subtitle:
+        "One large promotional package that combines the Film Path visit with a K360 Cinema.",
+      details: ["About 2.5 hours in total with the visit and screening"],
       savings: "You save 9.00 PLN",
       savingsPercent: "7%",
       reducedPriceLabel: "Reduced price",
@@ -644,14 +638,15 @@ const COPY: Record<
   },
   pt: {
     heroTag: "Atrações",
-    heroTitle: "Percurso de filmagem",
+    heroTitle: "Aula educativa",
     heroLead: "Percorra a visita que revela como nascem mundos em imagem e som.",
+    heroCta: "Comprar bilhete de grupo",
     planEyebrow: "Percurso educativo",
     planTitle: "Descobre o mundo do cinema",
     planBody:
-      "O percurso educativo renovado foi enriquecido com novas atrações e conduz pela história da projeção, pelos espaços da Alvernia Planet e pelas etapas centrais do trabalho em set. É uma rota coesa que junta aprendizagem, cenografia, som e um final interativo. A visita guiada decorre em polaco.",
+      "O percurso educativo renovado foi enriquecido com novas atrações e conduz pela história da projeção, pelos espaços da Alvernia Planet e pelas etapas centrais do trabalho em set. É uma rota coesa que junta aprendizagem, cenografia e som. A visita guiada dura 2 horas e, no final, o grupo pode usufruir de tempo livre no Terminal, sem limite de tempo. A visita guiada decorre em polaco.",
     planCaption:
-      "Da entrada no percurso e das eras de projeção até ao trabalho em set e ao final interativo.",
+      "Da entrada no percurso e das eras de projeção até ao trabalho em set.",
     planPhotos: [
       {
         src: OPENING_PHOTO_SOURCES.entrance,
@@ -664,18 +659,18 @@ const COPY: Record<
         label: "Eras da projeção",
       },
       {
-        src: OPENING_PHOTO_SOURCES.interactive,
-        alt: "Parte interativa do percurso educativo.",
-        label: "Final interativo",
+        src: OPENING_PHOTO_SOURCES.sound,
+        alt: "Estúdio de pós-produção de som no percurso educativo.",
+        label: "Estúdio de som",
       },
     ],
     stats: [
-      { value: "8 etapas", label: "da história da projeção ao final interativo" },
-      { value: "2,5 h", label: "visita guiada" },
+      { value: "7 etapas", label: "da história da projeção às profissões de set" },
+      { value: "2 h", label: "visita guiada, depois tempo livre no Terminal" },
       { value: "polaco", label: "idioma da visita" },
     ],
     routeEyebrow: "Percurso da visita",
-    routeTitle: "8 etapas no percurso",
+    routeTitle: "7 etapas no percurso",
     route: [
       {
         number: "01",
@@ -701,24 +696,24 @@ const COPY: Record<
       },
       {
         number: "03",
-        title: "Profissões de set",
-        summary: "Quem faz o quê num set de filmagem.",
+        title: "Pós-produção de som",
+        summary: "De onde vêm os sons da produção e como mudam a cena.",
         highlights: [
-          "quem faz parte da equipa?",
-          "o que faz o realizador?",
-          "o que faz o diretor de fotografia?",
-          "como trabalha toda a equipa?",
+          "de onde vem o som numa cena?",
+          "como se trabalham os diálogos?",
+          "como nascem os efeitos?",
+          "o que acontece no estúdio?",
         ],
       },
       {
         number: "04",
-        title: "Estrelas e produções",
-        summary: "Nomes conhecidos e produções ligadas ao espaço.",
+        title: "Produção e ação",
+        summary: "Como se planeiam cenas de ação e quanto exigem.",
         highlights: [
-          "que estrelas passaram por aqui?",
-          "que produções nasceram aqui?",
-          "que títulos mais se destacam?",
-          "pelo que é conhecido este lugar?",
+          "quais são as etapas da produção?",
+          "como se preparam cenas de ação?",
+          "porque são importantes os ensaios?",
+          "como se garante a segurança?",
         ],
       },
       {
@@ -734,42 +729,29 @@ const COPY: Record<
       },
       {
         number: "06",
-        title: "Produção e ação",
-        summary: "Como se planeiam cenas de ação e quanto exigem.",
+        title: "Estrelas e produções",
+        summary: "Nomes conhecidos e produções ligadas ao espaço.",
         highlights: [
-          "quais são as etapas da produção?",
-          "como se preparam cenas de ação?",
-          "porque são importantes os ensaios?",
-          "como se garante a segurança?",
+          "que estrelas passaram por aqui?",
+          "que produções nasceram aqui?",
+          "que títulos mais se destacam?",
+          "pelo que é conhecido este lugar?",
         ],
       },
       {
         number: "07",
-        title: "Pós-produção de som",
-        summary: "De onde vêm os sons da produção e como mudam a cena.",
+        title: "Profissões de set",
+        summary: "Quem faz o quê num set de filmagem.",
         highlights: [
-          "de onde vem o som numa cena?",
-          "como se trabalham os diálogos?",
-          "como nascem os efeitos?",
-          "o que acontece no estúdio?",
-        ],
-      },
-      {
-        number: "08",
-        title: "Final interativo",
-        summary: "Uma atividade curta para fechar e resumir a visita.",
-        highlights: [
-          "quizzes",
-          "escrita do próprio guião com IA",
-          "fotomatón",
-          "loja com gadgets de bastidores",
-          "portas dimensionais",
-          "conversa com a mascote do espaço",
+          "quem faz parte da equipa?",
+          "o que faz o realizador?",
+          "o que faz o diretor de fotografia?",
+          "como trabalha toda a equipa?",
         ],
       },
     ],
     galleryTitle: "Galeria do percurso educativo",
-    galleryIntro: "Momentos escolhidos da visita: do corredor da história às zonas interativas e aos detalhes de cenografia.",
+    galleryIntro: "Momentos escolhidos da visita: do corredor da história ao estúdio de som e aos detalhes de cenografia.",
     galleryItems: [
       {
         title: "Corredor de entrada",
@@ -797,11 +779,6 @@ const COPY: Record<
         image: "/galeria/Sciezka_filmowa/webp/K10_ozdoby.webp",
       },
       {
-        title: "Zona de quiz",
-        body: "Estações interativas que fecham a visita com um final mais dinâmico.",
-        image: "/galeria/Sciezka_filmowa/webp/K9_quizy.webp",
-      },
-      {
         title: "Imagem do percurso",
         body: "Um excerto da exposição ao longo do percurso.",
         image: "/galeria/Sciezka_filmowa/webp/sciezka_1.webp",
@@ -824,18 +801,18 @@ const COPY: Record<
     ],
     ticketsTitle: "Bilhetes para o percurso educativo",
     ticketsIntro:
-      "O bilhete normal custa 79 PLN por pessoa e o bilhete reduzido custa 69 PLN por pessoa. Para grupos escolares, o valor começa em 2 070 PLN para 30 pessoas, depois 69 PLN por cada pessoa adicional até 50 participantes por reserva. O Percurso de filmagem por si só dura cerca de 2,5 horas e, no pacote com a cinema K360, a visita completa dura cerca de 3 horas.",
+      "O bilhete normal custa 79 PLN por pessoa e o bilhete reduzido custa 69 PLN por pessoa. Para grupos escolares, o valor começa em 2 070 PLN para 30 pessoas, depois 69 PLN por cada pessoa adicional até 50 participantes por reserva. A visita guiada dura 2 horas e, depois, o grupo pode usufruir de tempo livre no Terminal sem limite de tempo. No pacote com a cinema K360, a visita completa dura cerca de 2,5 horas.",
     ticketsPriceLabel: "Preço por pessoa",
     ticketsPrice: "79 PLN/pessoa ou 69 PLN/pessoa",
     ticketsButton: "Comprar bilhete",
     promoTicket: {
       badge: "Pacote",
       title: "Percurso + Cinema K360",
-      subtitle:
-        "Um grande pacote promocional que junta a visita ao Percurso de filmagem com a projeção no K360.",
-      details: ["Cerca de 3 horas no total com visita e sessão"],
       priceLabel: "Preço normal",
       price: "119,00 PLN",
+      subtitle:
+        "Um grande pacote promocional que junta a visita ao Percurso de filmagem com a projeção no K360.",
+      details: ["Cerca de 2,5 horas no total com visita e sessão"],
       savings: "Poupa 9,00 PLN",
       savingsPercent: "7%",
       reducedPriceLabel: "Preço reduzido",
@@ -877,6 +854,444 @@ const COPY: Record<
       },
     ],
     videoFallback: "O seu navegador não suporta o elemento de vídeo.",
+  },
+  de: {
+    heroTag: "Attraktionen",
+    heroTitle: "Bildungsstunde",
+    heroLead: "Gehen Sie den Rundgang, der zeigt, wie Filmwelten entstehen.",
+    heroCta: "Gruppenticket kaufen",
+    planEyebrow: "Bildungspfad",
+    planTitle: "Entdecken Sie die Welt des Films",
+    planBody:
+      "Der erneuerte Bildungspfad wurde um neue Attraktionen erweitert und führt durch die Geschichte des bewegten Bildes, die Räume von Alvernia Planet und die wichtigsten Etappen der Filmproduktion. Es ist eine zusammenhängende Route, die Wissen, Szenenbild und Ton verbindet. Die Führung dauert 2 Stunden, danach kann die Gruppe die freie Zeit im Terminal ohne Zeitlimit genießen. Die Führung findet auf Polnisch statt.",
+    planCaption:
+      "Vom Eingang der Route über die Projektionsepochen bis zur Arbeit am Set.",
+    planPhotos: [
+      {
+        src: OPENING_PHOTO_SOURCES.entrance,
+        alt: "Eingang zum Bildungspfad in Alvernia Planet.",
+        label: "Eingang der Route",
+      },
+      {
+        src: OPENING_PHOTO_SOURCES.silent,
+        alt: "Station zur Geschichte der Projektion auf dem Bildungspfad.",
+        label: "Projektionsepochen",
+      },
+      {
+        src: OPENING_PHOTO_SOURCES.sound,
+        alt: "Studio für Ton-Postproduktion auf dem Bildungspfad.",
+        label: "Tonstudio",
+      },
+    ],
+    stats: [
+      { value: "7 Etappen", label: "von der Filmgeschichte bis zu den Filmberufen" },
+      { value: "2 Std.", label: "Führung, danach freie Zeit im Terminal" },
+      { value: "Polnisch", label: "Sprache der Führung" },
+    ],
+    routeEyebrow: "Rundgang",
+    routeTitle: "7 Etappen auf der Route",
+    route: [
+      {
+        number: "01",
+        title: "Korridor der Geschichte",
+        summary: "Ein Gang durch die Epochen der Projektion: stumm, analog und digital.",
+        highlights: [
+          "was war die Stummfilmzeit?",
+          "wie lief analoge Projektion?",
+          "was ist digitale Projektion?",
+          "was kommt als Nächstes?",
+        ],
+      },
+      {
+        number: "02",
+        title: "Kosmische Kuppeln",
+        summary: "Warum die Kuppeln von Alvernia so besonders aussehen.",
+        highlights: [
+          "woher kam die Designvision?",
+          "warum diese Kuppelform?",
+          "was macht den kosmischen Look?",
+          "wozu dient das Gebäude?",
+        ],
+      },
+      {
+        number: "03",
+        title: "Ton-Postproduktion",
+        summary: "Woher der Filmton kommt und wie er eine Szene prägt.",
+        highlights: [
+          "woher kommt der Filmton?",
+          "wie entstehen die Dialoge?",
+          "wie entstehen die Effekte?",
+          "was passiert im Studio?",
+        ],
+      },
+      {
+        number: "04",
+        title: "Produktion und Actionszenen",
+        summary: "Wie Actionszenen geplant und vorbereitet werden.",
+        highlights: [
+          "welche Produktionsphasen gibt es?",
+          "wie bereitet man Actionszenen vor?",
+          "wozu dienen die Proben?",
+          "wie wird die Sicherheit geplant?",
+        ],
+      },
+      {
+        number: "05",
+        title: "Szenenbild und Requisiten",
+        summary: "Wie Details und Requisiten eine Filmwelt erschaffen.",
+        highlights: [
+          "wie entsteht das Szenenbild?",
+          "welche Rolle haben Requisiten?",
+          "was schafft die Filmatmosphäre?",
+          "was landet am Set?",
+        ],
+      },
+      {
+        number: "06",
+        title: "Stars und Produktionen",
+        summary: "Bekannte Namen und Produktionen rund um diesen Ort.",
+        highlights: [
+          "welche Stars waren hier?",
+          "welche Filme entstanden hier?",
+          "welche Titel stechen hervor?",
+          "wofür ist dieser Ort bekannt?",
+        ],
+      },
+      {
+        number: "07",
+        title: "Filmberufe",
+        summary: "Wer am Filmset wofür zuständig ist.",
+        highlights: [
+          "wer gehört zum Filmteam?",
+          "was macht die Regie?",
+          "was macht die Kamera?",
+          "wie arbeitet das Team zusammen?",
+        ],
+      },
+    ],
+    galleryTitle: "Galerie des Bildungspfads",
+    galleryIntro: "Ausgewählte Momente der Route: vom Korridor der Geschichte über das Tonstudio bis zu den Setdetails.",
+    galleryItems: [
+      {
+        title: "Eingangskorridor",
+        body: "Der Beginn der Route und der erste Schritt in den Bildungspfad.",
+        image: "/galeria/Sciezka_filmowa/webp/wejscie_korytarz_k9.webp",
+      },
+      {
+        title: "Stummfilmzeit",
+        body: "Eine Station über die früheste Epoche des Films und des bewegten Bildes.",
+        image: "/galeria/Sciezka_filmowa/webp/era_niema.webp",
+      },
+      {
+        title: "Analoge Ära",
+        body: "Exponate und Materialien aus der Zeit der analogen Aufnahme und Projektion.",
+        image: "/galeria/Sciezka_filmowa/webp/era_analogowa_1.webp",
+      },
+      {
+        title: "Digitale Ära",
+        body: "Moderne Werkzeuge und Techniken der heutigen Bildproduktion.",
+        image: "/galeria/Sciezka_filmowa/webp/era_cyfrowa_1.webp",
+      },
+      {
+        title: "Setdetails",
+        body: "Szenische Details und Dekorationen, die die Filmatmosphäre prägen.",
+        image: "/galeria/Sciezka_filmowa/webp/K10_ozdoby.webp",
+      },
+      {
+        title: "Bild vom Rundgang",
+        body: "Ein Einblick in die Ausstellung entlang der Route.",
+        image: "/galeria/Sciezka_filmowa/webp/sciezka_1.webp",
+      },
+      {
+        title: "Bild vom Rundgang",
+        body: "Eine weitere Station, die die Geschichte des Kinos erzählt.",
+        image: "/galeria/Sciezka_filmowa/webp/sciezka_2.webp",
+      },
+      {
+        title: "Bild vom Rundgang",
+        body: "Setdetails und Requisiten entlang des Weges.",
+        image: "/galeria/Sciezka_filmowa/webp/sciezka_3.webp",
+      },
+      {
+        title: "Bild vom Rundgang",
+        body: "Die Atmosphäre eines arbeitenden Filmsets für Besucher.",
+        image: "/galeria/Sciezka_filmowa/webp/sciezka_4.webp",
+      },
+    ],
+    ticketsTitle: "Tickets für den Bildungspfad",
+    ticketsIntro:
+      "Das reguläre Ticket kostet 79 PLN pro Person, das ermäßigte Ticket 69 PLN pro Person. Für Schulgruppen beginnt der Preis bei 2 070 PLN für 30 Gäste, jede weitere Person kostet 69 PLN, maximal 50 Personen pro Buchung. Die Führung dauert 2 Stunden, danach kann die Gruppe das Terminal ohne Zeitlimit nutzen. Im Paket mit Kino 360 dauert der gesamte Besuch etwa 2,5 Stunden.",
+    ticketsPriceLabel: "Preis pro Person",
+    ticketsPrice: "79 PLN/Person oder 69 PLN/Person",
+    ticketsButton: "Tickets kaufen",
+    promoTicket: {
+      badge: "Paket",
+      title: "Filmpfad + Kino 360",
+      priceLabel: "Regulärer Preis",
+      price: "119,00 PLN",
+      subtitle:
+        "Ein großes Aktionspaket, das den Besuch des Filmpfads mit einer Vorstellung im Kino 360 verbindet.",
+      details: ["Insgesamt etwa 2,5 Stunden mit Rundgang und Vorstellung"],
+      savings: "Sie sparen 9,00 PLN",
+      savingsPercent: "7%",
+      reducedPriceLabel: "Ermäßigter Preis",
+      reducedPrice: "99,00 PLN",
+      reducedSavings: "Sie sparen 9,00 PLN",
+      reducedSavingsPercent: "8%",
+      button: "Paket wählen",
+    },
+    ticketsOptions: [
+      {
+        badge: "Regulär",
+        title: "Reguläres Ticket",
+        subtitle: "1-10 Personen auf einem Ticket",
+        details: ["Für Einzelgäste und Familien", "Regulärer Preis pro Person"],
+        price: "79 PLN/Person",
+        bookingServiceName: FILM_PATH_BOOKING_SERVICES.normal,
+      },
+      {
+        badge: "Ermäßigt",
+        title: "Ermäßigtes Ticket",
+        subtitle: "1-10 Personen auf einem Ticket",
+        details: ["Für Einzelgäste und Familien", "Ermäßigter Preis pro Person"],
+        price: "69 PLN/Person",
+        bookingServiceName: FILM_PATH_BOOKING_SERVICES.reduced,
+      },
+      {
+        badge: "Gruppe",
+        title: "Gruppen-/Schulticket",
+        subtitle: "30-50 Personen in der Gruppe",
+        details: [
+          "Für Schulen und organisierte Gruppen",
+          "2 070 PLN für die ersten 30 Gäste",
+          "Über 50 Gäste: zwei Buchungen oder Kontakt zu uns",
+        ],
+        priceLabel: "Gruppenpreis",
+        price: "2 070 PLN - 3 450 PLN",
+        bookingServiceName: FILM_PATH_BOOKING_SERVICES.group,
+        bookingQuantity: 30,
+      },
+    ],
+    videoFallback: "Ihr Browser unterstützt das Video-Element nicht.",
+  },
+  zh: {
+    heroTag: "游玩项目",
+    heroTitle: "教育课程",
+    heroLead: "走完这条参观路线，揭开电影世界的诞生过程。",
+    heroCta: "购买团体票",
+    planEyebrow: "教育路线",
+    planTitle: "探索电影世界",
+    planBody:
+      "焕然一新的教育路线新增了多个项目，带您走过影像的历史、Alvernia Planet 的各个空间以及电影制作的关键环节。这是一条完整连贯的路线，把知识、布景与声音融为一体。导览讲解全程 2 小时，结束后团队可在 Terminal 自由活动，不限时间。导览以波兰语进行。",
+    planCaption:
+      "从路线入口、放映时代，一直到片场工作。",
+    planPhotos: [
+      {
+        src: OPENING_PHOTO_SOURCES.entrance,
+        alt: "Alvernia Planet 教育路线的入口。",
+        label: "路线入口",
+      },
+      {
+        src: OPENING_PHOTO_SOURCES.silent,
+        alt: "教育路线上的放映历史展区。",
+        label: "放映时代",
+      },
+      {
+        src: OPENING_PHOTO_SOURCES.sound,
+        alt: "教育路线上的声音后期制作工作室。",
+        label: "声音工作室",
+      },
+    ],
+    stats: [
+      { value: "7 个阶段", label: "从电影历史到电影职业" },
+      { value: "2 小时", label: "导览讲解，之后在 Terminal 自由活动" },
+      { value: "波兰语", label: "导览语言" },
+    ],
+    routeEyebrow: "参观路线",
+    routeTitle: "7 个阶段的路线",
+    route: [
+      {
+        number: "01",
+        title: "历史长廊",
+        summary: "穿越默片、胶片与数字三个放映时代。",
+        highlights: [
+          "什么是默片时代?",
+          "胶片放映如何运作?",
+          "什么是数字放映?",
+          "未来会是什么样?",
+        ],
+      },
+      {
+        number: "02",
+        title: "宇宙穹顶",
+        summary: "Alvernia Planet 的穹顶为何如此独特。",
+        highlights: [
+          "设计灵感从何而来?",
+          "穹顶为何是这种造型?",
+          "宇宙感由什么营造?",
+          "这座建筑有什么用途?",
+        ],
+      },
+      {
+        number: "03",
+        title: "声音后期制作",
+        summary: "电影声音从何而来，又如何塑造一场戏。",
+        highlights: [
+          "电影声音从何而来?",
+          "对白如何制作?",
+          "音效如何创造?",
+          "工作室里发生什么?",
+        ],
+      },
+      {
+        number: "04",
+        title: "制作与动作场面",
+        summary: "动作场面如何策划与准备。",
+        highlights: [
+          "制作分为哪些阶段?",
+          "动作场面如何准备?",
+          "为什么需要排练?",
+          "片场如何保障安全?",
+        ],
+      },
+      {
+        number: "05",
+        title: "布景与道具",
+        summary: "细节与道具如何构建电影世界。",
+        highlights: [
+          "布景如何制作?",
+          "道具起到什么作用?",
+          "什么营造电影氛围?",
+          "什么最终进入片场?",
+        ],
+      },
+      {
+        number: "06",
+        title: "明星与作品",
+        summary: "与这里相关的知名人物与作品。",
+        highlights: [
+          "哪些明星来过这里?",
+          "哪些作品在此拍摄?",
+          "哪些片名最为知名?",
+          "这里以什么闻名?",
+        ],
+      },
+      {
+        number: "07",
+        title: "电影职业",
+        summary: "片场上谁负责什么。",
+        highlights: [
+          "剧组由哪些人组成?",
+          "导演负责什么?",
+          "摄影指导做什么?",
+          "团队如何协同工作?",
+        ],
+      },
+    ],
+    galleryTitle: "教育路线相册",
+    galleryIntro: "路线上的精选画面：从历史长廊到声音工作室与布景细节。",
+    galleryItems: [
+      {
+        title: "入口长廊",
+        body: "路线的起点，也是走进教育路线的第一步。",
+        image: "/galeria/Sciezka_filmowa/webp/wejscie_korytarz_k9.webp",
+      },
+      {
+        title: "默片时代",
+        body: "展示电影与活动影像最早时期的展区。",
+        image: "/galeria/Sciezka_filmowa/webp/era_niema.webp",
+      },
+      {
+        title: "胶片时代",
+        body: "呈现胶片拍摄与放映时代的展品与资料。",
+        image: "/galeria/Sciezka_filmowa/webp/era_analogowa_1.webp",
+      },
+      {
+        title: "数字时代",
+        body: "当代影像制作中使用的现代工具与技术。",
+        image: "/galeria/Sciezka_filmowa/webp/era_cyfrowa_1.webp",
+      },
+      {
+        title: "布景细节",
+        body: "营造电影氛围的布景元素与装饰细节。",
+        image: "/galeria/Sciezka_filmowa/webp/K10_ozdoby.webp",
+      },
+      {
+        title: "路线画面",
+        body: "路线沿途展览的一瞥。",
+        image: "/galeria/Sciezka_filmowa/webp/sciezka_1.webp",
+      },
+      {
+        title: "路线画面",
+        body: "另一处讲述电影故事的展区。",
+        image: "/galeria/Sciezka_filmowa/webp/sciezka_2.webp",
+      },
+      {
+        title: "路线画面",
+        body: "沿途收集的布景细节与道具。",
+        image: "/galeria/Sciezka_filmowa/webp/sciezka_3.webp",
+      },
+      {
+        title: "路线画面",
+        body: "为参观者呈现的片场氛围。",
+        image: "/galeria/Sciezka_filmowa/webp/sciezka_4.webp",
+      },
+    ],
+    ticketsTitle: "教育路线门票",
+    ticketsIntro:
+      "全价票每人 79 PLN，优惠票每人 69 PLN。学校团体 30 人起价 2 070 PLN，之后每增加一人加收 69 PLN，每份预订最多 50 人。导览讲解全程 2 小时，结束后团队可在 Terminal 自由活动，不限时间。搭配 Kino 360 影院的套票，整个行程约需 2.5 小时。",
+    ticketsPriceLabel: "每人价格",
+    ticketsPrice: "每人 79 PLN 或 69 PLN",
+    ticketsButton: "购买门票",
+    promoTicket: {
+      badge: "套票",
+      title: "电影之路 + Kino 360 影院",
+      priceLabel: "全价",
+      price: "119.00 PLN",
+      subtitle:
+        "超值套票，把电影之路的参观与 Kino 360 影院的放映合为一体。",
+      details: ["参观加放映合计约 2.5 小时"],
+      savings: "立省 9.00 PLN",
+      savingsPercent: "7%",
+      reducedPriceLabel: "优惠价",
+      reducedPrice: "99.00 PLN",
+      reducedSavings: "立省 9.00 PLN",
+      reducedSavingsPercent: "8%",
+      button: "选择套票",
+    },
+    ticketsOptions: [
+      {
+        badge: "全价",
+        title: "全价票",
+        subtitle: "每张票 1-10 人",
+        details: ["适合个人与家庭", "每人全价"],
+        price: "79 PLN/人",
+        bookingServiceName: FILM_PATH_BOOKING_SERVICES.normal,
+      },
+      {
+        badge: "优惠",
+        title: "优惠票",
+        subtitle: "每张票 1-10 人",
+        details: ["适合个人与家庭", "每人优惠价"],
+        price: "69 PLN/人",
+        bookingServiceName: FILM_PATH_BOOKING_SERVICES.reduced,
+      },
+      {
+        badge: "团体",
+        title: "团体票／学校票",
+        subtitle: "每团 30-50 人",
+        details: [
+          "适合学校与团体客人",
+          "前 30 人合计 2 070 PLN",
+          "超过 50 人：分成两份预订或与我们联系",
+        ],
+        priceLabel: "团体价",
+        price: "2 070 PLN - 3 450 PLN",
+        bookingServiceName: FILM_PATH_BOOKING_SERVICES.group,
+        bookingQuantity: 30,
+      },
+    ],
+    videoFallback: "您的浏览器不支持视频播放。",
   },
 };
 
@@ -1055,9 +1470,9 @@ function RouteStepCard({
       ? "opacity-100 translate-y-0 xl:translate-x-0"
       : "opacity-60 translate-y-4 xl:translate-x-2";
   const dotClasses = isActive
-    ? "border-[#7ef6ff] bg-[#7ef6ff] shadow-[0_0_0_6px_rgba(126,246,255,0.12)]"
+    ? "border-[#1893f8] bg-[#1893f8] shadow-[0_0_0_6px_rgba(24,147,248,0.12)]"
     : isSeen
-      ? "border-[#7ef6ff]/55 bg-[#7ef6ff]/45"
+      ? "border-[#1893f8]/55 bg-[#1893f8]/45"
       : "border-white/18 bg-[#080b13]";
   const offsetClass = index % 2 === 0 ? "2xl:ml-0" : "2xl:ml-12";
 
@@ -1071,11 +1486,11 @@ function RouteStepCard({
         data-step-index={index}
         className={`ap-tile ap-tile-lg ap-tile-interactive relative overflow-hidden px-4 py-5 transition-all duration-500 ease-out sm:px-6 sm:py-6 ${stateClasses}`}
       >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(126,246,255,0.12),transparent_34%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(24,147,248,0.12),transparent_34%)]" />
         <div className="relative">
           <div className="flex items-start justify-between gap-3 sm:gap-4">
             <div>
-              <p className="text-[0.65rem] font-medium uppercase tracking-[0.24em] text-[#7ef6ff]/78 sm:text-[0.72rem] sm:tracking-[0.28em]">
+              <p className="text-[0.65rem] font-medium uppercase tracking-[0.24em] text-[#1893f8]/78 sm:text-[0.72rem] sm:tracking-[0.28em]">
                 {step.number}
               </p>
               <h4 className="mt-2 max-w-xl text-xl font-semibold leading-tight text-white sm:mt-4 sm:text-2xl lg:text-[2rem]">
@@ -1102,6 +1517,9 @@ function RouteStepCard({
   );
 }
 
+// Kolor wiodący tej podstrony (Alvernia Planet EDU). Trzymany w jednym miejscu,
+// żeby dało się go zmienić bez przeszukiwania całego pliku.
+
 export default function DomeJourneyContent({ audience = "groups" }: { audience?: Audience }) {
   const { locale } = useI18n();
   const loc: Locale = (locale as Locale) ?? "pl";
@@ -1114,7 +1532,9 @@ export default function DomeJourneyContent({ audience = "groups" }: { audience?:
   const ticketsOptions = isGroups
     ? t.ticketsOptions
     : t.ticketsOptions.filter((option) => option.bookingQuantity === undefined);
-  const bookeroLang = loc === "en" ? "en" : "pl";
+  // CTA dni otwartych prowadzi prosto do kasy z wybraną usługą,
+  // żeby nauczyciel nie musiał sam szukać bezpłatnego biletu na liście.
+
   const groupForm = GROUP_FORM_COPY[loc];
   const groupTickets = GROUP_TICKETS_COPY[loc];
 
@@ -1123,41 +1543,97 @@ export default function DomeJourneyContent({ audience = "groups" }: { audience?:
     setFlippedSteps((prev) => ({ ...prev, [key]: !prev[key] }));
 
   useEffect(() => {
-    document.body.classList.add("film-path-route-active");
+    // edu-route-active niesie paletę wydarzenia (czerń/niebieski/żółty) i jest
+    // dokładana TYLKO tutaj — /atrakcje/filmworld korzysta z tych samych klas
+    // film-path-*, więc bez osobnego zakresu zmieniłby się razem z tą stroną.
+    document.body.classList.add("film-path-route-active", "edu-route-active");
 
     return () => {
-      document.body.classList.remove("film-path-route-active");
+      document.body.classList.remove("film-path-route-active", "edu-route-active");
     };
   }, []);
 
   return (
-    <main className="film-path-page relative z-10 min-h-screen">
-      <section className="relative z-10 px-3 pt-6 sm:px-6 sm:pt-12 lg:px-12 lg:pt-16">
-        <div className="ap-shell mb-6 sm:mb-10 lg:mb-12">
-          <div className="ap-tile ap-tile-lg relative overflow-hidden">
-            <div className="relative aspect-[4/5] sm:aspect-[16/9] bg-black">
-              <AdaptiveVideo
-                mp4Src="/wycieczka/APE_sciezafilmowa.mp4"
-                webmSrc="/wycieczka/APE_sciezafilmowa.webm"
-                poster="/wycieczka/APE_sciezafilmowa_poster.webp"
-                className="absolute inset-0 h-full w-full object-cover"
-                sizes="(min-width: 1200px) 72rem, 100vw"
-                fallbackText={t.videoFallback}
-                priority
-                rootMargin="320px 0px"
-                preferPosterOnLowPower
-              />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/35 to-black/80" />
-              <div className="relative flex h-full items-center justify-center p-4 text-center sm:p-8 lg:p-10 force-overlay">
-                <div className="space-y-3 sm:space-y-4 ap-page-intro-stagger">
-                  <p className="ap-type-kicker text-[#8af3ff] drop-shadow-[0_1px_10px_rgba(0,0,0,0.7)]">{t.heroTag}</p>
+    <main className="film-path-page edu-page relative z-10 min-h-screen">
+      {/* HERO — układ jak na stronie głównej: wideo puszczone na pełną szerokość
+          okna (full-bleed przez ujemne marginesy), treść nałożona na wierzchu,
+          dół schodzi gradientem w tło strony, więc nie ma widocznej krawędzi
+          kadru. Wcześniej wideo siedziało w zamkniętym kafelku. */}
+      <section className="relative z-10">
+        <div
+          className="relative isolate"
+          style={{ marginLeft: "calc(50% - 50vw)", marginRight: "calc(50% - 50vw)" }}
+        >
+          <div className="relative min-h-[78svh] sm:min-h-[72svh] lg:min-h-[80svh]">
+            <AdaptiveVideo
+              mp4Src="/grupy/APE_sciezafilmowa.mp4"
+              webmSrc="/grupy/APE_sciezafilmowa.webm"
+              poster="/grupy/APE_sciezafilmowa_poster.webp"
+              className="absolute inset-0 h-full w-full object-cover"
+              sizes="100vw"
+              fallbackText={t.videoFallback}
+              priority
+              rootMargin="320px 0px"
+              preferPosterOnLowPower
+            />
+            {/* Zasłona: mocna u góry pod nawigacją, przejrzysta w środku, a u dołu
+                pełne tło strony — stąd płynne wejście w kolejną sekcję. */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(180deg, #000 0%, rgba(0,0,0,0.95) 8%, rgba(0,0,0,0.78) 18%, rgba(0,0,0,0.58) 33%, rgba(0,0,0,0.66) 48%, rgba(0,0,0,0.86) 64%, rgba(0,0,0,0.97) 76%, #000 86%, #000 100%)",
+              }}
+            />
+            <div
+              aria-hidden="true"
+              className="absolute inset-0"
+              style={{
+                background: "radial-gradient(120% 55% at 50% 6%, #1893f82e 0%, rgba(0,0,0,0) 58%)",
+              }}
+            />
+
+            <div className="relative flex min-h-[78svh] items-center px-4 py-20 sm:min-h-[72svh] sm:px-6 sm:py-24 lg:min-h-[80svh] lg:px-12">
+              {/* Na telefonie kolejność: tytuł -> grafika -> baner wydarzenia (order-*).
+                  Od lg wracamy do dwóch kolumn: tekst i baner jeden pod drugim po
+                  lewej, grafika po prawej przez oba wiersze — stąd jawne
+                  col-start / row-start zamiast polegania na kolejności w DOM. */}
+              <div className="ap-shell grid items-center gap-4 sm:gap-6 lg:grid-cols-[1.08fr_0.92fr] lg:gap-x-12 lg:gap-y-6">
+                <div className="order-1 text-center ap-page-intro-stagger lg:order-none lg:col-start-1 lg:row-start-1 lg:text-left">
                   <h1 className="ap-type-hero-title force-overlay drop-shadow-[0_2px_28px_rgba(0,0,0,0.6)]">
                     {heroTitle}
                   </h1>
-                  <p className="ap-type-hero-subtitle mx-auto max-w-2xl force-overlay text-sm sm:text-base lg:text-lg">
+                  <p className="ap-type-hero-subtitle mx-auto mt-4 max-w-2xl force-overlay text-sm sm:text-base lg:mx-0 lg:text-lg">
                     {t.heroLead}
                   </p>
+
+                  {/* CTA prowadzi wprost do listy wydarzeń ścieżki edukacyjnej
+                      w Iksorisie (d=4). Stylistyka jak główny przycisk w hero na
+                      stronie głównej — ten sam cyan i te same proporcje pigułki. */}
+                  <a
+                    href={eduBookingHref(loc)}
+                    className="ticket-pill mt-7 inline-flex h-[3.25rem] items-center justify-center gap-2.5 rounded-[var(--ap-btn-radius)] px-8 text-sm font-extrabold uppercase tracking-[0.16em] transition hover:-translate-y-px"
+                    style={{
+                      backgroundColor: "#56ddea",
+                      color: "#04222a",
+                      boxShadow: "0 6px 22px rgba(86,221,234,0.32)",
+                      borderColor: "transparent",
+                    }}
+                  >
+                    {t.heroCta}
+                  </a>
+
                 </div>
+
+                {/* Grafika i informacje o wydarzeniu.
+
+                    Na telefonie tworzą JEDEN kafelek — obramowanie i tło niesie
+                    ten wrapper. Od lg dostaje `display: contents`, czyli znika z
+                    układu, a oba dzieci stają się samodzielnymi komórkami siatki
+                    hero (grafika po prawej, informacje pod tekstem po lewej) —
+                    dzięki temu desktop wygląda dokładnie tak jak dotąd, a nie
+                    trzeba duplikować niczego w DOM. */}
               </div>
             </div>
           </div>
@@ -1175,7 +1651,7 @@ export default function DomeJourneyContent({ audience = "groups" }: { audience?:
                 const rest = firstSpace > 0 ? trimmed.slice(firstSpace) : "";
                 return (
                   <h2 className="mx-auto max-w-5xl text-pretty text-[clamp(1.7rem,1.15rem+2.4vw,3rem)] font-bold leading-[1.07] tracking-[-0.03em] text-white">
-                    <span className="text-[#7ef6ff]">{accent}</span>
+                    <span className="text-[#1893f8]">{accent}</span>
                     {rest}
                   </h2>
                 );
@@ -1227,7 +1703,7 @@ export default function DomeJourneyContent({ audience = "groups" }: { audience?:
 
           <Card dense motion="off" className="!py-8 sm:!py-12 lg:!py-16">
             <div className="space-y-4 sm:space-y-6 text-center">
-              <p className="text-[0.65rem] font-medium uppercase tracking-[0.24em] text-[#7ef6ff]/76 sm:text-[0.72rem] sm:tracking-[0.28em]">
+              <p className="text-[0.65rem] font-medium uppercase tracking-[0.24em] text-[#1893f8]/76 sm:text-[0.72rem] sm:tracking-[0.28em]">
                 {t.routeEyebrow}
               </p>
               {(() => {
@@ -1237,7 +1713,7 @@ export default function DomeJourneyContent({ audience = "groups" }: { audience?:
                 const rest = firstSpace > 0 ? trimmed.slice(firstSpace) : "";
                 return (
                   <h3 className="mx-auto max-w-5xl text-pretty text-[clamp(1.7rem,1.15rem+2.4vw,3rem)] font-bold leading-[1.07] tracking-[-0.03em] text-white">
-                    <span className="text-[#7ef6ff]">{accent}</span>
+                    <span className="text-[#1893f8]">{accent}</span>
                     {rest}
                   </h3>
                 );
@@ -1259,10 +1735,10 @@ export default function DomeJourneyContent({ audience = "groups" }: { audience?:
                         isFlipped ? "pointer-events-none opacity-0" : "opacity-100"
                       }`}
                     >
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(126,246,255,0.16),transparent_38%)] opacity-70 transition-opacity duration-300 group-hover:opacity-100" />
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(24,147,248,0.16),transparent_38%)] opacity-70 transition-opacity duration-300 group-hover:opacity-100" />
                         <div className="relative flex h-full flex-col">
                           <div className="flex items-center justify-between gap-3">
-                            <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#7ef6ff]/40 bg-[#7ef6ff]/14 text-xs font-bold text-[#7ef6ff] shadow-[0_0_16px_rgba(126,246,255,0.25)] sm:h-10 sm:w-10 sm:text-base">
+                            <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#1893f8]/40 bg-[#1893f8]/14 text-xs font-bold text-[#1893f8] shadow-[0_0_16px_rgba(24,147,248,0.25)] sm:h-10 sm:w-10 sm:text-base">
                               {step.number}
                             </span>
                             <span className="text-[0.6rem] font-semibold uppercase tracking-[0.22em] text-white/45 sm:text-[0.68rem] sm:tracking-[0.24em]">
@@ -1275,17 +1751,9 @@ export default function DomeJourneyContent({ audience = "groups" }: { audience?:
                         </div>
                         <span
                           aria-hidden="true"
-                          className="absolute bottom-2.5 right-2.5 flex h-6 w-6 items-center justify-center rounded-full border border-[#7ef6ff]/40 bg-[#06121a] text-[#7ef6ff] shadow-[0_0_14px_rgba(126,246,255,0.3)] transition-transform duration-300 group-hover:translate-x-0.5 sm:bottom-4 sm:right-4 sm:h-7 sm:w-7"
+                          className="absolute bottom-2.5 right-2.5 flex h-6 w-6 items-center justify-center rounded-full border border-[#1893f8]/40 bg-[#05070d] text-[#1893f8] shadow-[0_0_14px_rgba(24,147,248,0.3)] transition-transform duration-300 group-hover:translate-x-0.5 sm:bottom-4 sm:right-4 sm:h-7 sm:w-7"
                         >
-                          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                            <path
-                              d="M4.5 2.5 8 6l-3.5 3.5"
-                              stroke="currentColor"
-                              strokeWidth="1.7"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
+                          <SolarIcon name="chevron-right" size={12} />
                         </span>
                     </div>
 
@@ -1295,9 +1763,9 @@ export default function DomeJourneyContent({ audience = "groups" }: { audience?:
                         isFlipped ? "opacity-100" : "pointer-events-none opacity-0"
                       }`}
                     >
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(126,246,255,0.18),transparent_42%)]" />
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(24,147,248,0.18),transparent_42%)]" />
                         <div className="relative flex h-full flex-col">
-                          <span className="text-[0.6rem] font-semibold uppercase tracking-[0.22em] text-[#7ef6ff]/55 sm:text-[0.68rem] sm:tracking-[0.24em]">
+                          <span className="text-[0.6rem] font-semibold uppercase tracking-[0.22em] text-[#1893f8]/55 sm:text-[0.68rem] sm:tracking-[0.24em]">
                             {counter}
                           </span>
                           <h4 className="mt-1 text-[1rem] font-semibold leading-[1.2] tracking-[-0.015em] text-white sm:mt-1.5 sm:text-[1.05rem]">
@@ -1309,17 +1777,9 @@ export default function DomeJourneyContent({ audience = "groups" }: { audience?:
                         </div>
                         <span
                           aria-hidden="true"
-                          className="absolute bottom-2.5 right-2.5 flex h-6 w-6 items-center justify-center rounded-full border border-[#7ef6ff]/40 bg-[#06121a] text-[#7ef6ff] shadow-[0_0_14px_rgba(126,246,255,0.3)] transition-transform duration-300 group-hover:-translate-x-0.5 sm:bottom-4 sm:right-4 sm:h-7 sm:w-7"
+                          className="absolute bottom-2.5 right-2.5 flex h-6 w-6 items-center justify-center rounded-full border border-[#1893f8]/40 bg-[#05070d] text-[#1893f8] shadow-[0_0_14px_rgba(24,147,248,0.3)] transition-transform duration-300 group-hover:-translate-x-0.5 sm:bottom-4 sm:right-4 sm:h-7 sm:w-7"
                         >
-                          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                            <path
-                              d="M7.5 2.5 4 6l3.5 3.5"
-                              stroke="currentColor"
-                              strokeWidth="1.7"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
+                          <SolarIcon name="chevron-left" size={12} />
                         </span>
                     </div>
                     <button
@@ -1327,7 +1787,7 @@ export default function DomeJourneyContent({ audience = "groups" }: { audience?:
                       onClick={() => toggleStep(step.number)}
                       aria-pressed={isFlipped}
                       aria-label={step.title}
-                      className="absolute inset-0 z-20 cursor-pointer rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7ef6ff]/60"
+                      className="absolute inset-0 z-20 cursor-pointer rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1893f8]/60"
                     />
                   </div>
                 );
@@ -1354,7 +1814,7 @@ export default function DomeJourneyContent({ audience = "groups" }: { audience?:
               {isGroups ? (
                 <div className="mx-auto max-w-3xl">
                   <div className="ap-tile ap-tile-lg ap-tile-accent relative overflow-hidden px-5 py-6 text-center sm:px-8 sm:py-8">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(79,207,222,0.16),transparent_45%)]" />
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(24,147,248,0.16),transparent_45%)]" />
                     <div className="relative space-y-5">
                       <p className="text-base leading-relaxed text-white/80 sm:text-lg">
                         {groupTickets.lead}
@@ -1362,7 +1822,7 @@ export default function DomeJourneyContent({ audience = "groups" }: { audience?:
                       <ul className="mx-auto max-w-xl space-y-3 text-left">
                         {groupTickets.bullets.map((bullet) => (
                           <li key={bullet} className="flex gap-3 text-sm leading-relaxed text-white/85 sm:text-base">
-                            <span className="ticket-detail-dot mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#4fcfde]" />
+                            <span className="ticket-detail-dot mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#1893f8]" />
                             <span>{bullet}</span>
                           </li>
                         ))}
@@ -1371,7 +1831,7 @@ export default function DomeJourneyContent({ audience = "groups" }: { audience?:
                         <PrimaryButton
                           href="/kontakt"
                           size="lg"
-                          className="ticket-pill whitespace-nowrap ring-[color:rgba(79,207,222,0.55)]"
+                          className="ticket-pill whitespace-nowrap ring-[color:rgba(24,147,248,0.55)]"
                         >
                           {groupTickets.contactLabel}
                         </PrimaryButton>
@@ -1382,7 +1842,7 @@ export default function DomeJourneyContent({ audience = "groups" }: { audience?:
               ) : (
                 <>
               {PROMO_PACKAGES[loc].map((promo) => (
-                <AllAttractionsPromoCard key={promo.title} promo={promo} locale={loc} />
+                <AllAttractionsBundleBar key={promo.title} promo={promo} locale={loc} />
               ))}
 
               <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-3">
@@ -1391,7 +1851,7 @@ export default function DomeJourneyContent({ audience = "groups" }: { audience?:
                     key={option.title}
                     className="ap-tile ap-tile-lg relative flex flex-col overflow-hidden px-4 py-5 sm:px-6 sm:py-6"
                   >
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(79,207,222,0.18),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(79,207,222,0.10),transparent_32%)]" />
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(24,147,248,0.18),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(24,147,248,0.10),transparent_32%)]" />
                     <div className="relative flex h-full flex-col gap-4 sm:gap-5 text-center">
                       <span className="ticket-card-badge mx-auto">{option.badge}</span>
                       <div className="space-y-2 sm:space-y-3">
@@ -1405,7 +1865,7 @@ export default function DomeJourneyContent({ audience = "groups" }: { audience?:
                       <ul className="ticket-list-panel mx-auto w-full max-w-sm space-y-2.5 text-left text-xs text-white/80 sm:space-y-3 sm:text-sm">
                         {option.details.map((detail) => (
                           <li key={detail} className="ticket-detail flex gap-2.5 sm:gap-3">
-                            <span className="ticket-detail-dot mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#4fcfde] sm:mt-2" />
+                            <span className="ticket-detail-dot mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#1893f8] sm:mt-2" />
                             <span>{detail}</span>
                           </li>
                         ))}
@@ -1423,12 +1883,10 @@ export default function DomeJourneyContent({ audience = "groups" }: { audience?:
 
                         <PrimaryButton
                           href={buildBookingPath(loc, {
-                            category: FILM_PATH_BOOKING_CATEGORY,
                             service: option.bookingServiceName,
-                            quantity: option.bookingQuantity,
                           })}
                           size="lg"
-                          className="ticket-pill w-full whitespace-nowrap ring-[color:rgba(79,207,222,0.55)]"
+                          className="ticket-pill w-full whitespace-nowrap ring-[color:rgba(24,147,248,0.55)]"
                         >
                           {t.ticketsButton}
                         </PrimaryButton>
@@ -1443,7 +1901,7 @@ export default function DomeJourneyContent({ audience = "groups" }: { audience?:
           </Card>
 
           {isGroups ? (
-            <div id="grupy-booking" className="space-y-5 sm:space-y-7">
+            <div id="grupy-booking" className="scroll-mt-28 space-y-5 sm:space-y-7">
               <div className="space-y-3 text-center">
                 <h2 className="mx-auto max-w-4xl text-pretty text-[clamp(1.7rem,1.15rem+2.4vw,3rem)] font-bold leading-[1.07] tracking-[-0.03em] text-white">
                   {groupForm.title}
@@ -1452,23 +1910,25 @@ export default function DomeJourneyContent({ audience = "groups" }: { audience?:
                   {groupForm.intro}
                 </p>
               </div>
-              <Card
-                id="bookero-form"
-                variant="solid"
-                motion="off"
-                className="relative overflow-hidden !bg-white !ring-black/10"
-              >
-                <BookeroEmbed
-                  pluginId={BOOKERO_PLUGIN_ID}
-                  containerId="bookero"
-                  type="calendar"
-                  position=""
-                  pluginCss
-                  lang={bookeroLang}
-                  preselectCategory={GROUP_BOOKING_CATEGORY}
-                  className="w-full min-h-[980px] overflow-hidden rounded-2xl bg-white ring-1 ring-black/10"
-                />
-              </Card>
+              {/* Osadzony formularz Bookero usunięty — nie potrafił wczytać
+                  dostępnych terminów dla usług grupowych („Wystąpił błąd podczas
+                  wczytywania dostępnych terminów"). Zamiast pustego kalendarza
+                  kierujemy do systemu rezerwacji tym samym przyciskiem co
+                  w nagłówku. */}
+              <div className="flex justify-center">
+                <BookingLink
+                  href={bookingHomeHref(loc)}
+                  className="ticket-pill inline-flex h-[3.25rem] items-center justify-center gap-2.5 rounded-[var(--ap-btn-radius)] px-8 text-sm font-extrabold uppercase tracking-[0.16em] transition hover:-translate-y-px"
+                  style={{
+                    backgroundColor: "#56ddea",
+                    color: "#04222a",
+                    boxShadow: "0 6px 22px rgba(86,221,234,0.32)",
+                    borderColor: "transparent",
+                  }}
+                >
+                  {t.heroCta}
+                </BookingLink>
+              </div>
             </div>
           ) : null}
         </div>

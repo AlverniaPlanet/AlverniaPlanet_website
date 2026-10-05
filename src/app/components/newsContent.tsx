@@ -320,6 +320,202 @@ export const NEWS_COPY: Record<Locale, NewsSection> = {
       },
     ],
   },
+  de: {
+    title: "Aktuelles",
+    intro: "Die wichtigsten Neuigkeiten aus Alvernia Planet sowie ausgewählte Medienberichte über K360 und unseren Komplex.",
+    mediaHeading: "In den Medien",
+    mediaIntro:
+      "Ausgewählte Berichte über K360 – von der Fulldome-Technologie bis zum kosmischen Charakter der ersten Vorführungen.",
+    viewAllCta: "Alle Neuigkeiten ansehen",
+    items: [
+      {
+        badge: "Gazeta Krakowska",
+        title: "MARS eröffnet: Drehen Sie Ihren eigenen Sci-Fi-Kurzfilm",
+        description:
+          "Die Gazeta Krakowska berichtet über die Eröffnung der neuen immersiven Ausstellung in Alvernia Planet, bei der die Gäste auf dem Mars landen und ihren eigenen Sci-Fi-Kurzfilm drehen. Es ist der Auftakt von MARS, einer interaktiven Attraktion, die Kino, Szenografie und eine mobile App verbindet.",
+        cta: "In der Gazeta Krakowska lesen",
+        href: "https://gazetakrakowska.pl/nakrec-swoj-wlasny-film-science-fiction-ladowanie-na-marsie-30-maja-otwarcie-nowej-wystawy-immersyjnej-w-alvernia-planet/ar/c13p2-29037615",
+        external: true,
+      },
+      {
+        badge: "Gazeta Krakowska",
+        title: "Familien strömen zu MARS: an einem Tag zum Astronauten",
+        description:
+          "Die Gazeta Krakowska besucht MARS nach der Eröffnung und zeigt, wie die neue Attraktion bei Krakau Familien begeistert. Der Beitrag führt durch die gesamte Weltraummission: vom Briefing über die Dreharbeiten am Mars-Set bis zum fertigen Kurzfilm zum Mitnehmen.",
+        cta: "In der Gazeta Krakowska lesen",
+        href: "https://gazetakrakowska.pl/kosmiczna-misja-i-wlasny-film-nowa-atrakcja-alvernia-planet-pod-krakowem-przyciaga-rodziny-czyli-jak-zostac-astronauta-w-jeden-dzien/ar/c13p2-29047243",
+        external: true,
+      },
+      {
+        badge: "Seit Januar",
+        title: "Wir bauen die Bildungspfade aus",
+        description:
+          "Seit Januar entwickeln wir die Bildungspfade weiter, damit Film, Wissenschaft und moderne Erzählweise noch stärker ineinandergreifen. Das Ergebnis: ein fesselnderer Rundgang, ein besserer Rhythmus und ein noch eindrucksvollerer Besuch für Familien und Gruppen.",
+        cta: "Bildungspfad entdecken",
+        href: "/grupy",
+      },
+      {
+        badge: "K360",
+        title: "K360, der größte Fulldome-Raum Europas, ist eröffnet",
+        description:
+          "Nach der Eröffnung im April empfängt K360 seine Gäste mit einem Erlebnis, das ganz auf das Eintauchen in Bild, Ton und die Dimension der Kuppel setzt. Das Eröffnungsprogramm führt in den Weltraum und zeigt, wie sich Kino ohne klassische Leinwand anfühlen kann.",
+        cta: "Kino 360 entdecken",
+        href: "/atrakcje/kino-360",
+      },
+      {
+        badge: "Przełom",
+        title: "Nieporaz sorgt mit 360-Grad-Kino für Aufsehen",
+        description:
+          "Das Regionalmedium beschreibt den Start von K360 als Ereignis, das die Art und Weise verändern kann, wie das Publikum Kino erlebt. Der Artikel hebt die Fulldome-Technologie, die Dimension der Kuppel und die Premiere von „One Step Beyond: A Journey to Mars“ hervor.",
+        cta: "Auf Przełom lesen",
+        href: "https://przelom.pl/pl/11_wiadomosci/71040_nieporaz-zaskakuje-powstaje-tu-najwieksze-kino-360-w-europie.html",
+        external: true,
+      },
+      {
+        badge: "GeekWeek",
+        title: "Neue Attraktion in den Kuppeln an der A4",
+        description:
+          "GeekWeek zeigt Alvernia Planet als den markanten Kuppelkomplex, der von der Autobahn A4 aus zu sehen ist und nun um Europas größten 360-Grad-Raum erweitert wurde. Der Beitrag bündelt außerdem praktische Hinweise zu Vorführungen, Anfahrt und Besucherinfrastruktur.",
+        cta: "Auf Interia lesen",
+        href: "https://geekweek.interia.pl/filmy/news-gigantyczne-kino-360deg-otwiera-sie-w-kopulach-przy-a4,nId,23323956",
+        external: true,
+      },
+      {
+        badge: "INNPoland",
+        title: "Eine neue Dimension des Filmerlebens",
+        description:
+          "INNPoland richtet den Blick auf die Technologie, die das Publikum mit Bild und Ton umgibt, statt es vor eine herkömmliche Leinwand zu setzen. Der Beitrag verweist zudem auf das Potenzial von K360 für Tourismus, Schulgruppen und moderne Unterhaltung in der Region.",
+        cta: "Auf INNPoland lesen",
+        href: "https://innpoland.pl/223459,w-polsce-powstaje-najwieksze-kino-w-europie-nadchodzi-rewolucja-w-ogladaniu-filmow",
+        external: true,
+      },
+      {
+        badge: "WP Turystyka",
+        title: "Eine Filmattraktion auf der Landkarte Europas",
+        description:
+          "WP Turystyka beschreibt K360 über seine Maße: 15 Meter Höhe, 48 Meter Durchmesser und eine riesige Projektionsfläche. Der Text zeigt, wie futuristische Architektur und immersives Kino zu einem starken touristischen Anziehungspunkt für Kleinpolen werden können.",
+        cta: "Auf WP Turystyka lesen",
+        href: "https://turystyka.wp.pl/to-bedzie-hit-najwieksze-takie-kino-w-europie-powstaje-w-polsce-7272305316522176a",
+        external: true,
+      },
+      {
+        badge: "Puls Krakowa",
+        title: "Ein neues Kapitel für Alvernia Planet",
+        description:
+          "Puls Krakowa stellt K360 als Teil eines größeren Wandels dar: von einem Ort, der mit Film- und Musikproduktion verbunden war, hin zu einem Ziel für Unterhaltung und Bildung. Der Artikel betont Immersion, neue Technologien und Erlebnisse für ein breiteres Publikum.",
+        cta: "Auf Puls Krakowa lesen",
+        href: "https://pulskrakowa.pl/kino-360-pod-krakowem-alvernia-planet-otwiera-nowa-atrakcje/",
+        external: true,
+      },
+      {
+        badge: "Kurier Krakowski",
+        title: "Kosmisches Kino bei Krakau",
+        description:
+          "Der Kurier Krakowski hebt den kosmischen Charakter der ersten Vorführung und die emotionale Dimension der Reise zum Mars hervor. Der Artikel präsentiert K360 als Attraktion von Weltklasse, bei der die Zuschauer Teil der Filmgeschichte werden.",
+        cta: "Im Kurier Krakowski lesen",
+        href: "https://kk24.info/kosmiczne-kino-pod-krakowem-w-alvernia-planet-rusza-najwieksza-kopula-360-w-europie/",
+        external: true,
+      },
+    ],
+  },
+  zh: {
+    title: "最新动态",
+    intro: "Alvernia Planet 的重要新闻，以及媒体对 K360 和园区的精选报道。",
+    mediaHeading: "媒体报道",
+    mediaIntro:
+      "关于 K360 的精选报道：从全穹顶（fulldome）技术，到首批放映的太空主题。",
+    viewAllCta: "查看全部动态",
+    items: [
+      {
+        badge: "Gazeta Krakowska",
+        title: "MARS 开幕：拍摄属于自己的科幻短片",
+        description:
+          "Gazeta Krakowska 报道了 Alvernia Planet 全新沉浸式展览的开幕：访客将登陆火星，并拍摄一部属于自己的科幻短片。这标志着 MARS 正式亮相，这项互动体验融合了电影、场景搭建与手机应用。",
+        cta: "阅读 Gazeta Krakowska 报道",
+        href: "https://gazetakrakowska.pl/nakrec-swoj-wlasny-film-science-fiction-ladowanie-na-marsie-30-maja-otwarcie-nowej-wystawy-immersyjnej-w-alvernia-planet/ar/c13p2-29037615",
+        external: true,
+      },
+      {
+        badge: "Gazeta Krakowska",
+        title: "MARS 吸引家庭游客：一天成为宇航员",
+        description:
+          "Gazeta Krakowska 在开幕后探访 MARS，展示这项位于 Kraków 附近的新体验如何吸引家庭游客。报道完整呈现整场太空任务：从任务简报，到在火星场景中拍摄，最后带走一部属于自己的成片短片。",
+        cta: "阅读 Gazeta Krakowska 报道",
+        href: "https://gazetakrakowska.pl/kosmiczna-misja-i-wlasny-film-nowa-atrakcja-alvernia-planet-pod-krakowem-przyciaga-rodziny-czyli-jak-zostac-astronauta-w-jeden-dzien/ar/c13p2-29047243",
+        external: true,
+      },
+      {
+        badge: "自一月起",
+        title: "我们正在升级教育路线",
+        description:
+          "自一月起，我们持续完善教育路线，让电影、科学与当代叙事结合得更加紧密。由此带来更具吸引力的参观动线、更紧凑的节奏，以及让家庭与团体都更难忘的体验。",
+        cta: "了解教育路线",
+        href: "/grupy",
+      },
+      {
+        badge: "K360",
+        title: "欧洲最大的全穹顶空间 K360 已正式开放",
+        description:
+          "继四月开幕后，K360 以画面、声音与穹顶尺度带来完全沉浸的观影体验。首轮片单以太空为主题，展现没有传统正面银幕时，电影可以带来怎样的感受。",
+        cta: "了解 Kino 360",
+        href: "/atrakcje/kino-360",
+      },
+      {
+        badge: "Przełom",
+        title: "Nieporaz 因 360 度影院备受关注",
+        description:
+          "这家地区媒体将 K360 的启用视为可能重新定义观影方式的事件。文章重点介绍全穹顶技术、穹顶的规模，以及影片《One Step Beyond: A Journey to Mars》的首映。",
+        cta: "阅读 Przełom 报道",
+        href: "https://przelom.pl/pl/11_wiadomosci/71040_nieporaz-zaskakuje-powstaje-tu-najwieksze-kino-360-w-europie.html",
+        external: true,
+      },
+      {
+        badge: "GeekWeek",
+        title: "A4 高速公路旁的穹顶迎来新体验",
+        description:
+          "GeekWeek 介绍 Alvernia Planet 这组在 A4 高速公路上就能望见的标志性穹顶建筑，如今新增了欧洲最大的 360 度空间。报道还整理了放映场次、交通方式与游客配套设施等实用信息。",
+        cta: "阅读 Interia 报道",
+        href: "https://geekweek.interia.pl/filmy/news-gigantyczne-kino-360deg-otwiera-sie-w-kopulach-przy-a4,nId,23323956",
+        external: true,
+      },
+      {
+        badge: "INNPoland",
+        title: "观影体验的全新维度",
+        description:
+          "INNPoland 关注这项让画面与声音包围观众、而非把观众置于传统银幕前的技术。报道同时指出 K360 在旅游、学生团体以及本地区现代娱乐方面的潜力。",
+        cta: "阅读 INNPoland 报道",
+        href: "https://innpoland.pl/223459,w-polsce-powstaje-najwieksze-kino-w-europie-nadchodzi-rewolucja-w-ogladaniu-filmow",
+        external: true,
+      },
+      {
+        badge: "WP Turystyka",
+        title: "登上欧洲版图的电影主题景点",
+        description:
+          "WP Turystyka 以规模来介绍 K360：高 15 米、直径 48 米，拥有巨大的投影面积。文章指出，未来感建筑与沉浸式影院的结合，有望成为 Małopolska 地区重要的旅游亮点。",
+        cta: "阅读 WP Turystyka 报道",
+        href: "https://turystyka.wp.pl/to-bedzie-hit-najwieksze-takie-kino-w-europie-powstaje-w-polsce-7272305316522176a",
+        external: true,
+      },
+      {
+        badge: "Puls Krakowa",
+        title: "Alvernia Planet 的全新阶段",
+        description:
+          "Puls Krakowa 将 K360 视为更大转变的一部分：从与影视和音乐制作相关的场地，转向娱乐与教育目的地。文章强调沉浸感、新技术，以及面向更广泛观众的体验。",
+        cta: "阅读 Puls Krakowa 报道",
+        href: "https://pulskrakowa.pl/kino-360-pod-krakowem-alvernia-planet-otwiera-nowa-atrakcje/",
+        external: true,
+      },
+      {
+        badge: "Kurier Krakowski",
+        title: "Kraków 近郊的太空影院",
+        description:
+          "Kurier Krakowski 强调首场放映的太空氛围，以及火星之旅带来的情感体验。文章将 K360 描述为世界级景点：观众不再只是旁观者，而是成为影片故事的一部分。",
+        cta: "阅读 Kurier Krakowski 报道",
+        href: "https://kk24.info/kosmiczne-kino-pod-krakowem-w-alvernia-planet-rusza-najwieksza-kopula-360-w-europie/",
+        external: true,
+      },
+    ],
+  },
 };
 
 export const NewsSectionBlock = memo(function NewsSectionBlock({

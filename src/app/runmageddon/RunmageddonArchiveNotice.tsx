@@ -30,6 +30,18 @@ const COPY: Record<
     body: "O evento de 09 a 12 de abril de 2026 terminou. As inscrições e as atividades especiais estão encerradas. Obrigado a todos os participantes!",
     cta: "Ver as atrações atuais",
   },
+  de: {
+    kicker: "Veranstaltungsarchiv",
+    title: "Runmageddon Kraków Alvernia Planet",
+    body: "Die Veranstaltung vom 9. bis 12. April 2026 ist beendet. Die Anmeldung und die Sonderaktivitäten sind geschlossen. Wir danken allen Teilnehmerinnen und Teilnehmern!",
+    cta: "Aktuelle Attraktionen ansehen",
+  },
+  zh: {
+    kicker: "活动存档",
+    title: "Runmageddon Kraków Alvernia Planet",
+    body: "2026年4月9日至12日的活动已结束，报名与特别活动均已关闭。感谢所有参与者！",
+    cta: "查看当前游玩项目",
+  },
 };
 
 export default function RunmageddonArchiveNotice() {

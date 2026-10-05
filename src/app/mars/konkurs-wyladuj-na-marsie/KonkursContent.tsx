@@ -2,9 +2,9 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import { FaArrowLeft, FaFilm } from "react-icons/fa6";
+import { ArrowLeft, FilmSlate } from "@phosphor-icons/react";
 
-const REGULAMIN_HREF = "/legal/regulamin-konkursu-marsa.html";
+const REGULAMIN_HREF = "/stopka/regulamin-konkursu-marsa.html";
 
 const BLOCKS = [
   {
@@ -49,10 +49,10 @@ const ELEMENTS = [
 ];
 
 const TIMELINE = [
-  { date: "do 30.09.2026", label: "Przyjmowanie zgłoszeń" },
-  { date: "do 7.10.2026", label: "Ogłoszenie wyników" },
-  { date: "do 12.10.2026", label: "Przekazanie wybranych filmów na FINC" },
-  { date: "27–28.11.2026", label: "Festiwal FINC w Baía Formosa (Brazylia)" },
+  { date: "do 30.09.2027", label: "Przyjmowanie zgłoszeń" },
+  { date: "do 7.10.2027", label: "Ogłoszenie wyników" },
+  { date: "do 12.10.2027", label: "Przekazanie wybranych filmów na FINC" },
+  { date: "27–28.11.2027", label: "Festiwal FINC w Baía Formosa (Brazylia)" },
 ];
 
 export default function KonkursContent() {
@@ -70,14 +70,14 @@ export default function KonkursContent() {
           href="/atrakcje/mars"
           className="inline-flex items-center gap-2 text-sm font-semibold text-white/70 transition hover:text-white"
         >
-          <FaArrowLeft aria-hidden="true" /> Wróć do MARS
+          <ArrowLeft aria-hidden="true" /> Wróć do MARS
         </Link>
 
         <header className="mt-8 text-center">
           <p className="text-[0.72rem] font-medium uppercase tracking-[0.26em] text-[#ff9357]/85 sm:text-[0.8rem]">
             MARS • Konkurs filmowy
           </p>
-          <h1 className="mt-3 text-[clamp(2.2rem,5vw,4.4rem)] font-black leading-[1.02] tracking-[-0.03em] text-white">
+          <h1 className="mt-3 text-[clamp(2.2rem,5vw,4.4rem)] font-extrabold leading-[1.02] tracking-[-0.03em] text-white">
             „Lądowanie na Marsie”
           </h1>
           <p className="mx-auto mt-5 max-w-3xl text-base leading-relaxed text-white/80 sm:text-lg">
@@ -173,7 +173,7 @@ export default function KonkursContent() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full bg-gradient-to-br from-[#f77828] to-[#ff9357] px-6 py-3 text-sm font-bold uppercase tracking-[0.18em] text-[#170a04] shadow-[0_12px_30px_rgba(247,120,40,0.4)] transition hover:scale-[1.03] hover:brightness-110"
             >
-              <FaFilm aria-hidden="true" /> Zobacz regulamin konkursu
+              <FilmSlate aria-hidden="true" /> Zobacz regulamin konkursu
             </a>
             <Link
               href="/atrakcje/mars"

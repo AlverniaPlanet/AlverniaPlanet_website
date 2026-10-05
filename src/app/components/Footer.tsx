@@ -5,26 +5,28 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useI18n } from "@/app/i18n-provider";
-import { useTheme } from "@/app/theme-provider";
+import { bookingHomeHref } from "@/lib/booking";
 import { trackEvent } from "@/lib/analytics";
 import { openCookieSettings } from "@/lib/consent";
-import { getLocalizedPath, isBareChromeRoute, type Locale } from "@/lib/localizedRoutes";
+import { getLocalizedPath, isBareChromeRoute, type Locale,
+  INTL_LOCALES,
+} from "@/lib/localizedRoutes";
 type LinkItem = { label: string; href: string };
 type Section = { title: string; links: LinkItem[] };
 type PolicyLink = { label: string; href: string; highlight?: boolean };
 
 const RUNMAGEDDON_SOCIAL_POLICY_LINKS = {
-  rodo: "/legal/RUNMAGEDDON/klauzula_rodo_social_runmageddon%20+%20JS.docx.pdf",
-  contest: "/legal/RUNMAGEDDON/regulamin_konkurs_social_runmageddon%20+%20JS.docx.pdf",
-  stories: "/legal/RUNMAGEDDON/regulamin_stories_obcy_runmageddon%20+%20JS.docx.pdf",
+  rodo: "/stopka/RUNMAGEDDON/klauzula_rodo_social_runmageddon%20+%20JS.docx.pdf",
+  contest: "/stopka/RUNMAGEDDON/regulamin_konkurs_social_runmageddon%20+%20JS.docx.pdf",
+  stories: "/stopka/RUNMAGEDDON/regulamin_stories_obcy_runmageddon%20+%20JS.docx.pdf",
 } as const;
 
 const RUNMAGEDDON_FOOTER_POLICIES: Record<Locale, PolicyLink[]> = {
   pl: [
-    { label: "Regulamin gry Runmageddon", href: "/legal/runmageddon-game-regulamin.pdf", highlight: true },
+    { label: "Regulamin gry Runmageddon", href: "/stopka/runmageddon-game-regulamin.pdf", highlight: true },
     {
       label: "Polityka prywatności gry Runmageddon",
-      href: "/legal/runmageddon-game-polityka-prywatnosci.pdf",
+      href: "/stopka/runmageddon-game-polityka-prywatnosci.pdf",
       highlight: true,
     },
     {
@@ -44,10 +46,10 @@ const RUNMAGEDDON_FOOTER_POLICIES: Record<Locale, PolicyLink[]> = {
     },
   ],
   en: [
-    { label: "Runmageddon game rules", href: "/legal/runmageddon-game-regulamin.pdf", highlight: true },
+    { label: "Runmageddon game rules", href: "/stopka/runmageddon-game-regulamin.pdf", highlight: true },
     {
       label: "Runmageddon game privacy policy",
-      href: "/legal/runmageddon-game-polityka-prywatnosci.pdf",
+      href: "/stopka/runmageddon-game-polityka-prywatnosci.pdf",
       highlight: true,
     },
     {
@@ -67,10 +69,10 @@ const RUNMAGEDDON_FOOTER_POLICIES: Record<Locale, PolicyLink[]> = {
     },
   ],
   pt: [
-    { label: "Regulamento do jogo Runmageddon", href: "/legal/runmageddon-game-regulamin.pdf", highlight: true },
+    { label: "Regulamento do jogo Runmageddon", href: "/stopka/runmageddon-game-regulamin.pdf", highlight: true },
     {
       label: "Política de privacidade do jogo Runmageddon",
-      href: "/legal/runmageddon-game-polityka-prywatnosci.pdf",
+      href: "/stopka/runmageddon-game-polityka-prywatnosci.pdf",
       highlight: true,
     },
     {
@@ -89,12 +91,81 @@ const RUNMAGEDDON_FOOTER_POLICIES: Record<Locale, PolicyLink[]> = {
       highlight: true,
     },
   ],
+  de: [
+    { label: "Spielregeln Runmageddon", href: "/stopka/runmageddon-game-regulamin.pdf", highlight: true },
+    {
+      label: "Datenschutzerklärung zum Runmageddon-Spiel",
+      href: "/stopka/runmageddon-game-polityka-prywatnosci.pdf",
+      highlight: true,
+    },
+    {
+      label: "Teilnahmebedingungen Social-Media-Gewinnspiel Runmageddon",
+      href: RUNMAGEDDON_SOCIAL_POLICY_LINKS.contest,
+      highlight: true,
+    },
+    {
+      label: "DSGVO-Hinweis Social Media Runmageddon",
+      href: RUNMAGEDDON_SOCIAL_POLICY_LINKS.rodo,
+      highlight: true,
+    },
+    {
+      label: "Regeln der Runmageddon-Stories „Alien“",
+      href: RUNMAGEDDON_SOCIAL_POLICY_LINKS.stories,
+      highlight: true,
+    },
+  ],
+  zh: [
+    { label: "Runmageddon 游戏规则", href: "/stopka/runmageddon-game-regulamin.pdf", highlight: true },
+    {
+      label: "Runmageddon 游戏隐私政策",
+      href: "/stopka/runmageddon-game-polityka-prywatnosci.pdf",
+      highlight: true,
+    },
+    {
+      label: "Runmageddon 社交媒体活动规则",
+      href: RUNMAGEDDON_SOCIAL_POLICY_LINKS.contest,
+      highlight: true,
+    },
+    {
+      label: "Runmageddon 社交媒体 GDPR 条款",
+      href: RUNMAGEDDON_SOCIAL_POLICY_LINKS.rodo,
+      highlight: true,
+    },
+    {
+      label: "Runmageddon「Alien」Stories 规则",
+      href: RUNMAGEDDON_SOCIAL_POLICY_LINKS.stories,
+      highlight: true,
+    },
+  ],
 };
+
+// Znaki akceptacji płatności. Pliki w public/logos/pay/ są PRZYCIĘTE do samego
+// znaku (oryginały w media-src/logos/pay-oryginaly/). Wcześniej miały bardzo
+// różne marginesy — Visa/Mastercard zajmowała 44% wysokości pliku, BLIK 100% —
+// więc przy tej samej wysokości renderu loga wychodziły w różnych rozmiarach.
+//
+// Renderujemy je na BIAŁYCH kafelkach, nie wprost na ciemnym tle. Dwa powody:
+// logo Blika przyszło jako JPG z wypalonym białym tłem (brak kanału alfa), a
+// marki płatnicze w swoich wytycznych zwykle zabraniają przekolorowywania znaku.
+//
+// `fit` to maksymalna wysokość znaku w kafelku (% wysokości kafelka). Znaki
+// „pełne" (czarny kwadrat BLIK, niebieska plakietka Visa Mobile, obrys Apple Pay)
+// wyglądają na cięższe niż napisy, więc dostają mniej — tak, by wszystkie
+// sześć miało podobną wagę optyczną. Szerokie napisy i tak ogranicza szerokość.
+const PAYMENT_METHODS: { src: string; alt: string; w: number; h: number; fit: number }[] = [
+  { src: "/wspolne/logotypy/pay/visa-mastercard.png", alt: "Visa i Mastercard", w: 113, h: 35, fit: 46 },
+  { src: "/wspolne/logotypy/pay/blik.png", alt: "BLIK", w: 98, h: 64, fit: 58 },
+  { src: "/wspolne/logotypy/pay/przelewy24.png", alt: "Przelewy24", w: 190, h: 64, fit: 48 },
+  { src: "/wspolne/logotypy/pay/google-pay.png", alt: "Google Pay", w: 170, h: 64, fit: 48 },
+  { src: "/wspolne/logotypy/pay/apple-pay.png", alt: "Apple Pay", w: 78, h: 50, fit: 58 },
+  { src: "/wspolne/logotypy/pay/visa-mobile.png", alt: "Visa Mobile", w: 84, h: 36, fit: 50 },
+];
 
 const FOOTER_COPY: Record<
   Locale,
   {
     rights: string;
+    paymentsLabel: string;
     designCredit: string;
     socials: string;
     ctaTitle: string;
@@ -115,6 +186,7 @@ const FOOTER_COPY: Record<
 > = {
   pl: {
     rights: "© {year} Alvernia Planet. Wszystkie prawa zastrzeżone.",
+    paymentsLabel: "Bezpieczne płatności",
     designCredit: "Design i realizacja strony:",
     socials: "Wpadnij na nasze social media!",
     ctaTitle: "Masz pytania? Jesteśmy online.",
@@ -122,7 +194,7 @@ const FOOTER_COPY: Record<
     phoneLabel: "Telefon",
     emailLabel: "Email",
     messengerLabel: "Messenger",
-    phone: "+48 12 344 40 00",
+    phone: "+48 510 831 277",
     email: "rezerwacje@alverniaplanet.com",
     messengerHandle: "@alverniaplanet",
     booking: "Rezerwuj wizytę",
@@ -130,17 +202,17 @@ const FOOTER_COPY: Record<
     addressTitle: "Adres",
     addressLines: ["Alvernia Planet", "ul. Ferdynanda Wspaniałego 1", "32-566 Nieporaz, Polska"],
     policies: [
-      { label: "Regulamin", href: "/legal/regulamin.pdf" },
-      { label: "Regulamin przebywania", href: "/legal/Regulamin-przebywania-na-terenie-alvernia-planet.html" },
-      { label: "Polityka prywatności", href: "/legal/polityka-prywatnosci.pdf" },
-      { label: "Polityka cookies", href: "/legal/polityka-cookies.pdf" },
-      { label: "Ochrona małoletnich", href: "/legal/ochrona-maloletnich.pdf" },
+      { label: "Regulamin", href: "/stopka/regulamin.pdf" },
+      { label: "Regulamin przebywania", href: "/stopka/Regulamin-przebywania-na-terenie-alvernia-planet.html" },
+      { label: "Zasady promocji 1000 biletów", href: "/stopka/zasady-promocji-1000-biletow.html", highlight: true },
+      { label: "Polityka prywatności", href: "/stopka/polityka-prywatnosci.pdf" },
+      { label: "Polityka cookies", href: "/stopka/polityka-cookies.pdf" },
+      { label: "Ochrona małoletnich", href: "/stopka/ochrona-maloletnich.pdf" },
     ],
     sections: [
       {
         title: "Atrakcje",
         links: [
-          { label: "Harry Potter: The Exhibition", href: "/harry-potter-the-exhibition" },
           { label: "FILMWORLD", href: "/atrakcje/filmworld" },
           { label: "Kino 360", href: "/atrakcje/kino-360" },
           { label: "Galeria", href: "/galeria" },
@@ -153,7 +225,7 @@ const FOOTER_COPY: Record<
           { label: "Jak dojechać", href: "/jak-dojechac" },
           { label: "Grupy", href: "/grupy" },
           { label: "Runmageddon", href: "/runmageddon" },
-          { label: "Bilety i rezerwacje", href: "/rezerwuj" },
+          { label: "Bilety i rezerwacje", href: bookingHomeHref("pl") },
         ],
       },
       {
@@ -168,6 +240,7 @@ const FOOTER_COPY: Record<
   },
   en: {
     rights: "© {year} Alvernia Planet. All rights reserved.",
+    paymentsLabel: "Secure payments",
     designCredit: "Design & implementation:",
     socials: "Follow us on social media!",
     ctaTitle: "Questions? We’re here.",
@@ -175,7 +248,7 @@ const FOOTER_COPY: Record<
     phoneLabel: "Phone",
     emailLabel: "Email",
     messengerLabel: "Messenger",
-    phone: "+48 12 344 40 00",
+    phone: "+48 510 831 277",
     email: "rezerwacje@alverniaplanet.com",
     messengerHandle: "@alverniaplanet",
     booking: "Book your visit",
@@ -183,17 +256,17 @@ const FOOTER_COPY: Record<
     addressTitle: "Address",
     addressLines: ["Alvernia Planet", "ul. Ferdynanda Wspaniałego 1", "32-566 Nieporaz, Poland"],
     policies: [
-      { label: "Terms & conditions", href: "/legal/regulamin.pdf" },
-      { label: "Stay regulations", href: "/legal/Regulamin-przebywania-na-terenie-alvernia-planet.html" },
-      { label: "Privacy policy", href: "/legal/polityka-prywatnosci.pdf" },
-      { label: "Cookies policy", href: "/legal/polityka-cookies.pdf" },
-      { label: "Minors protection", href: "/legal/ochrona-maloletnich.pdf" },
+      { label: "Terms & conditions", href: "/stopka/regulamin.pdf" },
+      { label: "Stay regulations", href: "/stopka/Regulamin-przebywania-na-terenie-alvernia-planet.html" },
+      { label: "1000 tickets promotion rules", href: "/stopka/zasady-promocji-1000-biletow.html", highlight: true },
+      { label: "Privacy policy", href: "/stopka/polityka-prywatnosci.pdf" },
+      { label: "Cookies policy", href: "/stopka/polityka-cookies.pdf" },
+      { label: "Minors protection", href: "/stopka/ochrona-maloletnich.pdf" },
     ],
     sections: [
       {
         title: "Attractions",
         links: [
-          { label: "Harry Potter: The Exhibition", href: "/harry-potter-the-exhibition" },
           { label: "FILMWORLD", href: "/atrakcje/filmworld" },
           { label: "K360 Cinema", href: "/atrakcje/kino-360" },
           { label: "Gallery", href: "/galeria" },
@@ -206,7 +279,7 @@ const FOOTER_COPY: Record<
           { label: "Getting here", href: "/jak-dojechac" },
           { label: "Groups", href: "/grupy" },
           { label: "Runmageddon", href: "/runmageddon" },
-          { label: "Tickets & bookings", href: "/rezerwuj" },
+          { label: "Tickets & bookings", href: bookingHomeHref("en") },
         ],
       },
       {
@@ -221,6 +294,7 @@ const FOOTER_COPY: Record<
   },
   pt: {
     rights: "© {year} Alvernia Planet. Todos os direitos reservados.",
+    paymentsLabel: "Pagamentos seguros",
     designCredit: "Design e implementação:",
     socials: "Segue-nos nas redes sociais!",
     ctaTitle: "Tem perguntas? Estamos online.",
@@ -228,7 +302,7 @@ const FOOTER_COPY: Record<
     phoneLabel: "Telefone",
     emailLabel: "Email",
     messengerLabel: "Messenger",
-    phone: "+48 12 344 40 00",
+    phone: "+48 510 831 277",
     email: "rezerwacje@alverniaplanet.com",
     messengerHandle: "@alverniaplanet",
     booking: "Reservar visita",
@@ -236,17 +310,17 @@ const FOOTER_COPY: Record<
     addressTitle: "Morada",
     addressLines: ["Alvernia Planet", "ul. Ferdynanda Wspaniałego 1", "32-566 Nieporaz, Polónia"],
     policies: [
-      { label: "Regulamento", href: "/legal/regulamin.pdf" },
-      { label: "Regras de permanência", href: "/legal/Regulamin-przebywania-na-terenie-alvernia-planet.html" },
-      { label: "Política de privacidade", href: "/legal/polityka-prywatnosci.pdf" },
-      { label: "Política de cookies", href: "/legal/polityka-cookies.pdf" },
-      { label: "Proteção de menores", href: "/legal/ochrona-maloletnich.pdf" },
+      { label: "Regulamento", href: "/stopka/regulamin.pdf" },
+      { label: "Regras de permanência", href: "/stopka/Regulamin-przebywania-na-terenie-alvernia-planet.html" },
+      { label: "Regras da promoção 1000 bilhetes", href: "/stopka/zasady-promocji-1000-biletow.html", highlight: true },
+      { label: "Política de privacidade", href: "/stopka/polityka-prywatnosci.pdf" },
+      { label: "Política de cookies", href: "/stopka/polityka-cookies.pdf" },
+      { label: "Proteção de menores", href: "/stopka/ochrona-maloletnich.pdf" },
     ],
     sections: [
       {
         title: "Atrações",
         links: [
-          { label: "Harry Potter: The Exhibition", href: "/harry-potter-the-exhibition" },
           { label: "FILMWORLD", href: "/atrakcje/filmworld" },
           { label: "Cinema K360", href: "/atrakcje/kino-360" },
           { label: "Galeria", href: "/galeria" },
@@ -259,7 +333,7 @@ const FOOTER_COPY: Record<
           { label: "Como chegar", href: "/jak-dojechac" },
           { label: "Grupos", href: "/grupy" },
           { label: "Runmageddon", href: "/runmageddon" },
-          { label: "Bilhetes e reservas", href: "/rezerwuj" },
+          { label: "Bilhetes e reservas", href: bookingHomeHref("pt") },
         ],
       },
       {
@@ -272,12 +346,119 @@ const FOOTER_COPY: Record<
       },
     ],
   },
+  de: {
+    rights: "© {year} Alvernia Planet. Alle Rechte vorbehalten.",
+    paymentsLabel: "Sichere Zahlungen",
+    designCredit: "Design & Umsetzung:",
+    socials: "Folgen Sie uns in den sozialen Medien!",
+    ctaTitle: "Fragen? Wir sind für Sie da.",
+    ctaSubtitle: "Wir antworten so schnell wie möglich. Schreiben Sie uns oder rufen Sie an.",
+    phoneLabel: "Telefon",
+    emailLabel: "E-Mail",
+    messengerLabel: "Messenger",
+    phone: "+48 510 831 277",
+    email: "rezerwacje@alverniaplanet.com",
+    messengerHandle: "@alverniaplanet",
+    booking: "Besuch buchen",
+    contact: "Kontakt",
+    addressTitle: "Adresse",
+    addressLines: ["Alvernia Planet", "ul. Ferdynanda Wspaniałego 1", "32-566 Nieporaz, Polen"],
+    policies: [
+      { label: "Nutzungsbedingungen", href: "/stopka/regulamin.pdf" },
+      { label: "Besucherordnung", href: "/stopka/Regulamin-przebywania-na-terenie-alvernia-planet.html" },
+      { label: "Aktionsbedingungen: 1000 Tickets", href: "/stopka/zasady-promocji-1000-biletow.html", highlight: true },
+      { label: "Datenschutzerklärung", href: "/stopka/polityka-prywatnosci.pdf" },
+      { label: "Cookie-Richtlinie", href: "/stopka/polityka-cookies.pdf" },
+      { label: "Schutz von Minderjährigen", href: "/stopka/ochrona-maloletnich.pdf" },
+    ],
+    sections: [
+      {
+        title: "Attraktionen",
+        links: [
+          { label: "FILMWORLD", href: "/atrakcje/filmworld" },
+          { label: "Kino 360", href: "/atrakcje/kino-360" },
+          { label: "Galerie", href: "/galeria" },
+        ],
+      },
+      {
+        title: "Besuch planen",
+        links: [
+          { label: "Veranstaltungen", href: "/wydarzenia" },
+          { label: "Anfahrt", href: "/jak-dojechac" },
+          { label: "Gruppen", href: "/grupy" },
+          { label: "Runmageddon", href: "/runmageddon" },
+          { label: "Tickets & Buchung", href: bookingHomeHref("de") },
+        ],
+      },
+      {
+        title: "Schnellzugriff",
+        links: [
+          { label: "Startseite", href: "/" },
+          { label: "Über Alvernia Planet", href: "/o-alvernia-planet" },
+          { label: "Kontakt", href: "/kontakt" },
+        ],
+      },
+    ],
+  },
+  zh: {
+    rights: "© {year} Alvernia Planet。版权所有。",
+    paymentsLabel: "安全支付",
+    designCredit: "网站设计与开发：",
+    socials: "欢迎关注我们的社交媒体！",
+    ctaTitle: "有问题？我们在线为您解答。",
+    ctaSubtitle: "我们会尽快回复。欢迎留言或来电。",
+    phoneLabel: "电话",
+    emailLabel: "电子邮箱",
+    messengerLabel: "Messenger",
+    phone: "+48 510 831 277",
+    email: "rezerwacje@alverniaplanet.com",
+    messengerHandle: "@alverniaplanet",
+    booking: "预订参观",
+    contact: "联系方式",
+    addressTitle: "地址",
+    addressLines: ["Alvernia Planet", "ul. Ferdynanda Wspaniałego 1", "32-566 Nieporaz, 波兰"],
+    policies: [
+      { label: "服务条款", href: "/stopka/regulamin.pdf" },
+      { label: "园区参观守则", href: "/stopka/Regulamin-przebywania-na-terenie-alvernia-planet.html" },
+      { label: "1000 张门票促销规则", href: "/stopka/zasady-promocji-1000-biletow.html", highlight: true },
+      { label: "隐私政策", href: "/stopka/polityka-prywatnosci.pdf" },
+      { label: "Cookie 政策", href: "/stopka/polityka-cookies.pdf" },
+      { label: "未成年人保护", href: "/stopka/ochrona-maloletnich.pdf" },
+    ],
+    sections: [
+      {
+        title: "游玩项目",
+        links: [
+          { label: "FILMWORLD", href: "/atrakcje/filmworld" },
+          { label: "Kino 360 影院", href: "/atrakcje/kino-360" },
+          { label: "图片库", href: "/galeria" },
+        ],
+      },
+      {
+        title: "行程规划",
+        links: [
+          { label: "活动", href: "/wydarzenia" },
+          { label: "交通指南", href: "/jak-dojechac" },
+          { label: "团体参观", href: "/grupy" },
+          { label: "Runmageddon", href: "/runmageddon" },
+          { label: "门票与预订", href: bookingHomeHref("zh") },
+        ],
+      },
+      {
+        title: "快速链接",
+        links: [
+          { label: "首页", href: "/" },
+          { label: "关于 Alvernia Planet", href: "/o-alvernia-planet" },
+          { label: "联系我们", href: "/kontakt" },
+        ],
+      },
+    ],
+  },
 };
 
-const MESSENGER_URL = "https://m.me/alverniaplanet?ref=footer";
 const CZERCODE_URL = "https://czercode.com";
-const CZERCODE_LOGO_BLACK = "/shy/CzerCode_logo_black.svg";
-const CZERCODE_LOGO_WHITE = "/shy/CzerCode_logo_white.svg";
+const CZERCODE_LOGO_BLACK = "/wspolne/partnerzy/CzerCode_logo_black.svg";
+const CZERCODE_LOGO_WHITE = "/wspolne/partnerzy/CzerCode_logo_white.svg";
 
 function FacebookIcon({ className }: { className?: string }) {
   return (
@@ -312,52 +493,34 @@ function TikTokIcon({ className }: { className?: string }) {
   );
 }
 
-function MessengerIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} aria-hidden>
-      <path
-        fill="currentColor"
-        d="M12 2.8C6.95 2.8 3 6.48 3 11.23c0 2.69 1.32 5.1 3.5 6.68V21l2.92-1.61c.78.22 1.62.34 2.58.34 5.05 0 9-3.68 9-8.5S17.05 2.8 12 2.8Zm.92 11.4-2.3-2.46-4.48 2.46 4.94-5.23 2.34 2.46 4.44-2.46-4.94 5.23Z"
-      />
-    </svg>
-  );
-}
-
 const Footer = memo(function Footer() {
   const { locale } = useI18n();
-  const { theme } = useTheme();
   const pathname = usePathname();
   // Bez stopki na trasach bare (np. /aplikacje/identyfikacja).
   if (isBareChromeRoute(pathname)) return null;
   const loc: Locale = (locale as Locale) ?? "pl";
   const copy = FOOTER_COPY[loc];
   const rights = copy.rights.replace("{year}", String(new Date().getFullYear()));
-  const isLight = theme === "light";
+  // Motyw jasny usunięty — serwis jest wyłącznie ciemny.
+  const isLight = false;
   const normalizedPathname =
     pathname && pathname !== "/" ? pathname.replace(/\/+$/, "").toLowerCase() : pathname ?? "/";
-  const isRunmageddonRoute =
-    normalizedPathname === "/runmageddon" ||
-    normalizedPathname === "/en/runmageddon" ||
-    normalizedPathname === "/pt/runmageddon";
+  // Generycznie po liście języków — inaczej każda nowa wersja wymagałaby
+  // dopisania kolejnego warunku, a jej goście nie zobaczyliby regulaminów
+  // Runmageddonu mimo istniejących tłumaczeń.
+  const isRunmageddonRoute = ["/runmageddon", ...INTL_LOCALES.map((l) => `/${l}/runmageddon`)].includes(
+    normalizedPathname,
+  );
   const policyLinks = isRunmageddonRoute
     ? [...copy.policies, ...RUNMAGEDDON_FOOTER_POLICIES[loc]]
     : copy.policies;
   const logoSrc = isLight ? "/Loga/Logo_pozytyw.svg" : "/Loga/Logo_negatyw.svg";
-  const ctaSurface = isLight
-    ? "bg-[color:var(--ap-surface-contrast)] ring-1 ring-[color:var(--ap-border)] shadow-[var(--ap-card-shadow)] text-[color:var(--ap-text)]"
-    : "bg-white/[0.04] ring-1 ring-white/10 shadow-[0_24px_80px_rgba(0,0,0,0.45)]";
   const infoCardSurface = isLight
     ? "bg-[color:var(--ap-surface-contrast)] ring-1 ring-[color:var(--ap-border)] text-[color:var(--ap-text)]"
     : "bg-white/5 ring-1 ring-white/10";
   const iconWrapperSurface = isLight
     ? "bg-[color:var(--ap-surface-contrast)] ring-1 ring-[color:var(--ap-border)]"
     : "bg-white/10 ring-1 ring-white/20";
-  const actionLinkTone = isLight
-    ? "text-[color:var(--ap-accent)] hover:text-[color:var(--ap-ice)]"
-    : "text-[color:var(--ap-accent)] hover:text-[color:var(--ap-ice)]";
-  const messengerIconTone = isLight
-    ? "bg-[#4fcfde]/15 ring-1 ring-[#4fcfde]/35 text-[#171730]"
-    : "bg-[#4fcfde]/20 ring-1 ring-[#4fcfde]/40 text-[#a5e6f0]";
   const socialLabelTone = isLight ? "text-[#aab4be]" : "text-[#aab4be]";
   const facebookIconTone = isLight ? "text-blue-700" : "text-blue-300";
   const instagramIconTone = isLight ? "text-pink-600" : "text-pink-300";
@@ -372,9 +535,6 @@ const Footer = memo(function Footer() {
     if (!href.startsWith("/")) return href;
     return getLocalizedPath(href, loc);
   };
-  const callLabel = loc === "en" ? "Call" : loc === "pt" ? "Ligar" : "Zadzwoń";
-  const emailAction = loc === "en" ? "Email" : loc === "pt" ? "Escrever" : "Napisz";
-  const messageAction = loc === "en" ? "Message" : loc === "pt" ? "Mensagem" : "Napisz";
 
   return (
     <footer
@@ -384,9 +544,18 @@ const Footer = memo(function Footer() {
       <div className="relative max-w-7xl mx-auto px-4 py-12 sm:py-14">
         {/* Polityki / regulaminy */}
         <div className="mb-6 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-white/70">
+          {/* ŚWIADOMIE <a>, a NIE <Link> — to są statyczne dokumenty z public/stopka/
+              (.pdf/.html), a nie trasy Nextа. <Link> traktuje każdy wewnętrzny href
+              jak trasę aplikacji i przy wejściu stopki w viewport robi prefetch
+              payloadu RSC, czyli pobiera `<href>.txt` (w trybie output:"export" Next
+              generuje pliki `<trasa>.txt` obok `<trasa>.html`). Dla /stopka/*.pdf taki
+              plik nie istnieje → seria 404 w konsoli:
+              /stopka/regulamin.pdf.txt?_rsc=…, /stopka/polityka-cookies.pdf.txt?_rsc=… itd.
+              Zwykłe <a> nie prefetchuje niczego. Zwykłych linków do tras Nexta
+              (sekcje nawigacji niżej) to NIE dotyczy — tam <Link> zostaje. */}
           {policyLinks.map((item, idx) => (
             <span key={item.href} className="flex items-center gap-3">
-              <Link
+              <a
                 href={item.href}
                 className={
                   item.highlight
@@ -401,7 +570,7 @@ const Footer = memo(function Footer() {
                 onClick={() => trackEvent("footer_policy_click", { label: item.label, href: item.href })}
               >
                 {item.label}
-              </Link>
+              </a>
               {idx < policyLinks.length - 1 ? (
                 <span className="text-white/30" aria-hidden="true">
                   •
@@ -418,75 +587,17 @@ const Footer = memo(function Footer() {
               onClick={openCookieSettings}
               className="underline underline-offset-4 decoration-white/30 text-white/80 transition hover:decoration-white hover:text-white"
             >
-              {{ pl: "Ustawienia cookies", en: "Cookie settings", pt: "Definições de cookies" }[loc]}
+              {
+              {
+                pl: "Ustawienia cookies",
+                en: "Cookie settings",
+                pt: "Definições de cookies",
+                de: "Cookie-Einstellungen",
+                zh: "Cookie 设置",
+              }[loc]
+            }
             </button>
           </span>
-        </div>
-
-        {/* CTA */}
-        <div className={`grid gap-6 rounded-3xl px-5 py-6 sm:px-8 sm:py-8 ${ctaSurface}`}>
-          <div className="space-y-2">
-            <p className="text-xs uppercase tracking-[0.3em] text-white/60">{copy.contact}</p>
-            {/* Celowo <p>, nie nagłówek: to baner kontaktowy w stopce (globalny
-                element UI), nie sekcja treści — jako <h2> zaśmiecał strukturę
-                nagłówków każdej strony w oczach Google. */}
-            <p className="text-2xl sm:text-3xl font-semibold">{copy.ctaTitle}</p>
-            <p className="text-white/70 text-sm sm:text-base leading-relaxed max-w-3xl">
-              {copy.ctaSubtitle}
-            </p>
-            <div className="mt-4 grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-              <div className={`rounded-2xl px-4 py-3 flex items-center justify-between ${infoCardSurface}`}>
-                <div>
-                  <p className="text-[11px] uppercase tracking-[0.2em] text-white/60">{copy.phoneLabel}</p>
-                  <p className="text-lg font-semibold">{copy.phone}</p>
-                </div>
-                <a
-                  href={`tel:${copy.phone.replace(/\s+/g, "")}`}
-                  className={`text-sm ${actionLinkTone}`}
-                  onClick={() => trackEvent("contact_click", { method: "phone", location: "footer" })}
-                >
-                  {callLabel}
-                </a>
-              </div>
-              <div className={`rounded-2xl px-4 py-3 ${infoCardSurface}`}>
-                <div className="space-y-2">
-                  <div>
-                    <p className="text-[11px] uppercase tracking-[0.2em] text-white/60">{copy.emailLabel}</p>
-                    <p className="text-sm sm:text-base md:text-[1.05rem] font-semibold leading-snug break-all sm:break-words tracking-tight">
-                      {copy.email}
-                    </p>
-                  </div>
-                  <a
-                    href={`mailto:${copy.email}`}
-                    className={`text-sm inline-flex w-full justify-center ${actionLinkTone}`}
-                    onClick={() => trackEvent("contact_click", { method: "email", location: "footer" })}
-                  >
-                    {emailAction}
-                  </a>
-                </div>
-              </div>
-              <div className={`rounded-2xl px-4 py-3 flex items-center justify-between ${infoCardSurface}`}>
-                <div className="flex items-center gap-3">
-                  <span className={`grid h-10 w-10 place-items-center rounded-xl ${messengerIconTone}`}>
-                    <MessengerIcon className="h-5 w-5" />
-                  </span>
-                  <div>
-                    <p className="text-[11px] uppercase tracking-[0.2em] text-white/60">{copy.messengerLabel}</p>
-                    <p className="text-lg font-semibold">{copy.messengerHandle}</p>
-                  </div>
-                </div>
-                <a
-                  href={MESSENGER_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`text-sm ${actionLinkTone}`}
-                  onClick={() => trackEvent("contact_click", { method: "messenger", location: "footer" })}
-                >
-                  {messageAction}
-                </a>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Columns */}
@@ -563,20 +674,60 @@ const Footer = memo(function Footer() {
                 <ul className="space-y-2 text-white/75 text-sm">
                   {section.links.map((link) => (
                     <li key={link.href}>
-                      <Link
-                        href={withPrefix(link.href)}
-                        className="transition-colors hover:text-white"
-                        onClick={() => trackEvent("footer_nav_click", { label: link.label, href: link.href })}
-                      >
-                        {link.label}
-                      </Link>
+                      {/* Zewnętrzny system biletowy idzie zwykłym <a> — <Link>
+                          jest komponentem routera i nie ma tu czego routować.
+                          Tracking identyczny w obu gałęziach. */}
+                      {/^https?:\/\//i.test(link.href) ? (
+                        <a
+                          href={link.href}
+                          className="transition-colors hover:text-white"
+                          onClick={() => trackEvent("footer_nav_click", { label: link.label, href: link.href })}
+                        >
+                          {link.label}
+                        </a>
+                      ) : (
+                        <Link
+                          href={withPrefix(link.href)}
+                          className="transition-colors hover:text-white"
+                          onClick={() => trackEvent("footer_nav_click", { label: link.label, href: link.href })}
+                        >
+                          {link.label}
+                        </Link>
+                      )}
                     </li>
                   ))}
                 </ul>
               </div>
             ))}
 
-            <div className="sm:col-span-2 lg:col-span-3 flex items-center sm:justify-start lg:justify-end">
+            <div className="sm:col-span-2 lg:col-span-3 flex flex-col-reverse items-center gap-5 sm:flex-row sm:flex-wrap sm:items-center sm:justify-start sm:gap-6 lg:justify-end">
+              {/* Znaki akceptacji płatności — w obwiedzionym boksie, po LEWEJ od logo. */}
+              {/* Równa siatka identycznych kafelków: 3 × 2 na telefonie (wcześniej
+                  flex-wrap zostawiał szósty znak samotnie w drugim rzędzie),
+                  od sm — sześć w jednym rzędzie. */}
+              <div className="flex w-full max-w-[22rem] flex-col items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 sm:w-auto sm:max-w-none sm:items-start">
+                <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-white/55">
+                  {copy.paymentsLabel}
+                </p>
+                <ul className="grid w-full grid-cols-3 gap-2 sm:w-auto sm:grid-cols-6">
+                  {PAYMENT_METHODS.map((method) => (
+                    <li
+                      key={method.alt}
+                      className="flex h-11 items-center justify-center rounded-lg bg-white shadow-[0_1px_3px_rgba(0,0,0,0.25)] sm:h-10 sm:w-[4.75rem]"
+                    >
+                      <Image
+                        src={method.src}
+                        alt={method.alt}
+                        width={method.w}
+                        height={method.h}
+                        className="h-auto w-auto max-w-[76%] object-contain"
+                        style={{ maxHeight: `${method.fit}%` }}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
               <Link
                 href={withPrefix("/")}
                 className="inline-flex items-center"
@@ -593,6 +744,7 @@ const Footer = memo(function Footer() {
                   />
                 </span>
               </Link>
+
             </div>
           </div>
         </div>
@@ -624,6 +776,12 @@ const Footer = memo(function Footer() {
           </div>
         </div>
       </div>
+      {/* Komunikat o modernizacji Kina 360 (1–4.09.2026) — ZDJĘTY z montowania
+          po zakończeniu przerwy. Komponent zostaje w repo (RemontKinaBumper.tsx)
+          i sam pilnuje swojej daty, ale dopóki wisiał tutaj, jego kod razem
+          z tłumaczeniami w 5 językach leciał w chunku layoutu na KAŻDEJ z 131
+          stron — mimo że zawsze zwracał null. Przy następnej przerwie: wrócić
+          import i ten znacznik, zmienić REMONT_KONIEC. */}
     </footer>
   );
 });

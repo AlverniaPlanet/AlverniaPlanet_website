@@ -3,11 +3,11 @@
 import Card from "@/app/components/Card";
 import { PrimaryButton } from "@/app/components/PrimaryButton";
 import { useI18n } from "@/app/i18n-provider";
-import { getLocalizedPath } from "@/lib/localizedRoutes";
+import { getLocalizedPath, type Locale } from "@/lib/localizedRoutes";
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { SolarIcon } from "@/app/components/SolarIcon";
 
-type Locale = "pl" | "en" | "pt";
 const WIKIPEDIA_URL = "https://pl.wikipedia.org/wiki/Alvernia_Planet";
 
 const COPY: Record<
@@ -384,6 +384,238 @@ const COPY: Record<
       tags: ["Panorâmicas 360°", "Cúpulas e espaços", "Página VR dedicada"],
     },
   },
+  de: {
+    tag: "Über uns",
+    heroTitle: "Über Alvernia Planet",
+    heroSubtitle: "Ein weltweit einzigartiger Kuppelkomplex für Film, Events und immersive Erlebnisse.",
+    intro:
+      "Alvernia Planet verbindet Film, Technologie und Bildung. Unsere Kuppeln beherbergen Veranstaltungen, Filmproduktionen und immersive Attraktionen für unsere Gäste.",
+    wikipediaLabel: "Wikipedia",
+    wikipediaTitle: "Alvernia Planet in der polnischen Wikipedia",
+    wikipediaLead:
+      "Ein kompakter, unabhängiger Überblick über das Objekt, seine Geschichte, Architektur und heutigen Funktionen.",
+    wikipediaCta: "Zur Wikipedia",
+    wikipediaFacts: [
+      {
+        title: "Geschichte",
+        body: "Der Komplex entstand 2000-2002 als RMF Media Complex und wurde später als Alvernia Studios betrieben.",
+      },
+      {
+        title: "Wandel",
+        body: "Seit September 2017 wird er als Alvernia Planet für Veranstaltungen, Ausstellungen und Bildungsangebote entwickelt.",
+      },
+      {
+        title: "Architektur",
+        body: "Der Artikel beschreibt 13 Kuppeln, die durch verglaste Korridore verbunden sind, in einer betont futuristischen Architektur.",
+      },
+      {
+        title: "Bildung",
+        body: "Erwähnt werden auch Bildungsprogramme rund um die Filmentstehung, darunter Szenenbild, Ton und Postproduktion.",
+      },
+    ],
+    bullets: [
+      {
+        title: "Industrielle Architektur",
+        body: "Stahlbrücken, Zwischenebenen, futuristische Innenräume und gläserne Verbindungsgänge zwischen den Kuppeln.",
+        image: "/galeria/Sciezka_filmowa/webp/wejscie_korytarz_k9.webp",
+        alt: "Industriell geprägter Innenraum mit Stahlkonstruktionen im Inneren einer Kuppel",
+      },
+      {
+        title: "Lage",
+        body: "Umgeben von Grünflächen, mit bequemer Anfahrt und eigenem Parkplatz.",
+        image: "/galeria/Ogolne/webp/8.webp",
+        alt: "Luftaufnahme des Komplexes Alvernia Planet aus der Drohnenperspektive",
+      },
+    ],
+    metrics: [
+      { value: "13", label: "Kuppeln für Veranstaltungen, Produktionen und Szenenbilder" },
+      { value: "17.425 m²", label: "bebaute Fläche" },
+      { value: "300+", label: "Parkplätze" },
+    ],
+    highlightTitle: "Ein einzigartiger Ort im Herzen Europas",
+    highlightSubtitle:
+      "Größe, Infrastruktur und Umgebung machen dieses Objekt bereit für große Produktionen ebenso wie für Gäste im Alltag.",
+    highlightSections: [
+      {
+        tag: "Anfahrt",
+        title: "Lage und Anfahrt",
+        summary: "Direkt an der A4 zwischen Kraków und Katowice.",
+        points: [
+          "Nieporaz, Ferdynanda Wspaniałego 1",
+          "30 km von Kraków, 10 km vom Flughafen Kraków",
+        ],
+      },
+      {
+        tag: "Events",
+        title: "Immersive Veranstaltungen",
+        summary: "Eine Bühne für hochwertige Events und Produktionen.",
+        points: [
+          "Ausstellungen, Premieren, Galas, Konzerte, Modenschauen",
+          "Aufbauten für volle Immersion und Multimedia",
+        ],
+      },
+      {
+        tag: "Architektur",
+        title: "Architektur und Funktionen",
+        summary: "Futuristische Kuppeln mit gläsernen Korridoren.",
+        points: [
+          "Unterhaltung, Bildung, Ausstellungen, Multimedia",
+          "Eine unverwechselbare architektonische Handschrift",
+        ],
+      },
+      {
+        tag: "Größe",
+        title: "Größe und Infrastruktur",
+        summary: "Weitläufiges Gelände und Einrichtungen für Gäste.",
+        points: [
+          "17.425 m² bebaute Fläche und 14,21 ha Gelände",
+          "Parkplatz für 300+ Fahrzeuge, erweiterbar",
+        ],
+      },
+      {
+        tag: "Bildung",
+        title: "Bildung und Film",
+        summary: "Eigener Bildungspfad seit 2023.",
+        points: [
+          "Wie Filme und Szenenbilder entstehen",
+          "Bild- und Tonillusion, audiovisuelles Erzählen",
+        ],
+      },
+      {
+        tag: "Umgebung",
+        title: "Attraktionen in der Umgebung",
+        summary: "Ideal für einen Ausflug über den ganzen Tag.",
+        points: [
+          "Burg Tenczyn und das Achatmuseum in Rudno",
+          "Feuerwehrmuseum der Region Małopolska in Alwernia",
+          "Landschaftspark Tenczyn für einen Spaziergang danach",
+        ],
+      },
+    ],
+    vrFeature: {
+      title: "Virtueller Rundgang",
+      subtitle: "360°-Panoramen aus dem Inneren von Alvernia Planet",
+      body: "Öffnen Sie den eigenen VR-Bereich und sehen Sie sich in den Kuppeln sowie in ausgewählten Räumen des Komplexes um. Dort finden Sie alle Panoramen, die derzeit im Archiv verfügbar sind - vom Empfang bis zu den Innenräumen der einzelnen Kuppeln.",
+      cta: "Virtuellen Rundgang öffnen",
+      tags: ["360°-Panoramen", "Kuppeln und Räume", "Eigene VR-Unterseite"],
+    },
+  },
+  zh: {
+    tag: "关于我们",
+    heroTitle: "关于 Alvernia Planet",
+    heroSubtitle: "世界罕见的穹顶建筑群，集电影、活动与沉浸式体验于一体。",
+    intro:
+      "Alvernia Planet 融合电影、科技与教育。我们的穹顶承办各类活动与影视制作，并为访客带来沉浸式体验项目。",
+    wikipediaLabel: "Wikipedia",
+    wikipediaTitle: "波兰语 Wikipedia 中的 Alvernia Planet",
+    wikipediaLead:
+      "一份简明而独立的介绍，涵盖场馆的历史、建筑以及当前的各项功能。",
+    wikipediaCta: "前往 Wikipedia",
+    wikipediaFacts: [
+      {
+        title: "历史",
+        body: "建筑群于 2000-2002 年建成，最初名为 RMF Media Complex，后来以 Alvernia Studios 的名义运营。",
+      },
+      {
+        title: "转型",
+        body: "自 2017 年 9 月起，这里以 Alvernia Planet 的形式发展，用于活动、展览与教育。",
+      },
+      {
+        title: "建筑",
+        body: "词条介绍了 13 座由玻璃连廊相连的穹顶，以及鲜明的未来主义建筑造型。",
+      },
+      {
+        title: "教育",
+        body: "词条还提到关于电影创作的教育项目，内容包括布景、声音与后期制作。",
+      },
+    ],
+    bullets: [
+      {
+        title: "工业风建筑",
+        body: "钢制天桥、夹层、充满未来感的室内空间，以及穹顶之间的玻璃连廊。",
+        image: "/galeria/Sciezka_filmowa/webp/wejscie_korytarz_k9.webp",
+        alt: "穹顶内部的工业风空间与钢结构",
+      },
+      {
+        title: "位置",
+        body: "四周绿地环绕，交通便利，并设有停车场。",
+        image: "/galeria/Ogolne/webp/8.webp",
+        alt: "Alvernia Planet 建筑群的无人机航拍画面",
+      },
+    ],
+    metrics: [
+      { value: "13", label: "座穹顶，可用于活动、拍摄与布景" },
+      { value: "17,425 m²", label: "建筑面积" },
+      { value: "300+", label: "停车位" },
+    ],
+    highlightTitle: "欧洲腹地的独特之地",
+    highlightSubtitle:
+      "规模、设施与周边环境，让这里既能承办大型制作，也随时欢迎日常到访的游客。",
+    highlightSections: [
+      {
+        tag: "交通",
+        title: "位置与交通",
+        summary: "紧邻 A4 高速公路，位于 Kraków 与 Katowice 之间。",
+        points: [
+          "Nieporaz, Ferdynanda Wspaniałego 1",
+          "距 Kraków 30 公里，距 Kraków 机场 10 公里",
+        ],
+      },
+      {
+        tag: "活动",
+        title: "沉浸式活动",
+        summary: "高端活动与影视制作的舞台。",
+        points: [
+          "展览、首映、庆典、音乐会、时装秀",
+          "可实现全场沉浸与多媒体呈现",
+        ],
+      },
+      {
+        tag: "建筑",
+        title: "建筑与功能",
+        summary: "未来感穹顶与玻璃连廊。",
+        points: [
+          "娱乐、教育、展览与多媒体",
+          "辨识度极高的建筑风格",
+        ],
+      },
+      {
+        tag: "规模",
+        title: "规模与设施",
+        summary: "宽阔的场地与完善的访客配套。",
+        points: [
+          "建筑面积 17,425 m²，占地 14.21 公顷",
+          "300+ 车位的停车场，并可继续扩建",
+        ],
+      },
+      {
+        tag: "教育",
+        title: "教育与电影",
+        summary: "自 2023 年起推出自主研发的教育路线。",
+        points: [
+          "电影与布景的诞生过程",
+          "影像与声音的错觉，视听叙事",
+        ],
+      },
+      {
+        tag: "周边",
+        title: "周边景点",
+        summary: "适合安排一整天的行程。",
+        points: [
+          "Rudno 的 Tenczyn 城堡与玛瑙博物馆",
+          "Alwernia 的 Małopolska 消防博物馆",
+          "参观之后可漫步 Tenczyn 景观公园",
+        ],
+      },
+    ],
+    vrFeature: {
+      title: "虚拟漫游",
+      subtitle: "Alvernia Planet 内部的 360° 全景",
+      body: "打开独立的 VR 页面，环视各座穹顶以及建筑群中的精选空间。那里汇集了档案中目前可用的全部全景，从接待区一直到每座穹顶的内部。",
+      cta: "打开虚拟漫游",
+      tags: ["360° 全景", "穹顶与空间", "独立 VR 页面"],
+    },
+  },
 };
 
 function AnimatedMetricValue({
@@ -525,7 +757,7 @@ export default function AboutAlverniaPage() {
                     aria-hidden
                   />
                   <div className="relative">
-                    <p className="text-2xl sm:text-3xl font-black leading-none text-white">
+                    <p className="text-2xl sm:text-3xl font-extrabold leading-none text-white">
                       <AnimatedMetricValue
                         value={metric.value}
                         locale={loc}
@@ -547,23 +779,14 @@ export default function AboutAlverniaPage() {
                   rel="noopener noreferrer"
                   className="group inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/5 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/75 transition hover:border-white/20 hover:bg-white/10 hover:text-white"
                 >
-                  <span className="grid h-6 w-6 place-items-center rounded-full bg-white/10 text-[10px] font-black tracking-normal text-white">
+                  <span className="grid h-6 w-6 place-items-center rounded-full bg-white/10 text-[10px] font-extrabold tracking-normal text-white">
                     W
                   </span>
                   {copy.wikipediaLabel}
-                  <svg
-                    aria-hidden="true"
-                    viewBox="0 0 20 20"
+                  <SolarIcon
+                    name="arrow-up-right"
                     className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.7"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M7 13 13 7" />
-                    <path d="M8 7h5v5" />
-                  </svg>
+                  />
                 </a>
                 <h2 className="mt-4 text-xl font-semibold text-white sm:text-2xl">{copy.wikipediaTitle}</h2>
                 <p className="mt-2 max-w-2xl text-sm leading-relaxed text-white/70 sm:text-base">
@@ -577,19 +800,7 @@ export default function AboutAlverniaPage() {
                 className="inline-flex items-center gap-2 self-start text-sm font-medium text-[#7de7f1] transition hover:text-white"
               >
                 <span>Wikipedia</span>
-                <svg
-                  aria-hidden="true"
-                  viewBox="0 0 20 20"
-                  className="h-3.5 w-3.5"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.7"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M7 13 13 7" />
-                  <path d="M8 7h5v5" />
-                </svg>
+                <SolarIcon name="arrow-up-right" className="h-3.5 w-3.5" />
               </a>
             </div>
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
@@ -656,10 +867,10 @@ export default function AboutAlverniaPage() {
                   // Zoptymalizowane podglądy (resize + webp) — wizualnie identyczne
                   // przy wyświetlaniu ~600 px. Oryginały pełnej rozdzielczości
                   // zostają w /Alvernia VR/ dla właściwego touru VR.
-                  "/vr-preview/vr1.webp",
-                  "/vr-preview/vr2.webp",
-                  "/vr-preview/vr3.webp",
-                  "/vr-preview/vr4.webp",
+                  "/o-alvernia-planet/vr1.webp",
+                  "/o-alvernia-planet/vr2.webp",
+                  "/o-alvernia-planet/vr3.webp",
+                  "/o-alvernia-planet/vr4.webp",
                 ].map((src, index) => (
                   <div
                     key={src}

@@ -5,9 +5,8 @@ import Image from "next/image";
 import { Press_Start_2P } from "next/font/google";
 import ScrollMotionItem from "@/app/components/ScrollMotionItem";
 import { useI18n } from "@/app/i18n-provider";
-import { useTheme } from "@/app/theme-provider";
+import { type Locale } from "@/lib/localizedRoutes";
 
-type Locale = "pl" | "en" | "pt";
 const RUNMAGEDDON_BINGO_URL = "https://alverniaplanet.com/runnmageddon-bingo/";
 const RUNMAGEDDON_GAME_URL = "https://alverniaplanet.com/runnmageddon-game/";
 const RUNMAGEDDON_REGISTRATION_URL =
@@ -375,14 +374,162 @@ const COPY: Record<
     registrationCta: "Inscreve-te já!",
     registrationEndedCta: "Inscrições encerradas",
   },
+  de: {
+    tag: "Zeitlich begrenztes Event",
+    title: "Runmageddon Kraków Alvernia Planet",
+    highlights: ["09-12.04.2026", "KRAKÓW ALVERNIA PLANET", "Offizielle Online-Anmeldung"],
+    endedHighlight: "EVENT BEENDET",
+    archiveTitle: "Runmageddon 2026 in Alvernia Planet ist beendet",
+    archiveBody:
+      "Das Event-Wochenende, das Arcade-Spiel und das Bingo waren bis Sonntag, den 12. April 2026, aktiv. Die Anmeldung und die Sonderaktivitäten sind jetzt geschlossen.",
+    activitiesTitle: "Interaktive Aktivitäten",
+    activitiesDescription:
+      "Zwei kurze Online-Aktivitäten für das Event-Wochenende: eine Bingo-Challenge vor Ort und ein einfaches Arcade-Spiel mit Preisen.",
+    activitiesArchivedDescription:
+      "Diese Aktivitäten waren zeitlich begrenzt und endeten gemeinsam mit dem Event am 12. April 2026.",
+    bingoCta: "Bingo",
+    bingoDescription:
+      "Interaktives Geländespiel während des Runmageddon. Lösen Sie Aufgaben, speichern Sie Ihre Antworten, fügen Sie Fotos hinzu und verfolgen Sie Ihren Fortschritt direkt auf dem Bingo-Feld.",
+    bingoEndedState: "Bingo geschlossen",
+    bingoEndedDescription:
+      "Die Bingo-Challenge vor Ort war nur während des Runmageddon-Wochenendes in Alvernia Planet verfügbar und ist inzwischen geschlossen.",
+    bingoEndedNote: "Diese Aktivität war bis zum 12. April 2026 verfügbar.",
+    gameCta: "RUNMAGEDDON",
+    gameDescription:
+      "Einfaches Arcade-Geschicklichkeitsspiel. Die 10 besten bis Sonntag eingereichten Ergebnisse gewinnen Rabattcodes für alle Attraktionen von Alvernia Planet. Die Codes werden nach dem Ende der Aktion verteilt.",
+    gameLaunchRibbon: "AB 07.04.2026",
+    gameLaunchNote: "Verfügbar ab Dienstag, dem 7. April 2026.",
+    gameLockedState: "Spiel noch nicht verfügbar",
+    gameEndedDescription:
+      "Die Arcade-Spiel-Aktion ist beendet. Die Ergebnisse wurden bis zum Ende des Sonntags, 12. April 2026, gesammelt.",
+    gameEndedRibbon: "BEENDET",
+    gameEndedNote: "Die Preise werden bis Sonntag, den 19. April 2026, vergeben.",
+    gameEndedState: "Spiel beendet",
+    verifiedLabel: "Aktivitäten",
+    introTitle: "Veranstaltungsplan",
+    introBody:
+      "Dieser Abschnitt enthält nur die drei wichtigsten Tage des offiziellen Zeitplans: das Training am Donnerstag sowie die Hauptstartfenster am Samstag und Sonntag.",
+    cards: [
+      {
+        badge: "Donnerstag",
+        title: "9. April 2026",
+        body: "Eröffnungstraining vor dem eigentlichen Rennwochenende.",
+        details: [
+          { label: "Training", time: "17:30-19:00" },
+        ],
+      },
+      {
+        badge: "Samstag",
+        title: "11. April 2026",
+        body: "Samstagsplan für Rekrut, Kids, Intro U-16, Intro und Night Rekrut.",
+        details: [
+          { label: "Rekrut (1/2) Elite", time: "07:30-07:50" },
+          { label: "Rekrut (1/2) Open", time: "08:00-14:00" },
+          { label: "Kids", time: "12:20-14:40" },
+          { label: "Intro U-16", time: "16:30" },
+          { label: "Intro (1/4)", time: "16:45-17:45" },
+          { label: "Night Rekrut (1/2)", time: "20:45-21:15" },
+        ],
+      },
+      {
+        badge: "Sonntag",
+        title: "12. April 2026",
+        body: "Sonntagsplan für den Haupt-Runmageddon sowie die Formate Kids und Family.",
+        details: [
+          { label: "Runmageddon Elite", time: "07:30-07:50" },
+          { label: "Runmageddon Open", time: "08:00-10:00" },
+          { label: "Kids Open", time: "11:00-12:40" },
+          { label: "Kids Elite", time: "13:15-14:00" },
+          { label: "Family", time: "14:00-16:00" },
+        ],
+      },
+    ],
+    note: "Details zum Event und die Anmeldung finden Sie auf der offiziellen Runmageddon-Seite.",
+    registrationCta: "Jetzt anmelden!",
+    registrationEndedCta: "Anmeldung geschlossen",
+  },
+  zh: {
+    tag: "限时活动",
+    title: "Runmageddon Kraków Alvernia Planet",
+    highlights: ["09-12.04.2026", "KRAKÓW ALVERNIA PLANET", "官方在线报名"],
+    endedHighlight: "活动已结束",
+    archiveTitle: "Alvernia Planet 的 Runmageddon 2026 已结束",
+    archiveBody:
+      "活动周末、街机游戏和 Bingo 开放至 2026 年 4 月 12 日（周日）。报名与特别活动现已关闭。",
+    activitiesTitle: "互动活动",
+    activitiesDescription:
+      "活动周末推出两项轻松的线上活动：园区实地 Bingo 挑战，以及一款设有奖励的简易街机游戏。",
+    activitiesArchivedDescription:
+      "这些活动为限时项目，已随活动于 2026 年 4 月 12 日一同结束。",
+    bingoCta: "Bingo",
+    bingoDescription:
+      "Runmageddon 期间的实地互动游戏。完成任务、保存答案、上传照片，并直接在 Bingo 卡上查看进度。",
+    bingoEndedState: "Bingo 已结束",
+    bingoEndedDescription:
+      "实地 Bingo 挑战仅在 Alvernia Planet 的 Runmageddon 周末期间开放，现已关闭。",
+    bingoEndedNote: "该活动开放至 2026 年 4 月 12 日。",
+    gameCta: "RUNMAGEDDON",
+    gameDescription:
+      "简单的街机竞技游戏。周日前提交的前 10 名成绩可获得 Alvernia Planet 全部景点的折扣码。活动结束后统一发放折扣码。",
+    gameLaunchRibbon: "自 07.04.2026 起",
+    gameLaunchNote: "2026 年 4 月 7 日（周二）起开放。",
+    gameLockedState: "游戏尚未开放",
+    gameEndedDescription:
+      "街机游戏活动已结束。成绩收集截至 2026 年 4 月 12 日（周日）当天结束。",
+    gameEndedRibbon: "已结束",
+    gameEndedNote: "奖品将于 2026 年 4 月 19 日（周日）前发放。",
+    gameEndedState: "游戏已结束",
+    verifiedLabel: "互动活动",
+    introTitle: "活动日程",
+    introBody:
+      "本节仅保留官方日程中的三个关键日期：周四的训练，以及周六和周日的主要出发时段。",
+    cards: [
+      {
+        badge: "周四",
+        title: "2026 年 4 月 9 日",
+        body: "主赛事周末前的开幕训练课。",
+        details: [
+          { label: "训练", time: "17:30-19:00" },
+        ],
+      },
+      {
+        badge: "周六",
+        title: "2026 年 4 月 11 日",
+        body: "周六赛程，包含 Rekrut、Kids、Intro U-16、Intro 与 Night Rekrut。",
+        details: [
+          { label: "Rekrut (1/2) Elite", time: "07:30-07:50" },
+          { label: "Rekrut (1/2) Open", time: "08:00-14:00" },
+          { label: "Kids", time: "12:20-14:40" },
+          { label: "Intro U-16", time: "16:30" },
+          { label: "Intro (1/4)", time: "16:45-17:45" },
+          { label: "Night Rekrut (1/2)", time: "20:45-21:15" },
+        ],
+      },
+      {
+        badge: "周日",
+        title: "2026 年 4 月 12 日",
+        body: "周日赛程，包含 Runmageddon 主赛事、Kids 与 Family 组别。",
+        details: [
+          { label: "Runmageddon Elite", time: "07:30-07:50" },
+          { label: "Runmageddon Open", time: "08:00-10:00" },
+          { label: "Kids Open", time: "11:00-12:40" },
+          { label: "Kids Elite", time: "13:15-14:00" },
+          { label: "Family", time: "14:00-16:00" },
+        ],
+      },
+    ],
+    note: "活动详情与报名请前往 Runmageddon 官方网站。",
+    registrationCta: "立即报名！",
+    registrationEndedCta: "报名已关闭",
+  },
 };
 
 export default function RunmageddonContent() {
   const { locale } = useI18n();
-  const { theme } = useTheme();
   const loc: Locale = (locale as Locale) ?? "pl";
   const copy = COPY[loc];
-  const isLight = theme === "light";
+  // Motyw jasny usunięty — serwis jest wyłącznie ciemny.
+  const isLight = false;
   const hasEventEnded = Date.now() > RUNMAGEDDON_EVENT_END_AT;
   const isGameLocked = hasEventEnded;
   const highlights = hasEventEnded
@@ -431,7 +578,7 @@ export default function RunmageddonContent() {
       </span>
       <span
         className={cx(
-          "mt-3 text-3xl font-black leading-none tracking-[-0.05em] sm:text-[2.35rem]",
+          "mt-3 text-3xl font-extrabold leading-none tracking-[-0.05em] sm:text-[2.35rem]",
           hasEventEnded ? (isLight ? "text-slate-800" : "text-white") : isLight ? "text-[#0f2f3c]" : "text-[#082432]",
         )}
       >
@@ -520,7 +667,7 @@ export default function RunmageddonContent() {
       </span>
       <span
         className={cx(
-          "mt-3 text-3xl font-black leading-none tracking-[-0.05em] sm:text-[2.35rem]",
+          "mt-3 text-3xl font-extrabold leading-none tracking-[-0.05em] sm:text-[2.35rem]",
           isGameLocked
             ? isLight
               ? "text-[#7f1d1d]"
@@ -690,7 +837,7 @@ export default function RunmageddonContent() {
           </p>
           <div className="mx-auto w-full max-w-[20rem] px-2">
             <Image
-              src="/Runmageddon/rmg_zolty.webp"
+              src="/runmageddon/rmg_zolty.webp"
               alt="Runmageddon"
               width={1200}
               height={400}
@@ -765,7 +912,7 @@ export default function RunmageddonContent() {
                 </span>
                 <h2
                   className={cx(
-                    "relative mt-4 text-2xl font-black tracking-[-0.03em] sm:text-3xl",
+                    "relative mt-4 text-2xl font-extrabold tracking-[-0.03em] sm:text-3xl",
                     isLight ? "text-[#102033]" : "text-white",
                   )}
                 >
@@ -823,7 +970,7 @@ export default function RunmageddonContent() {
               <div className="relative text-center">
                 <h2
                   className={cx(
-                    "text-center text-2xl font-black tracking-[-0.03em] sm:text-3xl",
+                    "text-center text-2xl font-extrabold tracking-[-0.03em] sm:text-3xl",
                     isLight ? "text-[#102033]" : "text-white",
                   )}
                 >
@@ -922,7 +1069,7 @@ export default function RunmageddonContent() {
               </div>
               <h2
                 className={cx(
-                  "text-2xl font-black tracking-[-0.03em] sm:text-3xl",
+                  "text-2xl font-extrabold tracking-[-0.03em] sm:text-3xl",
                   isLight ? "text-[#102033]" : "text-white",
                 )}
               >
@@ -989,7 +1136,7 @@ export default function RunmageddonContent() {
                   </div>
                   <h3
                     className={cx(
-                      "relative text-xl font-black tracking-[-0.03em]",
+                      "relative text-xl font-extrabold tracking-[-0.03em]",
                       isLight ? "text-[#102033]" : "text-white",
                     )}
                   >

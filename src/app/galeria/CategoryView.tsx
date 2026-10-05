@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useI18n } from "@/app/i18n-provider";
 import Card from "@/app/components/Card";
+import { SolarIcon } from "@/app/components/SolarIcon";
 import ScrollMotionItem from "@/app/components/ScrollMotionItem";
 import GallerySection from "./GallerySection";
 import {
@@ -37,15 +38,7 @@ export default function CategoryView({ category }: Props) {
               className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/85 transition hover:bg-white/10 hover:text-white"
               aria-label={labels.backToHubAria}
             >
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                <path
-                  d="M11.5 7h-9M6 3.5 2.5 7 6 10.5"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <SolarIcon name="arrow-left" size={14} />
               {labels.backToHub}
             </Link>
             <span className="text-xs text-white/55">

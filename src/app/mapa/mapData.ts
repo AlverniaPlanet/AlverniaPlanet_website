@@ -1,10 +1,10 @@
 // Dane mapy interaktywnej: pozycje kopuł w układzie współrzędnych obrazu
-// /public/mapa_wycieczki.png (1393 x 1129 px). Współrzędne (x, y) to środek
+// /public/mapa/wycieczka.png (1393 x 1129 px). Współrzędne (x, y) to środek
 // kopuły, r to promień strefy klikalnej. Wszystko w pikselach obrazu.
 
 export const MAP_WIDTH = 1393;
 export const MAP_HEIGHT = 1129;
-export const MAP_SRC = "/mapa_wycieczki.png";
+export const MAP_SRC = "/mapa/wycieczka.png";
 
 export type Kopula = {
   id: string;

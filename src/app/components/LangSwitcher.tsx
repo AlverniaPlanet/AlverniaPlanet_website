@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useI18n } from "@/app/i18n-provider";
 import { getLocalizedPath, mapToPolishRoute, normalizePathname, type Locale } from "@/lib/localizedRoutes";
+import { SolarIcon } from "@/app/components/SolarIcon";
 
 type LangOption = { code: Locale; label: string };
 
@@ -11,6 +12,8 @@ const OPTIONS: LangOption[] = [
   { code: "pl", label: "Polski" },
   { code: "en", label: "English" },
   { code: "pt", label: "Português" },
+  { code: "de", label: "Deutsch" },
+  { code: "zh", label: "中文" },
 ];
 
 function Flag({ code }: { code: LangOption["code"] }) {
@@ -34,6 +37,29 @@ function Flag({ code }: { code: LangOption["code"] }) {
       </svg>
     );
   }
+  if (code === "de") {
+    return (
+      <svg aria-hidden="true" width="18" height="12" viewBox="0 0 18 12" className="rounded-[3px] overflow-hidden">
+        <rect width="18" height="4" fill="#000000" />
+        <rect y="4" width="18" height="4" fill="#dd0000" />
+        <rect y="8" width="18" height="4" fill="#ffce00" />
+        <rect width="18" height="12" fill="none" stroke="#0f172a" strokeWidth="0.35" opacity="0.25" />
+      </svg>
+    );
+  }
+  if (code === "zh") {
+    return (
+      <svg aria-hidden="true" width="18" height="12" viewBox="0 0 18 12" className="rounded-[3px] overflow-hidden">
+        <rect width="18" height="12" fill="#de2910" />
+        <path d="M3.4 1.6l.62 1.9-1.62-1.18h2l-1.62 1.18z" fill="#ffde00" />
+        <circle cx="6.6" cy="1.5" r="0.42" fill="#ffde00" />
+        <circle cx="7.8" cy="2.7" r="0.42" fill="#ffde00" />
+        <circle cx="7.8" cy="4.4" r="0.42" fill="#ffde00" />
+        <circle cx="6.6" cy="5.6" r="0.42" fill="#ffde00" />
+        <rect width="18" height="12" fill="none" stroke="#0f172a" strokeWidth="0.35" opacity="0.25" />
+      </svg>
+    );
+  }
   // Simplified Union Jack (blue/white/red)
   return (
     <svg aria-hidden="true" width="18" height="12" viewBox="0 0 18 12" className="rounded-[3px] overflow-hidden">
@@ -47,8 +73,13 @@ function Flag({ code }: { code: LangOption["code"] }) {
   );
 }
 
-export default function LangSwitcher() {
-  const { locale, setLocale } = useI18n();
+/* `wariant`:
+   - "pasek"   — dotychczasowy wygląd (flagi w pasku i rozwijana lista),
+   - "kody"    — rząd pigułek z kodami języków, bez flag; używany w menu
+                 mobilnym. Logika przełączania jest ta sama (switchLocale),
+                 zmienia się wyłącznie warstwa wizualna. */
+export default function LangSwitcher({ wariant = "pasek" }: { wariant?: "pasek" | "kody" } = {}) {
+  const { locale, setLocale, t: etykieta } = useI18n();
   const pathname = usePathname();
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
@@ -79,6 +110,7 @@ export default function LangSwitcher() {
 
   if (!mounted) return null;
 
+  const etykietaJezyka = etykieta("aria.language");
   const active = OPTIONS.find((opt) => opt.code === locale) ?? OPTIONS[0];
   const others = OPTIONS.filter((opt) => opt.code !== active.code);
 
@@ -89,6 +121,28 @@ export default function LangSwitcher() {
     router.push(nextPath);
     setOpen(false);
   };
+
+  if (wariant === "kody") {
+    return (
+      <div className="flex items-center gap-1.5" role="group" aria-label={etykietaJezyka}>
+        {OPTIONS.map((opt) => {
+          const isActive = opt.code === active.code;
+          return (
+            <button
+              key={opt.code}
+              type="button"
+              onClick={() => switchLocale(opt.code)}
+              aria-pressed={isActive}
+              lang={opt.code}
+              className={`ap-lang-kod ${isActive ? "is-active" : ""}`}
+            >
+              {opt.code.toUpperCase()}
+            </button>
+          );
+        })}
+      </div>
+    );
+  }
 
   return (
     <>
@@ -128,15 +182,12 @@ export default function LangSwitcher() {
           title={active.label}
         >
           <Flag code={active.code} />
-          <svg
-            aria-hidden="true"
-            width="10"
-            height="10"
-            viewBox="0 0 10 10"
+          <SolarIcon
+            name="chevron-down"
+            size={10}
+            weight="bold"
             className={`text-[color:var(--ap-text-dim)] transition-transform duration-200 ${open ? "rotate-180" : ""}`}
-          >
-            <path d="M2 4l3 3 3-3" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+          />
         </button>
 
         {open ? (

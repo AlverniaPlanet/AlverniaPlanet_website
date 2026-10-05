@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import BookingLink from "@/app/components/BookingLink";
 import Image from "next/image";
 import Link from "next/link";
 import { useI18n } from "@/app/i18n-provider";
@@ -9,11 +10,12 @@ import ScrollMotionItem from "@/app/components/ScrollMotionItem";
 import LanguageBadge from "../LanguageBadge";
 import {
   buildBookingPath,
-  K360_BOOKING_CATEGORY,
   k360FilmService,
 } from "@/lib/booking";
 import { getLocalizedPath } from "@/lib/localizedRoutes";
 import {
+  FILMS,
+  filmBadges,
   findFilm,
   FILMS_COPY,
   FILM_DETAILS,
@@ -79,9 +81,7 @@ export default function FilmContent({ slug }: { slug: string }) {
   const myTimes = filmShowtimes(slug, selectedGroup);
 
   const bookingHref = buildBookingPath(loc, {
-    category: K360_BOOKING_CATEGORY,
     service: k360FilmService(slug),
-    autopick: true,
   });
   const repertoireHref = `${getLocalizedPath("/atrakcje/kino-360", loc)}#repertuar`;
 
@@ -168,7 +168,7 @@ export default function FilmContent({ slug }: { slug: string }) {
                 >
                   Kino 360
                 </p>
-                <h1 className="mt-2 text-pretty text-[clamp(2.2rem,7vw,4.4rem)] font-black leading-[1.02] tracking-[-0.035em] text-white">
+                <h1 className="mt-2 text-pretty text-[clamp(2.2rem,7vw,4.4rem)] font-extrabold leading-[1.02] tracking-[-0.035em] text-white">
                   {film.title}
                 </h1>
                 <p
@@ -180,7 +180,7 @@ export default function FilmContent({ slug }: { slug: string }) {
 
                 {/* Format + grupa docelowa */}
                 <div className="mt-5 flex flex-wrap items-center gap-2">
-                  {film.badges.map((b) => (
+                  {filmBadges(film, loc).map((b) => (
                     <span
                       key={b}
                       className="rounded-full border px-3 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.1em] text-white/90"
@@ -220,11 +220,11 @@ export default function FilmContent({ slug }: { slug: string }) {
                   <PrimaryButton
                     href={bookingHref}
                     size="lg"
-                    className="ticket-pill whitespace-nowrap !bg-[linear-gradient(135deg,#f03c64,#f7486c,#ff96aa)] !font-extrabold !text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.55)] ring-[color:rgba(240,60,100,0.6)] hover:!brightness-110"
+                    className="ticket-pill whitespace-nowrap !bg-[#56ddea] !font-extrabold !text-[#04222a] ring-[color:rgba(86,221,234,0.6)] hover:!brightness-110"
                   >
                     {s.cta}
                   </PrimaryButton>
-                  <BackLink className="rounded-full border border-white/25 bg-white/[0.06] px-5 py-2.5 backdrop-blur-md hover:border-white/50 hover:bg-white/12" />
+                  <BackLink className="rounded-[var(--ap-btn-radius)] border border-white/25 bg-white/[0.06] px-5 py-2.5 backdrop-blur-md hover:border-white/50 hover:bg-white/12" />
                 </div>
               </div>
             </ScrollMotionItem>
@@ -305,10 +305,19 @@ export default function FilmContent({ slug }: { slug: string }) {
               {myTimes.length ? (
                 <div className="mt-3 flex flex-wrap gap-2.5">
                   {myTimes.map((t) => (
+                    // ŚWIADOMIE nie link. To godziny filmu, na którego stronie już
+                    // jesteś, a przycisk „Kup bilet" stoi wyżej w hero — powielanie
+                    // akcji przy każdej godzinie mnożyłoby CTA bez nowej informacji.
+                    // Klikalny jest natomiast PEŁNY GRAFIK niżej, bo tam każdy wiersz
+                    // prowadzi do INNEGO filmu.
                     <span
                       key={t}
-                      className="rounded-xl px-4 py-2.5 text-lg font-black tabular-nums text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.4)]"
-                      style={{ background: `linear-gradient(135deg, ${accent}, ${accentSoft})`, boxShadow: `0 8px 22px ${accent}4d` }}
+                      className="rounded-[var(--ap-btn-radius)] border px-4 py-2.5 text-lg font-extrabold tabular-nums"
+                      style={{
+                        background: "transparent",
+                        borderColor: `${accent}80`,
+                        color: accentSoft,
+                      }}
                     >
                       {t}
                     </span>
@@ -330,10 +339,19 @@ export default function FilmContent({ slug }: { slug: string }) {
                 {schedule.map((entry) => {
                   const mine = entry.slug === slug;
                   const slotFilm = findFilm(entry.slug);
+                  // KAŻDY wiersz prowadzi do SWOJEGO filmu, nie do oglądanego —
+                  // inaczej klik w „12:30 Explore" na stronie The Stellars kupiłby
+                  // zły bilet. Usługa brana z tego samego katalogu Bookero co
+                  // wszędzie indziej (k360FilmService → nazwa 1:1 z panelem).
+                  const slotHref = buildBookingPath(loc, {
+                    service: k360FilmService(entry.slug),
+                  });
                   return (
-                    <div
+                    <BookingLink
                       key={entry.time}
-                      className="flex items-center gap-3 rounded-xl border px-3.5 py-2.5"
+                      href={slotHref}
+                      aria-label={`${s.cta}: ${slotFilm?.title ?? entry.slug}, ${entry.time}`}
+                      className="flex items-center gap-3 rounded-[var(--ap-btn-radius)] border px-3.5 py-2.5 transition hover:bg-white/[0.07] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
                       style={
                         mine
                           ? { borderColor: `${accent}88`, backgroundColor: `${accent}1f` }
@@ -341,15 +359,15 @@ export default function FilmContent({ slug }: { slug: string }) {
                       }
                     >
                       <span
-                        className="shrink-0 text-base font-black tabular-nums"
+                        className="shrink-0 text-base font-extrabold tabular-nums"
                         style={{ color: mine ? accentSoft : "rgba(255,255,255,0.9)" }}
                       >
                         {entry.time}
                       </span>
-                      <span className={`truncate text-sm ${mine ? "font-bold text-white" : "text-white/55"}`}>
+                      <span className={`truncate text-sm ${mine ? "font-bold text-white" : "text-white/72"}`}>
                         {slotFilm?.title ?? entry.slug}
                       </span>
-                    </div>
+                    </BookingLink>
                   );
                 })}
               </div>
@@ -416,34 +434,58 @@ export default function FilmContent({ slug }: { slug: string }) {
         </ScrollMotionItem>
 
         {/* Dolny CTA */}
+        {/* ===== ZOBACZ TEŻ — pozostałe filmy z repertuaru ===== */}
         <ScrollMotionItem strength="soft" float={false} className="wpk-reveal">
-          <section
-            className="relative overflow-hidden rounded-[1.75rem] border px-6 py-9 text-center sm:px-10 sm:py-11"
-            style={{
-              borderColor: `${accent}55`,
-              background: `radial-gradient(120% 130% at 50% 0%, ${accent}26, rgba(10,6,18,0.5) 60%)`,
-            }}
-          >
-            {/* <p>, nie <h2>: tytuł filmu jest już H1 tej strony — powtórka
-                w banerze CTA zaśmiecała strukturę nagłówków. */}
-            <p className="text-pretty text-2xl font-black tracking-[-0.02em] text-white sm:text-3xl">
-              {film.title}
+          <section aria-label={s.alsoSee} className="mx-auto mt-16 w-full max-w-[72rem] px-4 sm:mt-20">
+            <p className="text-[0.7rem] font-bold uppercase tracking-[0.18em] text-white/50">
+              {s.alsoSee}
             </p>
-            <p className="mx-auto mt-2 max-w-xl text-sm text-white/72 sm:text-base">
-              {fc.tagline}
-            </p>
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-              <PrimaryButton
-                href={bookingHref}
-                size="lg"
-                className="ticket-pill whitespace-nowrap !bg-[linear-gradient(135deg,#f03c64,#f7486c,#ff96aa)] !font-extrabold !text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.55)] ring-[color:rgba(240,60,100,0.6)] hover:!brightness-110"
-              >
-                {s.cta}
-              </PrimaryButton>
-              <BackLink className="rounded-full border border-white/25 bg-white/[0.06] px-5 py-2.5 backdrop-blur-md hover:border-white/50 hover:bg-white/12" />
+            {/* Mobile: poziomy slider przesuwany palcem (kafle są wysokie, więc
+                pionowa lista zajmowała pół ekranu na film). Od sm: zwykła siatka. */}
+            <div className="ap-seealso-rail -mx-4 mt-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 sm:pb-0">
+              {FILMS.filter((other) => other.slug !== slug).map((other) => {
+                const otherDetail = FILM_DETAILS[other.slug];
+                return (
+                  <Link
+                    key={other.slug}
+                    href={getLocalizedPath(`/atrakcje/kino-360/${other.slug}`, loc)}
+                    className="group w-[72%] shrink-0 snap-start overflow-hidden rounded-[var(--ap-btn-radius)] border border-white/10 bg-white/[0.03] transition hover:border-white/25 hover:bg-white/[0.06] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 sm:w-auto sm:shrink"
+                  >
+                    <div className="relative aspect-[3/4] overflow-hidden">
+                      <Image
+                        src={other.poster}
+                        alt={other.title}
+                        fill
+                        sizes="(min-width: 640px) 22rem, 100vw"
+                        className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+                        style={otherDetail?.posterPos ? { objectPosition: otherDetail.posterPos } : undefined}
+                      />
+                      <div
+                        aria-hidden="true"
+                        className="pointer-events-none absolute inset-0"
+                        style={{ background: "linear-gradient(180deg, rgba(0,0,0,0) 45%, rgba(0,0,0,0.72) 100%)" }}
+                      />
+                    </div>
+                    <div className="p-4">
+                      <p className="truncate text-sm font-extrabold text-white">{other.title}</p>
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {filmBadges(other, loc).map((badge) => (
+                          <span
+                            key={badge}
+                            className="rounded-full border border-white/15 px-2 py-0.5 text-[0.62rem] font-semibold uppercase tracking-[0.1em] text-white/65"
+                          >
+                            {badge}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
           </section>
         </ScrollMotionItem>
+
       </div>
     </main>
   );
@@ -462,7 +504,7 @@ function SectionHeading({
 }) {
   return (
     <div className={centered ? "text-center" : ""}>
-      <h2 className="text-[clamp(1.5rem,4vw,2.4rem)] font-black leading-tight tracking-[-0.03em] text-white">
+      <h2 className="text-[clamp(1.5rem,4vw,2.4rem)] font-extrabold leading-tight tracking-[-0.03em] text-white">
         {label}
       </h2>
       <div

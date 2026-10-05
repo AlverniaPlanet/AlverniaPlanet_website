@@ -1,11 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useTheme } from "@/app/theme-provider";
 
 export default function Loading() {
-  const { theme } = useTheme();
-  const isLight = theme === "light";
+  // Motyw jasny usunięty — serwis jest wyłącznie ciemny.
+  const isLight = false;
   const logoSrc = isLight ? "/Loga/Logo_pozytyw.svg" : "/Loga/Logo_negatyw.svg";
   const logoFrameClass = `inline-flex items-center justify-center rounded-[28px] px-10 py-3 ${
     isLight ? "bg-white/80 shadow-[0_12px_30px_rgba(23,23,48,0.16)]" : "bg-transparent"

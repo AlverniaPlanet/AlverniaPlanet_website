@@ -5,7 +5,7 @@ import WejdzPodKopuleContent from "./WejdzPodKopuleContent";
 export const metadata: Metadata = {
   title: "FILMWORLD Alvernia Planet",
   description:
-    "FILMWORLD Alvernia Planet: samodzielna trasa Free Flow przez kulisy filmu, muzyki i dźwięku. 30–60 minut, własne tempo, niebieskie światło.",
+    "FILMWORLD Alvernia Planet: zwiedzanie z przewodnikiem przez kulisy filmu, muzyki i dźwięku. 1 godz. 15 min, sześć przystanków pod Krakowem.",
   alternates: languageAlternates("/atrakcje/filmworld", "pl"),
 };
 

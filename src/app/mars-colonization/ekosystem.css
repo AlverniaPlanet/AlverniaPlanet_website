@@ -1,0 +1,320 @@
+/* ============================================================================
+   „Więcej niż jedna misja" — typografia i oś (komponent `Ekosystem.tsx`).
+
+   Kolory WYŁĄCZNIE z istniejącej palety: biel (nagłówek, nazwy), przygaszona
+   biel (opisy), turkus `--dj-turkus` (nadtytuł, etapy 02 i 03), czerwień
+   marsjańska `--ms-czerwien` (etap 01 — aktualna misja). Kontrast na granacie
+   pasa (#06111b): opis 0,72 bieli ok. 10:1, czerwień ok. 5:1, turkus ok. 11:1.
+
+   Wszystkie progi na KOŃCU pliku — `@media` nie podnosi swoistości.
+   ========================================================================= */
+
+/* Ciemne podłoże dla „Więcej niż jedna misja" i „Dla kogo". Płaski granat
+   w kolorze GÓRNEJ krawędzi sekcji „Dla kogo" (`--ms-pod-fala`, początek jej
+   gradientu), więc styk obu sekcji nie ma szwu, a sekcja z osią czyta się
+   jak typografia położona wprost na ciemnej stronie. */
+.mars-pas-nocny {
+  background-color: var(--ms-pod-fala);
+}
+
+/* Sekcja BEZ własnego tła — leży na pasie rodzica (decyzja obiektu). */
+.mars-page .mars-misje {
+  --misje-kropka: 0.7rem;
+  /* Środek pierwszego wiersza (numeru) — tu na telefonie stoi kropka osi. */
+  --misje-srodek-numeru: 0.625rem;
+  /* Dolne dopełnienie większe niż górne: po sekcji „duży oddech" przed
+     następną treścią. */
+  padding-block: clamp(4.5rem, 11vw, 7rem) clamp(5rem, 12vw, 8.5rem);
+  background: transparent;
+  color: #ffffff;
+}
+
+/* Nadtytuł to wspólne `.mars-overline` (ten sam stopień i rozstrzelenie co
+   w reszcie strony), tylko w turkusie — na ciemnym. */
+.mars-misje .mars-overline {
+  margin-bottom: 0.875rem;
+  color: var(--dj-turkus);
+}
+
+/* 36 px przy 375, 55 px przy 1024, 60 px od 1200 px — ta sama waga i ciasne
+   rozstrzelenie co pozostałe nagłówki sekcji (`.mars-tytul`). Bez gradientu
+   i bez poświaty. */
+.mars-misje-tytul {
+  margin: 0;
+  font-size: calc(clamp(2.25rem, 1.6rem + 2.9vw, 3.75rem) * var(--ms-skala-naglowka));
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+  color: #ffffff;
+  text-wrap: balance;
+}
+
+/* --- Etapy: TELEFON I TABLET (pionowa oś) ------------------------------------
+   Pionowa ścieżka: kropka przy numerze każdego etapu, w rynnie po lewej,
+   a między kropkami cienki odcinek osi. Odcinek rysuje KAŻDY etap oprócz
+   ostatniego — od własnej kropki do kropki następnego (wysokość etapu +
+   przerwa). Bez znajomości wysokości etapów: to ten sam znany odstęp od
+   góry każdego etapu. */
+.mars-misje-etapy {
+  --misje-rynna: 2rem;
+  --misje-przerwa: 3rem;
+  display: grid;
+  row-gap: var(--misje-przerwa);
+  margin: 2.75rem 0 0;
+  padding: 0 0 0 var(--misje-rynna);
+  list-style: none;
+}
+
+.mars-misje-etap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.mars-misje-etap:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  top: var(--misje-srodek-numeru);
+  bottom: calc(-1 * var(--misje-przerwa) - var(--misje-srodek-numeru));
+  left: calc(-1 * var(--misje-rynna) + var(--misje-kropka) / 2 - 0.5px);
+  width: 1px;
+  background: rgba(50, 216, 230, 0.4);
+  transform-origin: top center;
+}
+
+/* Odcinek od aktualnej misji: delikatne przejście czerwień → turkus. */
+.mars-misje-etap.is-aktualny::before {
+  background: linear-gradient(180deg, rgba(225, 98, 58, 0.7) 0%, rgba(50, 216, 230, 0.45) 100%);
+}
+
+.mars-misje-punkt {
+  position: absolute;
+  z-index: 1;
+  top: calc(var(--misje-srodek-numeru) - var(--misje-kropka) / 2);
+  left: calc(-1 * var(--misje-rynna));
+  width: var(--misje-kropka);
+  height: var(--misje-kropka);
+  border-radius: 50%;
+  background: var(--dj-turkus);
+}
+
+/* Aktualna misja: czerwona kropka z cienką, przygaszoną obwódką —
+   wyróżnienie, nie poświata. */
+.mars-misje-etap.is-aktualny .mars-misje-punkt {
+  background: var(--ms-czerwien);
+  box-shadow: 0 0 0 4px rgba(225, 98, 58, 0.16);
+}
+
+/* Numer jak oznaczenie misji: mały, rozstrzelony, z cienką linią obok. */
+.mars-misje-numer {
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+  gap: 0.875rem;
+  min-height: calc(var(--misje-srodek-numeru) * 2);
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.2em;
+  font-variant-numeric: tabular-nums;
+  color: rgba(50, 216, 230, 0.85);
+}
+
+.mars-misje-numer::after {
+  content: "";
+  flex: 1 1 auto;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.mars-misje-etap.is-aktualny .mars-misje-numer {
+  color: var(--ms-czerwien);
+}
+
+/* Nazwy produktów: 24 px na telefonie, 30 px na szerokim desktopie. Aktualna
+   misja ma pełną biel, dwie kolejne — o włos przygaszoną (decyzja obiektu:
+   „minimalnie większy kontrast", bez powiększania). */
+.mars-misje-nazwa {
+  margin: 1rem 0 0;
+  font-size: clamp(1.5rem, 1.25rem + 0.6vw, 1.875rem);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.mars-misje-etap.is-aktualny .mars-misje-nazwa {
+  color: #ffffff;
+}
+
+.mars-misje-opis {
+  margin: 0.75rem 0 0;
+  max-width: 24rem;
+  font-size: clamp(1rem, 0.95rem + 0.2vw, 1.0625rem);
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.72);
+  text-wrap: pretty;
+}
+
+/* Etap jako zwykła typografia, nie plakietka. */
+.mars-misje-etykieta {
+  margin: 1rem 0 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--dj-turkus);
+}
+
+.mars-misje-etap.is-aktualny .mars-misje-etykieta {
+  color: var(--ms-czerwien);
+}
+
+/* --- Wejście ------------------------------------------------------------------
+   Sekcja wchodzi wspólnym mechanizmem `[data-ujawnij]` (z arkusza strony),
+   etapy po kolei co 120 ms, a oś rysuje się od 01 do 03 po ich wejściu.
+   Selektory są dłuższe niż ogólne opóźnienia `[data-ujawnij] li:nth-child()`
+   w `mars.css` (co 70 ms) — inaczej tamte by wygrały. Bez JS-a i przy
+   „ogranicz ruch" wszystko stoi od razu (stan ukryty włącza dopiero klasa
+   `.ujawnianie-wlaczone`, a `mars.css` zeruje wtedy przejścia). */
+.mars-page.ujawnianie-wlaczone .mars-misje[data-ujawnij] .mars-misje-etapy > li.mars-misje-etap {
+  opacity: 0;
+  transform: translateY(0.75rem);
+  transition:
+    opacity 560ms ease,
+    transform 560ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition-delay: calc(120ms + var(--i, 0) * 120ms);
+}
+
+.mars-page.ujawnianie-wlaczone .mars-misje[data-ujawnij].jest-widoczny .mars-misje-etapy > li.mars-misje-etap {
+  opacity: 1;
+  transform: none;
+}
+
+.mars-page.ujawnianie-wlaczone .mars-misje[data-ujawnij] .mars-misje-etap::before {
+  transform: scaleY(0);
+  transition: transform 700ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition-delay: calc(520ms + var(--i, 0) * 260ms);
+}
+
+.mars-page.ujawnianie-wlaczone .mars-misje[data-ujawnij].jest-widoczny .mars-misje-etap::before {
+  transform: none;
+}
+
+/* ============================================================================
+   PROGI
+   ========================================================================= */
+
+/* DESKTOP od 1024 px: trzy równe kolumny, pod nimi POZIOMA oś.
+   Dlaczego dopiero od 1024: przy 768 px kolumna miałaby ok. 220 px — „Robotics
+   Showroom" w stopniu 24 px i „TECHNOLOGIA W PRAKTYCE" ledwie by się mieściły,
+   a opisy łamałyby się na cztery wiersze. Przy 1024 px kolumna ma ok. 300 px.
+
+   Wiersze etapów idą przez SUBGRID: numer, nazwa, opis, kropka i etykieta
+   każdej kolumny stoją w tym samym wierszu siatki rodzica. Dzięki temu oś
+   trafia w kropki we wszystkich kolumnach, nawet gdy opisy mają różną
+   długość (w innym języku łamią się inaczej). */
+@media (min-width: 1024px) {
+  .mars-misje-etapy {
+    --misje-odstep: clamp(2rem, 4vw, 3.5rem);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: repeat(5, auto);
+    column-gap: var(--misje-odstep);
+    row-gap: 0;
+    margin-top: clamp(3rem, 4.5vw, 4rem);
+    padding: 0;
+  }
+
+  /* Miejsce w siatce JAWNE, nie automatyczne: oś (`::before` listy) zajmuje
+     wiersz 4 w dwóch pierwszych kolumnach, a automatyczne rozmieszczanie
+     omija zajęte komórki — pierwszy etap lądował w TRZECIEJ kolumnie,
+     a dwa pozostałe pod nim. Jawnie umieszczone elementy mogą na siebie
+     zachodzić, więc oś i etapy dzielą wiersz bez kłótni. */
+  .mars-misje-etap {
+    display: grid;
+    grid-row: 1 / span 5;
+    grid-template-rows: subgrid;
+    align-items: start;
+  }
+
+  .mars-misje-etap:nth-child(1) {
+    grid-column: 1;
+  }
+
+  .mars-misje-etap:nth-child(2) {
+    grid-column: 2;
+  }
+
+  .mars-misje-etap:nth-child(3) {
+    grid-column: 3;
+  }
+
+  /* Pionowe odcinki są telefonowe — tu oś rysuje lista (niżej). */
+  .mars-misje-etap:not(:last-child)::before {
+    content: none;
+  }
+
+  /* Oś: od środka pierwszej kropki do środka trzeciej. Pseudoelement listy
+     jest elementem jej siatki — stoi w wierszu kropek i sięga od pierwszej
+     kolumny do początku trzeciej (koniec drugiej + odstęp). */
+  .mars-misje-etapy::before {
+    content: "";
+    grid-row: 4;
+    grid-column: 1 / 3;
+    align-self: center;
+    height: 1px;
+    margin-left: calc(var(--misje-kropka) / 2);
+    margin-right: calc(-1 * var(--misje-odstep) - var(--misje-kropka) / 2);
+    background: linear-gradient(
+      90deg,
+      rgba(225, 98, 58, 0.7) 0%,
+      rgba(50, 216, 230, 0.5) 50%,
+      rgba(50, 216, 230, 0.38) 100%
+    );
+    transform-origin: left center;
+  }
+
+  .mars-misje-numer {
+    grid-row: 1;
+  }
+
+  .mars-misje-nazwa {
+    grid-row: 2;
+    margin-top: 1.25rem;
+  }
+
+  /* Odstęp opis → oś (2,5 rem) siedzi w DOLNYM marginesie opisu, a nie nad
+     kropką: w wierszu osi stoją kropka i sama oś, oba wyśrodkowane — margines
+     nad kropką przesunąłby jej środek względem osi. */
+  .mars-misje-opis {
+    grid-row: 3;
+    margin: 0.875rem 0 2.5rem;
+    max-width: 21rem;
+  }
+
+  .mars-misje-punkt {
+    position: relative;
+    grid-row: 4;
+    top: auto;
+    left: auto;
+    align-self: center;
+  }
+
+  .mars-misje-etykieta {
+    grid-row: 5;
+    margin-top: 1rem;
+    white-space: nowrap;
+  }
+
+  /* Oś rysuje się od 01 do 03, gdy etapy już stoją. */
+  .mars-page.ujawnianie-wlaczone .mars-misje[data-ujawnij] .mars-misje-etapy::before {
+    transform: scaleX(0);
+    transition: transform 1100ms cubic-bezier(0.22, 0.61, 0.36, 1) 560ms;
+  }
+
+  .mars-page.ujawnianie-wlaczone .mars-misje[data-ujawnij].jest-widoczny .mars-misje-etapy::before {
+    transform: none;
+  }
+}

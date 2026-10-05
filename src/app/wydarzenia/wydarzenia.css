@@ -1,0 +1,3005 @@
+/* Style podstrony — wycięte z globals.css.
+
+   Powód: w jednym globalnym arkuszu siedziały reguły WSZYSTKICH podstron, więc
+   gość strony głównej pobierał je co do jednej. Zmierzone: 60% arkusza to były
+   style pojedynczych podstron. Next dzieli CSS po trasach, więc ten plik jedzie
+   wyłącznie tam, gdzie jest potrzebny.
+
+   Reguły zachowują kolejność z pliku źródłowego — to istotne, bo w tym projekcie
+   kaskada rozstrzyga kilka miejsc przy równej swoistości. */
+
+.events-page .events-section-divider {
+  background: linear-gradient(
+    90deg,
+    rgba(79, 207, 222, 0) 0%,
+    rgba(79, 207, 222, 0.62) 50%,
+    rgba(79, 207, 222, 0) 100%
+  );
+}
+
+.events-page .events-section-intro {
+  color: var(--ap-text-muted);
+}
+
+.events-page .events-video-card {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.events-page .events-dome-card,
+.events-page .events-video-tile,
+.events-page .events-contact-card,
+.events-page .events-showcase-item {
+  contain: paint;
+}
+
+.events-page .events-video-tile {
+  --ap-card-hover-base-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+.events-page .events-dome-card {
+  --ap-card-hover-base-shadow:
+    0 18px 40px rgba(2, 3, 10, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.09);
+  border-color: rgba(126, 246, 255, 0.24);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.045));
+  box-shadow:
+    0 18px 40px rgba(2, 3, 10, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.09);
+}
+
+.events-page .events-rental-pill {
+  border-color: rgba(79, 207, 222, 0.45);
+  background: rgba(79, 207, 222, 0.12);
+  color: #a5e6f0;
+}
+
+.events-page .events-dome-thumb {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(8, 14, 28, 0.32);
+}
+
+.events-page .events-dome-divider {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.events-page .events-dome-highlight {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.02);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.events-page .events-dome-details {
+  border-color: rgba(79, 207, 222, 0.24);
+  background: rgba(8, 14, 28, 0.18);
+}
+
+.events-page .events-dome-summary,
+.events-page .events-dome-caret {
+  color: var(--ap-ice);
+}
+
+.events-page .events-dome-details-content {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.events-page .events-dome-point {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.events-page .events-contact-card {
+  border-color: rgba(126, 246, 255, 0.24);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.045));
+  box-shadow:
+    0 16px 36px rgba(2, 3, 10, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.09);
+}
+
+/* Zdjęcia zespołu to wycinki z przezroczystym tłem — koło pod spodem daje im
+   powierzchnię, żeby postać nie wisiała w powietrzu na tle karty. */
+.events-page .events-contact-photo {
+  border: 1px solid rgba(79, 207, 222, 0.3);
+  background: linear-gradient(180deg, rgba(79, 207, 222, 0.18), rgba(255, 255, 255, 0.04));
+}
+
+/* Po wtopieniu kart w tło twardy cyjanowy krążek pod wycinkiem zaczął wyglądać
+   jak naklejona moneta. Zostaje sama miękka podkładka: ledwie widoczny obrys
+   i cień, który trzyma postać przy karcie, zamiast rysować drugie koło. */
+.events-page .events-contact-card .events-contact-photo {
+  border-color: rgba(126, 246, 255, 0.14);
+  background: radial-gradient(
+    75% 75% at 50% 35%,
+    rgba(10, 16, 32, 0.5) 0%,
+    rgba(10, 16, 32, 0.24) 60%,
+    rgba(10, 16, 32, 0) 100%
+  );
+  filter: drop-shadow(0 8px 16px rgba(2, 4, 12, 0.5));
+}
+
+.events-page .events-contact-link {
+  color: var(--ap-text);
+  transition: color 180ms ease;
+}
+
+.events-page .events-contact-link:hover {
+  color: var(--ap-text-strong);
+}
+
+/* ==========================================================================
+   LANDING /wydarzenia — układ editorialowy.
+   CAŁOŚĆ jest zagnieżdżona pod `.events-page`, czyli pod klasą, która występuje
+   wyłącznie na tej jednej stronie. Żadna inna podstrona serwisu tych reguł
+   nie widzi — sprawdzone grepem po src/.
+   ========================================================================== */
+
+/* Rytm pionowy sekcji + cienka linia jako jedyny separator. Zamiast pakowania
+   każdego bloku w kartę. */
+.events-page .events-block {
+  margin-top: clamp(4.5rem, 9vw, 8.5rem);
+  padding-top: clamp(2.5rem, 4vw, 4rem);
+  border-top: 1px solid rgba(126, 246, 255, 0.14);
+}
+
+/* Czarny pas pod sekcją (na razie „Rodzaje wydarzeń"). Grafika tła strony
+   przechodzi w czerń w odstępie nad sekcją, pod treścią sekcji jest czysta
+   czerń, a w odstępie pod nią czerń wraca do grafiki — przy następnej sekcji
+   tło jest już w pełni widoczne. Długości przejść to te same wartości co
+   odstęp (margin) i padding .events-block, więc pas trafia w sekcje na każdej
+   szerokości. Pas ma szerokość ekranu; powłoka ma overflow-x: clip, więc nie
+   powoduje poziomego przewijania. z-index: -1 w kontekście powłoki kładzie go
+   nad grafiką tła (ta stoi wcześniej w DOM), a pod treścią. Dodatkowe stopy
+   w połowie przejść wygładzają gradient, żeby nie było widać pasów. */
+.events-page .events-block-dark {
+  --dark-gap: clamp(4.5rem, 9vw, 8.5rem);
+  --dark-pad: clamp(2.5rem, 4vw, 4rem);
+  --dark-in: calc(var(--dark-gap) + var(--dark-pad));
+  --dark-out: calc(var(--dark-gap) + 2.5rem);
+  position: relative;
+}
+
+.events-page .events-block-dark::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: calc(-1 * var(--dark-gap));
+  bottom: calc(-1 * var(--dark-gap));
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 0,
+    rgba(0, 0, 0, 0.5) calc(var(--dark-in) * 0.42),
+    rgba(0, 0, 0, 0.86) calc(var(--dark-in) * 0.72),
+    #000000 var(--dark-in),
+    #000000 calc(100% - var(--dark-out)),
+    rgba(0, 0, 0, 0.86) calc(100% - var(--dark-out) * 0.72),
+    rgba(0, 0, 0, 0.5) calc(100% - var(--dark-out) * 0.42),
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+/* „Rodzaje wydarzeń": czerń NIE wygasa pod sekcją — trzyma się do samej
+   linii następnej sekcji, a powrót do grafiki przejmuje sekcja z mapą
+   (.events-block-fade-out) i rozciąga go na całą swoją wysokość. */
+.events-page .events-block-dark.events-block-dark-hold::before {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 0,
+    rgba(0, 0, 0, 0.5) calc(var(--dark-in) * 0.42),
+    rgba(0, 0, 0, 0.86) calc(var(--dark-in) * 0.72),
+    #000000 var(--dark-in),
+    #000000 100%
+  );
+}
+
+/* Sekcje domykające czarny pas (mapa oraz realizacje): czerń z sekcji wyżej
+   wygasa stopniowo przez całą sekcję i znika dopiero na jej końcu — pod
+   panelem ze spacerem 360°, a niżej przed „Planujesz wydarzenie?". Na
+   samej górze pas zaczyna się 1 px wyżej, żeby przykryć też linię sekcji —
+   inaczej między czernią a gradientem zostałaby jasna szczelina. Kolejne stopy
+   wygaszają czerń łagodnie, bez widocznych pasów. */
+.events-page .events-block-fade-out {
+  position: relative;
+}
+
+.events-page .events-block-fade-out::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -1px;
+  bottom: 0;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    #000000 0,
+    rgba(0, 0, 0, 0.92) 18%,
+    rgba(0, 0, 0, 0.74) 40%,
+    rgba(0, 0, 0, 0.46) 62%,
+    rgba(0, 0, 0, 0.18) 84%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+.events-page .events-display {
+  text-wrap: balance;
+  font-feature-settings: "ss01" 1;
+}
+
+/* Dopowiedzenie tytułu hero — mniejszy stopień i ZAWSZE jeden wiersz.
+   Rozmiar liczony z szerokości kontenera hero (jednostka cqi, kontener to
+   .events-hero-copy), a nie z 100vw — vw wlicza pasek przewijania i na
+   desktopie wyliczenie rozjeżdżałoby się o ~15 px. Dzielnik 23 = najszersza
+   wersja językowa z zapasem: zmierzone pl 21.8em, en 19.5em, pt 22.5em,
+   de 21.9em, zh 9.0em. Pułap 2.25rem trzyma linię wyraźnie mniejszą od głównej
+   (4.2rem). nowrap jest bezpieczny, bo rozmiar z definicji mieści się w szerokości. */
+.events-page .events-hero-copy {
+  container-type: inline-size;
+}
+
+/* Główna linia tytułu hero — zawsze jeden wiersz. Rozmiar to MNIEJSZA z dwóch
+   wartości: dotychczasowy stopień tytułu (clamp jak na <h1>) i szerokość
+   kontenera podzielona przez szerokość tekstu w em (per język z page.tsx).
+   Tytuł może się więc tylko zmniejszyć, żeby się zmieścić — krótkie wersje
+   (en, zh) nie rosną ponad dotychczasowy rozmiar. */
+.events-page .events-hero-title-main {
+  font-size: min(clamp(2rem, 7.4vw, 4.2rem), calc(100cqi / var(--hero-title-em, 14.1)));
+  white-space: nowrap;
+}
+
+.events-page .events-hero-title-sub {
+  font-size: min(2.25rem, calc(100cqi / 23));
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.events-page .events-hero-eyebrow {
+  color: rgba(214, 246, 255, 0.82);
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.55);
+}
+
+/* --- Wejście treści przy przewijaniu (tylko /wydarzenia) -------------------
+   Element dostaje klasę `is-visible`, gdy wjedzie w kadr (obserwator w <head>).
+   Animowane są wyłącznie krycie i przesunięcie, czyli właściwości, które liczy
+   kompozytor — przewijanie nie przemalowuje przez to strony.
+
+   Reguły są celowo pod `.events-page`: ScrollMotionItem jest używany w całym
+   serwisie, a wejścia mają na razie działać tylko tutaj. `html.ap-reveal`
+   dokłada skrypt i tylko wtedy, gdy przeglądarka zna IntersectionObserver —
+   bez JavaScriptu treść jest po prostu widoczna od razu. */
+html.ap-reveal .events-page [data-ap-reveal] {
+  opacity: 0;
+  transform: translate3d(0, var(--reveal-rise, 12px), 0);
+  transition:
+    opacity 620ms var(--ap-ease-standard),
+    transform 620ms var(--ap-ease-standard);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+html.ap-reveal .events-page [data-ap-reveal="strong"] {
+  --reveal-rise: 18px;
+}
+
+html.ap-reveal .events-page [data-ap-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Kafelki w siatkach wchodzą jeden po drugim, kiedy pokaże się ich sekcja. */
+html.ap-reveal .events-page .ap-stagger > * {
+  opacity: 0;
+  transform: translate3d(0, 8px, 0);
+  transition:
+    opacity 520ms var(--ap-ease-standard),
+    transform 520ms var(--ap-ease-standard);
+}
+
+html.ap-reveal .events-page [data-ap-reveal].is-visible .ap-stagger > * {
+  opacity: 1;
+  transform: none;
+}
+
+html.ap-reveal .events-page .ap-stagger > *:nth-child(2) { transition-delay: 80ms; }
+html.ap-reveal .events-page .ap-stagger > *:nth-child(3) { transition-delay: 160ms; }
+html.ap-reveal .events-page .ap-stagger > *:nth-child(4) { transition-delay: 240ms; }
+html.ap-reveal .events-page .ap-stagger > *:nth-child(5) { transition-delay: 320ms; }
+html.ap-reveal .events-page .ap-stagger > *:nth-child(n + 6) { transition-delay: 400ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  html.ap-reveal .events-page [data-ap-reveal],
+  html.ap-reveal .events-page .ap-stagger > * {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }}
+
+/* --- Pasek kluczowych parametrów ---------------------------------------- */
+.events-page .events-statbar {
+  background: rgba(126, 246, 255, 0.16);
+  border: 1px solid rgba(126, 246, 255, 0.2);
+}
+
+.events-page .events-statbar-cell {
+  background: linear-gradient(180deg, rgba(9, 12, 26, 0.94), rgba(9, 12, 26, 0.88));
+  overflow: hidden;
+}
+
+/* --- Cztery przewagi: niska lista ------------------------------------- */
+/* Rozmiar ikony NIE jest wpisany na sztywno — liczymy go z tych samych zmiennych,
+   z których bierze się wysokość tekstu:
+     ikona = wiersz tytułu + odstęp + 2 wiersze opisu
+   Dzięki temu przy opisie w dwóch wierszach (najczęstszy przypadek) ikona ma
+   dokładnie wysokość bloku tekstu. Wszystkie ikony w liście mają ten sam rozmiar —
+   ikony różnej wielkości w jednej liście wyglądałyby na przypadkowe. Przy opisie
+   w 1 albo 3 wierszach tekst jest wyśrodkowany względem ikony. */
+.events-page .events-why-list {
+  --why-title-size: 1rem;
+  --why-title-lh: 1.25;
+  --why-body-size: 0.8rem;
+  --why-body-lh: 1.38;
+  --why-gap: 0.2rem;
+  /* Ikona = tytuł + tyle wierszy opisu. Opis ma zwykle 2 wiersze: na telefonie
+     wynika to z szerokości ekranu, od 640 px wymusza to stała szerokość opisu
+     (24rem) — bez niej na szerszych ekranach jedne opisy stały w 1, inne
+     w 2 wierszach i ikona przestawała pasować do tekstu. */
+  --why-lines: 2;
+  --why-icon: calc(
+    var(--why-title-size) * var(--why-title-lh) + var(--why-gap) +
+      var(--why-lines) * var(--why-body-size) * var(--why-body-lh)
+  );
+  display: grid;
+  gap: 0.625rem;
+  /* równe wysokości kafelków — lista nie „faluje", gdy jeden opis ma więcej wierszy */
+  grid-auto-rows: 1fr;
+}
+
+.events-page .events-why-tile {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+  /* Na telefonie tytuł łamie się na dwa wiersze, a opis na dwa–trzy, więc pion
+     robił się ciasny — stąd większy oddech nad i pod tekstem. */
+  padding: 1.05rem 0.95rem;
+  border-radius: 1.1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.035));
+}
+
+/* Ikona w zaokrąglonym kwadracie z delikatnym cyjanowym tłem — sam piktogram
+   zajmuje połowę kwadratu, reszta to oddech. */
+/* Barwę ikon ustawia suwak pod listą: jedna zmienna (--why-icon-rgb) steruje
+   kolorem znaku, obrysem i tłem kafelka. Domyślnie ta sama, co dotąd. */
+/* --- Sekcja „Miejsce, które pracuje…" jako jeden kafelek -------------------
+   Nagłówek, lista, wideo i suwak siedzą w jednej karcie — na telefonie i na
+   komputerze. Obrys, poświata i odcień tła biorą się z tej samej zmiennej co
+   ikony, więc karta zmienia barwę razem z suwakiem. */
+.events-page .events-why-shell {
+  position: relative;
+  isolation: isolate;
+  padding: 3.25rem 1.15rem;
+  border: 1px solid rgb(var(--events-accent-rgb, 126 246 255) / 0.33);
+  border-radius: 1.35rem;
+  /* Ta sama budowa co panel repertuaru Kina 360 (.rep-glass): ciemna baza,
+     nad nią poświata w kolorze akcentu wchodząca od góry, a na wierzchu cienka
+     ramka wewnętrzna — „obraz w ramie". Różnica jest taka, że kolor bierze się
+     ze zmiennej sterowanej suwakiem, a nie z wybranego filmu. */
+  background: linear-gradient(
+    180deg,
+    rgba(9, 12, 22, 0.72) 0%,
+    rgba(6, 9, 18, 0.72) 52%,
+    rgba(3, 5, 12, 0.88) 100%
+  );
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.38);
+  transition:
+    border-color 140ms linear,
+    box-shadow 140ms linear;
+}
+
+/* Poświata w kolorze akcentu — od góry, jak w repertuarze. */
+.events-page .events-why-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      120% 95% at 50% -8%,
+      rgb(var(--events-accent-rgb, 126 246 255) / 0.28),
+      transparent 58%
+    ),
+    linear-gradient(180deg, rgb(var(--events-accent-rgb, 126 246 255) / 0.12) 0%, transparent 52%);
+}
+
+/* Ramka wewnętrzna odsunięta od krawędzi karty. */
+.events-page .events-why-shell::after {
+  content: "";
+  position: absolute;
+  inset: 0.65rem;
+  z-index: -1;
+  border: 1px solid rgb(var(--events-accent-rgb, 126 246 255) / 0.22);
+  border-radius: 0.9rem;
+  pointer-events: none;
+  box-shadow: inset 0 1px 26px rgb(var(--events-accent-rgb, 126 246 255) / 0.09);
+}
+
+@media (min-width: 640px) {
+  .events-page .events-why-shell::after {
+    inset: 1rem;
+    border-radius: 1.05rem;
+  }}
+
+@media (min-width: 640px) {
+  .events-page .events-why-shell {
+    padding: 4rem 1.75rem;
+    border-radius: 1.5rem;
+  }}
+
+@media (min-width: 1024px) {
+  .events-page .events-why-shell {
+    padding: 4.5rem 2.25rem;
+  }}
+
+@media (prefers-reduced-motion: reduce) {
+  .events-page .events-why-shell {
+    transition: none;
+  }}
+
+.events-page .events-accent {
+  color: rgb(var(--events-accent-rgb, 126 246 255));
+  transition: color 140ms linear;
+}
+
+.events-page .events-why-tile-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: var(--why-icon);
+  height: var(--why-icon);
+  padding: calc(var(--why-icon) * 0.25);
+  border-radius: calc(var(--why-icon) * 0.28);
+  border: 1px solid rgb(var(--events-accent-rgb, 126 246 255) / 0.22);
+  background: rgb(var(--events-accent-rgb, 126 246 255) / 0.09);
+  color: rgb(var(--events-accent-rgb, 126 246 255));
+  transition:
+    color 140ms linear,
+    border-color 140ms linear,
+    background-color 140ms linear;
+}
+
+/* --- Suwak koloru ikon ---------------------------------------------------- */
+.events-page .events-why-color {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  margin-top: 1.5rem;
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  .events-page .events-accent {
+  color: rgb(var(--events-accent-rgb, 126 246 255));
+  transition: color 140ms linear;
+}
+
+.events-page .events-why-tile-icon {
+    transition: none;
+  }}
+
+.events-page .events-why-tile-text {
+  min-width: 0;
+}
+
+.events-page .events-why-tile-title {
+  font-size: var(--why-title-size);
+  line-height: var(--why-title-lh);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  overflow-wrap: break-word;
+}
+
+.events-page .events-why-tile-body {
+  margin-top: var(--why-gap);
+  font-size: var(--why-body-size);
+  line-height: var(--why-body-lh);
+  color: rgba(244, 246, 255, 0.68);
+  overflow-wrap: break-word;
+  text-wrap: pretty;
+}
+
+@media (min-width: 640px) {
+  .events-page .events-why-list {
+    --why-title-size: 1.06rem;
+    --why-body-size: 0.88rem;
+    --why-body-lh: 1.4;
+    gap: 0.75rem;
+  }
+
+  .events-page .events-why-tile {
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-radius: 1.25rem;
+  }}
+
+@media (min-width: 640px) {
+  .events-page .events-why-tile-body {
+    max-width: 24rem;
+  }}
+
+/* --- Karty formatów ------------------------------------------------------ */
+/* Karta formatu jak okładka: zdjęcie na całą kartę, treść na kadrze.
+   Obrys prawie niewidoczny — kartę budują zdjęcie i zaokrąglenie, nie ramka. */
+.events-page .events-format-card {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(9, 12, 26, 0.6);
+  contain: paint;
+}
+
+/* Dwa przyciemnienia: górne pod pigułkę i ikonę, dolne pod tytuł i opis.
+   Środek zostaje czysty, żeby zdjęcie było bohaterem karty. */
+.events-page .events-format-scrim {
+  background: linear-gradient(
+    180deg,
+    rgba(4, 6, 16, 0.5) 0%,
+    rgba(4, 6, 16, 0) 26%,
+    rgba(4, 6, 16, 0) 38%,
+    rgba(4, 6, 16, 0.72) 68%,
+    rgba(4, 6, 16, 0.95) 100%
+  );
+}
+
+/* Szklana pigułka z numerem i szklane kółko z ikoną — ten sam materiał.
+   Rozmycie tła tylko tam, gdzie jest precyzyjny wskaźnik: sześć kart
+   z backdrop-filter w przewijanym railu na telefonie kosztuje płynność,
+   a projekt zdejmuje blur na pointer: coarse także w innych miejscach. */
+.events-page .events-format-pill,
+.events-page .events-format-icon {
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  /* 0.68: zdjęcie gali ma jasny lewy górny róg — przy 0.42 numer schodził
+     do 3.97:1, a przy 0.58 do 4.45:1, czyli wciąż poniżej progu 4.5:1. */
+  background: rgba(10, 12, 24, 0.68);
+  color: #ffffff;
+}
+
+.events-page .events-format-pill {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  min-height: 2.25rem;
+  padding: 0.55rem 0.95rem 0;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.events-page .events-format-pill-total {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.events-page .events-format-icon {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
+  border-radius: 999px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .events-page .events-format-pill,
+  .events-page .events-format-icon {
+    -webkit-backdrop-filter: blur(10px) saturate(1.3);
+    backdrop-filter: blur(10px) saturate(1.3);
+  }}
+
+/* --- Pasek „Zaufali nam" ---------------------------------------------------
+   Rząd z dwiema kopiami listy jedzie w lewo o połowę swojej szerokości i wraca
+   do zera — pętla jest niewidoczna. Animowany jest tylko transform (kompozytor),
+   więc pasek nie przemalowuje strony podczas przewijania.
+
+   Krawędzie wygaszamy maską, żeby logotypy nie ucinały się twardo o brzeg
+   ekranu. Prędkość jest stała: czas pętli rośnie z liczbą logotypów. */
+.events-page .events-trusted {
+  --trusted-gap: clamp(2.25rem, 6vw, 4.5rem);
+  --trusted-height: clamp(1.6rem, 4.6vw, 2.4rem);
+  --trusted-speed: 3.4s;
+}
+
+.events-page .events-trusted-viewport {
+  overflow: hidden;
+  /* Pas idzie przez całą szerokość ekranu, nie tylko przez kolumnę treści. */
+  width: 100vw;
+  margin-left: 50%;
+  transform: translateX(-50%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%);
+}
+
+.events-page .events-trusted-lane.is-paused {
+  animation-play-state: paused;
+}
+
+.events-page .events-trusted-lane {
+  display: flex;
+  width: max-content;
+  animation: events-trusted-scroll calc(var(--trusted-count, 6) * var(--trusted-speed)) linear infinite;
+  will-change: transform;
+}
+
+.events-page .events-trusted-track {
+  display: flex;
+  align-items: center;
+  gap: var(--trusted-gap);
+  padding-inline: calc(var(--trusted-gap) / 2);
+  margin: 0;
+  /* Jedna kopia musi być co najmniej tak szeroka jak ekran (viewport ma
+     dokładnie 100vw). Inaczej przy kilku wąskich logotypach kopia kończyła się
+     w połowie ekranu i przed wejściem drugiej widać było pustą przerwę.
+     Gdy logotypy nie wypełniają szerokości, space-around rozkłada je równo. */
+  min-width: 100vw;
+  justify-content: space-around;
+}
+
+.events-page .events-trusted-item {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+}
+
+/* Wysokość jest wspólna dla całego paska, a --logo-scale koryguje pojedyncze
+   znaki: kwadratowa tarcza przy tej samej wysokości co szeroki napis wygląda
+   na dużo mniejszą. Znaki w barwach własnych są lekko przygaszone, a te, które
+   na czerni by zniknęły (czarny rysunek), idą jako biała sylwetka. */
+.events-page .events-trusted-logo {
+  height: calc(var(--trusted-height) * var(--logo-scale, 1));
+  width: auto;
+  max-width: clamp(7rem, 26vw, 14rem);
+  object-fit: contain;
+  opacity: 0.85;
+  transition:
+    opacity 260ms var(--ap-ease-standard),
+    filter 260ms var(--ap-ease-standard);
+}
+
+.events-page .events-trusted-logo.is-white {
+  opacity: 0.72;
+  filter: brightness(0) invert(1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  /* Pauza tylko nad samymi logotypami. Suwak tempa stoi w tym samym bloku,
+     więc pauza na całym .events-trusted zatrzymywała pasek w trakcie
+     przesuwania suwaka. */
+  .events-page .events-trusted-viewport:hover .events-trusted-lane {
+    animation-play-state: paused;
+  }
+
+  .events-page .events-trusted-logo:hover {
+    opacity: 1;
+  }}
+
+/* --- Suwak tempa pod paskiem logotypów ------------------------------------
+   Prędkość zmienia JavaScript przez playbackRate animacji (page.tsx), więc CSS
+   odpowiada tu tylko za wygląd. Suwak jest schowany przy „ogranicz ruch",
+   bo wtedy pasek w ogóle się nie przewija. */
+.events-page .events-trusted-speed {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  /* Wyraźny odstęp od paska logotypów — suwak ma być osobnym elementem
+     sterującym, a nie kolejnym wierszem tej samej listy. */
+  margin-top: clamp(2.5rem, 6vw, 3.75rem);
+}
+
+.events-page .events-trusted-speed-label {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+/* Na wąskich ekranach podpis idzie do własnego wiersza, a pod nim zostaje
+   równy rząd: wolniej — suwak — szybciej — wartość. */
+@media (max-width: 479px) {
+  .events-page .events-trusted-speed-label {
+    flex-basis: 100%;
+    text-align: center;
+  }
+
+  .events-page .events-dome-slider {
+    /* Kopuła zajmuje 45 px, więc na wąskim ekranie tor dostaje trochę więcej
+       miejsca — inaczej droga uchwytu zrobiłaby się krótsza od niego samego. */
+    width: min(13rem, 48vw);
+  }}
+
+.events-page .events-trusted-speed-value {
+  /* Stała szerokość: zmiana „1,6×" na „2,5×" nie może przesuwać suwaka. */
+  min-width: 2.75rem;
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  text-align: right;
+  color: #7ef6ff;
+}
+
+/* --- Suwak kopułowy ------------------------------------------------------
+   Sterowanie zostaje natywne: <input type="range"> leży na wierzchu, jest
+   przezroczysty i to on obsługuje myszkę, dotyk i klawiaturę. Widoczna część
+   (tor, podziałka, kopuła) stoi POD nim i ma pointer-events: none.
+
+   Synchronizacja: przeglądarka prowadzi środek uchwytu od `szerokość uchwytu/2`
+   do `100% - szerokość uchwytu/2`. Ta sama formuła stoi w --dome-center, a
+   szerokość natywnego uchwytu jest ustawiona na tę samą zmienną, więc kopuła
+   i wypełnienie toru trafiają dokładnie tam, gdzie natywna wartość — i przy
+   minimum ani maksimum nic nie wystaje poza komponent. */
+.events-page .events-dome-slider {
+  --dome-w: 45px;
+  --dome-h: 28.125px;
+  --dome-center: calc(var(--dome-w) / 2 + (100% - var(--dome-w)) * var(--dome-progress));
+  position: relative;
+  /* Kopuła stoi NAD linią toru, a tor biegnie przez środek kontrolki — więc
+     nad środkiem musi zostać co najmniej tyle miejsca, ile wynosi wysokość
+     bryły (28,1 px), plus zapas na powiększenie przy przeciąganiu. Stąd 60 px:
+     to również z zapasem pokrywa pole dotyku 44 px (WCAG 2.5.8). */
+  height: 3.75rem;
+  width: min(15rem, 46vw);
+  flex: 0 0 auto;
+}
+
+.events-page .events-dome-slider-input {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background: none;
+  cursor: pointer;
+  /* Pion zostaje przeglądarce: przeciąganie palcem w górę i w dół przewija
+     stronę, a poziome trafia do suwaka. */
+  touch-action: pan-y;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.events-page .events-dome-slider-input::-webkit-slider-runnable-track {
+  height: 100%;
+  background: none;
+}
+
+.events-page .events-dome-slider-input::-moz-range-track {
+  height: 100%;
+  background: none;
+}
+
+/* Natywny uchwyt jest niewidoczny — rysunek robi kopuła niżej. Szerokość musi
+   się zgadzać z --dome-w, bo to ona wyznacza drogę uchwytu. */
+.events-page .events-dome-slider-input::-webkit-slider-thumb {
+  width: var(--dome-w);
+  height: var(--dome-w);
+  border: 0;
+  background: none;
+  opacity: 0;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.events-page .events-dome-slider-input::-moz-range-thumb {
+  width: var(--dome-w);
+  height: var(--dome-w);
+  border: 0;
+  background: none;
+  opacity: 0;
+}
+
+.events-page .events-dome-slider-input:focus-visible {
+  outline: 2px solid #7ef6ff;
+  outline-offset: 2px;
+  border-radius: 0.85rem;
+}
+
+.events-page .events-dome-slider-visual {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.events-page .events-dome-slider-track,
+.events-page .events-dome-slider-fill {
+  position: absolute;
+  top: 50%;
+  height: 3px;
+  border-radius: 999px;
+  transform: translateY(-50%);
+}
+
+.events-page .events-dome-slider-track {
+  right: 0;
+  left: 0;
+  background: rgba(140, 168, 200, 0.24);
+}
+
+.events-page .events-dome-slider-fill {
+  left: 0;
+  width: var(--dome-center);
+  background: #7ef6ff;
+}
+
+/* Podziałka: same kreski, bez liczb i opisów. Rozpięta dokładnie na drodze
+   uchwytu, więc skrajne kreski stoją pod skrajnymi położeniami kopuły. */
+.events-page .events-dome-slider-ticks {
+  position: absolute;
+  top: calc(50% + 7px);
+  right: calc(var(--dome-w) / 2);
+  left: calc(var(--dome-w) / 2);
+  height: 5px;
+  background-image: linear-gradient(90deg, rgba(186, 212, 238, 0.26) 1px, transparent 1px);
+  background-repeat: repeat-x;
+  background-size: calc((100% - 1px) / 8) 100%;
+}
+
+.events-page .events-dome-slider-ticks::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1px;
+  height: 100%;
+  background: rgba(186, 212, 238, 0.26);
+}
+
+/* Kopuła STOI podstawą na linii toru, a jej środek wskazuje wartość.
+   Rysunek bierze barwę z `color` i dwóch zmiennych odcieni — domyślnie turkus
+   strony, a przy suwaku koloru aktualnie wybrana barwa. */
+.events-page .events-dome-slider-handle {
+  --dome-ink-top: #e2fbff;
+  --dome-ink-bottom: #4aa9b8;
+  color: #7ef6ff;
+  position: absolute;
+  top: 50%;
+  left: var(--dome-center);
+  width: var(--dome-w);
+  height: var(--dome-h);
+  transform: translate(-50%, calc(-100% + 1.5px));
+  transform-origin: 50% 100%;
+  transition:
+    transform 140ms var(--ap-ease-standard),
+    filter 140ms var(--ap-ease-standard);
+}
+
+.events-page .events-dome-slider-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* --- Wariant: suwak koloru ikon --------------------------------------------
+   Ten sam kontroler, ale torem jest cała skala barw, a nie postęp — dlatego
+   nie ma wypełnienia ani podziałki. Tor jest wsunięty o połowę kopuły z obu
+   stron, czyli dokładnie na drogę uchwytu: dzięki temu barwa pod środkiem
+   kopuły to DOKŁADNIE barwa wybrana suwakiem. */
+.events-page .events-dome-slider--color {
+  width: min(18rem, 100%);
+}
+
+.events-page .events-dome-slider--color .events-dome-slider-track {
+  right: calc(var(--dome-w) / 2);
+  left: calc(var(--dome-w) / 2);
+  background: linear-gradient(90deg, rgb(240 60 100), rgb(126 246 255), rgb(247 120 40));
+}
+
+/* Punkty skali barw: czerwony, niebieski i pomarańczowy — te same wartości,
+   co krańce i środek gradientu toru (WHY_ICON_STOPS w page.tsx). Leżą na
+   drodze uchwytu, więc każdy stoi dokładnie pod swoją barwą. */
+.events-page .events-dome-slider--color .events-dome-slider-stops {
+  position: absolute;
+  top: calc(50% + 8px);
+  right: calc(var(--dome-w) / 2);
+  left: calc(var(--dome-w) / 2);
+  height: 5px;
+}
+
+.events-page .events-dome-slider-stop {
+  position: absolute;
+  top: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  transform: translateX(-50%);
+}
+
+.events-page .events-dome-slider-stop:nth-child(1) {
+  left: 0;
+  background: rgb(240 60 100);
+  box-shadow: 0 0 6px rgba(240, 60, 100, 0.55);
+}
+
+.events-page .events-dome-slider-stop:nth-child(2) {
+  left: 50%;
+  background: rgb(126 246 255);
+  box-shadow: 0 0 6px rgba(126, 246, 255, 0.55);
+}
+
+.events-page .events-dome-slider-stop:nth-child(3) {
+  left: 100%;
+  background: rgb(247 120 40);
+  box-shadow: 0 0 6px rgba(247, 120, 40, 0.55);
+}
+
+.events-page .events-dome-slider--color .events-dome-slider-handle {
+  --dome-ink-top: rgb(var(--dome-light-rgb, 226 251 255));
+  --dome-ink-bottom: rgb(var(--dome-dark-rgb, 74 169 184));
+  color: rgb(var(--events-accent-rgb, 126 246 255));
+}
+
+.events-page .events-dome-slider--color .events-dome-slider-input:focus-visible {
+  outline-color: rgb(var(--events-accent-rgb, 126 246 255));
+}
+
+.events-page .events-dome-slider:hover .events-dome-slider-handle,
+.events-page .events-dome-slider-input:focus-visible ~ .events-dome-slider-visual .events-dome-slider-handle {
+  filter: brightness(1.22);
+}
+
+/* Przy przeciąganiu minimalne powiększenie — bez pulsowania i obracania. */
+.events-page .events-dome-slider-input:active ~ .events-dome-slider-visual .events-dome-slider-handle {
+  transform: translate(-50%, calc(-100% + 1.5px)) scale(1.06);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .events-page .events-dome-slider-handle {
+    transition: none;
+  }}
+
+
+@media (prefers-reduced-motion: reduce) {
+  .events-page .events-trusted-speed {
+    display: none;
+  }}
+
+/* „Ogranicz ruch": pasek staje, druga kopia znika (inaczej nazwy byłyby
+   podwojone), a rząd zostaje zwykłym przewijanym paskiem. */
+@media (prefers-reduced-motion: reduce) {
+  .events-page .events-trusted-viewport {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .events-page .events-trusted-viewport::-webkit-scrollbar {
+    display: none;
+  }
+
+  .events-page .events-trusted-lane {
+    animation: none;
+  }
+
+  .events-page .events-trusted-track[aria-hidden="true"] {
+    display: none;
+  }
+
+  .events-page .events-trusted-logo {
+    transition: none;
+  }}
+
+/* --- Raile „Rodzaje wydarzeń" i „Realizacje" (poniżej 1024 px) ------------
+   Karta aktywna stoi na środku: lista ma boczny padding = (szerokość railu −
+   szerokość karty) / 2, więc także pierwsza i ostatnia karta mogą się
+   wycentrować. Jednostki cqi liczą się od szerokości railu (container-type),
+   a nie od 100vw, które na desktopowych przeglądarkach wlicza pasek
+   przewijania. scroll-snap-stop: always — jeden gest przesuwa o jedną kartę,
+   bez przelatywania kilku naraz. --dist (0 = środek, 1 = karta obok) ustawia
+   JS przy przewijaniu; skala i krycie to właściwości kompozytora, więc
+   animacja nie przelicza layoutu. */
+.events-page .events-rail-pager {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  .events-page .events-rail {
+    container-type: inline-size;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+  }
+
+  /* Zapas dla przeglądarek bez jednostek cqi (np. iOS 15): vw zamiast cqi. */
+  .events-page .events-rail-list {
+    --rail-w: 100vw;
+    --card-w: min(78vw, 21rem);
+    width: max-content;
+    padding-inline: calc((var(--rail-w) - var(--card-w)) / 2);
+  }
+
+  @supports (width: 1cqi) {
+    .events-page .events-rail-list {
+      --rail-w: 100cqi;
+      --card-w: min(78cqi, 21rem);
+    }}
+
+  .events-page .events-rail-item {
+    width: var(--card-w);
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+  }
+
+  /* (pusto) | kropki | dalej — kropki zawsze dokładnie na środku. */
+  .events-page .events-rail-pager {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.1rem;
+  }
+
+  .events-page .events-rail-dots {
+    grid-column: 2;
+  }
+
+  .events-page .events-rail-next {
+    grid-column: 3;
+  }}
+
+/* Skala i krycie kart tylko wtedy, gdy użytkownik nie ogranicza animacji —
+   CSS pilnuje tego sam, nawet zanim JS przeliczy --dist po zmianie ustawienia. */
+@media (max-width: 1023px) and (prefers-reduced-motion: no-preference) {
+  /* Stan startowy jak przy scrollLeft 0 (pierwsza karta na środku), żeby przed
+     hydratacją karty nie stały w pełnym rozmiarze i nie „skakały" po niej.
+     Wartości wpisywane przez JS (styl inline) mają pierwszeństwo. */
+  .events-page .events-rail-item + .events-rail-item {
+    --dist: 1;
+  }
+
+  .events-page .events-rail-item > .events-rail-card {
+    transform: scale(calc(1 - 0.07 * var(--dist, 0)));
+    opacity: calc(1 - 0.45 * var(--dist, 0));
+  }
+
+  /* Warstwa kompozytora tylko wtedy, gdy rail faktycznie jedzie (klasę dokłada
+     i zdejmuje useCenteredRail). Trzymana na stałe kosztowała ok. 3,7 MB
+     pamięci GPU i 8 warstw utrzymywanych bez potrzeby. */
+  .events-page .events-rail.is-moving .events-rail-item > .events-rail-card {
+    will-change: transform, opacity;
+  }}
+
+/* --- Rail stronicowany („Rodzaje wydarzeń") od 1024 px ----------------------
+   Zamiast siatki 3 × 2 widać JEDEN rząd trzech kart, a kropki i „dalej"
+   przewijają o cały komplet. Punkt zaczepienia ma co trzecia karta, więc gest
+   gładzikiem zatrzymuje się na pełnej trójce, a nie w pół karty. Szerokość
+   karty liczona od szerokości railu (cqi; zapas we vw dla starszych Safari):
+   trzy karty i dwie przerwy wypełniają rail dokładnie. */
+@media (min-width: 1024px) {
+  .events-page .events-rail-paged {
+    container-type: inline-size;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+  }
+
+  .events-page .events-rail-paged .events-rail-list {
+    --rail-w: 100vw;
+    --rail-gap: 1.25rem;
+    width: max-content;
+    padding-inline: 0;
+  }
+
+  @supports (width: 1cqi) {
+    .events-page .events-rail-paged .events-rail-list {
+      --rail-w: 100cqi;
+    }}
+
+  .events-page .events-rail-paged .events-rail-item {
+    width: calc((var(--rail-w) - 2 * var(--rail-gap)) / 3);
+  }
+
+  .events-page .events-rail-paged .events-rail-item:nth-child(3n + 1) {
+    scroll-snap-align: start;
+  }
+
+  .events-page .events-rail-pager-paged {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .events-page .events-rail-pager-paged .events-rail-dots {
+    grid-column: 2;
+    justify-self: center;
+  }
+
+  .events-page .events-rail-pager-paged .events-rail-next {
+    grid-column: 3;
+    justify-self: end;
+  }}
+
+/* Bardzo wąskie ekrany (np. zewnętrzny ekran Galaxy Fold, 280 px): symetryczne
+   kolumny po bokach kropek nie zmieszczą „Dalej" bez zmniejszania celów
+   dotykowych — kropki centrujemy więc w miejscu, które zostaje obok strzałki. */
+@media (max-width: 319px) {
+  .events-page .events-rail-pager {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .events-page .events-rail-dots {
+    grid-column: 1;
+    justify-self: center;
+  }
+
+  .events-page .events-rail-next {
+    grid-column: 2;
+  }}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  .events-page .events-rail-list {
+    --card-w: min(46vw, 22rem);
+  }
+
+  @supports (width: 1cqi) {
+    .events-page .events-rail-list {
+      --card-w: min(46cqi, 22rem);
+    }}}
+
+.events-page .events-rail-dots {
+  display: flex;
+  align-items: center;
+}
+
+/* Przycisk 24 px wysokości (cel dotykowy), w środku mała kropka. Aktywna
+   kropka płynnie wydłuża się w pigułkę, a przycisk rośnie razem z nią. */
+.events-page .events-rail-dot {
+  display: grid;
+  place-items: center;
+  height: 1.5rem;
+  padding: 0 0.5rem;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  cursor: pointer;
+}
+
+.events-page .events-rail-dot-mark {
+  display: block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  /* .42 na czerni ≈ 3,9:1 — powyżej minimum 3:1 dla elementów nietekstowych. */
+  background: rgba(255, 255, 255, 0.42);
+  transition:
+    width 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.events-page .events-rail-dot.is-active .events-rail-dot-mark {
+  width: 1.5rem;
+  background: #7ef6ff;
+}
+
+.events-page .events-rail-next {
+  justify-self: end;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  color: #ffffff;
+  cursor: pointer;
+  transition:
+    border-color 200ms var(--ap-ease-standard),
+    background-color 200ms var(--ap-ease-standard);
+}
+
+.events-page .events-rail-next:hover {
+  border-color: rgba(126, 246, 255, 0.6);
+  background: rgba(126, 246, 255, 0.1);
+}
+
+.events-page .events-rail-dot:focus-visible,
+.events-page .events-rail-next:focus-visible {
+  outline: 2px solid #7ef6ff;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .events-page .events-rail-dot-mark,
+  .events-page .events-rail-next {
+    transition: none;
+  }
+
+  /* Bez powolnego zoomu zdjęcia po najechaniu kursorem. */
+  .events-page .events-format-card img {
+    transition: none;
+    scale: none;
+  }}
+
+/* --- CTA „ghost" --------------------------------------------------------- */
+.events-page .events-cta-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  border: 1px solid rgba(86, 221, 234, 0.45);
+  border-radius: var(--ap-btn-radius);
+  padding: 0.95rem 1.7rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #ffffff;
+  transition:
+    border-color 220ms var(--ap-ease-standard),
+    background-color 220ms var(--ap-ease-standard);
+}
+
+.events-page .events-cta-ghost:hover {
+  border-color: rgba(86, 221, 234, 0.85);
+  background: rgba(86, 221, 234, 0.1);
+}
+
+/* --- Karta wybranej przestrzeni ------------------------------------------
+   Układ z projektu właściciela: zdjęcie z nazwą i hasłem, listwa parametrów
+   z ikonami, zwijane „Możliwości i wyposażenie", dwa CTA, miniatury kopuł.
+   Poniżej 1024 px jedna kolumna, od 1024 px zdjęcie obok treści.
+
+   Kontrast: --sc-muted na tle karty (ok. rgb(8,12,24)) = 7,2:1; obrysy ikon
+   i miniatur to grafika (próg 3:1 dotyczy tylko aktywnego stanu — cyan 13:1). */
+/* Rail czterech kart: każda karta zajmuje całą szerokość railu (flex-basis
+   100%, bez `max-content` — działa też bez jednostek cqi), a punkt zaczepienia
+   jest na środku, więc gest zatrzymuje się dokładnie na jednej karcie.
+   Reguły są bardziej szczegółowe niż wspólne `.events-rail-*`, więc wygrywają
+   niezależnie od kolejności. */
+.events-page .events-spacecard-rail {
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+}
+
+.events-page .events-spacecard-rail .events-rail-list {
+  width: 100%;
+  padding-inline: 0;
+}
+
+.events-page .events-spacecard-rail .events-rail-item {
+  flex: 0 0 100%;
+  width: auto;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+}
+
+.events-page .events-spacecard-rail .events-spacecard {
+  height: 100%;
+}
+
+.events-page .events-spacecard {
+  --sc-accent: #7ef6ff;
+  --sc-cta: #5ee6f1;
+  --sc-line: rgba(126, 246, 255, 0.24);
+  --sc-hair: rgba(255, 255, 255, 0.09);
+  --sc-muted: rgba(226, 232, 245, 0.68);
+  --sc-pad: 1rem;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--sc-line);
+  border-radius: 1.35rem;
+  background: linear-gradient(180deg, rgba(10, 16, 30, 0.94) 0%, rgba(6, 10, 22, 0.96) 100%);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+
+/* --- Zdjęcie z nagłówkiem ---------------------------------------------------- */
+.events-page .events-spacecard-photo {
+  position: relative;
+  /* 3/2 zamiast 20/21: karta jest o ok. 20% niższa, a kadr nadal mieści nazwę
+     kopuły z hasłem. */
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  background: #0b1020;
+}
+
+/* Góra lekko przygaszona pod pigułki, dół przechodzi w tło karty pod tytuł. */
+.events-page .events-spacecard-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(4, 7, 16, 0.4) 0%,
+    rgba(4, 7, 16, 0) 24%,
+    rgba(4, 7, 16, 0) 42%,
+    rgba(6, 10, 22, 0.72) 74%,
+    rgba(8, 12, 25, 0.97) 100%
+  );
+}
+
+.events-page .events-spacecard-badge,
+.events-page .events-spacecard-count {
+  position: absolute;
+  top: var(--sc-pad);
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.9rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  line-height: 1;
+}
+
+.events-page .events-spacecard-badge {
+  left: var(--sc-pad);
+  padding: 0 0.8rem;
+  background: var(--sc-accent);
+  color: #04222a;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.events-page .events-spacecard-count {
+  right: var(--sc-pad);
+  padding: 0 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(6, 9, 20, 0.6);
+  color: #ffffff;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.events-page .events-spacecard-heading {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 1;
+  padding: 0 1.25rem 1.3rem;
+}
+
+.events-page .events-spacecard-title {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.45);
+}
+
+.events-page .events-spacecard-tagline {
+  margin-top: 0.7rem;
+  font-size: 1rem;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* --- Treść ------------------------------------------------------------------- */
+.events-page .events-spacecard-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 0 var(--sc-pad) var(--sc-pad);
+}
+
+/* Listwa parametrów — zawsze jeden rząd (kolumn tyle, ile metryk), więc karta
+   ma tę samą wysokość dla każdej kopuły. Rozmiar liczby skaluje się od
+   szerokości listwy (cqi), żeby „2 000 m²" i „10,2 × 4,2 m" zmieściły się
+   w jednej linii także na 320 px. */
+.events-page .events-spacecard-metrics {
+  --sc-value: 0.95rem;
+  --sc-label: 0.68rem;
+  container-type: inline-size;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 0.5rem;
+  padding: 1.15rem 0 1.2rem;
+  border-bottom: 1px solid var(--sc-hair);
+}
+
+@supports (width: 1cqi) {
+  .events-page .events-spacecard-metrics {
+    --sc-value: clamp(0.74rem, 4.6cqi, 1.05rem);
+    --sc-label: clamp(0.6rem, 3.2cqi, 0.75rem);
+  }
+
+  .events-page .events-spacecard-metrics[data-count="3"] {
+    --sc-value: clamp(0.8rem, 4.9cqi, 1.15rem);
+  }
+
+  .events-page .events-spacecard-metrics[data-count="2"] {
+    --sc-value: clamp(0.8rem, 6cqi, 1.3rem);
+  }}
+
+.events-page .events-spacecard-metric {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.events-page .events-spacecard-metric-icon,
+.events-page .events-spacecard-icon-box {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid rgba(126, 246, 255, 0.28);
+  background: rgba(126, 246, 255, 0.06);
+  color: var(--sc-accent);
+}
+
+.events-page .events-spacecard-metric-icon {
+  width: 2.15rem;
+  height: 2.15rem;
+  border-radius: 0.6rem;
+}
+
+.events-page .events-spacecard-metric-value {
+  margin-top: 0.65rem;
+  font-size: var(--sc-value);
+  font-weight: 800;
+  /* Stała wysokość wiersza (największa skala 1.3rem × 1.15): przy 2, 3 i 4
+     metrykach liczba zajmuje tyle samo pionu. */
+  line-height: 1.5rem;
+  letter-spacing: -0.015em;
+  white-space: nowrap;
+  color: #ffffff;
+}
+
+.events-page .events-spacecard-metric-label {
+  margin-top: 0.25rem;
+  max-width: 100%;
+  font-size: var(--sc-label);
+  line-height: 1.3;
+  color: var(--sc-muted);
+}
+
+/* Możliwości i wyposażenie — przycisk rozwija pełną listę. */
+.events-page .events-spacecard-features {
+  margin-top: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 0.95rem;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.events-page .events-spacecard-features-toggle {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.8rem 0.8rem 0.8rem 0.85rem;
+  border: 0;
+  border-radius: inherit;
+  background: none;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.events-page .events-spacecard-icon-box {
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 0.7rem;
+}
+
+.events-page .events-spacecard-features-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #ffffff;
+}
+
+.events-page .events-spacecard-features-chevron {
+  color: rgba(255, 255, 255, 0.55);
+  transition: transform 220ms var(--ap-ease-standard);
+}
+
+.events-page .events-spacecard-features.is-open .events-spacecard-features-chevron {
+  transform: rotate(90deg);
+}
+
+.events-page .events-spacecard-features-list {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0 0.9rem 0.95rem 4.2rem;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.events-page .events-spacecard-features-list[hidden] {
+  display: none;
+}
+
+.events-page .events-spacecard-features-list > li {
+  position: relative;
+}
+
+.events-page .events-spacecard-features-list > li::before {
+  content: "";
+  position: absolute;
+  top: 0.6em;
+  left: -0.85rem;
+  width: 0.3rem;
+  height: 0.3rem;
+  border-radius: 999px;
+  background: var(--sc-accent);
+}
+
+/* Przełącznik kopuł pod railem — te same kropki i „dalej" co pod pozostałymi
+   railami, ale widoczne na każdej szerokości (tu nie ma siatki, która by je
+   zastępowała). Selektor z .events-spacecard-pager jest bardziej szczegółowy
+   niż reguły railu, więc wygrywa niezależnie od kolejności i media queries. */
+.events-page .events-spacecard-pager {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: 0.75rem;
+  margin-top: 1.1rem;
+}
+
+.events-page .events-spacecard-pager .events-rail-dots {
+  grid-column: 2;
+  justify-self: center;
+}
+
+.events-page .events-spacecard-pager .events-rail-next {
+  grid-column: 3;
+  justify-self: end;
+}
+
+.events-page .events-spacecard-metric-prefix {
+  /* line-height: 1 — mniejszy krój z wysokością wiersza 1.5rem podnosiłby
+     linię bazową i K3 (jedyny z prefiksem) byłby o 2 px wyższy. */
+  font-size: 0.66em;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0;
+  color: var(--sc-muted);
+}
+
+.events-page .events-spacecard-features-toggle:focus-visible {
+  outline: 2px solid var(--sc-accent);
+  outline-offset: 2px;
+}
+
+.events-page .events-spacecard-wrap.is-cjk .events-spacecard-title,
+.events-page .events-spacecard-wrap.is-cjk .events-spacecard-metric-value {
+  letter-spacing: 0;
+}
+
+/* Wejście treści po przełączeniu kopuły — samo krycie, bez przesunięcia, żeby
+   nic nie drgało w pionie. */
+@media (prefers-reduced-motion: no-preference) {
+  .events-page .events-spacecard-features-list:not([hidden]) {
+    animation: events-spacecard-in 200ms var(--ap-ease-standard) both;
+  }}
+
+@media (prefers-reduced-motion: reduce) {
+  .events-page .events-spacecard-features-chevron {
+    transition: none;
+  }}
+
+/* --- Wąskie telefony -----------------------------------------------------------
+   Listwa zostaje w jednym rzędzie (dwa rzędy przy K3 zmieniałyby wysokość karty
+   przy przełączaniu), tylko z ciaśniejszymi odstępami. CTA dostają mniejsze
+   wcięcie, a poniżej 360 px tracą strzałkę, żeby etykieta mieściła się
+   w jednym wierszu. */
+@media (max-width: 399px) {
+  .events-page .events-spacecard-metrics {
+    column-gap: 0.375rem;
+  }}
+
+@media (max-width: 359px) {
+  /* Poniżej 360 px cztery kolumny nie mieszczą podpisów („Powierzchnia"),
+     więc parametry idą w dwie kolumny. min-height rezerwuje dwa rzędy także
+     dla K7 (3 metryki) i K10/K12 (2), żeby wysokość karty nie skakała przy
+     przełączaniu kopuły. Wartość = zmierzona wysokość listwy K3 przy 320 px. */
+  .events-page .events-spacecard-metrics {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    min-height: var(--sc-metrics-min, 13.95rem);
+    column-gap: 0.75rem;
+    row-gap: 0.9rem;
+  }}
+
+/* --- Od 640 px: szerszy kadr, CTA obok siebie -------------------------------- */
+@media (min-width: 640px) {
+  .events-page .events-spacecard {
+    --sc-pad: 1.5rem;
+  }
+
+  .events-page .events-spacecard-photo {
+    aspect-ratio: 16 / 9;
+  }
+
+  .events-page .events-spacecard-heading {
+    padding: 0 1.5rem 1.5rem;
+  }
+
+  .events-page .events-spacecard-title {
+    font-size: 2.4rem;
+  }}
+
+/* --- Od 1024 px: zdjęcie obok treści ------------------------------------------ */
+@media (min-width: 1024px) {
+  .events-page .events-spacecard-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  }
+
+  .events-page .events-spacecard-photo {
+    /* Kadr rozciąga się na wysokość wiersza siatki — element siatki robi to
+       domyślnie (align-self: stretch). Celowo BEZ `min-height: 100%`: procent
+       liczony od wiersza, którego wysokość zależy od treści, to zależność
+       cykliczna. Safari rozwiązuje ją ostatnią znaną wartością, więc po
+       zwinięciu „Szczegółów" karta zostawała wysoka. */
+    aspect-ratio: auto;
+  }
+
+  .events-page .events-spacecard-body {
+    justify-content: center;
+    padding: 1.5rem 1.75rem;
+  }
+
+  .events-page .events-spacecard-metrics {
+    padding-top: 0.25rem;
+  }}
+
+/* --- Mapa kompleksu ------------------------------------------------------ */
+/* Mapa jest głównym wejściem w wybór przestrzeni: pin wybiera kopułę i otwiera
+   przy niej kartę podglądu. Kafelki niżej robią to samo — oba wejścia dzielą
+   jeden stan, więc ich style aktywne muszą być czytelne w tym samym stopniu. */
+.events-page .events-map-hotspot {
+  transform: translate(-50%, -50%);
+  transition: transform 200ms var(--ap-ease-standard);
+}
+
+.events-page .events-map-hotspot.is-active {
+  transform: translate(-50%, -50%) scale(1.06);
+}
+
+/* Powiększona, niewidoczna strefa dotyku. Włączamy ją dopiero od 768 px:
+   niżej K7 i K12 dzieli ok. 26 px, więc cele 44 px zaczęłyby na siebie nachodzić
+   i przechwytywać sobie kliknięcia. Na telefonie rolę dużego celu przejmuje
+   poziomy selektor kafelków pod mapą (WCAG 2.2 SC 2.5.8, wyjątek „equivalent”). */
+.events-page .events-map-hotspot::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 100%;
+  height: 100%;
+  transform: translate(-50%, -50%);
+}
+
+@media (min-width: 768px) {
+  .events-page .events-map-hotspot::before {
+    width: max(100%, 44px);
+    height: max(100%, 44px);
+  }}
+
+@media (min-width: 1024px) {
+  .events-page .events-map-hotspot::before {
+    width: max(100%, 48px);
+    height: max(100%, 48px);
+  }}
+
+.events-page .events-map-ring {
+  border: 2px solid #ffe869;
+  background: rgba(255, 232, 105, 0.2);
+  box-shadow:
+    0 0 0 1px rgba(7, 12, 24, 0.36),
+    0 0 0 6px rgba(255, 232, 105, 0.14),
+    0 0 20px rgba(255, 232, 105, 0.24),
+    inset 0 0 20px rgba(255, 232, 105, 0.12);
+  transition:
+    border-color 260ms var(--ap-ease-standard),
+    background-color 260ms var(--ap-ease-standard),
+    box-shadow 260ms var(--ap-ease-standard);
+}
+
+.events-page .events-map-hotspot.is-active .events-map-ring {
+  border-width: 3px;
+  border-color: #7ef6ff;
+  background: rgba(121, 241, 255, 0.22);
+  box-shadow:
+    0 0 0 1px rgba(8, 16, 30, 0.4),
+    0 0 0 7px rgba(126, 246, 255, 0.18),
+    0 0 26px rgba(126, 246, 255, 0.44),
+    inset 0 0 24px rgba(126, 246, 255, 0.16);
+}
+
+@media (hover: hover) {
+  .events-page .events-map-hotspot:hover .events-map-ring {
+    border-color: #7ef6ff;
+    box-shadow:
+      0 0 0 1px rgba(8, 16, 30, 0.4),
+      0 0 0 6px rgba(126, 246, 255, 0.16),
+      0 0 22px rgba(126, 246, 255, 0.3);
+  }}
+
+/* Oznaczenie kopuły na planie — czytelne na jasnym i ciemnym fragmencie zdjęcia,
+   dlatego ciemne tło pod tekstem, a nie sam napis. */
+.events-page .events-map-pin {
+  display: inline-flex;
+  align-items: baseline;
+  padding: 0.15rem 0.375rem;
+  font-size: 0.5rem;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  background: rgba(7, 12, 24, 0.82);
+  border: 1px solid rgba(255, 232, 105, 0.55);
+  color: #ffe869;
+  white-space: nowrap;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+  transition:
+    background-color 260ms var(--ap-ease-standard),
+    border-color 260ms var(--ap-ease-standard),
+    color 260ms var(--ap-ease-standard);
+}
+
+.events-page .events-map-hotspot.is-active .events-map-pin {
+  background: #7ef6ff;
+  border-color: #7ef6ff;
+  color: #04222a;
+  box-shadow: 0 0 18px rgba(126, 246, 255, 0.55);
+}
+
+@media (min-width: 640px) {
+  .events-page .events-map-pin {
+    padding: 0.125rem 0.5rem;
+    font-size: 0.65rem;
+  }}
+
+@media (min-width: 1024px) {
+  .events-page .events-map-pin {
+    padding: 0.25rem 0.625rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+  }}
+
+/* Subtelny podgląd metryki po najechaniu — dodatek, nie nośnik informacji:
+   ta sama liczba stoi w karcie podglądu i w kafelku, więc nic nie istnieje
+   wyłącznie na hover. Wyłączone tam, gdzie hover nie jest realną interakcją. */
+.events-page .events-map-pin-metric {
+  display: inline-block;
+  max-width: 0;
+  margin-left: 0;
+  opacity: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  font-weight: 700;
+  transition:
+    max-width 200ms var(--ap-ease-standard),
+    opacity 200ms var(--ap-ease-standard),
+    margin-left 200ms var(--ap-ease-standard);
+}
+
+@media (hover: hover) and (min-width: 1024px) {
+  .events-page .events-map-hotspot:hover .events-map-pin-metric,
+  .events-page .events-map-hotspot:focus-visible .events-map-pin-metric {
+    max-width: 7rem;
+    margin-left: 0.35rem;
+    opacity: 0.92;
+  }
+
+  .events-page .events-map-hotspot:hover {
+    z-index: 25;
+  }}
+
+.events-page .events-map {
+  border: 1px solid rgba(126, 246, 255, 0.18);
+  background: rgba(7, 11, 22, 0.9);
+  box-shadow: 0 30px 80px rgba(2, 6, 18, 0.46);
+}
+
+/* Tytuł tej sekcji jest łamany ręcznie („Zobacz położenie przestrzeni” /
+   „na terenie kompleksu”). Przy 375 px minimum 1.9 rem rozbijało drugi wiersz
+   na kolejne dwa, więc TEN nagłówek dostaje niższy próg — pozostałe sekcje
+   zostają bez zmian. */
+.events-page .events-map-header h2 {
+  font-size: clamp(1.7rem, 5.2vw, 3.4rem);
+}
+
+/* --- Powiększona mapa (telefon) ---------------------------------------- */
+/* Przycisk w rogu mapy — jej jedyny element tekstowy, więc pełne ciemne tło. */
+.events-page .events-map-zoom-open {
+  width: 2rem;
+  height: 2rem;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(7, 11, 22, 0.78);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+/* Ikonka jest mała (32 px), ale strefa dotyku ma 44 px — nie wychodzi poza
+   mapę, bo przycisk stoi 8 px od jej krawędzi. */
+.events-page .events-map-zoom-open::before {
+  content: "";
+  position: absolute;
+  inset: -6px;
+}
+
+/* Dialog na cały ekran. Zamknięty dialog musi zostać display:none, dlatego
+   flex ustawiamy wyłącznie na [open]. */
+.events-page .events-map-zoom {
+  width: 100vw;
+  max-width: 100vw;
+  height: 100dvh;
+  max-height: 100dvh;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: #070b16;
+  color: #ffffff;
+}
+
+.events-page .events-map-zoom[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+.events-page .events-map-zoom::backdrop {
+  background: rgba(3, 5, 12, 0.85);
+}
+
+.events-page .events-map-zoom-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: max(1rem, env(safe-area-inset-top)) 1rem 0.85rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.events-page .events-map-zoom-close {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Przewijany obszar: mapa jest szersza od ekranu, więc przesuwa się palcem.
+   overscroll-behavior nie pozwala, żeby dojechanie do krawędzi mapy przewijało
+   stronę pod dialogiem. */
+.events-page .events-map-zoom-scroller {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 0.75rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Mapa wypełnia CAŁĄ wysokość ekranu, a szerokość wynika z proporcji pliku —
+   na pionowym telefonie to ok. 1400 px do przesuwania. Proporcja musi być
+   dokładnie 1784/882: piny stoją w procentach, więc każde przycięcie obrazu
+   rozjechałoby je z kopułami. max-height = natywne 882 px, żeby nie rozmywać.
+   margin-inline:auto centruje mapę, gdy jest węższa od ekranu, a przy szerszej
+   spada do zera i nie ucina lewej krawędzi (w przeciwieństwie do
+   justify-content:center). */
+.events-page .events-map-zoom-canvas {
+  flex: 0 0 auto;
+  height: 100%;
+  max-height: 55.125rem;
+  aspect-ratio: 1784 / 882;
+  margin-inline: auto;
+  overflow: hidden;
+  border-radius: 1rem;
+}
+
+/* W powiększeniu piny są daleko od siebie (K7–K12 ok. 140 px), więc mogą mieć
+   pełne cele dotykowe 44 px i czytelne etykiety — tego na małej mapie się nie da. */
+.events-page .events-map-zoom .events-map-hotspot::before {
+  width: max(100%, 44px);
+  height: max(100%, 44px);
+}
+
+.events-page .events-map-zoom .events-map-pin {
+  padding: 0.3rem 0.65rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+}
+
+/* --- Karta podglądu kopuły ----------------------------------------------- */
+/* Poniżej 768 px mapa ma ok. 358×177 px — karta nie ma się tam gdzie zmieścić
+   ani czego zasłaniać, więc jest zwykłym panelem pod mapą. Rozmycie tła jest
+   tu wyłączone celowo: panel leży na ciemnym tle strony, więc blur nic nie
+   wnosi, a kosztuje malowanie (projekt zdejmuje backdrop-filter na
+   pointer: coarse także w innych miejscach). */
+.events-page .events-map-preview {
+  position: relative;
+  margin-top: 0.75rem;
+  padding: 0.85rem;
+  border-radius: 1rem;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background-color: rgba(9, 13, 24, 0.94);
+  animation: events-preview-in 220ms var(--ap-ease-standard) both;
+}
+
+/* Na telefonie karty podglądu nie pokazujemy (prośba właściciela) — wybraną
+   kopułę widać na aktywnym pinie i w panelu specyfikacji pod mapą. */
+@media (max-width: 767px) {
+  .events-page .events-map-preview {
+    display: none;
+  }}
+
+@media (min-width: 768px) {
+  .events-page .events-map-preview {
+    --card-w: clamp(13.75rem, 17vw, 15rem);
+    position: absolute;
+    z-index: 30;
+    width: var(--card-w);
+    margin-top: 0;
+    padding: 0.6rem;
+    border-radius: 0.85rem;
+    /* clamp trzyma kartę w obrysie mapy bez mierzenia DOM-u: środek na pinie,
+       a przy krawędzi dosuwa się do niej z marginesem 0,75 rem. */
+    left: clamp(
+      0.75rem,
+      calc(var(--pin-x) - var(--card-w) / 2),
+      calc(100% - var(--card-w) - 0.75rem)
+    );
+    bottom: 0.75rem;
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    backdrop-filter: blur(16px) saturate(1.4);
+    /* Krycie wyższe niż w .ap-glass — pod kartą leży zdjęcie z jasnymi
+       fragmentami, a cyjanowe liczby muszą utrzymać kontrast 4.5:1. */
+    background-color: rgba(8, 12, 22, 0.82);
+  }
+
+  /* W 768–1023 px karta stoi przy dolnej krawędzi mapy i wycentrowana na pinie
+     przykrywałaby go (K10 i K12 leżą właśnie tam). Odsuwamy ją więc na stronę
+     przeciwną do wybranego pinu — aktywny marker zostaje widoczny. */
+  .events-page .events-map-preview.is-side-left {
+    left: 0.75rem;
+    right: auto;
+  }
+
+  .events-page .events-map-preview.is-side-right {
+    left: auto;
+    right: 0.75rem;
+  }}
+
+/* Dopiero od 1024 px mapa jest na tyle wysoka (≈490 px), żeby karta zmieściła
+   się nad pinem albo pod nim. W 768–1023 px zostaje przy dolnej krawędzi. */
+@media (min-width: 1024px) {
+  /* Mapa jest już dość wysoka, żeby karta zmieściła się nad/pod pinem —
+     wracamy do kotwiczenia poziomego na pinie. */
+  .events-page .events-map-preview.is-side-left,
+  .events-page .events-map-preview.is-side-right {
+    left: clamp(
+      0.75rem,
+      calc(var(--pin-x) - var(--card-w) / 2),
+      calc(100% - var(--card-w) - 0.75rem)
+    );
+    right: auto;
+  }
+
+  .events-page .events-map-preview.is-below {
+    top: calc(var(--pin-y) + var(--pin-half) + 0.55rem);
+    bottom: auto;
+  }
+
+  .events-page .events-map-preview.is-above {
+    bottom: calc(100% - var(--pin-y) + var(--pin-half) + 0.55rem);
+    top: auto;
+  }}
+
+.events-page .events-map-preview-thumb {
+  display: block;
+  width: 4.25rem;
+  height: 4.25rem;
+  border-radius: 0.7rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.events-page .events-map-preview-value {
+  color: #7ef6ff;
+}
+
+.events-page .events-map-preview-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  color: rgba(255, 255, 255, 0.66);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.05);
+  transition:
+    color 180ms var(--ap-ease-standard),
+    border-color 180ms var(--ap-ease-standard),
+    background-color 180ms var(--ap-ease-standard);
+}
+
+.events-page .events-map-preview-close:hover {
+  color: #ffffff;
+  border-color: rgba(126, 246, 255, 0.5);
+  background: rgba(126, 246, 255, 0.12);
+}
+
+/* 48 px wysokości na mobile — CTA jest tu jedynym dużym celem w panelu. */
+.events-page .events-map-preview-cta {
+  min-height: 3rem;
+  font-size: 0.76rem;
+  color: #04222a;
+  background: #7ef6ff;
+  transition: filter 180ms var(--ap-ease-standard);
+}
+
+.events-page .events-map-preview-cta:hover {
+  filter: brightness(1.06);
+}
+
+/* Karta podglądu jest celowo mała: to szybki rzut oka przy pinie, a nie druga
+   specyfikacja. Zmniejszona o połowę powierzchni względem pierwszej wersji —
+   przy okazji przykrywa dużo mniej mapy. Skala dotyczy WYŁĄCZNIE wariantu
+   pływającego; poniżej 768 px karta jest panelem pod mapą i zostaje duża,
+   bo tam CTA musi utrzymać dotykowe 48 px. */
+@media (min-width: 768px) {
+  .events-page .events-map-preview > div:first-child {
+    gap: 0.55rem;
+  }
+
+  .events-page .events-map-preview-thumb {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.45rem;
+  }
+
+  .events-page .events-map-preview h3 {
+    font-size: 0.92rem;
+  }
+
+  .events-page .events-map-preview ul {
+    margin-top: 0.25rem;
+  }
+
+  .events-page .events-map-preview li {
+    font-size: 0.68rem;
+    gap: 0 0.3rem;
+    overflow-wrap: anywhere;
+  }
+
+  /* 1.55rem = 24.8 px — próg WCAG 2.2 SC 2.5.8 to 24 px, niżej nie schodzimy. */
+  .events-page .events-map-preview-close {
+    width: 1.55rem;
+    height: 1.55rem;
+  }
+
+  .events-page .events-map-preview-cta {
+    display: inline-flex;
+    width: auto;
+    margin-top: 0.5rem;
+    padding: 0 0.6rem;
+    min-height: 1.6rem;
+    border-radius: 0.45rem;
+    font-size: 0.55rem;
+    letter-spacing: 0.07em;
+    gap: 0.3rem;
+  }}
+
+/* Dziubek pokazujemy tylko tam, gdzie karta faktycznie kotwiczy się przy pinie. */
+.events-page .events-map-preview-arrow {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .events-page .events-map-preview-arrow {
+    display: block;
+    position: absolute;
+    left: 50%;
+    width: 0.7rem;
+    height: 0.7rem;
+    transform: translateX(-50%) rotate(45deg);
+    background-color: rgba(8, 12, 22, 0.82);
+  }
+
+  .events-page .events-map-preview.is-below .events-map-preview-arrow {
+    top: -0.36rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+    border-left: 1px solid rgba(255, 255, 255, 0.14);
+  }
+
+  .events-page .events-map-preview.is-above .events-map-preview-arrow {
+    bottom: -0.36rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    border-right: 1px solid rgba(255, 255, 255, 0.14);
+  }}
+
+/* Żadna reguła .events-* nie była dotąd objęta prefers-reduced-motion. */
+@media (prefers-reduced-motion: reduce) {
+  .events-page .events-map-hotspot,
+  .events-page .events-map-ring,
+  .events-page .events-map-pin,
+  .events-page .events-map-pin-metric,
+  .events-page .events-map-preview,
+  .events-page .events-map-preview-cta,
+  .events-page .events-map-preview-close {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .events-page .events-map-hotspot.is-active {
+    transform: translate(-50%, -50%);
+  }}
+
+/* --- Formularz ----------------------------------------------------------- */
+.events-page .events-form-panel {
+  border: 1px solid rgba(126, 246, 255, 0.2);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+}
+
+.events-page .events-field-label {
+  display: block;
+  margin-bottom: 0.45rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.events-page .events-field {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(4, 6, 16, 0.55);
+  transition: border-color 200ms var(--ap-ease-standard), background-color 200ms var(--ap-ease-standard);
+}
+
+.events-page .events-field:focus {
+  border-color: rgba(86, 221, 234, 0.75);
+  background: rgba(4, 6, 16, 0.8);
+}
+
+.events-page .events-submit {
+  background: #56ddea;
+  color: #04222a;
+  box-shadow: 0 10px 26px rgba(86, 221, 234, 0.32);
+  transition: filter 200ms var(--ap-ease-standard);
+}
+
+.events-page .events-submit:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+/* --- Domknięcie strony --------------------------------------------------- */
+/* Warstwa treści pod pełnoekranowym hero: czerń przy samej krawędzi wideo,
+   potem gradient do zwykłego tła serwisu. Stopy w vh, więc przejście trwa
+   mniej więcej jeden ekran niezależnie od tego, jak długa jest strona. */
+.events-page .events-content-shell {
+  background-color: #000000;
+}
+
+/* Tło treści pod hero — grafika kosmiczna. Warstwa zajmuje całą powłokę,
+   a obraz w środku jest `sticky` na wysokość ekranu: przy przewijaniu stoi
+   w miejscu i zawsze wypełnia widok. overflow: clip (nie hidden) — przycina
+   rogi, ale nie tworzy kontenera przewijania, więc sticky dalej działa.
+   z-index: -1 wewnątrz powłoki (ona ma własny kontekst warstw) kładzie tło
+   pod treścią, ale nad czarnym kolorem powłoki. Czerń zostaje jako tło
+   awaryjne, zanim obraz się wczyta. 100lvh: na telefonie obraz pokrywa ekran
+   także po schowaniu paska adresu. Pozycja 70% — na wąskim ekranie widać
+   krawędź planety zamiast pustego nieba z lewej strony. */
+.events-page .events-shell-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: clip;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* Domknięcie strony: ostatni ekran powłoki gaśnie do koloru tła serwisu,
+   czyli dokładnie do tego, na którym stoi stopka. Bez tego grafika kosmiczna
+   urywała się jedną poziomą krawędzią na granicy powłoki i stopki.
+   Warstwa siedzi WEWNĄTRZ `.events-shell-bg` (z-index: -1), więc leży nad
+   obrazem, a pod całą treścią strony. */
+.events-page .events-shell-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* DWIE warstwy w jednej regule, nie dwie reguły o tym samym selektorze:
+     wcześniej druga reguła (przyciemnienie u góry) kasowała pierwszą i dolne
+     domknięcie w ogóle się nie rysowało — grafika kosmiczna urywała się jedną
+     poziomą krawędzią na styku ze stopką.
+     Warstwa 1 (góra): łagodne wyjście spod hero.
+     Warstwa 2 (dół): zejście do koloru tła serwisu, na którym stoi stopka. */
+  background-image:
+    linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.5) 0,
+      rgba(0, 0, 0, 0.32) 30%,
+      rgba(0, 0, 0, 0.12) 65%,
+      rgba(0, 0, 0, 0) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.45) 34%,
+      rgba(2, 3, 8, 0.82) 62%,
+      rgba(9, 10, 24, 0.96) 85%,
+      var(--ap-bg) 100%
+    );
+  background-repeat: no-repeat, no-repeat;
+  background-position:
+    top center,
+    bottom center;
+  background-size:
+    100% clamp(14rem, 32vh, 22rem),
+    100% clamp(16rem, 38vh, 34rem);
+}
+
+.events-page .events-shell-bg-image {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100lvh;
+  background-color: #000000;
+  background-image: url("/wydarzenia/Elements/bcg-event.webp");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 70% center;
+}
+
+/* Telefon dostaje wariant 900 px (9,8 kB zamiast 54 kB) — tło jest rozmyte
+   i kadrowane przez cover, więc różnicy nie widać, a pierwszy ekran waży mniej. */
+@media (max-width: 767px) {
+  .events-page .events-shell-bg-image {
+    background-image: url("/wydarzenia/Elements/bcg-event-900.webp");
+  }}
+
+/* (Przyciemnienie górnej krawędzi siedzi w regule wyżej, jako pierwsza warstwa
+   tła tego samego `::after` — osobna reguła o tym samym selektorze kasowałaby
+   dolne domknięcie strony.) */
+
+/* Na czarnym tle karty na 4% bieli znikały — sekcje /wydarzenia dostają
+   mocniejszą powierzchnię, tak jak wcześniej zrobiono dla .film-path-page. */
+.events-page .ap-card {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.075) 0%, rgba(255, 255, 255, 0.038) 48%, rgba(255, 255, 255, 0.028) 100%);
+  border: 1px solid rgba(126, 246, 255, 0.16);
+  box-shadow:
+    0 28px 64px rgba(2, 3, 10, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+/* Kontenery nad grafiką tła (BCG_Event): +20 punktów procentowych krycia.
+   Ich powierzchnia to tylko 3–10% białej poświaty, więc przez karty widać było
+   prawie cały obraz. Ciemna podkładka 20% pod poświatą przepuszcza o 20 p.p.
+   mniej tła, a styl „szkła" (gradient, obrys, cień) zostaje bez zmian.
+   Reguła stoi PO definicjach tych kontenerów, żeby nie przegrała kolejnością. */
+.events-page .ap-card,
+.events-page .events-why-tile,
+.events-page .events-contact-card {
+  background-color: rgba(4, 6, 14, 0.2);
+}
+
+/* Duży kontener „Alvernia Planet w liczbach" (jedyna .ap-card na stronie):
+   kolejne +30 p.p. krycia na prośbę właściciela — podkładka 20% → 50%. */
+.events-page .ap-card {
+  background-color: rgba(4, 6, 14, 0.5);
+}
+
+/* Kafelek filmu ma kolor tła z klasy Tailwinda (bg-white/5) — przenosimy tę
+   poświatę do warstwy gradientu, żeby podkładka jej nie zastąpiła. */
+.events-page .events-video-tile {
+  background-color: rgba(4, 6, 14, 0.2);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05));
+}
+
+
+/* Kafelki na /wydarzenia są informacyjne, nie klikalne — nie mają się unosić
+   pod kursorem. Zostaje samo delikatne podbicie ramki i cienia.
+   (Ten sam zabieg co w .ap-contact-cards.) */
+.events-page .events-stat-tile:hover,
+.events-page .events-stat-tile:focus-within,
+.events-page .events-why-card:hover,
+.events-page .events-why-card:focus-within,
+.events-page .events-contact-card:hover,
+.events-page .events-contact-card:focus-within,
+.events-page .events-dome-card:hover,
+.events-page .events-dome-card:focus-within {
+  transform: none;
+}
+
+/* Akcenty kafelków = DOKŁADNIE te same kolory, co ceny biletów na stronie
+   głównej (TICKET_ACCENTS w HomeClient.tsx): cyan #56ddea, róż #ff7092,
+   pomarańcz #ff843d. Liczba, ikona i poświata w kafelku biorą ten sam kolor.
+
+   Alfa poświaty jest RÓŻNA dla każdego koloru i nie jest dobrana „na oko":
+   kolorowa liczba stoi na tej poświacie, więc im jaśniejsze przemycie, tym
+   niższy kontrast cyfr. Róż i pomarańcz mają wyraźnie mniejszy budżet niż
+   cyan. Wartości wyznaczono wyszukiwaniem binarnym na realnie wyrenderowanej
+   stronie (piksele spod cyfr, najjaśniejszy punkt) z celem 4.8:1, czyli
+   z zapasem nad progiem WCAG AA 4.5:1 — także niżej na stronie, gdzie tło
+   jaśnieje do #171730. Zmieniając te liczby, przelicz kontrast. */
+.events-page .events-tone-cyan {
+  --events-tile-accent: #56ddea;
+  --events-tile-accent-rgb: 86, 221, 234;
+  --events-tile-glow-a: 0.27;
+}
+
+.events-page .events-tone-red {
+  --events-tile-accent: #ff7092;
+  --events-tile-accent-rgb: 255, 112, 146;
+  --events-tile-glow-a: 0.11;
+}
+
+.events-page .events-tone-orange {
+  --events-tile-accent: #ff843d;
+  --events-tile-accent-rgb: 255, 132, 61;
+  --events-tile-glow-a: 0.155;
+}
+
+/* Poświata: najjaśniejsza w ŚRODKU kafelka, wygaszana do krawędzi.
+   Środek celowo osadzony poniżej wiersza z liczbą (58%, nie 46%) — cyfry
+   siadają wtedy na ciemniejszym tle, a najjaśniejszy punkt wypada pod nimi,
+   gdzie stoi biały podpis mający duży zapas kontrastu. Dzięki temu kafelek
+   może być mocniej podbity kolorem bez schodzenia poniżej 4.5:1. */
+.events-page .events-tile-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* Dzięki temu kafelek nie musi przycinać zawartości (`overflow: hidden`),
+     żeby poświata miała zaokrąglone rogi — a przy powiększonym stopniu pisma
+     nic w kafelku nie zostaje ucięte bez możliwości przewinięcia. */
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at 50% 58%,
+    rgba(var(--events-tile-accent-rgb), var(--events-tile-glow-a)) 0%,
+    rgba(var(--events-tile-accent-rgb), calc(var(--events-tile-glow-a) * 0.58)) 34%,
+    rgba(var(--events-tile-accent-rgb), calc(var(--events-tile-glow-a) * 0.18)) 66%,
+    rgba(var(--events-tile-accent-rgb), 0) 100%
+  );
+}
+
+/* W kartach „Dlaczego" cały tekst jest biały, a kolor niesie tylko ikona
+   (próg dla grafiki to 3:1, nie 4.5:1) — więc tu poświata może być mocniejsza. */
+.events-page .events-why-card {
+  --events-tile-glow-a: 0.34;
+}
+
+.events-page .events-tile-accent-text {
+  color: var(--events-tile-accent);
+}
+
+/* Kafelki sekcji „w liczbach" — ta sama powierzchnia co karty kopuł, żeby
+   pasek liczb czytał się jak część tej samej strony, a nie wstawka. */
+.events-page .events-stat-tile {
+  border-color: rgba(126, 246, 255, 0.24);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.045));
+  box-shadow:
+    0 16px 36px rgba(2, 3, 10, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.09);
+  contain: paint;
+}
+
+/* Po pierwszym odliczaniu kafelek z liczbą można kliknąć, żeby odliczył jeszcze
+   raz — kursor i lekkie wciśnięcie sygnalizują, że to działa. */
+.events-page .events-stat-tile.is-replayable {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.events-page .events-stat-tile.is-replayable:active {
+  transform: scale(0.97);
+}
+
+/* Karty „Dlaczego Alvernia Planet" — ta sama powierzchnia co kafelki liczb,
+   plus wyróżniona plakietka pod ikonę. */
+.events-page .events-why-card {
+  border-color: rgba(126, 246, 255, 0.24);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.045));
+  box-shadow:
+    0 16px 36px rgba(2, 3, 10, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.09);
+  contain: paint;
+}
+
+.events-page .events-why-icon {
+  border: 1px solid rgba(var(--events-tile-accent-rgb), 0.5);
+  background: linear-gradient(
+    180deg,
+    rgba(var(--events-tile-accent-rgb), 0.26),
+    rgba(var(--events-tile-accent-rgb), 0.07)
+  );
+  box-shadow: 0 0 22px rgba(var(--events-tile-accent-rgb), 0.18);
+  color: var(--events-tile-accent);
+}
+
+@media (max-width: 767px), (pointer: coarse) {
+
+  .events-page .events-dome-card,
+  .events-page .events-dome-highlight,
+  .events-page .events-stat-tile,
+  .events-page .events-why-card,
+  .events-page .events-dome-point,
+  .events-page .events-video-tile,
+  .events-page .events-video-tile img,
+  .events-page .events-contact-card,
+  .events-page .events-dome-caret {
+    transition: none !important;
+  }
+
+  .events-page .events-dome-card,
+  .events-page .events-video-tile,
+  .events-page .events-contact-card {
+    transform: none !important;
+  }}
+
+/* ==========================================================================
+   /wydarzenia — sekcja kontaktu („Planujesz wydarzenie?").
+   Sekcja stoi na własnym zdjęciu rozciągniętym na szerokość okna. Obraz jest
+   w tle (::before), a nie w DOM: nie ma czego układać ani przesuwać przy
+   przewijaniu, więc kadr nie drga. Tło ma szerokość 100vw i z-index: -1
+   w kontekście .ap-shell (ta ma overflow-x: clip) — dokładnie tak samo jak
+   czarne pasy pod sekcjami wyżej, więc nie powoduje poziomego przewijania.
+   ========================================================================== */
+
+.events-page .events-contact {
+  position: relative;
+  /* Nad sekcją stoi wygaszanie czerni z sekcji z realizacjami; zdjęcie
+     zaczyna się tuż pod linią sekcji, a jego własna ciemna podkładka łączy
+     je z czernią bez widocznego szwu. */
+  --contact-bleed: clamp(4.5rem, 9vw, 8.5rem);
+  /* Zdjęcie tła w zmiennej, żeby dało się je odłożyć do chwili, gdy sekcja jest
+     blisko kadru — leży ok. 5 300 px pod pierwszym ekranem. */
+  --contact-photo: url("/wydarzenia/Elements/bcg-contact.webp");
+  /* Granicę sekcji wyznacza tu wejście zdjęcia, nie kreska — linia przecinałaby
+     fotografię w poprzek i psuła wrażenie pełnego kadru. */
+  border-top-color: transparent;
+}
+
+.events-page .events-contact::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: calc(-1 * var(--contact-bleed));
+  /* Na dole ZERO wyjścia poza sekcję: powłoka .events-content-shell kończy się
+     80 px niżej i ma overflow: clip, więc wszystko, co wystaje, zostałoby ucięte
+     ostrą poziomą krawędzią. Wygaszanie musi się zamknąć nad tą granicą. */
+  bottom: 0;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  pointer-events: none;
+  background-color: #04060e;
+  background-image:
+    linear-gradient(
+      180deg,
+      rgba(4, 6, 14, 0.99) 0,
+      rgba(4, 6, 14, 0.94) 14%,
+      rgba(4, 6, 14, 0.89) 46%,
+      rgba(4, 6, 14, 0.94) 78%,
+      rgba(4, 6, 14, 0.995) 100%
+    ),
+    var(--contact-photo);
+  background-repeat: no-repeat;
+  background-position:
+    center,
+    center;
+  background-size:
+    cover,
+    cover;
+  /* Zdjęcie wchodzi i wychodzi miękko: bez maski jego krawędź rysowałaby ostrą
+     poziomą linię — nad sekcją przy realizacjach, pod nią przy stopce. */
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 0,
+    rgba(0, 0, 0, 0.45) clamp(4rem, 9vw, 9rem),
+    rgba(0, 0, 0, 1) clamp(9rem, 20vw, 20rem),
+    rgba(0, 0, 0, 1) calc(100% - clamp(12rem, 26vw, 26rem)),
+    rgba(0, 0, 0, 0.4) calc(100% - clamp(4rem, 9vw, 9rem)),
+    rgba(0, 0, 0, 0) 100%
+  );
+  mask-image: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 0,
+    rgba(0, 0, 0, 0.45) clamp(4rem, 9vw, 9rem),
+    rgba(0, 0, 0, 1) clamp(9rem, 20vw, 20rem),
+    rgba(0, 0, 0, 1) calc(100% - clamp(12rem, 26vw, 26rem)),
+    rgba(0, 0, 0, 0.4) calc(100% - clamp(4rem, 9vw, 9rem)),
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+/* Telefony dostają wersję 900 px (91 kB zamiast 203 kB). */
+@media (max-width: 767px) {
+  .events-page .events-contact::before {
+    background-image:
+      linear-gradient(
+        180deg,
+        rgba(4, 6, 14, 0.99) 0,
+        rgba(4, 6, 14, 0.95) 14%,
+        rgba(4, 6, 14, 0.9) 46%,
+        rgba(4, 6, 14, 0.95) 78%,
+        rgba(4, 6, 14, 0.995) 100%
+      ),
+      var(--contact-photo);
+  }}
+
+/* Telefon dostaje wersję 900 px także w samej zmiennej. */
+@media (max-width: 767px) {
+  .events-page .events-contact {
+    --contact-photo: url("/wydarzenia/Elements/bcg-contact-900.webp");
+  }}
+
+/* `html.ap-reveal` dokłada skrypt w <head> TYLKO wtedy, gdy przeglądarka ma
+   IntersectionObserver — czyli dokładnie wtedy, gdy klasę `is-near` ma kto
+   dołożyć. Bez JS-u (albo bez obserwatora) ta reguła nie obowiązuje i zdjęcie
+   wczytuje się normalnie, od razu. */
+html.ap-reveal .events-page .events-contact:not(.is-near) {
+  --contact-photo: none;
+}
+
+/* Duża karta domykająca sekcję — ten sam kształt co przy „w liczbach".
+   Wyściółka celowo NIE jest tu nadpisywana: karta ma `p-6 sm:p-8` z komponentu
+   Card, dokładnie jak karta sekcji „Alvernia Planet w liczbach", więc treść obu
+   zaczyna się w tej samej odległości od krawędzi. Dodatkowy oddech w pionie
+   siedzi w `.events-contact-inner` (padding-block), gdzie nie zabiera szerokości
+   kafelkom — a na telefonie każdy piksel szerokości idzie na numer i e-mail. */
+
+.events-page .events-contact-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-block: clamp(1rem, 3vw, 2.5rem);
+}
+
+/* Nadtytuł: krótka kreska i tekst w jednym wierszu. */
+.events-page .events-contact-eyebrow {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: rgba(126, 246, 255, 0.86);
+}
+
+.events-page .events-contact-eyebrow-rule {
+  display: block;
+  width: clamp(1.75rem, 6vw, 3rem);
+  height: 1px;
+  background: linear-gradient(90deg, rgba(126, 246, 255, 0), rgba(126, 246, 255, 0.75));
+}
+
+/* Poblask przelatujący przez napis z lewej do prawej: jasne pasmo w gradiencie
+   przyciętym do liter (background-clip: text) i przesuwanym w kółko.
+   Animowane jest tylko tło jednego małego napisu (ok. 350 x 14 px), więc nie ma
+   to nic wspólnego z kosztownym przeliczaniem układu przy przewijaniu.
+   Pasmo wychodzi poza napis na obu końcach, więc powrót pętli jest niewidoczny. */
+.events-page .events-contact-eyebrow-text {
+  background-image: linear-gradient(
+    100deg,
+    rgba(126, 246, 255, 0.62) 0%,
+    rgba(126, 246, 255, 0.62) 42%,
+    #ffffff 50%,
+    rgba(126, 246, 255, 0.62) 58%,
+    rgba(126, 246, 255, 0.62) 100%
+  );
+  background-repeat: no-repeat;
+  background-size: 260% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: events-contact-sweep 4.2s linear infinite;
+}
+
+/* Poza kadrem poblask stoi. Animacja background-position przy background-clip:
+   text idzie przez wątek główny (przerysowanie liter), więc nie ma powodu, żeby
+   pracowała, gdy sekcji nie widać. Klasę dokłada obserwator z page.tsx; bez
+   JS-u klasy nie ma i animacja chodzi normalnie. */
+.events-page .events-contact.is-offscreen .events-contact-eyebrow-text {
+  animation-play-state: paused;
+}
+
+.events-page .events-contact-title {
+  margin-top: 1.25rem;
+  font-size: clamp(1.9rem, 5.2vw, 3.4rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.022em;
+  color: #ffffff;
+}
+
+.events-page .events-contact-lead {
+  margin-top: 1rem;
+  max-width: 38rem;
+  font-size: clamp(1.02rem, 2.6vw, 1.25rem);
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.events-page .events-contact-note {
+  margin-top: 0.9rem;
+  max-width: 34rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Wizytówki: dwie kolumny od sm w górę, wyśrodkowane jak w projekcie. */
+/* Dwie kolumny NA KAŻDEJ szerokości — obie osoby mają stać obok siebie także
+   na telefonie. Poniżej 640 px wszystko w karcie schodzi o stopień (zdjęcie,
+   stopień pisma, przyciski), żeby 2 x ok. 165 px nie rozpychało strony. */
+.events-page .events-contact-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+  width: 100%;
+  max-width: 52rem;
+  margin-top: clamp(2rem, 4vw, 3rem);
+}
+
+@media (min-width: 640px) {
+  .events-page .events-contact-cards {
+    gap: 1.1rem;
+  }}
+
+.events-page .events-contact-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  height: 100%;
+  padding: clamp(1.5rem, 3.4vw, 2rem) clamp(1.1rem, 3vw, 1.75rem);
+  /* DOKŁADNIE ta sama powierzchnia co kafelki w sekcji „Alvernia Planet
+     w liczbach" (.events-stat-tile): ten sam obrys, ten sam jasny gradient
+     szkła, ten sam cień. Tamte kafelki leżą w karcie o kryciu 50%, więc żeby
+     na zdjęciu wyglądały identycznie, podkładka 50% siedzi tu w samym kafelku.
+     Reguła stoi po wspólnej podkładce 20% i celowo ją nadpisuje. */
+  position: relative;
+  /* Obrys jest STAŁY, tak jak w „w liczbach": tam kolor tonacji niosą wyłącznie
+     liczba, ikona i poświata, a krawędź każdego kafelka jest ta sama, chłodna.
+     Wcześniej krawędź brała kolor z tonacji i czerwona wizytówka miała różową
+     hairline — to jedyne, co odróżniało ją od kafelka statystyk.
+     Promień 1.1rem = `ap-tile-sm`, czyli znowu to samo, co tam. */
+  border: 1px solid rgba(126, 246, 255, 0.24);
+  border-radius: 1.1rem;
+  background-color: rgba(4, 6, 14, 0.5);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.045));
+  box-shadow:
+    0 16px 36px rgba(2, 3, 10, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.09);
+  text-align: center;
+}
+
+/* Treść musi stać NAD poświatą (ta jest pozycjonowana absolutnie). */
+.events-page .events-contact-card > *:not(.events-tile-glow) {
+  position: relative;
+  z-index: 1;
+}
+
+/* Ikony telefonu i koperty oraz kółko ze strzałką w kolorze kafelka. */
+.events-page .events-contact-card .events-contact-action-icon {
+  color: var(--events-tile-accent, #56ddea);
+}
+
+.events-page .events-contact-card .events-contact-action-arrow {
+  background: rgba(var(--events-tile-accent-rgb, 126 246 255), 0.16);
+  color: var(--events-tile-accent, #56ddea);
+}
+
+.events-page .events-contact-card .events-contact-action:hover,
+.events-page .events-contact-card .events-contact-action:focus-visible {
+  border-color: rgba(var(--events-tile-accent-rgb, 126 246 255), 0.5);
+  background: rgba(var(--events-tile-accent-rgb, 126 246 255), 0.12);
+}
+
+/* Obwódka portretu to w wizytówce odpowiednik liczby z „w liczbach": element,
+   który niesie kolor tonacji. Stąd mocniejsza alfa niż w zwykłej ramce — przy
+   0.2 trzy tonacje były na telefonie praktycznie nie do odróżnienia. */
+.events-page .events-contact-card .events-contact-photo {
+  border-color: rgba(var(--events-tile-accent-rgb, 126 246 255), 0.55);
+}
+
+/* Wymiary portretu — bez nich obrazek 512 px rozpycha kartę na całą wysokość. */
+/* `aspect-ratio` zamiast drugiego clampa: przy podniesionym stopniu pisma
+   dolna granica w rem bywa szersza niż wnętrze kafelka, więc szerokość jest
+   ścinana, a wysokość nie — koło robiło się elipsą. Teraz wysokość idzie
+   za szerokością. */
+.events-page .events-contact-photo {
+  width: clamp(5.5rem, 17vw, 7.25rem);
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  object-fit: cover;
+  object-position: top;
+}
+
+/* Wszystko w kafelku musi się łamać. Kafelek ma `contain: paint` (to zostaje —
+   ogranicza obszar przemalowania), więc cokolwiek wystaje poza jego pudełko,
+   zostaje UCIĘTE bez możliwości przewinięcia. Zamiast zdejmować przycinanie
+   i płacić wydajnością, pilnujemy, żeby nic nigdy nie wystawało — także przy
+   podniesionym stopniu pisma w przeglądarce. */
+.events-page .events-contact-name,
+.events-page .events-contact-role,
+.events-page .events-contact-title,
+.events-page .events-contact-lead,
+.events-page .events-contact-note {
+  overflow-wrap: anywhere;
+}
+
+.events-page .events-contact-name {
+  margin-top: 1.1rem;
+  font-size: clamp(1.02rem, 2.8vw, 1.2rem);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: #ffffff;
+}
+
+.events-page .events-contact-role {
+  margin-top: 0.4rem;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.66);
+}
+
+.events-page .events-contact-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  width: 100%;
+  margin-top: auto;
+  padding-top: 1.35rem;
+}
+
+/* Telefon i e-mail jako przyciski: ikona, treść i strzałka po prawej. */
+.events-page .events-contact-action {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.75rem;
+  padding: 0.55rem 0.7rem 0.55rem 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.05);
+  font-size: 0.86rem;
+  color: rgba(255, 255, 255, 0.92);
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease;
+}
+
+.events-page .events-contact-action:hover,
+.events-page .events-contact-action:focus-visible {
+  border-color: rgba(126, 246, 255, 0.45);
+  background: rgba(126, 246, 255, 0.1);
+}
+
+.events-page .events-contact-action-icon {
+  flex-shrink: 0;
+  color: #56ddea;
+}
+
+/* Stopień pisma jest dobrany tak, że numer i adres mieszczą się w jednej
+   linijce na każdej szerokości. Gdy jednak użytkownik podniesie domyślny stopień
+   pisma w przeglądarce, tekst ma się ZAWINĄĆ, a nie zostać ucięty — ucięty numer
+   telefonu czyta się jak poprawny, a to najgorszy możliwy błąd na tej stronie.
+   `text-overflow` zostaje wyłącznie jako ostatnia deska ratunku. */
+.events-page .events-contact-action-value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: normal;
+}
+
+.events-page .events-contact-action-arrow {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 9999px;
+  background: rgba(126, 246, 255, 0.14);
+  color: #7ef6ff;
+  transition: transform 180ms ease;
+}
+
+.events-page .events-contact-action:hover .events-contact-action-arrow {
+  transform: translateX(2px);
+}
+
+/* Dolny pasek — ta sama linia, co nadtytuł hero, domyka sekcję. */
+.events-page .events-contact-strip {
+  margin-top: clamp(2.25rem, 5vw, 3.5rem);
+  padding-top: clamp(1.25rem, 3vw, 1.85rem);
+  width: 100%;
+  max-width: 52rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  /* 0.52 dawało 4,34:1 na najjaśniejszym skrawku zdjęcia — poniżej progu. */
+  color: rgba(255, 255, 255, 0.62);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .events-page .events-contact-eyebrow-text {
+    animation: none;
+    background-image: none;
+    color: rgba(126, 246, 255, 0.86);
+  }
+
+  .events-page .events-contact-action,
+  .events-page .events-contact-action-arrow {
+    transition: none !important;
+    transform: none !important;
+  }}
+
+/* Tryb wymuszonych kolorów (Windows High Contrast): SolarIcon rysuje glif jako
+   `background-color: currentColor` przycięty maską, a przeglądarka nadpisuje
+   background-color kolorem tła — ikona przyjmuje barwę podkładki i znika.
+   `forced-color-adjust: none` + CanvasText przywraca glif w kolorze tekstu. */
+@media (forced-colors: active) {
+  /* Kółka pod ikonami: tło systemowe i obrys, żeby glif miał na czym stanąć.
+     Kolejność ma znaczenie — glif dostaje CanvasText niżej i wygrywa. */
+  .events-page .events-contact-card .events-contact-action-arrow {
+    forced-color-adjust: none;
+    background-color: Canvas;
+    border: 1px solid CanvasText;
+  }
+
+  /* Tło powłoki znika w tym trybie (przeglądarka zeruje gradienty), więc razem
+     z nim musi zniknąć zdjęcie — inaczej na styku ze stopką wraca najtwardsza
+     możliwa krawędź. */
+  .events-page .events-shell-bg-image {
+    background-image: none;
+  }
+
+  /* Sam glif: SolarIcon renderuje zwykły <span> z maską, bez własnej klasy,
+     więc do ikon w kółkach trzeba sięgnąć przez dziecko. */
+  .events-page .events-contact-action-icon,
+  .events-page .events-contact-action-arrow > span {
+    forced-color-adjust: none;
+    /* SolarIcon wypisuje background-color w stylu inline — bez !important
+       reguła z arkusza nie ma szans. */
+    background-color: CanvasText !important;
+  }}
+
+/* Na telefonie karty stoją w dwóch kolumnach — wszystko o stopień mniejsze. */
+@media (max-width: 639px) {
+  /* Jedyne odstępstwo od wyściółki karty „w liczbach" (tam 1.5rem): na telefonie
+     te 0.5rem z każdej strony to ok. 13% szerokości numeru telefonu w kafelku,
+     bo kafelki stoją w dwóch kolumnach i dzielą się resztą po połowie. Różnicy
+     między kartami nie widać — dzielą je trzy ekrany przewijania — a numer
+     telefonu jest o stopień czytelniejszy. Od 640 px w górę wyściółka obu kart
+     jest identyczna. */
+  .events-page .events-contact-shell {
+    padding-inline: 1rem;
+  }
+
+  .events-page .events-contact-card {
+    padding: 1.1rem 0.7rem 1.2rem;
+  }
+
+  .events-page .events-contact-name {
+    margin-top: 0.85rem;
+    font-size: 0.92rem;
+  }
+
+  .events-page .events-contact-role {
+    font-size: 0.72rem;
+  }
+
+  .events-page .events-contact-actions {
+    gap: 0.4rem;
+    padding-top: 1rem;
+  }
+
+  /* Numer i adres mają stać w JEDNEJ linijce. Na kartę przypada tu ok. połowy
+     szerokości ekranu, więc stopień pisma liczymy od szerokości samej karty
+     (cqi), a nie od ekranu — inaczej na 320 px tekst nie miałby prawa się
+     zmieścić. Z drogi schodzą OBIE ozdoby pigułki: ikona i strzałka. Cała
+     pigułka jest odnośnikiem, więc nic nie tracimy, a odzyskane ~40 px idzie
+     wprost na stopień pisma numeru — czyli na czytelność najważniejszej
+     informacji w tej sekcji. */
+  .events-page .events-contact-card {
+    container-type: inline-size;
+  }
+
+  .events-page .events-contact-action {
+    justify-content: center;
+    gap: 0;
+    min-height: 2.6rem;
+    padding: 0.45rem 0.45rem;
+    /* Wartość dobrana pomiarem: największy współczynnik, przy którym najdłuższy
+       ciąg (p.kozolub@gremi.pl) mieści się w jednej linijce na KAŻDEJ
+       szerokości 320–639 px, w Chromium i w WebKicie, z zapasem. */
+    /* Dolna granica w rem, nie w px: człon 8.5cqi zależy od szerokości kafelka,
+       która przy podniesionym stopniu pisma MALEJE (wyściółka w rem rośnie).
+       Bez dolnej granicy w rem numer telefonu paradoksalnie malał, gdy
+       użytkownik prosił o większy tekst. */
+    font-size: clamp(0.53rem, 8.5cqi, 0.85rem);
+  }
+
+  /* Stopień pisma jest dobrany tak, że treść mieści się w jednej linijce na
+     każdej szerokości (zmierzone 320–639 px, zapas 10–79 px). `white-space:
+     normal` tego nie psuje — łamanie zadziała dopiero, gdy tekst NIE mieści
+     się, np. przy wymuszonym większym stopniu pisma w przeglądarce. Lepiej
+     wtedy zawinąć niż uciąć: ucięty numer telefonu czyta się jak poprawny. */
+  .events-page .events-contact-action-value {
+    flex: 0 1 auto;
+    overflow-wrap: anywhere;
+    text-align: center;
+    white-space: normal;
+  }
+
+  /* Adres e-mail wolno złamać w dowolnym miejscu, numer telefonu NIE: ucięty
+     albo rozbity w środku grupy cyfr czyta się jak inny numer. Numer ma spacje
+     między grupami, więc w razie potrzeby złamie się właśnie tam. */
+  .events-page a[href^="tel:"] .events-contact-action-value {
+    overflow-wrap: normal;
+    word-break: keep-all;
+  }
+
+  .events-page .events-contact-action-arrow {
+    display: none;
+  }
+
+  /* Komponent SolarIcon wypisuje `display: inline-block` w stylu inline, więc
+     zwykła reguła przegrywa — stąd !important. */
+  .events-page .events-contact-action-icon {
+    display: none !important;
+  }
+
+  /* Skoro ikona (nosicielka koloru tonacji) schodzi z ekranu, kolor przejmuje
+     sama pigułka — inaczej na telefonie obie wizytówki byłyby nie do
+     odróżnienia. Tekst zostaje biały, więc próg kontrastu nie jest zagrożony. */
+  .events-page .events-contact-card .events-contact-action {
+    /* 0.32 dawało 2,08:1 wobec tła kafelka — poniżej progu 3:1 dla elementów
+       interfejsu. 0.62 mieści się w progu i wyraźniej niesie tonację. */
+    border-color: rgba(var(--events-tile-accent-rgb, 126 246 255), 0.62);
+    background: rgba(var(--events-tile-accent-rgb, 126 246 255), 0.12);
+  }}
+
+/* Najwęższe telefony (iPhone SE i starsze, 320–359 px): na kartę zostaje ok.
+   120 px, więc marginesy schodzą jeszcze o stopień. Współczynnik stopnia pisma
+   jest TEN SAM co wyżej — wcześniej rósł tu do 8,2cqi i tekst paradoksalnie
+   malał przy przejściu z 359 na 360 px. */
+@media (max-width: 359px) {
+  /* Wyściółka POZIOMA zostaje taka sama jak wyżej (0.7rem). Wcześniej schodziła
+     do 0.5rem i pudełko treści kafelka kurczyło się o 6,4 px przy przejściu
+     z 359 na 360 px — a że stopień pisma liczymy w cqi od tego pudełka, tekst
+     malał przy POSZERZANIU okna. Oszczędność bierzemy w pionie, gdzie nic
+     od niej nie zależy. */
+  .events-page .events-contact-card {
+    padding: 1rem 0.7rem 1.1rem;
+  }
+
+  /* „PIOTR KOZOŁUB" przy 0,92rem nie mieścił się w jednym wierszu, a „BARTEK
+     JACOŃ" tak — stanowiska w obu kartach rozjeżdżały się o ponad 20 px. */
+  .events-page .events-contact-name {
+    font-size: 0.85rem;
+  }
+
+  .events-page .events-contact-action {
+    padding: 0.45rem 0.3rem;
+  }}

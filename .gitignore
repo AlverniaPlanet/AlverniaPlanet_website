@@ -17,3 +17,6 @@ tsconfig.tsbuildinfo
 
 # Raw video/media sources (transcoded into public/ — never deployed)
 media-src/
+
+# Lokalne kopie oryginalow obrazow (poza deployem)
+.image-backups/

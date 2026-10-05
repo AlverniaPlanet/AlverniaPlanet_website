@@ -41,7 +41,7 @@ export default function QrRedirectContent() {
           <p className="text-[0.7rem] font-bold uppercase tracking-[0.28em] text-[#ff9357]">
             Alvernia Planet
           </p>
-          <h1 className="text-3xl font-black text-white">MarsApp</h1>
+          <h1 className="text-3xl font-extrabold text-white">MarsApp</h1>
           <p className="text-sm text-white/65">
             Otwieramy aplikację dopasowaną do Twojego urządzenia…
           </p>

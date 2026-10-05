@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 // Kategorie galerii istnieją tylko po polsku — canonical wskazuje na siebie
 // (bez hreflang), a tytuł odróżnia stronę od głównej galerii.
 export const metadata: Metadata = {
-  title: "Galeria: Ścieżka filmowa, Alvernia Planet",
+  title: "Galeria: Edukacyjna ścieżka filmowa, Alvernia Planet",
   alternates: { canonical: "/galeria/sciezka-filmowa" },
 };
 

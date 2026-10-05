@@ -6,6 +6,8 @@ import { useEffect, useRef, useState } from "react";
 type AdaptiveVideoProps = {
   mp4Src: string;
   webmSrc?: string;
+  /** Ustaw, gdy plik WebM jest lżejszy od mp4 — wtedy trafia przed mp4. */
+  preferWebm?: boolean;
   poster: string;
   className?: string;
   sizes?: string;
@@ -24,26 +26,55 @@ type NavigatorWithHints = Navigator & {
     saveData?: boolean;
     effectiveType?: string;
   };
-  deviceMemory?: number;
 };
 
+/**
+ * Czy poprzestać na plakacie zamiast pobierać wideo.
+ *
+ * Wideo hero waży 1,4 MB — na telefonie to było 82% całego transferu strony,
+ * i to na tło, które nie niesie żadnej treści. Plakat jest klatką z tego samego
+ * materiału, więc różnicę widać dopiero, gdy film ruszy.
+ *
+ * Warunki dobieramy tak, żeby wyłączały wideo TYLKO tam, gdzie naprawdę o coś
+ * chodzi — o rachunek za transfer albo o wyraźną wolę użytkownika. Dwa dawne
+ * kryteria sprzętowe wyleciały, bo gasiły film na maszynach, które odtwarzają
+ * go bez mrugnięcia okiem:
+ *   • `deviceMemory <= 4` — laptop z 4 GB RAM-u odtwarza pętlę 1,4 MB
+ *     bez najmniejszego problemu,
+ *   • `hardwareConcurrency <= 4` — czterordzeniowy procesor to nie jest sprzęt
+ *     „słaby"; ten warunek kasował wideo na zwykłych laptopach biurowych.
+ *
+ * Kryterium szerokości ekranu wymaga teraz DODATKOWO wskaźnika dotykowego.
+ * Samo `max-width: 767px` łapało okno przeglądarki rozciągnięte na pół ekranu
+ * laptopa — a tam mamy i łącze, i moc, i miejsce, więc film ma grać. Telefon
+ * poznajemy po tym, że jest wąski ORAZ obsługiwany palcem.
+ */
 function shouldPreferPosterOnly() {
   if (typeof window === "undefined") {
     return false;
   }
 
   const nav = navigator as NavigatorWithHints;
+  // Wyraźna wola użytkownika z poziomu systemu: żadnego ruchu w tle.
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // Oszczędzanie danych i wolne łącze — jedyne sygnały o rachunku za transfer,
+  // jakimi dysponujemy. Network Information API mają tylko silniki Chromium,
+  // więc na Safari i Firefoksie po prostu nie zadziałają (i dobrze).
   const saveData = Boolean(nav.connection?.saveData);
   const effectiveType = nav.connection?.effectiveType ?? "";
   const constrainedNetwork = /(^|-)2g$|3g/.test(effectiveType);
 
-  return reducedMotion || saveData || constrainedNetwork;
+  // Próg 768 px = breakpoint `md` w Tailwindzie. `pointer: coarse` odróżnia
+  // telefon od wąskiego okna na desktopie.
+  const phone = window.matchMedia("(max-width: 767px) and (pointer: coarse)").matches;
+
+  return reducedMotion || saveData || constrainedNetwork || phone;
 }
 
 export default function AdaptiveVideo({
   mp4Src,
   webmSrc,
+  preferWebm = false,
   poster,
   className,
   sizes = "100vw",
@@ -74,20 +105,46 @@ export default function AdaptiveVideo({
   // Dla priority (np. hero) NIE renderujemy <video> w pierwszym renderze/SSR, aby
   // źródło wideo nie konkurowało z posterem (LCP) w skanerze preload. Montujemy je
   // po pierwszej klatce (podwójny rAF) — poster pod spodem jest identyczny, brak mrugnięcia.
+  // Sprawdzenie SYNCHRONICZNE, nie przez stan.
+  //
+  // `posterOnly` jest ustawiane w efekcie wyżej, ale React aktualizuje stan
+  // asynchronicznie. Na wolniejszym CPU rAF poniżej zdążał odpalić, ZANIM
+  // komponent przerenderował się z ustawioną flagą — i źródło wideo podpinało
+  // się mimo zakazu. Zmierzone: telefon na 3G pobierał 1,4 MB wideo, choć ten
+  // sam telefon na 4G już nie. Wywołanie funkcji wprost w efekcie usuwa
+  // zależność od kolejności i od momentu przerenderowania.
+  const tylkoPlakat = () => preferPosterOnLowPower && shouldPreferPosterOnly();
+
+  // Wideo hero czeka na zdarzenie `load`, czyli na moment, w którym reszta
+  // strony jest już pobrana. Powód: plik waży kilka megabajtów i na wolnym
+  // łączu zjadał całe pasmo — zdjęcia w sekcjach niżej dociągały się minutami,
+  // a użytkownik przewijał przez puste kafelki. Na szybkim łączu `load` pada
+  // po ułamku sekundy, więc różnicy nie widać; na wolnym przez ten czas stoi
+  // plakat, czyli klatka z tego samego materiału. Gdy strona jest już wczytana
+  // (np. powrót z pamięci podręcznej), startujemy od razu.
   useEffect(() => {
-    if (!priority || posterOnly) return;
+    if (!priority || posterOnly || tylkoPlakat()) return;
+    let raf1 = 0;
     let raf2 = 0;
-    const raf1 = requestAnimationFrame(() => {
-      raf2 = requestAnimationFrame(() => setShouldLoadVideo(true));
-    });
+    const start = () => {
+      raf1 = requestAnimationFrame(() => {
+        raf2 = requestAnimationFrame(() => setShouldLoadVideo(true));
+      });
+    };
+    if (document.readyState === "complete") {
+      start();
+    } else {
+      window.addEventListener("load", start, { once: true });
+    }
     return () => {
+      window.removeEventListener("load", start);
       cancelAnimationFrame(raf1);
       cancelAnimationFrame(raf2);
     };
   }, [priority, posterOnly]);
 
   useEffect(() => {
-    if (posterOnly) {
+    if (posterOnly || tylkoPlakat()) {
       setShouldLoadVideo(false);
       setIsLoaded(true);
       return;
@@ -199,6 +256,10 @@ export default function AdaptiveVideo({
         sizes={sizes}
         priority={priority}
         loading={priority ? "eager" : "lazy"}
+        /* Bez tego plakat hero (największy element pierwszego ekranu) stoi
+           w kolejce z priorytetem Low — równo z kilkunastoma paczkami
+           JavaScriptu. Atrybut nic nie waży, a przesuwa go na początek. */
+        fetchPriority={priority ? "high" : "auto"}
         decoding="async"
         className={className ?? "h-full w-full object-cover"}
         aria-hidden="true"
@@ -218,8 +279,13 @@ export default function AdaptiveVideo({
           tabIndex={-1}
           aria-hidden="true"
         >
+          {/* Przeglądarka bierze PIERWSZE obsługiwane źródło, więc kolejność
+              decyduje o tym, co się realnie pobierze. Domyślnie mp4 idzie
+              pierwszy, bo część naszych WebM-ów jest cięższa od swoich mp4.
+              preferWebm ustawiamy tam, gdzie WebM jest faktycznie lżejszy. */}
+          {webmSrc && preferWebm ? <source src={webmSrc} type="video/webm" /> : null}
           <source src={mp4Src} type="video/mp4" />
-          {webmSrc ? <source src={webmSrc} type="video/webm" /> : null}
+          {webmSrc && !preferWebm ? <source src={webmSrc} type="video/webm" /> : null}
           {fallbackText}
         </video>
       ) : null}

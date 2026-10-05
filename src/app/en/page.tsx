@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/logo_alvernia_planet_neg_RGB.png",
+        url: "/wspolne/logotypy/logo-alvernia-planet-negatyw.png",
         width: 1920,
         height: 1080,
         type: "image/png",
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title,
     description,
-    images: ["/logo_alvernia_planet_neg_RGB.png"],
+    images: ["/wspolne/logotypy/logo-alvernia-planet-negatyw.png"],
   },
 };
 

@@ -3,7 +3,6 @@
 import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { FaArrowDown, FaChevronDown, FaChevronRight, FaFilm, FaLocationDot, FaMobileScreen, FaRocket, FaTriangleExclamation } from "react-icons/fa6";
 import Card from "@/app/components/Card";
 import { PrimaryButton } from "@/app/components/PrimaryButton";
 import TourLineAccentTitle from "@/app/components/TourLineAccentTitle";
@@ -11,12 +10,13 @@ import TourLineGalleryRow from "@/app/components/TourLineGalleryRow";
 import styles from "./MarsLandingContent.module.css";
 import {
   buildBookingPath,
-  MARS_BOOKING_CATEGORY,
   MARS_BOOKING_SERVICES,
 } from "@/lib/booking";
 import { PROMO_PACKAGES } from "@/lib/promoPackages";
-import { AllAttractionsPromoCard } from "@/app/components/AllAttractionsPromoCard";
+import { AllAttractionsBundleBar } from "@/app/components/AllAttractionsBundleBar";
+import { AttractionPortal } from "@/app/components/AttractionPortal";
 import { HeroMarquee } from "@/app/components/HeroMarquee";
+import { ArrowDown, CaretDown, CaretRight, DeviceMobile, FilmSlate, MapPin, Rocket, Warning } from "@phosphor-icons/react";
 
 // Hero = jedno duże zdjęcie na cały ekran, które płynnie zmienia się (cross-fade)
 // między dwoma kadrami z atrakcji. Kropki na dole pokazują, ile jest zdjęć.
@@ -112,7 +112,7 @@ function StepTile({ step }: { step: RouteStep }) {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(247,120,40,0.14),transparent_34%)] opacity-70 transition-opacity duration-300 group-hover:opacity-100" />
       <div className="relative flex items-center gap-2.5 sm:gap-3">
         <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#f77828]/30 bg-[#f77828]/12 text-[#f9b27a] sm:h-8 sm:w-8">
-          <FaLocationDot aria-hidden="true" />
+          <MapPin aria-hidden="true" />
         </span>
         <span className="min-w-0 flex-1 text-[clamp(0.92rem,0.88rem+0.32vw,1.12rem)] font-semibold leading-snug text-white">
           {step.label}
@@ -130,8 +130,8 @@ function StepTile({ step }: { step: RouteStep }) {
 function StepConnector() {
   return (
     <div className="flex justify-center py-0.5 md:py-0" aria-hidden="true">
-      <FaChevronDown className="h-3.5 w-3.5 text-[#f77828]/55 md:hidden" />
-      <FaChevronRight className="hidden h-3.5 w-3.5 text-[#f77828]/55 md:block" />
+      <CaretDown className="h-3.5 w-3.5 text-[#f77828]/55 md:hidden" />
+      <CaretRight className="hidden h-3.5 w-3.5 text-[#f77828]/55 md:block" />
     </div>
   );
 }
@@ -139,7 +139,7 @@ function StepConnector() {
 function RowConnector() {
   return (
     <div className="flex justify-center py-0.5" aria-hidden="true">
-      <FaChevronDown className="h-3.5 w-3.5 text-[#f77828]/55" />
+      <CaretDown className="h-3.5 w-3.5 text-[#f77828]/55" />
     </div>
   );
 }
@@ -168,7 +168,6 @@ export default function MarsLandingContent({
   const planetRef = useRef<HTMLDivElement | null>(null);
   const [imageFailed, setImageFailed] = useState(false);
   const [heroIndex, setHeroIndex] = useState(0);
-  const [introReady, setIntroReady] = useState(false);
   const showMarsAsset = Boolean(marsAsset && !imageFailed);
 
   useEffect(() => {
@@ -190,15 +189,6 @@ export default function MarsLandingContent({
   }, []);
 
   // Animacja wejścia hero: elementy pojawiają się sekwencyjnie po wejściu na stronę.
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setIntroReady(true);
-      return;
-    }
-    const id = window.setTimeout(() => setIntroReady(true), 60);
-    return () => window.clearTimeout(id);
-  }, []);
 
   const handleScrollCueClick = () => {
     const targets = Array.from(
@@ -439,46 +429,38 @@ export default function MarsLandingContent({
 
         <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-6xl flex-col items-center justify-end px-4 pb-28 pt-24 text-center sm:pb-[11rem] lg:pb-[15rem]">
           <span
-            className={`mb-5 inline-flex items-center rounded-full bg-[linear-gradient(135deg,#c2410c,#f77828,#ff9357)] px-4 py-1.5 text-[0.68rem] font-extrabold uppercase tracking-[0.2em] text-[#2a1206] shadow-[0_6px_18px_rgba(247,120,40,0.45),0_0_16px_rgba(247,120,40,0.4)] ring-1 ring-white/25 transition-[opacity,transform] duration-[850ms] ease-out delay-[80ms] sm:px-5 sm:py-2 sm:text-[0.8rem] sm:tracking-[0.24em] ${
-              introReady ? "scale-100 opacity-100" : "scale-90 opacity-0"
-            }`}
+            className={`ap-mars-badge mb-5 inline-flex items-center rounded-full bg-[linear-gradient(135deg,#c2410c,#f77828,#ff9357)] px-4 py-1.5 text-[0.68rem] font-extrabold uppercase tracking-[0.2em] text-[#2a1206] shadow-[0_6px_18px_rgba(247,120,40,0.45),0_0_16px_rgba(247,120,40,0.4)] ring-1 ring-white/25 sm:px-5 sm:py-2 sm:text-[0.8rem] sm:tracking-[0.24em]`}
           >
             Zagraj
           </span>
 
           <h1
-            className={`text-[clamp(2.95rem,1.8rem+5.7vw,6.1rem)] font-black leading-[0.95] tracking-tight text-white drop-shadow-[0_0_30px_rgba(0,0,0,0.65)] transition-[opacity,transform] duration-[900ms] ease-out delay-[240ms] [text-shadow:0_3px_16px_rgba(0,0,0,0.55)] ${
-              introReady ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"
-            }`}
+            className={`ap-mars-title text-[clamp(2.95rem,1.8rem+5.7vw,6.1rem)] font-extrabold leading-[0.95] tracking-tight text-white drop-shadow-[0_0_30px_rgba(0,0,0,0.65)] [text-shadow:0_3px_16px_rgba(0,0,0,0.55)]`}
           >
             MARS
           </h1>
 
           <p
-            className={`mx-auto mt-5 max-w-2xl text-balance text-base leading-relaxed text-white/90 transition-[opacity,transform] duration-[900ms] ease-out delay-[440ms] [text-shadow:0_2px_12px_rgba(0,0,0,0.6)] sm:text-lg ${
-              introReady ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
-            }`}
+            className={`ap-mars-lead mx-auto mt-5 max-w-2xl text-balance text-base leading-relaxed text-white/90 [text-shadow:0_2px_12px_rgba(0,0,0,0.6)] sm:text-lg`}
           >
             Plan filmowy poświęcony Czerwonej Planecie. Wcielasz się w bohatera własnej misji i scena
             po scenie kręcisz krótki film na profesjonalnej scenografii marsjańskiej.
           </p>
 
           <div
-            className={`mt-5 flex w-full flex-row flex-wrap items-center justify-center gap-2 transition-[opacity,transform] duration-[900ms] ease-out delay-[620ms] sm:mt-9 sm:gap-3 ${
-              introReady ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
-            }`}
+            className={`ap-mars-cta mt-5 flex w-full flex-row flex-wrap items-center justify-center gap-2 sm:mt-9 sm:gap-3`}
           >
             <PrimaryButton
-              href="/rezerwuj"
+              href={buildBookingPath("pl", { service: MARS_BOOKING_SERVICES.normal })}
               size="lg"
-              className="ticket-pill whitespace-nowrap !px-5 !py-1.5 !text-xs !bg-[linear-gradient(135deg,#c2410c,#f77828,#ff9357)] !font-extrabold ring-[color:rgba(247,120,40,0.6)] hover:!brightness-110 sm:!px-6 sm:!py-2.5 sm:!text-base sm:min-w-[12rem]"
+              className="ticket-pill !text-[#04222a] whitespace-nowrap !px-5 !py-1.5 !text-xs !bg-[#56ddea] !font-extrabold ring-[color:rgba(86,221,234,0.6)] hover:!brightness-110 sm:!px-6 sm:!py-2.5 sm:!text-base sm:min-w-[12rem]"
             >
-              <FaRocket aria-hidden="true" />
+              <Rocket aria-hidden="true" />
               Zarezerwuj misję
             </PrimaryButton>
             <a
               href="#mars-tickets"
-              className="inline-flex items-center justify-center gap-1.5 rounded-full border border-white/25 bg-white/[0.06] px-3.5 py-1.5 text-xs font-semibold text-white backdrop-blur-md transition hover:border-[#ff9357]/60 hover:bg-white/12 sm:gap-2 sm:px-6 sm:py-2.5 sm:text-sm"
+              className="inline-flex items-center justify-center gap-1.5 rounded-[var(--ap-btn-radius)] border border-white/25 bg-white/[0.06] px-3.5 py-1.5 text-xs font-semibold text-white backdrop-blur-md transition hover:border-[#ff9357]/60 hover:bg-white/12 sm:gap-2 sm:px-6 sm:py-2.5 sm:text-sm"
             >
               Zobacz bilety
               <span aria-hidden="true">↓</span>
@@ -488,9 +470,7 @@ export default function MarsLandingContent({
 
         {/* Kropki slideshow */}
         <div
-          className={`absolute inset-x-0 bottom-[4.75rem] z-20 flex justify-center gap-2.5 transition-opacity duration-[900ms] ease-out delay-[780ms] sm:bottom-[5.75rem] ${
-            introReady ? "opacity-100" : "opacity-0"
-          }`}
+          className={`ap-mars-late absolute inset-x-0 bottom-[4.75rem] z-20 flex justify-center gap-2.5 sm:bottom-[5.75rem]`}
         >
           {MARS_HERO_IMAGES.map((src, i) => (
             <button
@@ -510,9 +490,7 @@ export default function MarsLandingContent({
 
         {/* Fakty (nad) + przewijany ticker (pod), przyklejone do dołu hero */}
         <div
-          className={`absolute inset-x-0 bottom-0 z-10 transition-opacity duration-[900ms] ease-out delay-[780ms] ${
-            introReady ? "opacity-100" : "opacity-0"
-          }`}
+          className={`ap-mars-late absolute inset-x-0 bottom-0 z-10`}
         >
           <div className="border-t border-white/10 bg-black/40 backdrop-blur-md">
             <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-4 gap-y-1 px-3 py-1.5 text-center sm:gap-x-9 sm:py-2">
@@ -585,7 +563,7 @@ export default function MarsLandingContent({
         onClick={handleScrollCueClick}
         aria-label="Przewiń do kolejnej sekcji"
       >
-        <FaChevronDown />
+        <CaretDown />
       </button>
 
       <section className={styles.section}>
@@ -599,14 +577,14 @@ export default function MarsLandingContent({
           >
             <div className="flex flex-col gap-4 pl-2 sm:flex-row sm:items-center sm:gap-6 sm:pl-4">
               <span className="relative inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#f77828]/25 text-[#ffb585] ring-2 ring-[#f77828]/55 shadow-[0_0_28px_rgba(247,120,40,0.45)] sm:h-16 sm:w-16">
-                <FaMobileScreen className="h-7 w-7 sm:h-8 sm:w-8" aria-hidden="true" />
+                <DeviceMobile className="h-7 w-7 sm:h-8 sm:w-8" aria-hidden="true" />
                 <span className="absolute -bottom-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#f77828] text-[#170a04] shadow-[0_4px_12px_rgba(247,120,40,0.55)] sm:h-7 sm:w-7" aria-hidden="true">
-                  <FaTriangleExclamation className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                  <Warning className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                 </span>
               </span>
               <div className="text-center sm:text-left">
                 <p className="inline-flex items-center gap-2 text-[0.72rem] font-bold uppercase tracking-[0.26em] text-[#ffb585]">
-                  <FaTriangleExclamation aria-hidden="true" className="h-3.5 w-3.5" />
+                  <Warning aria-hidden="true" className="h-3.5 w-3.5" />
                   Ważne: weź ze sobą telefon
                 </p>
                 <h3 className="mt-2 text-xl font-bold leading-tight text-white sm:text-2xl">
@@ -647,13 +625,13 @@ export default function MarsLandingContent({
                 <div data-reveal style={ri(3)}><StepTile step={routeSteps[2]} /></div>
 
                 <div className="flex justify-center py-1.5" aria-hidden="true">
-                  <FaArrowDown className="h-5 w-5 text-[#f77828] drop-shadow-[0_0_12px_rgba(247,120,40,0.55)]" />
+                  <ArrowDown className="h-5 w-5 text-[#f77828] drop-shadow-[0_0_12px_rgba(247,120,40,0.55)]" />
                 </div>
 
                 <div className="relative overflow-hidden rounded-2xl border border-[#f77828]/45 bg-gradient-to-r from-[#f77828]/22 via-[#f77828]/10 to-transparent px-4 py-5 shadow-[0_0_36px_rgba(247,120,40,0.18)] sm:px-7 sm:py-7" data-reveal data-reveal-glow style={ri(4)}>
                   <div className="flex flex-col items-center gap-3 text-center">
                     <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#f77828]/25 text-[#ffb585] sm:h-11 sm:w-11">
-                      <FaFilm aria-hidden="true" />
+                      <FilmSlate aria-hidden="true" />
                     </span>
                     <div className="space-y-1.5">
                       <p className="text-[clamp(1.2rem,1.1rem+1.2vw,1.95rem)] font-semibold leading-tight tracking-[-0.02em] text-white">
@@ -701,8 +679,10 @@ export default function MarsLandingContent({
               <div className="relative w-full overflow-hidden rounded-[1.75rem]" data-reveal style={{ ...MARS_TICKET_STUB_STYLE, ...ri(1) }}>
                 <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(247,120,40,0.2),transparent_42%),radial-gradient(circle_at_bottom_right,rgba(247,72,108,0.12),transparent_38%)]" />
                 <div className="relative grid gap-6 p-6 sm:p-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-8">
-                  <div className="space-y-4 text-center lg:text-left">
-                    <span className="ticket-card-badge mx-auto lg:mx-0">MARS</span>
+                  <div className="flex flex-col items-center gap-5 text-center sm:flex-row sm:items-center sm:gap-6 sm:text-left lg:text-left">
+                    <AttractionPortal attraction="mars" className="w-36 shrink-0 sm:w-44" />
+                    <div className="space-y-4">
+                    <span className="ticket-card-badge mx-auto sm:mx-0">MARS</span>
                     <h3 className="text-2xl font-extrabold tracking-[-0.02em] text-white sm:text-3xl">Bilet na MARS</h3>
                     <ul className="mx-auto max-w-md space-y-2 text-left lg:mx-0">
                       {MARS_CARD_INCLUDES.map((inc) => (
@@ -712,6 +692,7 @@ export default function MarsLandingContent({
                         </li>
                       ))}
                     </ul>
+                    </div>
                   </div>
 
                   <div
@@ -742,12 +723,10 @@ export default function MarsLandingContent({
                     </div>
                     <PrimaryButton
                       href={buildBookingPath("pl", {
-                        category: MARS_BOOKING_CATEGORY,
                         service: MARS_BOOKING_SERVICES.normal,
-                        autopick: true,
                       })}
                       size="lg"
-                      className="ticket-pill w-full whitespace-nowrap !bg-[linear-gradient(135deg,#e2580c,#f59044)] !text-white !font-extrabold [text-shadow:0_1px_2px_rgba(0,0,0,0.55)] ring-[color:rgba(247,120,40,0.6)] hover:!brightness-110"
+                      className="ticket-pill w-full whitespace-nowrap !bg-[#56ddea] !text-[#04222a] !font-extrabold ring-[color:rgba(86,221,234,0.6)] hover:!brightness-110"
                     >
                       Kup bilet
                     </PrimaryButton>
@@ -756,7 +735,7 @@ export default function MarsLandingContent({
               </div>
 
               {/* Bilet na wszystkie atrakcje, wspólny komponent (1:1 jak na home), pod spodem */}
-              <div data-reveal style={ri(2)}><AllAttractionsPromoCard promo={PROMO_PACKAGES.pl[0]} locale="pl" /></div>
+              <div data-reveal style={ri(2)}><AllAttractionsBundleBar promo={PROMO_PACKAGES.pl[0]} locale="pl" /></div>
             </div>
           </Card>
         </div>
@@ -780,7 +759,7 @@ export default function MarsLandingContent({
                 Nagroda główna to pokaz filmu na międzynarodowym festiwalu FINC w Brazylii i wyjazd do Brazylii.
               </p>
               <div className="flex flex-wrap justify-center gap-2 sm:gap-3" data-reveal style={ri(2)}>
-                {["Film 30–90 s", "Zgłoszenia do 30.09.2026", "Nagroda: wyjazd na FINC (Brazylia)"].map((chip) => (
+                {["Film 30–90 s", "Zgłoszenia do 30.09.2027", "Nagroda: wyjazd na FINC (Brazylia)"].map((chip) => (
                   <span
                     key={chip}
                     className="rounded-full border border-[#f77828]/30 bg-white/[0.04] px-3 py-1.5 text-xs text-white/75 sm:px-4 sm:py-2 sm:text-sm"
@@ -794,7 +773,7 @@ export default function MarsLandingContent({
                   href="/mars/konkurs-wyladuj-na-marsie"
                   className="inline-flex items-center gap-2 rounded-[var(--ap-btn-radius)] bg-gradient-to-br from-[#f77828] to-[#ff9357] px-6 py-3 text-sm font-bold uppercase tracking-[0.18em] text-[#170a04] shadow-[0_12px_30px_rgba(247,120,40,0.4)] transition hover:scale-[1.03] hover:brightness-110"
                 >
-                  <FaFilm aria-hidden="true" />
+                  <FilmSlate aria-hidden="true" />
                   Poznaj konkurs i zasady
                 </Link>
               </div>
@@ -813,13 +792,13 @@ export default function MarsLandingContent({
           >
             <div className="grid items-center gap-6 lg:grid-cols-2 lg:gap-10">
               <a
-                href="/mars/Mapka_mars_na_strone.webp"
+                href="/atrakcje/mars/Mapka_mars_na_strone.webp"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group relative mx-auto block w-full max-w-sm overflow-hidden rounded-2xl border border-[#f77828]/30 bg-black/30 shadow-[0_18px_50px_rgba(0,0,0,0.45)] transition hover:border-[#f77828]/55 lg:mx-0"
               >
                 <img
-                  src="/mars/Mapka_mars_na_strone.webp"
+                  src="/atrakcje/mars/Mapka_mars_na_strone.webp"
                   alt="Mapa scenografii MARS"
                   width={1414}
                   height={2000}
@@ -838,12 +817,12 @@ export default function MarsLandingContent({
                 </p>
                 <div className="mt-7 flex justify-center lg:justify-start">
                   <a
-                    href="/mars/Mapka_mars_na_strone.webp"
+                    href="/atrakcje/mars/Mapka_mars_na_strone.webp"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 rounded-[var(--ap-btn-radius)] bg-gradient-to-br from-[#f77828] to-[#ff9357] px-6 py-3 text-sm font-bold uppercase tracking-[0.18em] text-[#170a04] shadow-[0_12px_30px_rgba(247,120,40,0.4)] transition hover:scale-[1.03] hover:brightness-110"
                   >
-                    <FaLocationDot aria-hidden="true" />
+                    <MapPin aria-hidden="true" />
                     Otwórz pełną mapę
                   </a>
                 </div>

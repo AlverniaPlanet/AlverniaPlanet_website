@@ -1,0 +1,2636 @@
+/* Style podstrony — wycięte z globals.css.
+
+   Powód: w jednym globalnym arkuszu siedziały reguły WSZYSTKICH podstron, więc
+   gość strony głównej pobierał je co do jednej. Zmierzone: 60% arkusza to były
+   style pojedynczych podstron. Next dzieli CSS po trasach, więc ten plik jedzie
+   wyłącznie tam, gdzie jest potrzebny.
+
+   Reguły zachowują kolejność z pliku źródłowego — to istotne, bo w tym projekcie
+   kaskada rozstrzyga kilka miejsc przy równej swoistości. */
+
+.dojazd-shell {
+  width: 100%;
+  /* Kontener 1180 px — środek przedziału z projektu. */
+  max-width: 73.75rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+
+.dojazd-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.dojazd-page :focus-visible {
+  outline: 3px solid var(--dj-akcent);
+  outline-offset: 2px;
+}
+
+/* --- Nagłówek: cztery warstwy ----------------------------------------------
+   1) granatowa płaszczyzna sekcji (tło .dojazd-wstep),
+   2) kontener fotografii o własnych wymiarach — NIGDY inset:0 z cover,
+   3) lokalna maska, która wygasza fotografię w granat przy jej krawędzi,
+   4) kontener treści ponad wszystkim.
+   Telefon: zdjęcie jest pasem przy dolnej krawędzi, tekst stoi nad nim.
+   Od 1024 px: zdjęcie zajmuje prawą część, tekst spokojny granat po lewej.
+   --------------------------------------------------------------------------- */
+
+/* Telefon: najpierw tekst na spokojnym granacie, pod nim pas panoramy —
+   hero nie zjada całego pierwszego ekranu. Desktop: jedno szerokie hero. */
+.dojazd-wstep {
+  /* Jedna wartosc dla wysokosci luku i dla rezerwy pod tekstem — nie da sie
+     zmienic jednego bez drugiego, wiec napis nigdy nie wejdzie pod ksztalt.
+     Zmierzone: bez tej rezerwy na tablecie w poziomie (1366x1024, 1180x820)
+     trzeci wiersz podtytulu byl przyciety, bo `min-height` naglowka konczy
+     sie na 22rem, a luk zabiera z dolu 5,5rem. */
+  --dj-fala-wys: 2.5rem;
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  min-height: clamp(17rem, 58vw, 22rem);
+  padding-block: 2.25rem calc(2.25rem + var(--dj-fala-wys));
+  background: var(--dj-granat);
+  color: #ffffff;
+}
+
+/* 2) Kontener fotografii — telefon: blok w prawym dolnym rogu.
+   Zmierzone w referencji: fotografia zaczyna się dopiero na 34% szerokości,
+   a kopuły są małym elementem krajobrazu. Pas na pełną szerokość dawał je
+   dwa razy za duże, bo `cover` skaluje zdjęcie do szerokości kontenera. */
+/* Fotografia wypełnia cały nagłówek — bez granatowego panelu obok. */
+.dojazd-wstep-foto {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* --- Przejscie hero → jasna sekcja ------------------------------------------
+   Ksztalt, nie gradient: fotografia konczy sie ostro, a jasne tlo wchodzi
+   lukiem. `bottom: -1px` zasklepia wlos, ktory potrafi zostac po zaokragleniu
+   ulamkowych pikseli; nadmiar przycina `overflow: hidden` naglowka.
+   z-index 1 stawia luk nad zdjeciem (z-index 0), ale pod trescia (z-index 2),
+   wiec napisy nigdy nie znikaja pod ksztaltem. Element jest pozycjonowany
+   absolutnie, wiec nie zmienia wysokosci naglowka ani niczego pod nim. */
+.dojazd-wstep-fala {
+  position: absolute;
+  z-index: 1;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: var(--dj-fala-wys);
+  pointer-events: none;
+}
+
+/* Dokladnie ten sam odcien co sekcja pod naglowkiem — bez nowego koloru. */
+.dojazd-wstep-fala-ksztalt {
+  fill: var(--dj-tlo);
+}
+
+.dojazd-wstep-orbita {
+  fill: none;
+  stroke: var(--dj-turkus);
+  stroke-width: 1;
+  opacity: 0.28;
+}
+
+.dojazd-wstep-orbita-punkt {
+  fill: var(--dj-turkus);
+  opacity: 0.32;
+}
+
+/* Na telefonie zostaje sam luk — punkt orbity przy tej skali robil sie
+   owalny i czytal sie jak zabrudzenie, a nie jak detal. */
+@media (max-width: 767px) {
+  .dojazd-wstep-orbita-punkt {
+    display: none;
+  }}
+
+@media (min-width: 768px) {
+  .dojazd-wstep {
+    --dj-fala-wys: 4rem;
+  }}
+
+@media (min-width: 1024px) {
+  .dojazd-wstep {
+    --dj-fala-wys: 5.5rem;
+  }}
+
+@media (min-width: 1600px) {
+  .dojazd-wstep {
+    --dj-fala-wys: 6rem;
+  }}
+
+.dojazd-wstep-foto picture,
+.dojazd-wstep-foto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.dojazd-wstep-foto img {
+  object-fit: cover;
+  /* Na zdjęciu kopuły stoją w dolnej połowie kadru (pół klatki to niebo),
+     więc okno kadrowania siedzi nisko: parking, kopuły i pas nieba nad nimi. */
+  object-position: center 62%;
+}
+
+/* 3) Maska: fotografia wygasza się ku górze w granat, dolny pas zostaje
+      w naturalnej jasności. */
+.dojazd-wstep-foto::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  /* Maska ma tylko ukryć lewą i górną krawędź fotografii — gasnie szybko,
+     żeby niebo i kopuły zostały w naturalnej jasności. */
+  /* Zdjęcie idzie przez cały nagłówek, więc napisy potrzebują własnego cienia:
+     przyciemnienie gęstnieje po stronie tekstu i pod paskiem nawigacji,
+     a prawa strona kadru zostaje jasna. */
+  background:
+    linear-gradient(
+      100deg,
+      rgba(8, 15, 30, 0.95) 0%,
+      rgba(8, 15, 30, 0.91) 28%,
+      rgba(8, 15, 30, 0.78) 46%,
+      rgba(8, 15, 30, 0.48) 64%,
+      rgba(8, 15, 30, 0.22) 82%,
+      rgba(8, 15, 30, 0.12) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(8, 15, 30, 0.55) 0%,
+      rgba(8, 15, 30, 0.12) 34%,
+      rgba(8, 15, 30, 0.1) 70%,
+      rgba(8, 15, 30, 0.42) 100%
+    );
+}
+
+/* Na wąskim ekranie napisy zajmują niemal całą szerokość, więc poziomy cień
+   nie wystarcza — przyciemnienie musi objąć całą górę kadru. Zmierzone:
+   bez tego tytuł miał 2,2:1 zamiast wymaganych 3:1.
+   Przyciemnienie sięga głębiej niż wcześniej: podtytuł kończy się ok. 75%
+   wysokości kadru, a przy poprzednich wartościach (0,7 na 56%) miał tam
+   4,72:1 — ledwie ponad progiem. Teraz gęstość trzyma się do 82%. */
+@media (max-width: 1023px) {
+  .dojazd-wstep-foto::after {
+    background:
+      linear-gradient(
+        178deg,
+        rgba(8, 15, 30, 0.95) 0%,
+        rgba(8, 15, 30, 0.93) 42%,
+        rgba(8, 15, 30, 0.88) 64%,
+        rgba(8, 15, 30, 0.72) 82%,
+        rgba(8, 15, 30, 0.5) 100%
+      );
+  }}
+
+/* Alver w busie: warstwa nad fotografią i maską, pod tekstem. Stoi przy dolnej
+   krawędzi, na styku granatu z fotografią — czyli tam, gdzie „wjeżdża”. */
+/* 4) Treść ponad fotografią i maską. */
+.dojazd-wstep-tresc {
+  position: relative;
+  z-index: 2;
+}
+
+.dojazd-wstep-tytul {
+  margin-top: 0.45rem;
+  font-size: clamp(2rem, 7vw, 3.1rem);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+}
+
+/* Druga część tytułu w kolorze marki. Turkus na ciemnym przyciemnieniu hero
+   ma zapas kontrastu; na jasnym tle byłby nieczytelny, ale tu go nie ma. */
+.dojazd-wstep-akcent {
+  color: var(--dj-turkus);
+}
+
+.dojazd-wstep-lead {
+  margin-top: 0.75rem;
+  /* Miara dobrana tak, żeby dłuższy opis łamał się na 3–4 linie i nie dobijał
+     do prawej krawędzi ani nie wchodził pod fotografię. */
+  max-width: 46ch;
+  /* Podtytuł o 20% mniejszy od tytułu hero — na życzenie, żeby nie konkurował
+     z nagłówkiem. Miara została w `ch`, więc łamanie wierszy zostaje takie samo. */
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.86);
+}
+
+/* Desktopowe nadpisania hero MUSZĄ stać po regułach bazowych: @media nie
+   podnosi swoistości, więc przy równej swoistości wygrywa reguła późniejsza.
+   Gdy ten blok stał wyżej, jego font-size w ogóle nie działał. */
+@media (min-width: 1024px) {
+  /* Desktop: jedno szerokie hero panoramiczne, tekst wyśrodkowany w pionie. */
+  .dojazd-wstep {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    min-height: clamp(20rem, 25vw, 28rem);
+    /* Dolne dopelnienie musi ZNOWU doliczyc wysokosc luku — ta regula stoi
+       pozniej niz bazowa i bez tego kasowalaby rezerwe pod podtytulem.
+       Zmierzone: bez tego na 1024-1440 px podtytul wchodzil pod ksztalt
+       o 13-33 px. */
+    padding-block: clamp(3rem, 3vw, 4.5rem) calc(clamp(3rem, 3vw, 4.5rem) + var(--dj-fala-wys));
+  }
+
+  .dojazd-wstep-tresc {
+    width: 100%;
+  }
+
+  /* Na desktopie cały blok tekstu hero o ~20% większy. */
+  .dojazd-wstep-tytul {
+    font-size: clamp(2.4rem, 8.4vw, 3.72rem);
+  }
+
+  .dojazd-wstep-lead {
+    max-width: 52ch;
+    font-size: 0.96rem;
+  }
+
+  /* Prawa część sekcji; `max-width` zatrzymuje wzrost na szerokich ekranach.
+     Musi cofnąć układ z telefonu (relative / order / margin). */
+  .dojazd-wstep-foto {
+    inset: 0;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+  }
+
+  .dojazd-wstep-foto img {
+    object-position: center 63%;
+  }
+
+  /* Maska działa teraz w poziomie: kryje lewą krawędź zdjęcia, prawa część
+     zostaje jasna — niebo i białe kopuły w naturalnym kolorze. */
+  .dojazd-wstep-foto::after {
+    background:
+      radial-gradient(
+        110% 160% at 0% 50%,
+        var(--dj-granat) 0%,
+        rgba(11, 20, 39, 0.7) 20%,
+        rgba(11, 20, 39, 0.3) 42%,
+        rgba(11, 20, 39, 0.08) 62%,
+        rgba(11, 20, 39, 0) 80%
+      ),
+      linear-gradient(
+        90deg,
+        var(--dj-granat) 0%,
+        rgba(11, 20, 39, 0.96) 10%,
+        rgba(11, 20, 39, 0.93) 22%,
+        rgba(11, 20, 39, 0.86) 34%,
+        rgba(11, 20, 39, 0.68) 46%,
+        rgba(11, 20, 39, 0.42) 58%,
+        rgba(11, 20, 39, 0.2) 72%,
+        rgba(11, 20, 39, 0.06) 84%,
+        rgba(11, 20, 39, 0) 94%
+      );
+  }}
+
+
+/* --- Planer ---------------------------------------------------------------- */
+
+.dojazd-planer {
+  position: relative;
+  padding-block: clamp(1.75rem, 4vw, 3.25rem) clamp(2.5rem, 6vw, 3.5rem);
+}
+
+.dojazd-uklad {
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .dojazd-uklad {
+    grid-template-columns: minmax(0, 0.94fr) minmax(0, 1.06fr);
+    /* Bez `align-items` — niżej w tym samym bloku stoi celowe `stretch`,
+       żeby obie kolumny kończyły się w jednej linii. */
+    /* Odstęp 64 px, zmierzony w makiecie; w szczelinie stoi cienka linia. */
+    gap: 4rem;
+  }
+
+  /* Jawne rozmieszczenie: dwie kolumny w pierwszym rzędzie, rozkład przez całą
+     szerokość w drugim. Bez tego `order` z widoku telefonu rozsypałby siatkę. */
+  .dojazd-kolumna {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .dojazd-kolumna-boczna {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .dojazd-rozklad {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  /* Obie kolumny kończą się w tej samej linii: prawa rozciąga się do wysokości
+     lewej, a mapa zjada resztę miejsca pod zdjęciem. */
+  .dojazd-uklad {
+    align-items: stretch;
+  }
+
+  .dojazd-stacja {
+    height: 100%;
+    grid-template-rows: auto minmax(9rem, 1fr);
+  }
+
+  .dojazd-stacja-mapa {
+    height: 100%;
+  }
+
+  .dojazd-stacja-mapa iframe {
+    min-height: 9rem;
+  }
+
+  /* Pionowa linia rozdzielająca kolumny — jest w makiecie, sięga dołu treści. */
+  .dojazd-kolumna-boczna {
+    position: relative;
+  }
+
+  .dojazd-kolumna-boczna::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -2rem;
+    width: 1px;
+    background: var(--dj-linia);
+  }}
+
+.dojazd-pytanie {
+  /* 1,05rem powiekszone o 80% — na kazdej szerokosci tyle samo. */
+  font-size: 1.89rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+
+/* Na telefonie pytanie o 20% mniejsze — przy pelnych 1,89rem zabieralo
+   nad przelacznikiem wiecej miejsca, niz jest tam warte. Blok stoi PO regule
+   bazowej, inaczej by nie zadzialal. */
+@media (max-width: 767px) {
+  .dojazd-pytanie {
+    font-size: 1.512rem;
+  }}
+
+/* Przełącznik segmentowy: dwie opcje w jednym rzędzie. */
+/* Najważniejszy wybór na stronie — duży, prosty, pełna szerokość. */
+.dojazd-zakladki {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.35rem;
+  margin-top: 0.85rem;
+  padding: 0.35rem;
+  border: 1px solid var(--dj-linia);
+  border-radius: 1.15rem;
+  background: var(--dj-powierzchnia);
+}
+
+.dojazd-zakladka {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 3.5rem;
+  min-width: 0;
+  padding: 0.6rem 0.4rem;
+  border: 0;
+  border-radius: 0.85rem;
+  background: transparent;
+  color: var(--dj-tekst);
+  font-size: 0.78rem;
+  font-weight: 600;
+  transition: background-color 150ms ease;
+}
+
+@media (min-width: 640px) {
+  .dojazd-zakladka {
+    min-height: 4rem;
+    font-size: 0.92rem;
+  }}
+
+.dojazd-zakladka:hover {
+  background: rgba(50, 216, 230, 0.12);
+}
+
+/* Aktywna opcja: turkusowe wypełnienie i ciemna etykieta (10,6:1). */
+.dojazd-zakladka.is-active {
+  background: var(--dj-turkus);
+  color: var(--dj-turkus-ink);
+  font-weight: 700;
+}
+
+.dojazd-zakladka-ikona {
+  flex-shrink: 0;
+  color: var(--dj-tekst);
+}
+
+/* Logotyp zamiast napisu — wysokość dobrana tak, żeby optycznie równał się
+   z etykietami sąsiednich zakładek. */
+.dojazd-zakladka-logo {
+  width: auto;
+  height: 0.67rem;
+  flex-shrink: 0;
+}
+
+@media (min-width: 640px) {
+  .dojazd-zakladka-logo {
+    height: 0.77rem;
+  }}
+
+.dojazd-zakladka.is-active .dojazd-zakladka-ikona {
+  color: var(--dj-turkus-ink);
+}
+
+/* Marka FlixBusa: zieleń jako wypełnienie z granatowym napisem (10:1).
+   Jako kolor tekstu miałaby 1,8:1, więc tam jej nie używamy. */
+.dojazd-zakladka.is-flix.is-active {
+  background: #73d700;
+  color: #0b1427;
+}
+
+.dojazd-zakladka.is-flix:not(.is-active):hover {
+  background: rgba(115, 215, 0, 0.16);
+}
+
+.dojazd-zakladka-nazwa {
+  line-height: 1.15;
+  text-wrap: balance;
+  /* Łamanie tylko między wyrazami — `anywhere` rozcinało „Samochod-em”.
+     Przy powiększonej czcionce dopiero wtedy wolno złamać wyraz. */
+  overflow-wrap: break-word;
+}
+
+/* Na telefonie trzy etykiety nie mieszczą się obok ikon w jednym wierszu,
+   więc ikona idzie NAD napis. Stały wiersz na znak trzyma wszystkie trzy
+   zakładki w równym rytmie, także tę z logotypem zamiast ikony. */
+@media (max-width: 639px) {
+  .dojazd-zakladka {
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.3rem;
+    min-height: 4.6rem;
+    padding: 0.55rem 0.3rem;
+  }
+
+  .dojazd-zakladka-znak {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 1.6rem;
+  }
+
+  .dojazd-zakladka-ikona {
+    font-size: 1.45em;
+  }
+
+  .dojazd-zakladka-logo {
+    height: 0.62rem;
+  }}
+
+/* Od 640 px zakładki wracają do jednego wiersza — przy logotypie ikona
+   autobusu byłaby wtedy powtórzeniem tego, co mówi sam znak marki. */
+@media (min-width: 640px) {
+  .dojazd-zakladka.is-flix .dojazd-zakladka-znak {
+    display: none;
+  }}
+
+@media (max-width: 359px) {
+  .dojazd-zakladka {
+    font-size: 0.82rem;
+  }
+
+  .dojazd-zakladka-nazwa {
+    overflow-wrap: anywhere;
+  }}
+
+/* --- Panel: treść leży na tle, bez karty ----------------------------------- */
+
+.dojazd-panel {
+  margin-top: 1.25rem;
+}
+
+.dojazd-panel-tytul {
+  font-size: clamp(1.3rem, 5vw, 1.6rem);
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  overflow-wrap: anywhere;
+}
+
+.dojazd-panel-lead {
+  margin-top: 0.4rem;
+  max-width: 46ch;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--dj-tekst-2);
+}
+
+.dojazd-podpis {
+  margin-top: 0.6rem;
+  max-width: 54ch;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--dj-tekst-2);
+}
+
+.dojazd-uwaga {
+  margin-top: 0.9rem;
+  padding: 0.85rem 1rem;
+  border-left: 3px solid var(--dj-akcent);
+  border-radius: 0 var(--dj-promien) var(--dj-promien) 0;
+  background: var(--dj-pomoc);
+  font-size: 0.92rem;
+}
+
+/* Dwa fakty w rzędzie, każdy z ikoną. */
+.dojazd-fakty {
+  display: grid;
+  /* `minmax(0, auto)` zamiast `auto`: przy powiększonej czcionce pierwsza
+     kolumna musi móc się skurczyć, inaczej rząd rozpycha stronę w poziomie. */
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+  align-items: stretch;
+  /* Miara jak w referencji: drugi fakt łamie się na dwie linie także na
+     szerokim ekranie, zamiast rozciągać rząd na całą kolumnę. */
+  max-width: 21rem;
+  gap: 0 1rem;
+  margin: 1.1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 360px) {
+  .dojazd-fakty {
+    gap: 0 1.25rem;
+  }}
+
+/* Fakt niesie ikona, nie pogrubienie — w makiecie tekst jest zwykłej wagi. */
+.dojazd-fakt {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 0;
+  /*  (nie ) — pozwala kolumnie siatki zejść poniżej
+     najdłuższego wyrazu, przez co przy powiększonej czcionce strona nie
+     rozpycha się w poziomie. */
+  overflow-wrap: anywhere;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+@media (max-width: 359px) {
+  .dojazd-fakty {
+    gap: 0 0.7rem;
+  }
+
+  .dojazd-fakt {
+    gap: 0.4rem;
+    font-size: 0.95rem;
+  }
+
+  .dojazd-fakt-ikona {
+    font-size: 0.8em;
+  }}
+
+@media (min-width: 360px) {
+  .dojazd-fakt {
+    gap: 0.65rem;
+  }}
+
+/* Kreska rozdzielająca dwa fakty — jest w makiecie, zamiast samego odstępu. */
+.dojazd-fakt + .dojazd-fakt {
+  padding-left: 1rem;
+  border-left: 1px solid var(--dj-linia);
+}
+
+@media (min-width: 360px) {
+  .dojazd-fakt + .dojazd-fakt {
+    padding-left: 1.25rem;
+  }}
+
+.dojazd-fakt-ikona {
+  flex-shrink: 0;
+  color: var(--dj-akcent);
+}
+
+/* Adres bez pudełka: etykieta, dwie linie i przycisk kopiowania obok. */
+.dojazd-adres {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  /* Bez ograniczenia przycisk kopiowania odpływa na skraj szerokiej, jednej
+     kolumny (tablet) i przestaje wyglądać na związany z adresem. */
+  max-width: 34rem;
+  margin-top: 1.5rem;
+}
+
+.dojazd-adres-tekst {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.dojazd-adres-etykieta {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dj-tekst-2);
+}
+
+.dojazd-adres-wartosc {
+  margin-top: 0.35rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.dojazd-adres-wartosc span {
+  display: block;
+  font-weight: 500;
+}
+
+.dojazd-ikona-przycisk {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 2.875rem;
+  height: 2.875rem;
+  border: 0;
+  border-radius: var(--dj-promien);
+  background: transparent;
+  color: var(--dj-akcent);
+}
+
+.dojazd-ikona-przycisk:hover {
+  background: rgba(10, 90, 103, 0.09);
+}
+
+/* --- Przyciski ------------------------------------------------------------- */
+
+.dojazd-przycisk-glowny,
+.dojazd-przycisk-drugi {
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  border-radius: var(--dj-promien);
+  font-size: 1rem;
+  font-weight: 700;
+  text-align: center;
+  overflow-wrap: anywhere;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+/* Akcja główna: 54 px wysokości, turkus marki, ciemna etykieta (9,7:1). */
+.dojazd-przycisk-glowny {
+  min-height: 3.375rem;
+  padding: 0.75rem 1.25rem;
+  background: var(--dj-turkus);
+  color: var(--dj-turkus-ink);
+}
+
+.dojazd-przycisk-glowny:hover {
+  background: #4ae1ed;
+}
+
+/* Strzałka idzie zaraz za napisem — w makiecie cała trójka jest jedną grupą
+   na środku przycisku, a nie napisem po środku i strzałką przy krawędzi. */
+.dojazd-przycisk-strzalka {
+  margin-left: 0.15rem;
+}
+
+@media (max-width: 360px) {
+  .dojazd-przycisk-strzalka {
+    display: none !important;
+  }}
+
+/* Na telefonie napis w przycisku glownym ma stac w jednym wierszu.
+   Zmierzone: „Trasa do przystanku w Krzeszowicach" zajmuje 311 px przy 16 px,
+   a przy 393 px szerokosci na tekst zostawalo 273 px — stad trzy wiersze
+   i przycisk wysoki na 100 px. Wystarcza mniejszy stopien pisma liczony
+   z szerokosci okna plus ukrycie ikony ponizej 480 px (odzyskane 25 px).
+
+   CELOWO BEZ `white-space: nowrap`: przy powiekszonej czcionce przegladarki
+   (test dj6 sprawdza 24 px) napis nie miesci sie w zadnym stopniu pisma
+   i bez mozliwosci zlamania rozpychal strone o 82 px. Zawijanie zostaje jako
+   zawor bezpieczenstwa — przy domyslnych 16 px i tak nie jest potrzebne. */
+@media (max-width: 767px) {
+  .dojazd-przycisk-glowny {
+    padding-inline: 0.75rem;
+    font-size: clamp(0.72rem, 3.55vw, 1rem);
+  }
+
+  .dojazd-przycisk-glowny > * {
+    flex-shrink: 0;
+  }}
+
+@media (max-width: 479px) {
+  .dojazd-przycisk-glowny > svg:first-child {
+    display: none;
+  }}
+
+.dojazd-przycisk-drugi {
+  min-height: 3rem;
+  padding: 0.65rem 1.1rem;
+  border: 1px solid var(--dj-obrys);
+  background: transparent;
+  color: var(--dj-tekst);
+  font-weight: 600;
+}
+
+.dojazd-przycisk-drugi:hover {
+  border-color: var(--dj-akcent);
+  background: rgba(10, 90, 103, 0.08);
+}
+
+/* Akcja drugorzędna zapisana jak odnośnik — bez ramki, bez tła. */
+.dojazd-przycisk-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  width: 100%;
+  /* 46 px, nie 44: przy rownych 44 px kontrolka stoi dokladnie na progu
+     WCAG i ulamek piksela z dociagniecia fontu spycha ja ponizej.
+     Zmierzone: dj6 potykal sie o to losowo przy 768 px. */
+  min-height: 2.875rem;
+  margin-top: 0.75rem;
+  padding: 0.5rem 0.25rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--dj-akcent);
+}
+
+/* Wariant do lewej: pod przyciskiem głównym akcja poboczna zaczyna się w tej
+   samej pionowej osi co treść panelu, zamiast wisieć na środku. */
+.dojazd-przycisk-link.is-lewo {
+  justify-content: flex-start;
+  padding-inline: 0;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* Podkreślenie należy do napisu, nie do ikony odnośnika zewnętrznego. */
+.dojazd-przycisk-link-tekst {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.dojazd-link {
+  color: var(--dj-akcent);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+
+/* --- Rozwinięcia ----------------------------------------------------------- */
+
+.dojazd-rozwijane {
+  margin-top: 0.75rem;
+}
+
+.dojazd-rozwijane-przycisk {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 2.875rem;
+  padding: 0.5rem 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--dj-akcent);
+  text-align: left;
+}
+
+.dojazd-rozwijane-etykieta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.dojazd-rozwijane-ikona {
+  flex-shrink: 0;
+  color: var(--dj-akcent);
+}
+
+/* Wiersze „Na miejscu": ikona po lewej, chevron po prawej, cienka linia. */
+.dojazd-rozwijane.is-wiersz {
+  margin-top: 0;
+  border-top: 1px solid var(--dj-linia);
+}
+
+.dojazd-rozwijane.is-wiersz .dojazd-rozwijane-przycisk {
+  min-height: 3.3rem;
+  padding: 0.7rem 0.25rem;
+  color: var(--dj-tekst);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.dojazd-rozwijane.is-wiersz .dojazd-rozwijane-etykieta {
+  gap: 0.85rem;
+}
+
+.dojazd-rozwijane-strzalka {
+  flex-shrink: 0;
+  transition: transform 150ms ease;
+}
+
+.dojazd-rozwijane-strzalka.is-open {
+  transform: rotate(180deg);
+}
+
+/* Rozwijanie: `grid-template-rows` z 0fr na 1fr daje plynna zmiane wysokosci
+   bez mierzenia zawartosci. `visibility` przelacza sie skokowo, ale dopiero
+   PO zamknieciu (opoznienie rowne czasowi trwania), wiec nie ucina animacji,
+   a zwinieta tresc nie zostaje w drzewie dostepnosci ani pod tabulatorem. */
+.dojazd-rozwijane-tresc {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    grid-template-rows 300ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    opacity 200ms ease,
+    visibility 0s linear 300ms;
+}
+
+.dojazd-rozwijane-tresc.is-otwarte {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  visibility: visible;
+  transition:
+    grid-template-rows 300ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    opacity 220ms ease 60ms,
+    visibility 0s;
+}
+
+/* `min-height: 0` jest konieczne — bez tego element siatki nie zejdzie
+   ponizej swojej wysokosci minimalnej i pudelko nigdy sie nie zwinie. */
+.dojazd-rozwijane-wnetrze {
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* Odstep pod odpowiedzia siedzi na jej OSTATNIM dziecku, nie na pudelku.
+   Gdyby stal jako `padding-bottom` wyzej, zwiniety element mialby caly czas
+   8 px wysokosci — `grid-template-rows: 0fr` zeruje wiersz, ale nie dopelnienie
+   samego pudelka. Zmierzone: 8 px zamiast 0. Tutaj `overflow: hidden` przycina
+   margines razem z trescia. */
+.dojazd-rozwijane-wnetrze > :last-child {
+  margin-bottom: 0.5rem;
+}
+
+.dojazd-starty {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 0.5rem;
+}
+
+.dojazd-start {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 3rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--dj-linia);
+  border-radius: var(--dj-promien);
+  background: var(--dj-powierzchnia);
+  color: var(--dj-tekst);
+  font-size: 0.95rem;
+}
+
+.dojazd-start:hover {
+  border-color: var(--dj-akcent);
+}
+
+.dojazd-start-ikona,
+.dojazd-start-strzalka {
+  flex-shrink: 0;
+  color: var(--dj-akcent);
+}
+
+.dojazd-start-nazwa {
+  flex: 1 1 auto;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.dojazd-start-km {
+  flex-shrink: 0;
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--dj-tekst-2);
+}
+
+/* --- Pociąg + bus: dwa etapy ----------------------------------------------- */
+
+.dojazd-etapy {
+  display: grid;
+  gap: 0;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Krok łańcucha: kółko z ikoną, obok treść. Poziome kreski znikły — teraz
+   etapy spina pionowa linia, więc czyta się to jako jedną drogę. */
+.dojazd-etap {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 0.5rem 0 0.9rem;
+}
+
+.dojazd-etap:last-child {
+  padding-bottom: 0.25rem;
+}
+
+/* Linia od kółka w dół, do kółka następnego kroku. */
+.dojazd-etap:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 3.9rem;
+  bottom: -0.15rem;
+  left: 1.38rem;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--dj-linia);
+}
+
+/* Grot na dole linii — stąd „strzałka”, a nie sama kreska. */
+.dojazd-etap:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  bottom: -0.15rem;
+  left: 1.45rem;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-right: 2px solid var(--dj-linia);
+  border-bottom: 2px solid var(--dj-linia);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+/* Ostatni krok jest podsumowaniem, nie przystankiem — stąd lżejszy zapis. */
+.dojazd-etap.is-meta .dojazd-etap-ikona,
+.dojazd-etap.is-meta .dojazd-etap-numer {
+  background: var(--dj-turkus);
+  color: var(--dj-turkus-ink);
+}
+
+.dojazd-etap-ikona,
+.dojazd-etap-numer {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 2.9rem;
+  height: 2.9rem;
+  border-radius: 9999px;
+  background: rgba(50, 216, 230, 0.18);
+  color: var(--dj-akcent);
+}
+
+/* Cyfra kroku. Ten sam krążek co przy ikonie — zmienia się tylko zawartość,
+   więc rytm listy i pionowa linia łącząca zostają bez zmian. */
+.dojazd-etap-numer {
+  font-size: 1.25rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.dojazd-etap-tekst {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.dojazd-etap-nazwa {
+  font-size: 1rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+/* Odnośnik do rozkładu przewoźnika — pod opisem pierwszego kroku. */
+.dojazd-etap-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  align-self: start;
+  min-height: 2.875rem;
+  margin-top: 0.15rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--dj-akcent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.dojazd-etap-opis {
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--dj-tekst-2);
+  overflow-wrap: anywhere;
+}
+
+/* --- Rozkład: klasyczna tabela ---------------------------------------------- */
+
+/* Pas rozkładu: rodzeństwo dwóch kolumn, więc ma pełną szerokość kontenera.
+   Dzięki temu tabele nie duszą się w kolumnie 237 px, a po lewej zostaje
+   miejsce na kafel najbliższego kursu i listę miejsc startowych. */
+.dojazd-rozklad {
+  min-width: 0;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--dj-linia);
+}
+
+/* Telefon: panel → rozkład → „Na miejscu". Rozkład jest treścią, po którą gość
+   przyszedł, więc nie może czekać za sekcją o parkingu. Na desktopie tę
+   kolejność nadpisuje jawne rozmieszczenie w siatce (grid-row / grid-column). */
+.dojazd-kolumna {
+  order: 1;
+}
+
+.dojazd-rozklad {
+  order: 2;
+}
+
+.dojazd-kolumna-boczna {
+  order: 3;
+}
+
+.dojazd-rozklad-uklad {
+  display: grid;
+  gap: 1.25rem;
+}
+
+@media (min-width: 1024px) {
+  .dojazd-rozklad-uklad {
+    /* 19rem powiekszone o 15%: nazwy przystankow mieszcza sie wtedy
+       w jednym wierszu zamiast lamac sie na dwa. */
+    grid-template-columns: minmax(0, 21.85rem) minmax(0, 1fr);
+    align-items: start;
+    gap: 3.5rem;
+  }}
+
+.dojazd-rozklad-bok {
+  display: grid;
+  gap: 1.1rem;
+  align-content: start;
+  min-width: 0;
+}
+
+
+/* Kafel „najbliższy kurs": pierwsza rzecz, jakiej szuka ktoś na peronie.
+   Dwie pozycje — bus do obiektu i powrót do Krzeszowic. */
+/* Kafel „najbliższy odjazd": jedna rzecz do zapamiętania, więc godzina jest
+   największym napisem w całej kolumnie. Alver w busie siedzi w prawym dolnym
+   rogu — `overflow: hidden` przycina go do zaokrąglenia kafla, a `padding-right`
+   pilnuje, żeby tekst na niego nie wjeżdżał. */
+.dojazd-najblizszy {
+  position: relative;
+  overflow: hidden;
+  min-height: 5.25rem;
+  /* Dolny odstęp trzyma pas dla Alvera — siedzi POD kartami, a nie na nich. */
+  padding: 0.9rem 1rem clamp(3.25rem, 15%, 4.5rem);
+  border-radius: var(--dj-promien);
+  background: var(--dj-pomoc);
+  line-height: 1.4;
+}
+
+.dojazd-najblizszy-alver {
+  position: absolute;
+  right: -0.6rem;
+  bottom: -0.5rem;
+  width: clamp(5.5rem, 24%, 8rem);
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+}
+
+.dojazd-najblizszy-lista {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0.65rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Każdy kurs na własnej białej karcie — na jasnoniebieskim kaflu czyta się to
+   jako dwie osobne rzeczy, a nie jedna lista z kreską pośrodku. */
+.dojazd-najblizszy-poz {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.7rem 0.7rem 0.75rem;
+  border-radius: 0.9rem;
+  background: var(--dj-powierzchnia);
+}
+
+/* Skąd → dokąd w jednym rzędzie. `minmax(0, 1fr)` na obu końcach, żeby
+   dłuższa nazwa (niemiecki) łamała się, a nie rozpychała karty. */
+.dojazd-najblizszy-trasa {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.dojazd-najblizszy-punkt {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.dojazd-najblizszy-punkt-ikona {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 9999px;
+  background: rgba(50, 216, 230, 0.18);
+  color: var(--dj-akcent);
+}
+
+.dojazd-najblizszy-punkt-tekst {
+  display: grid;
+  gap: 0.05rem;
+  min-width: 0;
+}
+
+.dojazd-najblizszy-punkt-nazwa {
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.25;
+  /* `break-word`, nie `anywhere`: dzieli dopiero wtedy, gdy wyraz naprawdę
+     nie mieści się sam — inaczej „Krzeszowice" pękało na „Krzeszowic|e". */
+  overflow-wrap: break-word;
+}
+
+.dojazd-najblizszy-punkt-opis {
+  font-size: 0.7rem;
+  line-height: 1.3;
+  color: var(--dj-tekst-2);
+  overflow-wrap: break-word;
+}
+
+.dojazd-najblizszy-strzalka {
+  color: var(--dj-akcent);
+}
+
+/* Poniżej 360 px trzy kolumny się nie mieszczą — strzałka wchodziła na
+   „przy dworcu PKP". Trasa staje wtedy pionowo, a grot obraca się w dół.
+   Blok stoi PO regułach bazowych, inaczej nie zadziałałby wcale. */
+@media (max-width: 359px) {
+  .dojazd-najblizszy-trasa {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: start;
+    gap: 0.25rem;
+  }
+
+  .dojazd-najblizszy-strzalka {
+    margin-left: 0.55rem;
+    transform: rotate(90deg);
+  }}
+
+/* Kropka „na zywo": turkus marki, nie czerwien — czerwien na tej stronie
+   znaczy ostrzezenie. Miga sama `opacity`, czyli praca kompozytora, zero
+   przeliczania ukladu. Przy „ogranicz ruch" globalna regula gasi animacje
+   i zostaje spokojna kropka. */
+.dojazd-najblizszy-lampka {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-right: 0.45rem;
+  border-radius: 9999px;
+  background: var(--dj-turkus);
+  vertical-align: 0.05em;
+  animation: dojazd-lampka 1.6s ease-in-out infinite;
+}
+
+/* Wersaliki ze światłem czytały się jak etykieta formularza; zdanie zapisane
+   normalnie mówi to samo i nie krzyczy. */
+.dojazd-najblizszy-etykieta {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--dj-tekst);
+}
+
+/* Godzina i data w jednym rzędzie, na wspólnej linii pisma. */
+.dojazd-najblizszy-godzina {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0 0.5rem;
+  font-size: clamp(1.6rem, 5.5vw, 1.95rem);
+  font-weight: 800;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+}
+
+.dojazd-najblizszy-dzien {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--dj-tekst-2);
+}
+
+.dojazd-najblizszy-za {
+  padding: 0.1rem 0.5rem;
+  border-radius: 9999px;
+  background: var(--dj-turkus);
+  color: var(--dj-turkus-ink);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.dojazd-najblizszy-skad {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--dj-tekst-2);
+  overflow-wrap: anywhere;
+}
+
+/* Poniżej 360 px Alver zabiera za dużo szerokości pod godzinę — znika. */
+@media (max-width: 359px) {
+  .dojazd-najblizszy-alver {
+    display: none;
+  }}
+
+/* Piątek i weekend obok siebie, gdy jest na to miejsce — pionowo to było
+   13 wierszy, czyli ok. 800 px samego rozkładu. */
+.dojazd-rozklad-tytul {
+  margin-bottom: 1.1rem;
+  font-size: clamp(1.4rem, 4.5vw, 1.9rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.dojazd-rozklad-tabele {
+  min-width: 0;
+}
+
+/* Telefon: jeden dzień naraz, wybierany segmentem. Na desktopie znika. */
+.dojazd-rozklad-przelacznik {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.3rem;
+  margin-bottom: 1.1rem;
+  padding: 0.3rem;
+  border: 1px solid var(--dj-linia);
+  border-radius: 1rem;
+  background: var(--dj-powierzchnia);
+}
+
+.dojazd-rozklad-dzien {
+  min-height: 2.9rem;
+  padding: 0.5rem 0.6rem;
+  border: 0;
+  border-radius: 0.75rem;
+  background: transparent;
+  color: var(--dj-tekst);
+  font-size: 0.98rem;
+  font-weight: 600;
+  transition: background-color 150ms ease;
+}
+
+.dojazd-rozklad-dzien.is-active {
+  background: var(--dj-turkus);
+  color: var(--dj-turkus-ink);
+  font-weight: 700;
+}
+
+.dojazd-tabela-blok.is-ukryty {
+  display: none;
+}
+
+/* Wybór dnia działa na każdej szerokości: „Rozkład jazdy” + przełącznik
+   + jeden dzień. Dwie tabele obok siebie bez podpisu były nieczytelne. */
+@media (min-width: 1024px) {
+  .dojazd-rozklad-przelacznik {
+    max-width: 26rem;
+  }}
+
+.dojazd-rozklad-dni {
+  display: grid;
+  gap: 1.25rem 2rem;
+  min-width: 0;
+}
+
+/* Dwie kolumny dni dopiero od 1024 px — niżej widać jeden dzień (wybrany
+   przełącznikiem) i ma on zająć całą szerokość, a nie połowę. */
+
+
+.dojazd-tabela-blok {
+  min-width: 0;
+}
+
+.dojazd-tabela-tytul {
+  margin-bottom: 0.3rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+/* Nazwę dnia niesie przełącznik, więc nad tabelą byłaby powtórzeniem —
+   zostaje w drzewie dla czytnika ekranu, ale znika z widoku. */
+.dojazd-tabela-tytul {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.dojazd-tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Nagłówek bez wersalików: „Odjazd z Alvernia Planet" kapitalikami rozpychało
+   się na dwie linie w wąskiej kolumnie. */
+.dojazd-tabela th {
+  padding: 0.35rem 0.5rem 0.4rem 0;
+  border-bottom: 1px solid var(--dj-linia);
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: left;
+  text-wrap: balance;
+  color: var(--dj-tekst-2);
+}
+
+.dojazd-tabela-kierunek {
+  margin-right: 0.3rem;
+  color: var(--dj-akcent);
+  vertical-align: -0.08em;
+}
+
+.dojazd-tabela td {
+  padding: 0.62rem 0.5rem 0.62rem 0;
+  border-bottom: 1px solid var(--dj-linia);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+@media (min-width: 1024px) {
+  .dojazd-tabela td {
+    font-size: 1.22rem;
+  }}
+
+.dojazd-tabela td:last-child,
+.dojazd-tabela th:last-child {
+  padding-right: 0;
+}
+
+.dojazd-tabela tr:last-child td {
+  border-bottom: 0;
+}
+
+/* Kurs, który dziś już odjechał — przygaszony, ale nadal czytelny.
+   Liczone dla KOMÓRKI, bo oba krańce wahadła odjeżdżają o różnych porach. */
+.dojazd-tabela td.is-past {
+  color: #667487;
+  text-decoration: line-through;
+}
+
+/* Najbliższy kurs wg rozkładu — osobno dla każdego kierunku, bo po ostatnim
+   odjeździe z Krzeszowic powrót sprzed obiektu zwykle jeszcze jest. */
+.dojazd-tabela td.is-next {
+  position: relative;
+  background: var(--dj-pomoc);
+  border-radius: 0.4rem;
+  padding-left: 0.6rem;
+  font-weight: 800;
+}
+
+.dojazd-tabela td.is-next::before {
+  content: "";
+  position: absolute;
+  top: 0.25rem;
+  bottom: 0.25rem;
+  left: 0;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--dj-akcent);
+}
+
+/* --- Przewoźnicy ----------------------------------------------------------- */
+
+.dojazd-przewoznicy {
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dojazd-przewoznik {
+  padding-block: 0.9rem;
+  border-top: 1px solid var(--dj-linia);
+}
+
+.dojazd-przewoznik:first-child {
+  border-top: 0;
+  padding-top: 0.25rem;
+}
+
+.dojazd-przewoznik-glowa {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.6rem;
+}
+
+.dojazd-przewoznik-nazwa {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.dojazd-plakietka {
+  display: inline-flex;
+  padding: 0.15rem 0.55rem;
+  border: 1px solid var(--dj-obrys);
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--dj-tekst-2);
+}
+
+.dojazd-plakietka.is-bezposrednio {
+  border-color: var(--dj-akcent);
+  background: rgba(10, 90, 103, 0.08);
+  color: var(--dj-akcent);
+}
+
+.dojazd-przewoznik-trasa {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.35rem;
+  font-size: 0.9rem;
+  color: var(--dj-tekst-2);
+  overflow-wrap: anywhere;
+}
+
+.dojazd-przewoznik-strzalka {
+  color: var(--dj-obrys);
+}
+
+/* --- Mapa na żądanie -------------------------------------------------------- */
+
+.dojazd-mapa {
+  margin-top: 0.85rem;
+}
+
+.dojazd-mapa-ramka {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--dj-promien);
+  background: #e7eef6;
+  aspect-ratio: 4 / 3;
+}
+
+.dojazd-mapa-ramka iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.dojazd-mapa-ladowanie {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  color: var(--dj-tekst-2);
+}
+
+.dojazd-mapa-stopka {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.3rem 0.8rem;
+  margin-top: 0.5rem;
+  font-size: 0.88rem;
+  color: var(--dj-tekst-2);
+}
+
+/* --- Na miejscu ------------------------------------------------------------- */
+
+.dojazd-miejsce {
+  margin-top: 0;
+}
+
+.dojazd-miejsce-tytul {
+  font-size: clamp(1.3rem, 5vw, 1.6rem);
+  font-weight: 800;
+  letter-spacing: -0.015em;
+}
+
+.dojazd-miejsce-lead {
+  margin-top: 0.2rem;
+  font-size: 1rem;
+  color: var(--dj-tekst-2);
+}
+
+.dojazd-miejsce-zdjecie {
+  position: relative;
+  margin: 1rem 0 0.5rem;
+  overflow: hidden;
+  border-radius: 1rem;
+  background: #05070f;
+}
+
+.dojazd-miejsce-zdjecie img {
+  display: block;
+  width: 100%;
+  /* Makieta kadruje zdjęcie na pas 2,35:1 (zmierzone 487x207 px) — samo 16:9
+     rozpychało prawą kolumnę i spychało wiersze poniżej zgięcia. */
+  aspect-ratio: 2.35;
+  height: auto;
+  object-fit: cover;
+  object-position: center 42%;
+}
+
+@media (max-width: 1023px) {
+  .dojazd-miejsce-zdjecie img {
+    aspect-ratio: 16 / 9;
+  }}
+
+.dojazd-miejsce-lupa {
+  position: absolute;
+  right: 0.5rem;
+  bottom: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 2.875rem;
+  min-height: 2.875rem;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 9999px;
+  background: rgba(8, 11, 20, 0.72);
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  backdrop-filter: blur(6px);
+}
+
+/* Sam znak lupy — makieta nie ma na zdjęciu żadnego napisu. */
+.dojazd-miejsce-lupa .dojazd-lupa-napis {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.dojazd-miejsce-lista {
+  margin-top: 0.75rem;
+  border-bottom: 1px solid var(--dj-linia);
+}
+
+/* --- Powiększenie zdjęcia --------------------------------------------------- */
+
+.dojazd-lupa-tlo {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(1rem + env(safe-area-inset-top)) 1rem calc(1rem + env(safe-area-inset-bottom));
+  background: rgba(4, 6, 12, 0.95);
+}
+
+.dojazd-lupa-tlo img {
+  max-width: 100%;
+  max-height: 80vh;
+  border-radius: 1rem;
+}
+
+.dojazd-lupa-zamknij {
+  position: absolute;
+  top: calc(0.75rem + env(safe-area-inset-top));
+  right: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.9rem;
+  padding: 0.55rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 9999px;
+  background: rgba(10, 14, 26, 0.9);
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* --- Pasek pomocy ----------------------------------------------------------- */
+
+.dojazd-pomoc {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.85rem 1rem;
+  margin-top: clamp(1.75rem, 4vw, 2.5rem);
+  padding: clamp(1.1rem, 4vw, 1.5rem);
+  border-radius: var(--dj-promien);
+  background: var(--dj-pomoc);
+}
+
+.dojazd-pomoc-ikona {
+  color: var(--dj-akcent);
+}
+
+@media (min-width: 720px) {
+  .dojazd-pomoc {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 1.25rem;
+  }}
+
+.dojazd-pomoc-tytul {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.dojazd-pomoc-lead {
+  margin-top: 0.25rem;
+  max-width: 46ch;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  color: var(--dj-tekst-2);
+}
+
+.dojazd-pomoc-akcje {
+  display: grid;
+  grid-column: 1 / -1;
+  gap: 0.5rem;
+}
+
+@media (min-width: 720px) {
+  .dojazd-pomoc-akcje {
+    grid-column: auto;
+  }}
+
+@media (min-width: 480px) {
+  .dojazd-pomoc-akcje {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }}
+
+.dojazd-pomoc-akcje .dojazd-przycisk-glowny,
+.dojazd-pomoc-akcje .dojazd-przycisk-drugi {
+  margin-top: 0;
+}
+
+.dojazd-pomoc-akcje .dojazd-przycisk-drugi {
+  background: var(--dj-powierzchnia);
+}
+
+@media (min-width: 720px) {
+  .dojazd-pomoc-akcje {
+    grid-template-columns: repeat(2, minmax(9.5rem, auto));
+  }}
+
+/* --- „W okolicy": pas na pełną szerokość ekranu ----------------------------
+   Sekcja stoi poza `.dojazd-shell`, więc sięga krawędzi okna. Nagłówek i pas
+   kart zaczynają się jednak w tej samej linii co reszta treści — stąd wspólny
+   odstęp `--dj-margines`, liczony tak samo jak margines kontenera.
+   Zdjęć atrakcji nie ma w repozytorium, a podstawienie pod nie kopuł Alvernii
+   byłoby dezinformacją — kartę niesie więc duża odległość i nazwa.
+   --------------------------------------------------------------------------- */
+
+/* --- Panel boczny: stacja Krzeszowice -------------------------------------- */
+
+.dojazd-stacja {
+  display: grid;
+  gap: 0.85rem;
+  align-content: start;
+  min-width: 0;
+}
+
+/* Zdjęcie i podpis leżą w TYM SAMYM polu siatki, więc kafelek jest tak wysoki,
+   jak wyższe z dwojga. Kadr 16:7 zostaje wartością wyjściową, ale gdy podpis
+   urośnie (dłuższy język, wąski telefon), kafelek rośnie razem z nim, zamiast
+   ucinać plakietkę. Świadomie bez `min-height: 100%` — w WebKicie blokuje
+   powrót do niższej wysokości. */
+.dojazd-stacja-foto {
+  position: relative;
+  display: grid;
+  grid-template-areas: "kadr";
+  margin: 0;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  background: var(--dj-granat);
+}
+
+.dojazd-stacja-foto > picture {
+  grid-area: kadr;
+  align-self: stretch;
+}
+
+.dojazd-stacja-foto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 16 / 7;
+  object-fit: cover;
+}
+
+/* Napis leży na zdjęciu, więc pod nim gęstnieje granat — inaczej biel
+   nie miałaby na czym usiąść. Treść stoi przy LEWEJ krawędzi i od góry:
+   kadr dworca ma po prawej wagony, więc tam napis i tak by przepadł. */
+.dojazd-stacja-podpis {
+  grid-area: kadr;
+  position: relative;
+  /* Kolumna, nie siatka: plakietka dostaje `margin-top: auto` i przywiera do
+     dolnej krawedzi kadru niezaleznie od tego, ile wierszy ma podtytul.
+     Wczesniej szla zaraz za tekstem, wiec skakala w gore i w dol miedzy
+     zakladkami i jezykami. */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 1.25rem 1.15rem;
+  background: linear-gradient(
+    100deg,
+    rgba(11, 20, 39, 0.92) 0%,
+    rgba(11, 20, 39, 0.82) 34%,
+    rgba(11, 20, 39, 0.45) 62%,
+    rgba(11, 20, 39, 0.12) 84%,
+    rgba(11, 20, 39, 0) 100%
+  );
+  color: #ffffff;
+}
+
+/* Miara w `ch`, nie w pikselach: nazwa łamie się na dwa wiersze w każdym
+   języku, a nie tylko w polskim. */
+.dojazd-stacja-tytul {
+  max-width: 11ch;
+  font-size: clamp(1.4rem, 3.6vw, 1.8rem);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+}
+
+/* „Stacja Krzeszowice" ma stac w dwoch wierszach (tak jest w makiecie), ale
+   „Wjazd i parking" to jedna calosc — dlatego miara rosnie tylko tam. */
+.dojazd-stacja-foto.is-tytul-szeroki .dojazd-stacja-tytul {
+  max-width: 20ch;
+}
+
+.dojazd-stacja-opis {
+  /* Miara w `ch`, więc przy mniejszym stopniu pisma wiersz zostaje tej samej
+     długości w znakach, a tylko węższy w pikselach. */
+  max-width: 24ch;
+  font-size: 0.7125rem;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+/* Konkret wyjęty z gęstego tekstu na białą plakietkę: to jedyna rzecz na tym
+   zdjęciu, którą gość musi zapamiętać. Biel na granacie, więc czyta się
+   niezależnie od tego, co akurat jest pod spodem na fotografii. */
+/* Krotsze przyciemnienie o 25%: konczy sie na 75% szerokosci, wiec prawa
+   czwarta czesc kadru zostaje czysta. TYLKO od 768 px — na telefonie kafel
+   ma ok. 338 px i podtytul siega az tam, gdzie gradient juz wygasl.
+   Zmierzone: przy skroconym gradiencie podtytul mial na telefonie 2,74:1
+   zamiast wymaganych 4,5:1. */
+@media (min-width: 768px) {
+  .dojazd-stacja-podpis {
+    background: linear-gradient(
+      100deg,
+      rgba(11, 20, 39, 0.92) 0%,
+      rgba(11, 20, 39, 0.82) 25.5%,
+      rgba(11, 20, 39, 0.45) 46.5%,
+      rgba(11, 20, 39, 0.12) 63%,
+      rgba(11, 20, 39, 0) 75%
+    );
+  }}
+
+.dojazd-stacja-plakietka {
+  display: flex;
+  align-items: center;
+  gap: 0.656rem;
+  max-width: min(100%, 34ch);
+  /* `auto` zjada cala wolna przestrzen nad plakietka — stad przypiecie do dolu.
+     Gdy podpis jest wyzszy od zdjecia (waski telefon), wolnej przestrzeni nie
+     ma i plakietka po prostu konczy kolumne, czyli i tak stoi na dole. */
+  margin-top: auto;
+  padding: 0.563rem 0.8rem;
+  border-radius: 0.8rem;
+  background: var(--dj-powierzchnia);
+  color: var(--dj-tekst);
+  box-shadow: 0 10px 24px rgba(11, 20, 39, 0.28);
+}
+
+.dojazd-stacja-plakietka-ikona {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 1.969rem;
+  height: 1.969rem;
+  border-radius: 9999px;
+  background: rgba(50, 216, 230, 0.18);
+  color: var(--dj-akcent);
+}
+
+.dojazd-stacja-plakietka-tekst {
+  display: grid;
+  gap: 0.05rem;
+  min-width: 0;
+}
+
+.dojazd-stacja-plakietka-tytul {
+  font-size: 0.825rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.dojazd-stacja-plakietka-opis {
+  font-size: 0.769rem;
+  line-height: 1.35;
+  color: var(--dj-tekst-2);
+}
+
+/* Przycisk powiekszenia w rogu kadru. Ciemne kolko na zdjeciu — czytelne
+   niezaleznie od tego, co akurat jest pod spodem na fotografii. */
+.dojazd-stacja-powieksz {
+  position: absolute;
+  z-index: 2;
+  top: 0.6rem;
+  right: 0.6rem;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 2.875rem;
+  height: 2.875rem;
+  border-radius: 9999px;
+  background: rgba(11, 20, 39, 0.62);
+  color: #ffffff;
+  backdrop-filter: blur(6px);
+}
+
+.dojazd-stacja-powieksz:hover {
+  background: rgba(11, 20, 39, 0.78);
+}
+
+@media (max-width: 767px) {
+  .dojazd-stacja-powieksz {
+    display: inline-flex;
+  }}
+
+/* Podglad zdjecia. <dialog> ma domyslne obramowanie i tlo — czyscimy je,
+   zostaje sama fotografia na przyciemnionym tle. */
+.dojazd-podglad {
+  width: min(100vw, 100%);
+  max-width: none;
+  max-height: none;
+  height: 100dvh;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  overflow: hidden;
+}
+
+.dojazd-podglad::backdrop {
+  background: rgba(6, 12, 26, 0.92);
+}
+
+.dojazd-podglad[open] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dojazd-podglad-foto {
+  max-width: calc(100vw - 1.5rem);
+  max-height: calc(100dvh - 7rem);
+  border-radius: 0.9rem;
+  object-fit: contain;
+}
+
+.dojazd-podglad-zamknij {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.875rem;
+  height: 2.875rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+}
+
+.dojazd-podglad-zamknij:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.dojazd-podglad-podpis {
+  position: absolute;
+  right: 1.25rem;
+  bottom: 1.5rem;
+  left: 1.25rem;
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.86);
+}
+
+/* Tlo nie przewija sie pod otwartym podgladem. */
+.dojazd-bez-przewijania,
+.dojazd-bez-przewijania body {
+  overflow: hidden;
+}
+
+/* Na telefonie plakietka zabierala az jedna trzecia kadru. Cala — pudelko,
+   krazek ikony i pismo — schodzi o 40%. Blok stoi PO regulach bazowych,
+   inaczej nie zadzialalby wcale. */
+@media (max-width: 767px) {
+  .dojazd-stacja-plakietka {
+    gap: 0.394rem;
+    padding: 0.338rem 0.48rem;
+    border-radius: 0.48rem;
+  }
+
+  .dojazd-stacja-plakietka-ikona {
+    /* Ikona jest podana w `em`, wiec skaluje sie razem z ta wartoscia. */
+    width: 1.181rem;
+    height: 1.181rem;
+    font-size: 0.6rem;
+  }
+
+  .dojazd-stacja-plakietka-tytul {
+    font-size: 0.495rem;
+  }
+
+  .dojazd-stacja-plakietka-opis {
+    font-size: 0.461rem;
+  }}
+
+.dojazd-stacja-mapa {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--dj-linia);
+  border-radius: 1.25rem;
+}
+
+/* Szkielet mapy: zajmuje kafel, zanim ramka z Google cokolwiek narysuje.
+   Leży NAD ramką, żeby nie było widać białego błysku między pobraniem
+   a pierwszą klatką kafelków. Znika płynnie — bez przeskoku układu, bo
+   ramka ma swoją wysokość niezależnie od tego, czy szkielet jest widoczny. */
+.dojazd-mapa-szkielet {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  /* Abstrakcyjny zarys siatki ulic: dwie ukośne arterie i para poprzeczek na
+     jasnym tle. Celowo bez nazw i bez konkretnych kształtów — ma się czytać
+     jako „mapa się ładuje", a nie udawać prawdziwego kadru. */
+  background:
+    linear-gradient(103deg, transparent calc(50% - 7px), rgba(11, 20, 39, 0.07) calc(50% - 7px), rgba(11, 20, 39, 0.07) calc(50% + 7px), transparent calc(50% + 7px)),
+    linear-gradient(170deg, transparent calc(38% - 3px), rgba(11, 20, 39, 0.05) calc(38% - 3px), rgba(11, 20, 39, 0.05) calc(38% + 3px), transparent calc(38% + 3px)),
+    linear-gradient(170deg, transparent calc(76% - 3px), rgba(11, 20, 39, 0.05) calc(76% - 3px), rgba(11, 20, 39, 0.05) calc(76% + 3px), transparent calc(76% + 3px)),
+    radial-gradient(60% 45% at 18% 82%, rgba(44, 140, 90, 0.09), transparent 70%),
+    var(--dj-pomoc);
+  opacity: 1;
+  transition: opacity 320ms ease;
+}
+
+/* Smuga przesuwająca się w poprzek — czytelny znak „to się jeszcze ładuje",
+   bez kręcącego się kółka, którego nie ma nigdzie indziej na tej stronie. */
+.dojazd-mapa-szkielet::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    rgba(255, 255, 255, 0) 30%,
+    rgba(255, 255, 255, 0.55) 50%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  transform: translateX(-100%);
+  animation: dojazd-mapa-smuga 1.4s ease-in-out infinite;
+}
+
+/* Kolko i podpis stoja jedno pod drugim, na wierzchu smugi. */
+.dojazd-mapa-szkielet-spinner,
+.dojazd-mapa-szkielet-napis {
+  position: relative;
+  z-index: 1;
+}
+
+.dojazd-mapa-szkielet-spinner {
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 3px solid rgba(11, 20, 39, 0.14);
+  border-top-color: var(--dj-akcent);
+  border-radius: 9999px;
+  animation: dojazd-mapa-obrot 900ms linear infinite;
+}
+
+.dojazd-mapa-szkielet-napis {
+  padding-inline: 1rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--dj-tekst-2);
+}
+
+.dojazd-stacja-mapa.is-gotowa .dojazd-mapa-szkielet {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Adres pod mapą — poza ramką, żeby był czytelny także wtedy, gdy mapa się
+   nie wczyta (ramki z obcej domeny nie da się sprawdzić). */
+.dojazd-stacja-adres {
+  margin-top: 0.1rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--dj-tekst-2);
+}
+
+.dojazd-stacja-mapa iframe {
+  display: block;
+  width: 100%;
+  height: clamp(11rem, 24vw, 15rem);
+  border: 0;
+}
+
+/* --- Panel „Autobusem": przewoźnicy dalekobieżni --------------------------- */
+
+.dojazd-flix {
+  display: grid;
+  gap: 0.85rem;
+  margin: 1.25rem 0 1rem;
+  padding: 0;
+  list-style: none;
+}
+
+.dojazd-flix-poz {
+  padding: 1.1rem 1.15rem;
+  border: 1px solid var(--dj-linia);
+  border-radius: var(--dj-promien);
+  background: var(--dj-powierzchnia);
+}
+
+/* Zielen FlixBusa jako rowna ramka dookola — bez pogrubienia przy lewej
+   krawedzi, ktore ciagnelo wzrok mocniej niz tresc kafla. Jako TEKST ta zielen
+   ma 1,8:1, wiec zostaje wylacznie krawedzia i tlem plakietki. */
+.dojazd-flix-poz.is-flix {
+  border-color: #73d700;
+}
+
+.dojazd-flix-glowa {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+}
+
+.dojazd-flix-nazwa {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.dojazd-flix-poz.is-flix .dojazd-plakietka {
+  border-color: #73d700;
+  background: #73d700;
+  color: #0b1427;
+}
+
+.dojazd-flix-trasa {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  color: var(--dj-tekst-2);
+}
+
+.dojazd-flix-poz .dojazd-przycisk-drugi {
+  margin-top: 0.85rem;
+}
+
+/* --- Pozostałe połączenia (zwarty wiersz) ---------------------------------- */
+
+.dojazd-inne {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--dj-linia);
+}
+
+.dojazd-inne-tytul {
+  margin-bottom: 0.7rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.dojazd-inne-lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dojazd-inne-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.875rem;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid var(--dj-obrys);
+  border-radius: 9999px;
+  background: var(--dj-powierzchnia);
+  color: var(--dj-tekst);
+  font-size: 0.92rem;
+  font-weight: 600;
+  transition: border-color 150ms ease, background-color 150ms ease;
+}
+
+.dojazd-inne-link:hover {
+  border-color: var(--dj-akcent);
+  background: rgba(10, 90, 103, 0.08);
+}
+
+/* Marka FlixBusa: zieleń tylko jako wypełnienie — na bieli miałaby 1,8:1,
+   z granatowym napisem daje 10:1. */
+.dojazd-inne-link.is-flix {
+  border-color: #73d700;
+  background: #73d700;
+  color: #0b1427;
+}
+
+.dojazd-inne-link.is-flix:hover {
+  border-color: #5fb300;
+  background: #5fb300;
+}
+
+/* --- FAQ + kafel kontaktowy ------------------------------------------------ */
+
+.dojazd-faq {
+  /* Wysokość busa w jednym miejscu: od niej liczy się jego wysunięcie ponad
+     kafel i zapas, który sekcja musi zostawić nad sobą. */
+  --dj-bus: clamp(8.5rem, 27vw, 11rem);
+  --dj-bus-wysuniecie: calc(var(--dj-bus) * 0.52);
+  display: grid;
+  gap: 1.5rem;
+  margin-top: clamp(2.5rem, 6vw, 3.5rem);
+}
+
+@media (min-width: 1024px) {
+  .dojazd-faq {
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+    align-items: start;
+    gap: 2.5rem;
+    /* Bus wychodzi ponad kafel, więc sekcja zostawia nad sobą tyle miejsca,
+       ile wynosi jego wysunięcie — inaczej wjeżdżałby w sekcję powyżej. */
+    margin-top: calc(var(--dj-bus-wysuniecie) + 2rem);
+  }}
+
+.dojazd-faq-lista {
+  min-width: 0;
+}
+
+.dojazd-faq-tytul {
+  margin-bottom: 0.5rem;
+  font-size: clamp(1.4rem, 4.5vw, 1.9rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+/* Kafel kontaktowy: ciemny, żeby odciął się od jasnej listy pytań obok.
+   Alver wychodzi poza górną krawędź — stąd zapas miejsca u góry. */
+.dojazd-faq-kontakt {
+  position: relative;
+  margin-top: var(--dj-bus-wysuniecie);
+  padding: 1.5rem 1.35rem 1.35rem;
+  border-radius: 1.25rem;
+  background-color: var(--dj-granat);
+  background-image:
+    radial-gradient(90% 120% at 90% 0%, rgba(50, 216, 230, 0.22) 0%, rgba(11, 20, 39, 0) 60%),
+    linear-gradient(155deg, #12233f 0%, var(--dj-granat) 60%, #070d1c 100%);
+  color: #ffffff;
+}
+
+@media (min-width: 1024px) {
+  /* Kafel zaczyna się równo z nagłówkiem „Najczęściej zadawane pytania”,
+     a bus wychodzi ponad jego górną krawędź. Reguła musi stać PO bazowej,
+     bo ma tę samą specyficzność. */
+  .dojazd-faq-kontakt {
+    margin-top: 0;
+  }}
+
+.dojazd-faq-alver {
+  position: absolute;
+  top: calc(var(--dj-bus-wysuniecie) * -1);
+  right: 0.6rem;
+  width: auto;
+  height: var(--dj-bus);
+  pointer-events: none;
+  filter: drop-shadow(0 10px 22px rgba(4, 8, 20, 0.55));
+}
+
+.dojazd-faq-kontakt-tytul {
+  max-width: 11ch;
+  font-size: clamp(1.25rem, 3.5vw, 1.55rem);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.dojazd-faq-kontakt-lead {
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.dojazd-faq-kontakt-akcje {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 1.15rem;
+}
+
+@media (min-width: 480px) {
+  .dojazd-faq-kontakt-akcje {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }}
+
+.dojazd-faq-kontakt-akcje .dojazd-przycisk-glowny,
+.dojazd-faq-kontakt-akcje .dojazd-przycisk-drugi {
+  margin-top: 0;
+}
+
+/* Wariant na ciemnym tle — biały obrys zamiast szarego. */
+.dojazd-faq-kontakt-akcje .dojazd-przycisk-drugi {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: transparent;
+  color: #ffffff;
+}
+
+.dojazd-faq-kontakt-akcje .dojazd-przycisk-drugi:hover {
+  border-color: var(--dj-turkus);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dojazd-faq-kontakt-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.875rem;
+  margin-top: 0.85rem;
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.78);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+
+.dojazd-okolica-sekcja {
+  --dj-margines: max(1.25rem, calc((100vw - 73.75rem) / 2 + 1.25rem));
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  margin-top: clamp(2.5rem, 6vw, 4rem);
+  padding-block: clamp(2rem, 5vw, 3.5rem);
+  background-color: var(--dj-granat);
+  background-image:
+    radial-gradient(90% 120% at 82% 10%, rgba(50, 216, 230, 0.2) 0%, rgba(11, 20, 39, 0) 60%),
+    radial-gradient(70% 110% at 12% 95%, rgba(80, 120, 220, 0.16) 0%, rgba(11, 20, 39, 0) 60%),
+    linear-gradient(160deg, #11223f 0%, var(--dj-granat) 52%, #060b18 100%);
+  color: #ffffff;
+}
+
+.dojazd-okolica-naglowek {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding-inline: var(--dj-margines);
+}
+
+.dojazd-okolica-naglowek-tekst {
+  min-width: 0;
+}
+
+.dojazd-okolica-tytul {
+  font-size: clamp(1.9rem, 6vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+}
+
+.dojazd-okolica-lead {
+  margin-top: 0.4rem;
+  max-width: 38ch;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+/* Strzałki przewijania — na telefonie zbędne, bo pas przesuwa się palcem. */
+.dojazd-okolica-sterowanie {
+  display: none;
+  flex-shrink: 0;
+  gap: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .dojazd-okolica-sterowanie {
+    display: flex;
+  }}
+
+.dojazd-okolica-strzalka-przycisk {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.9rem;
+  height: 2.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  transition: background-color 160ms ease, border-color 160ms ease;
+}
+
+.dojazd-okolica-strzalka-przycisk:hover {
+  border-color: rgba(50, 216, 230, 0.6);
+  background: rgba(255, 255, 255, 0.14);
+}
+
+/* Karuzela na każdej szerokości. Ostatnia karta ma dojechać do krawędzi okna,
+   pierwsza — stanąć w linii nagłówka. */
+.dojazd-okolica-karty {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: min(78%, 19rem);
+  gap: 1rem;
+  margin: clamp(1.5rem, 4vw, 2.25rem) 0 0;
+  padding: 0.25rem var(--dj-margines);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: var(--dj-margines);
+  scrollbar-width: none;
+  list-style: none;
+  overscroll-behavior-x: contain;
+}
+
+.dojazd-okolica-karty::-webkit-scrollbar {
+  display: none;
+}
+
+.dojazd-okolica-karta {
+  scroll-snap-align: start;
+  min-width: 0;
+}
+
+/* Kafelek: zdjęcie na całość, treść na dole na przyciemnieniu, kółko ze
+   strzałką w prawym dolnym rogu. */
+.dojazd-okolica-link {
+  position: relative;
+  display: block;
+  height: 100%;
+  min-height: 13.5rem;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  background: #0a1122;
+  color: #ffffff;
+  isolation: isolate;
+}
+
+.dojazd-okolica-foto {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 260ms ease;
+}
+
+.dojazd-okolica-link:hover .dojazd-okolica-foto {
+  transform: scale(1.04);
+}
+
+/* Przyciemnienie pod napisem — bez niego biel na jasnym niebie nie przechodzi
+   progu kontrastu. */
+.dojazd-okolica-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    180deg,
+    rgba(6, 11, 24, 0.1) 0%,
+    rgba(6, 11, 24, 0.3) 26%,
+    rgba(6, 11, 24, 0.62) 48%,
+    rgba(6, 11, 24, 0.85) 70%,
+    rgba(6, 11, 24, 0.94) 100%
+  );
+}
+
+.dojazd-okolica-tresc {
+  position: absolute;
+  right: 4.25rem;
+  bottom: 1rem;
+  left: 1.1rem;
+  display: grid;
+  gap: 0.2rem;
+}
+
+.dojazd-okolica-nazwa {
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+
+.dojazd-okolica-dystans {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.82);
+  font-variant-numeric: tabular-nums;
+}
+
+.dojazd-okolica-strzalka {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 9999px;
+  background: rgba(10, 17, 34, 0.7);
+  color: #ffffff;
+  backdrop-filter: blur(4px);
+  transition: background-color 160ms ease, border-color 160ms ease;
+}
+
+.dojazd-okolica-link:hover .dojazd-okolica-strzalka {
+  border-color: var(--dj-turkus);
+  background: var(--dj-turkus);
+  color: var(--dj-turkus-ink);
+}
+
+.dojazd-okolica-nota {
+  margin: clamp(1rem, 3vw, 1.5rem) 0 0;
+  padding-inline: var(--dj-margines);
+  font-size: 0.51rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* Gwiazdka z CSS, nie z tlumaczen: ten sam znak we wszystkich pieciu jezykach
+   i zadnego ryzyka, ze gdzies zostanie zapomniany. */
+.dojazd-okolica-nota::before {
+  content: "* ";
+}
+
+.dojazd-kontakt-linia {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: var(--dj-tekst-2);
+}
+
+.dojazd-kontakt-linia .dojazd-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.875rem;
+  padding-inline: 0.5rem;
+  text-align: center;
+}
+
+/* --- Desktop: nadpisania, które muszą stać na końcu ------------------------
+   Te trzy deklaracje siedziały wcześniej w bloku @media otwartym na początku
+   sekcji i nie działały ani razu: @media nie podnosi swoistości, a reguły
+   bazowe o tej samej swoistości stoją w pliku niżej, więc to one wygrywały.
+   Zmierzone: iframe mapy dostawał 240 px zamiast pełnej kolumny (≈328 px),
+   odstęp adresu 24 px zamiast 52 px, odstęp rozkładu 24 px zamiast 12 px.
+   Dopisując cokolwiek dla ≥1024 px, dopisuj TUTAJ, nie tam wyżej. */
+/* Ta sama pułapka co wyżej, tylko w drugą stronę: reguła dla wąskich telefonów
+   stała przed bazową i nigdy nie działała. `.dojazd-fakt` widać w zakładce
+   „Samochodem”, więc to nie był martwy kod. */
+@media (max-width: 359px) {
+  .dojazd-fakt + .dojazd-fakt {
+    padding-left: 0.7rem;
+  }}
+
+@media (min-width: 1024px) {
+  /* Opakowanie animujace zmiane zakladki stoi miedzy kolumna a panelem stacji,
+     wiec musi przepuscic wysokosc dalej — inaczej `height: 100%` panelu
+     rozwiazuje sie wzgledem pudelka o wysokosci `auto` i obie kolumny
+     przestaja konczyc sie w jednej linii. */
+  .dojazd-kolumna-boczna > .dojazd-zmiana {
+    height: 100%;
+  }}
+
+@media (min-width: 1024px) {
+  /* Na szerszym kaflu obie strony trasy biora tyle, ile potrzebuja: przy
+     sztywnym `1fr 1fr` „Alvernia Planet" lamalo sie na dwa wiersze, chociaz
+     po stronie „Krzeszowice" zostawalo wolne miejsce. */
+  .dojazd-najblizszy-trasa {
+    grid-template-columns: minmax(0, auto) auto minmax(0, auto);
+    justify-content: space-between;
+  }}
+
+@media (min-width: 1024px) {
+  /* Wiersze rozkladu skrocone o 20%: przy pelnej szerokosci godzina 15:00
+     wisiala sama na koncu paska szerokiego na 800 px. Krotszy wiersz plus
+     wiekszy odstep od kafla daja sekcji powietrze po prawej stronie. */
+  .dojazd-rozklad-tabele {
+    max-width: 80%;
+  }
+
+  .dojazd-adres {
+    margin-top: 3.25rem;
+  }
+
+  .dojazd-rozklad {
+    margin-top: 0.75rem;
+  }
+
+  /* Mapa dobija do dołu kolumny, żeby obie strony siatki kończyły się równo. */
+  .dojazd-stacja-mapa iframe {
+    height: 100%;
+  }}
+
+/* Zmiana zakladki: React podmienia wezel (klucz `tryb`), wiec animacja
+   startuje jeszcze raz — panel i kolumna boczna wjezdzaja od nowa. */
+.dojazd-zmiana {
+  animation: dojazd-wejscie 240ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+/* Kafle najblizszych odjazdow wchodza jeden po drugim — opoznienie liczone
+   z pozycji w liscie, wiec nie trzeba zadnego licznika w JavaScripcie. */
+.dojazd-najblizszy.jest-widoczny .dojazd-najblizszy-poz {
+  animation: dojazd-wejscie 280ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+.dojazd-najblizszy.jest-widoczny .dojazd-najblizszy-poz:nth-child(2) {
+  animation-delay: 60ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Selektor `*` dopasowuje elementy, ale NIE pseudoelementy — bez dwóch
+     dodatkowych wierszy smuga szkieletu mapy biegła dalej mimo ustawienia
+     „ogranicz ruch". Sprawdzone pomiarem, nie założeniem. */
+  .dojazd-page *,
+  .dojazd-page *::before,
+  .dojazd-page *::after {
+    transition: none !important;
+    animation: none !important;
+  }}

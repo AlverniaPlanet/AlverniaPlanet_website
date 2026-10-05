@@ -17,6 +17,46 @@ DirectorySlash Off
   RewriteCond %{HTTP_HOST} ^alverniaplanet\.com$ [NC]
   RewriteRule ^(.*)$ https://alverniaplanet.com/$1 [R=301,L]
 
+  # --- Uporzadkowanie public/ (2026-10-01): stare adresy plikow -> 301 -------
+  # Pliki graficzne zostaly posortowane w katalogi wedlug podstron, a zasoby
+  # globalnego paska i stopki trafily do /wspolne/. Stare adresy zyja poza
+  # serwisem: obrazek Open Graph siedzi w cache'u Facebooka i LinkedIna,
+  # a czesc plikow jest w indeksie Google Images. Bez tych regul kazdy taki
+  # odnosnik wracalby 404.
+  # Dokumenty ze stopki: /legal/ -> /stopka/. Ta regula jest wazniejsza od
+  # pozostalych w tym bloku: polityka prywatnosci, polityka cookies i regulaminy
+  # to adresy najczesciej linkowane spoza serwisu — z maili, materialow
+  # drukowanych i z indeksu Google. Bez niej kazdy taki odnosnik wracalby 404.
+  RewriteRule ^legal/(.*)$ /stopka/$1 [R=301,L,NC]
+  # Nazwy plikow przestaly powtarzac nazwe katalogu (np. /bistro/bistro-hero.webp
+  # -> /bistro/hero.webp). Te adresy tez moga byc w indeksie Google Images.
+  RewriteRule ^mapa/mapa-wycieczki\.png$ /mapa/wycieczka.png [R=301,L]
+  RewriteRule ^bistro/bistro-(hero|hero-900|klasa|klasa-900)\.webp$ /bistro/$1.webp [R=301,L]
+  RewriteRule ^bistro/bistro-logo\.svg$ /bistro/logo.svg [R=301,L]
+
+  RewriteRule ^ikony-atrakcji/(.*)$ /wspolne/ikony-atrakcji/$1 [R=301,L]
+  RewriteRule ^logos/(.*)$ /wspolne/logotypy/$1 [R=301,L]
+  RewriteRule ^Maskotki/(.*)$ /wspolne/maskotki/$1 [R=301,L,NC]
+  RewriteRule ^Bupers/(.*)$ /wspolne/bumpery/$1 [R=301,L,NC]
+  RewriteRule ^shy/(.*)$ /wspolne/partnerzy/$1 [R=301,L]
+  RewriteRule ^Alvernia(%20|\s)VR/(.*)$ /wspolne/vr-panoramy/$2 [R=301,L,NC]
+  RewriteRule ^vr-preview/(.*)$ /o-alvernia-planet/$1 [R=301,L]
+  RewriteRule ^icon/(frame|parking)\.svg$ /wspolne/ikony/$1.svg [R=301,L]
+  RewriteRule ^k360/(.*)$ /atrakcje/kino-360/$1 [R=301,L]
+  # UWAGA: /mars/konkurs-wyladuj-na-marsie to ADRES PODSTRONY, nie plik —
+  # przekierowujemy wylacznie to, co ma rozszerzenie pliku.
+  RewriteRule ^mars/(.+\.[a-z0-9]+)$ /atrakcje/mars/$1 [R=301,L,NC]
+  RewriteRule ^logo_alvernia_planet_neg_RGB\.png$ /wspolne/logotypy/logo-alvernia-planet-negatyw.png [R=301,L]
+  RewriteRule ^mapa_wycieczki\.png$ /mapa/mapa-wycieczki.png [R=301,L]
+  RewriteRule ^(favicon-16x16|favicon-32x32|icon-192|icon-512)\.png$ /wspolne/favicony/$1.png [R=301,L]
+  # /mars-colonization: zdjęcia w folderach sekcji (05.10.2026). Tylko pliki
+  # z rozszerzeniem — sam /mars-colonization to ADRES PODSTRONY.
+  # „kolonia-[0-9]" nie łapie dawnego „kolonia-noca-…" (ten wyszedł z public/).
+  RewriteRule ^mars-colonization/((krajobraz|humanoid)-[0-9]+\.webp)$ /mars-colonization/hero/$1 [R=301,L]
+  RewriteRule ^mars-colonization/(kolonia-[0-9]+\.webp)$ /mars-colonization/rok-2035/$1 [R=301,L]
+  RewriteRule ^mars-colonization/(habitat-wnetrze-[0-9]+\.webp)$ /mars-colonization/b2b/$1 [R=301,L]
+  RewriteRule ^mars-colonization/og-mars-colonization\.jpg$ /mars-colonization/podglad-linku/og-mars-colonization.jpg [R=301,L]
+
   # --- Stare adresy (Joomla + poprzednie wersje serwisu) -> 301 --------------
   # Lista z raportu 404 w Google Search Console (lipiec 2026).
   # Joomla: /index.php, /index.php/pl/..., /index.php/en/... (+ parametry)
@@ -58,6 +98,19 @@ DirectorySlash Off
   # (bez www — po dodaniu kanonicznego hosta www robiłoby drugi skok)
   RewriteRule ^qrcode(marsapp)?/?$ https://alverniaplanet.com/ [R=302,L,NC]
 
+  # Prekompresowany Brotli (scripts/compress.mjs generuje pliki .br przy buildzie).
+  # Hosting nie ma mod_brotli — blok <IfModule mod_brotli.c> niżej jest po cichu
+  # pomijany i produkcja serwuje tylko gzip. Zamiast czekać na moduł, podajemy
+  # gotowy plik .br, gdy przeglądarka go akceptuje.
+  #
+  # MUSI stać PRZED regułą „plik istnieje -> koniec" poniżej — inaczej tamta
+  # zatrzymałaby przepisywanie na nieskompresowanym oryginale.
+  # Gdy pliku .br nie ma (wgrano out/ bez kompresji), warunek -f nie przechodzi
+  # i serwowany jest oryginał — degradacja jest bezpieczna w obie strony.
+  RewriteCond %{HTTP:Accept-Encoding} br
+  RewriteCond %{REQUEST_FILENAME}\.br -f
+  RewriteRule ^(.*)$ $1.br [L]
+
   # Serve existing files as-is
   RewriteCond %{REQUEST_FILENAME} -f
   RewriteRule ^ - [L]
@@ -79,6 +132,46 @@ ErrorDocument 404 /404.html
   AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json image/svg+xml application/xml application/manifest+json text/plain
 </IfModule>
 
+# Nagłówki dla prekompresowanych plików .br.
+# ForceType jest konieczny: bez niego Apache widzi rozszerzenie .br i wysyła
+# application/octet-stream, więc przeglądarka pobrałaby plik zamiast go wykonać.
+<IfModule mod_headers.c>
+  <FilesMatch "\.br$">
+    Header set Content-Encoding br
+    Header append Vary Accept-Encoding
+  </FilesMatch>
+  <FilesMatch "\.br$">
+    # SetEnv pochodzi z mod_env, NIE z mod_headers — musi mieć własną osłonę.
+    # Wcześniej stało wewnątrz <IfModule mod_headers.c>: gdyby hosting miał
+    # mod_headers, ale nie mod_env, Apache zwróciłby 500 na KAŻDYM żądaniu.
+    <IfModule mod_env.c>
+      # bez tego mod_deflate spakowałby gzipem już spakowaną treść
+      SetEnv no-gzip 1
+    </IfModule>
+  </FilesMatch>
+  <FilesMatch "\.js\.br$">
+    ForceType application/javascript
+  </FilesMatch>
+  <FilesMatch "\.css\.br$">
+    ForceType text/css
+  </FilesMatch>
+  <FilesMatch "\.html\.br$">
+    ForceType text/html
+  </FilesMatch>
+  <FilesMatch "\.svg\.br$">
+    ForceType image/svg+xml
+  </FilesMatch>
+  <FilesMatch "\.json\.br$">
+    ForceType application/json
+  </FilesMatch>
+  <FilesMatch "\.txt\.br$">
+    ForceType text/plain
+  </FilesMatch>
+  <FilesMatch "\.xml\.br$">
+    ForceType application/xml
+  </FilesMatch>
+</IfModule>
+
 # Caching static assets
 <IfModule mod_expires.c>
   ExpiresActive On
@@ -87,6 +180,13 @@ ErrorDocument 404 /404.html
   # STARY dokument, który odwołuje się do skasowanych już plików /_next/static/**
   # (hashowane nazwy) — strona się nie hydratowała, a poprawki treści nie docierały.
   ExpiresByType text/html "access plus 0 seconds"
+  # Payloady RSC Next.js (/<trasa>.txt) to DOKŁADNIE ten sam problem co HTML:
+  # niosą listę hashowanych chunków /_next/static/**. Wpadały pod ExpiresDefault
+  # (3 dni), więc po wdrożeniu przeglądarka przy nawigacji z menu brała z cache
+  # STARY payload wskazujący na skasowane pliki -> 404 -> „Application error:
+  # a client-side exception has occurred". Wejście bezpośrednie działało, bo
+  # tam idzie świeży HTML — stąd objaw „wywala się tylko przy klikaniu w menu".
+  ExpiresByType text/plain "access plus 0 seconds"
   ExpiresByType text/css "access plus 1 month"
   ExpiresByType application/javascript "access plus 1 month"
   ExpiresByType text/javascript "access plus 1 month"
@@ -112,10 +212,10 @@ ErrorDocument 404 /404.html
     Header set Cache-Control "public, max-age=31536000, immutable" env=NEXT_IMMUTABLE
   </IfModule>
 
-  # HTML: cache dozwolony, ale zawsze z rewalidacją (serwer odpowie 304, jeśli
-  # dokument się nie zmienił). Dzięki temu wdrożenie jest widoczne natychmiast,
-  # a transfer i tak pozostaje minimalny.
-  <FilesMatch "\.html$">
+  # HTML i payloady RSC (.txt): cache dozwolony, ale zawsze z rewalidacją
+  # (serwer odpowie 304, jeśli plik się nie zmienił). Dzięki temu wdrożenie jest
+  # widoczne natychmiast, a transfer i tak pozostaje minimalny.
+  <FilesMatch "\.(html|txt)(\.br)?$">
     Header set Cache-Control "public, max-age=0, must-revalidate"
   </FilesMatch>
 </IfModule>

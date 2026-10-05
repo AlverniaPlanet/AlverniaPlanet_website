@@ -1,17 +1,16 @@
 "use client";
 
 import Image from "next/image";
+import BookingLink from "@/app/components/BookingLink";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useI18n } from "@/app/i18n-provider";
 import {
   buildBookingPath,
-  K360_MARS_PREMIERE_BOOKING_CATEGORY,
   K360_MARS_PREMIERE_BOOKING_SERVICES,
 } from "@/lib/booking";
-
-type Locale = "pl" | "en" | "pt";
+import { type Locale } from "@/lib/localizedRoutes";
 
 // Pakiet przedpremierowy dostępny tylko w weekend 23–24.05.2026. Po niedzieli baner znika sam.
 const PROMO_END = new Date("2026-05-25T00:00:00+02:00").getTime();
@@ -21,6 +20,8 @@ const HIDDEN_PATHS = new Set([
   "/rezerwuj",
   "/en/reserve",
   "/pt/reservar",
+  "/de/reserve",
+  "/zh/reserve",
   "/aplikacje/identyfikacja",
   "/aplikacje/mars-brief",
 ]);
@@ -68,6 +69,26 @@ const COPY: Record<
     ctaBook: "Reservar",
     ctaMore: "Saber mais",
   },
+  de: {
+    live: "Jetzt live",
+    eyebrow: "Vorpremieren-Paket",
+    tagline: "Seien Sie die Ersten auf dem Mars!",
+    pkg: "K360 + MARS",
+    desc: "Die Vorpremieren-Version ist nur an diesem Wochenende verfügbar: Samstag und Sonntag.",
+    price: "ab 64 PLN",
+    ctaBook: "Jetzt buchen",
+    ctaMore: "Mehr erfahren",
+  },
+  zh: {
+    live: "正在进行",
+    eyebrow: "先行体验套票",
+    tagline: "抢先登陆火星！",
+    pkg: "K360 + MARS",
+    desc: "先行体验版仅在本周末开放：周六与周日。",
+    price: "64 PLN 起",
+    ctaBook: "立即预订",
+    ctaMore: "了解更多",
+  },
 };
 
 export default function FloatingDemoPromo() {
@@ -95,7 +116,6 @@ export default function FloatingDemoPromo() {
   if (!visible || isHiddenPath) return null;
 
   const bookingHref = buildBookingPath(loc, {
-    category: K360_MARS_PREMIERE_BOOKING_CATEGORY,
     service: K360_MARS_PREMIERE_BOOKING_SERVICES.normal,
   });
 
@@ -110,7 +130,7 @@ export default function FloatingDemoPromo() {
 
         {/* Grafika Marsa */}
         <Image
-          src="/mars/Mars-planet.png"
+          src="/atrakcje/mars/Mars-planet.png"
           alt=""
           aria-hidden="true"
           width={200}
@@ -148,12 +168,12 @@ export default function FloatingDemoPromo() {
           </p>
 
           <div className="mt-3.5 flex flex-row gap-2 lg:mt-4 lg:flex-col lg:gap-2.5">
-            <Link
+            <BookingLink
               href={bookingHref}
               className="inline-flex flex-1 items-center justify-center rounded-full bg-[#7ef6ff] px-3 py-2.5 text-center text-[0.8rem] font-bold text-[#06121a] shadow-[0_0_22px_rgba(126,246,255,0.35)] transition hover:bg-white lg:flex-none lg:px-4 lg:py-3 lg:text-[0.95rem]"
             >
               {t.ctaBook}
-            </Link>
+            </BookingLink>
             <Link
               href={MARS_PATH}
               className="inline-flex flex-1 items-center justify-center rounded-full border border-[#7ef6ff]/40 bg-white/[0.05] px-3 py-2.5 text-center text-[0.8rem] font-semibold text-[#7ef6ff] transition hover:border-[#7ef6ff]/70 hover:bg-white/[0.1] lg:flex-none lg:px-4 lg:py-3 lg:text-[0.95rem]"

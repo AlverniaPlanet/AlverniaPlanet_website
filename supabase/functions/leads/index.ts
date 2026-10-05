@@ -19,10 +19,33 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { z } from "npm:zod@3.23.8";
 
-// Pełna treść zgody na kontakt zapisywana w kolumnie consent_text.
-// Musi być identyczna z treścią checkboxa B na stronie /aplikacje/identyfikacja.
-const CONSENT_TEXT =
-  "Wyrażam zgodę na kontakt ze strony Alvernia Planet w celu przedstawienia informacji o ofercie Alvernia Planet. Wiem, że zgodę mogę wycofać w dowolnym momencie.";
+// Pełna treść zgody zapisywana w kolumnie consent_text — JEDNA NA JĘZYK.
+//
+// DLACZEGO MAPA, A NIE JEDNA STAŁA: dowód zgody w bazie musi być tym samym
+// tekstem, który gość faktycznie zobaczył i zaakceptował. Dopóki była tu jedna
+// polska stała, formularz na /en, /de, /pt i /zh pokazywał tłumaczenie, a do
+// bazy szedł polski oryginał — czyli dowód zgody nie zgadzał się z tym, co
+// widział człowiek. Wykrył to przegląd 2026-10-02 przy dodawaniu landingu
+// /mars-colonization (pierwszy formularz zgody w pięciu językach; kiosk
+// identyfikacji jest tylko po polsku, angielsku i portugalsku).
+//
+// TREŚĆ PRZYCHODZI STĄD, A NIE OD KLIENTA — i to jest celowe. Gdyby front
+// przysyłał samą treść zgody, dało by się podmienić dowód z przeglądarki.
+// Klient przysyła wyłącznie KOD JĘZYKA, a funkcja wybiera zatwierdzony tekst.
+//
+// Przy zmianie którejkolwiek z tych treści trzeba poprawić RÓWNIEŻ teksty
+// na stronie — pilnuje tego test `mc1-landing` (porównanie znak po znaku).
+const CONSENT_TEXTS = {
+  pl: "Wyrażam zgodę na kontakt ze strony Alvernia Planet w celu przedstawienia informacji o ofercie Alvernia Planet. Wiem, że zgodę mogę wycofać w dowolnym momencie.",
+  en: "I consent to being contacted by Alvernia Planet in order to present information about Alvernia Planet's offerings. I know that I can withdraw this consent at any time.",
+  de: "Ich willige ein, von Alvernia Planet kontaktiert zu werden, um Informationen über das Angebot von Alvernia Planet zu erhalten. Ich weiß, dass ich diese Einwilligung jederzeit widerrufen kann.",
+  pt: "Autorizo o contacto por parte do Alvernia Planet para apresentação de informações sobre a oferta do Alvernia Planet. Sei que posso retirar este consentimento a qualquer momento.",
+  zh: "我同意 Alvernia Planet 与我联系，以介绍 Alvernia Planet 的相关信息。我知道可以随时撤回此同意。",
+} as const;
+
+// Zgoda bez podanego języka to zgoda polska — tak zachowują się starsze
+// wywołania (kiosk identyfikacji), które pola `locale` nie wysyłają wcale.
+const DOMYSLNY_JEZYK = "pl";
 
 // Dozwolone originy (CORS). Dostosuj do swoich domen.
 const ALLOWED_ORIGINS = [
@@ -82,6 +105,9 @@ const LeadSchema = z.object({
   // Wejście/atrakcja wybrana przez gościa (np. "Kino 360", "MARS", "FILMWORLD", "VIP").
   entrance: z.string().trim().min(1).max(60).optional(),
   page_url: z.string().url().optional(),
+  // OPCJONALNE celowo: starsze wywołania (kiosk identyfikacji) tego pola nie
+  // wysyłają i mają dalej działać bez zmian. Brak = polski.
+  locale: z.enum(["pl", "en", "de", "pt", "zh"]).optional(),
 });
 
 export default {
@@ -144,7 +170,7 @@ export default {
       last_name: data.last_name,
       email: data.email,
       consent_contact: data.consent_contact,
-      consent_text: CONSENT_TEXT,
+      consent_text: CONSENT_TEXTS[data.locale ?? DOMYSLNY_JEZYK],
       entrance: data.entrance ?? null,
       status: "new",
       page_url: data.page_url ?? null,

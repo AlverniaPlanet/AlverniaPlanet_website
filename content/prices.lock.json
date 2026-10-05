@@ -1,0 +1,268 @@
+{
+  "source": "bookero:/plugin-api/v2/init",
+  "pluginId": "8iWKMAEWtI0P",
+  "currency": "PLN",
+  "services": [
+    {
+      "id": 93439,
+      "name": "Projekt: MARS - Bilet normalny",
+      "priceGrosze": 6900,
+      "categoryId": 14354,
+      "category": "Bilet indywidualny",
+      "published": true,
+      "ordering": 8
+    },
+    {
+      "id": 59340,
+      "name": "Filmworld: Ścieżka edukacyjna z przewodnikiem - bilet normalny",
+      "priceGrosze": 7900,
+      "categoryId": 14354,
+      "category": "Bilet indywidualny",
+      "published": true,
+      "ordering": 9
+    },
+    {
+      "id": 96613,
+      "name": "Kino 360 - One Step Beyond",
+      "priceGrosze": 4900,
+      "categoryId": 14354,
+      "category": "Bilet indywidualny",
+      "published": true,
+      "ordering": 11
+    },
+    {
+      "id": 96614,
+      "name": "Kino 360 - The Stellars",
+      "priceGrosze": 4900,
+      "categoryId": 14354,
+      "category": "Bilet indywidualny",
+      "published": true,
+      "ordering": 12
+    },
+    {
+      "id": 96615,
+      "name": "Kino 360 - Explore",
+      "priceGrosze": 4900,
+      "categoryId": 14354,
+      "category": "Bilet indywidualny",
+      "published": true,
+      "ordering": 13
+    },
+    {
+      "id": 96616,
+      "name": "Kino 360 - Time",
+      "priceGrosze": 4900,
+      "categoryId": 14354,
+      "category": "Bilet indywidualny",
+      "published": true,
+      "ordering": 14
+    },
+    {
+      "id": 96656,
+      "name": "BILET NA WSZYSTKIE ATRAKCJE - One Step Beyond",
+      "priceGrosze": 11900,
+      "categoryId": 14354,
+      "category": "Bilet indywidualny",
+      "published": true,
+      "ordering": 15
+    },
+    {
+      "id": 96657,
+      "name": "BILET NA WSZYSTKIE ATRAKCJE - The Stellars",
+      "priceGrosze": 11900,
+      "categoryId": 14354,
+      "category": "Bilet indywidualny",
+      "published": true,
+      "ordering": 16
+    },
+    {
+      "id": 96658,
+      "name": "BILET NA WSZYSTKIE ATRAKCJE - Explore",
+      "priceGrosze": 11900,
+      "categoryId": 14354,
+      "category": "Bilet indywidualny",
+      "published": true,
+      "ordering": 17
+    },
+    {
+      "id": 96659,
+      "name": "BILET NA WSZYSTKIE ATRAKCJE - Time",
+      "priceGrosze": 11900,
+      "categoryId": 14354,
+      "category": "Bilet indywidualny",
+      "published": true,
+      "ordering": 18
+    },
+    {
+      "id": 98294,
+      "name": "BILET NA WSZYSTKIE ATRAKCJE - Dla nauczycieli (0 zł)",
+      "priceGrosze": 0,
+      "categoryId": 14354,
+      "category": "Bilet indywidualny",
+      "published": true,
+      "ordering": 19
+    },
+    {
+      "id": 98647,
+      "name": "Kino 360 - Dla nauczycieli (0 zł)",
+      "priceGrosze": 0,
+      "categoryId": 14354,
+      "category": "Bilet indywidualny",
+      "published": true,
+      "ordering": 20
+    },
+    {
+      "id": 91694,
+      "name": "Kino 360 + Filmworld - Bilet promocyjny grupowy",
+      "priceGrosze": 0,
+      "categoryId": 14355,
+      "category": "Bilet grupowy",
+      "published": true,
+      "ordering": 2
+    },
+    {
+      "id": 51952,
+      "name": "Filmworld: Ścieżka edukacyjna z przewodnikiem - Bilet grupowy",
+      "priceGrosze": 0,
+      "categoryId": 14355,
+      "category": "Bilet grupowy",
+      "published": true,
+      "ordering": 5
+    },
+    {
+      "id": 93448,
+      "name": "Projekt: MARS - Bilet grupowy",
+      "priceGrosze": 0,
+      "categoryId": 14355,
+      "category": "Bilet grupowy",
+      "published": true,
+      "ordering": 7
+    },
+    {
+      "id": 96621,
+      "name": "Kino 360 - One Step Beyond",
+      "priceGrosze": 0,
+      "categoryId": 14355,
+      "category": "Bilet grupowy",
+      "published": true,
+      "ordering": 8
+    },
+    {
+      "id": 96622,
+      "name": "Kino 360 - The Stellars",
+      "priceGrosze": 0,
+      "categoryId": 14355,
+      "category": "Bilet grupowy",
+      "published": true,
+      "ordering": 9
+    },
+    {
+      "id": 96623,
+      "name": "Kino 360 - Explore",
+      "priceGrosze": 0,
+      "categoryId": 14355,
+      "category": "Bilet grupowy",
+      "published": true,
+      "ordering": 10
+    },
+    {
+      "id": 96624,
+      "name": "Kino 360 - Time",
+      "priceGrosze": 0,
+      "categoryId": 14355,
+      "category": "Bilet grupowy",
+      "published": true,
+      "ordering": 11
+    },
+    {
+      "id": 96617,
+      "name": "Kino 360 - One Step Beyond",
+      "priceGrosze": 0,
+      "categoryId": 14529,
+      "category": "Bilet indywidualny - ulgowy",
+      "published": true,
+      "ordering": 4
+    },
+    {
+      "id": 96618,
+      "name": "Kino 360 - The Stellars",
+      "priceGrosze": 0,
+      "categoryId": 14529,
+      "category": "Bilet indywidualny - ulgowy",
+      "published": true,
+      "ordering": 5
+    },
+    {
+      "id": 96620,
+      "name": "Kino 360 - Explore",
+      "priceGrosze": 0,
+      "categoryId": 14529,
+      "category": "Bilet indywidualny - ulgowy",
+      "published": true,
+      "ordering": 6
+    },
+    {
+      "id": 96619,
+      "name": "Kino 360 - Time",
+      "priceGrosze": 0,
+      "categoryId": 14529,
+      "category": "Bilet indywidualny - ulgowy",
+      "published": true,
+      "ordering": 7
+    },
+    {
+      "id": 96660,
+      "name": "BILET NA WSZYSTKIE ATRAKCJE - One Step Beyond",
+      "priceGrosze": 0,
+      "categoryId": 14529,
+      "category": "Bilet indywidualny - ulgowy",
+      "published": true,
+      "ordering": 8
+    },
+    {
+      "id": 96662,
+      "name": "BILET NA WSZYSTKIE ATRAKCJE - The Stellars",
+      "priceGrosze": 0,
+      "categoryId": 14529,
+      "category": "Bilet indywidualny - ulgowy",
+      "published": true,
+      "ordering": 9
+    },
+    {
+      "id": 96663,
+      "name": "BILET NA WSZYSTKIE ATRAKCJE - Explore",
+      "priceGrosze": 0,
+      "categoryId": 14529,
+      "category": "Bilet indywidualny - ulgowy",
+      "published": true,
+      "ordering": 10
+    },
+    {
+      "id": 96661,
+      "name": "BILET NA WSZYSTKIE ATRAKCJE - Time",
+      "priceGrosze": 0,
+      "categoryId": 14529,
+      "category": "Bilet indywidualny - ulgowy",
+      "published": true,
+      "ordering": 11
+    },
+    {
+      "id": 91704,
+      "name": "Filmworld: Ścieżka edukacyjna z przewodnikiem - bilet ulgowy",
+      "priceGrosze": 6900,
+      "categoryId": 14529,
+      "category": "Bilet indywidualny - ulgowy",
+      "published": true,
+      "ordering": 12
+    },
+    {
+      "id": 93441,
+      "name": "Projekt: MARS - Bilet ulgowy",
+      "priceGrosze": 5900,
+      "categoryId": 14529,
+      "category": "Bilet indywidualny - ulgowy",
+      "published": true,
+      "ordering": 13
+    }
+  ]
+}
